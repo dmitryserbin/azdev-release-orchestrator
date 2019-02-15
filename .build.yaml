@@ -1,0 +1,44 @@
+queue:
+  name: Hosted VS2017
+  demands: npm
+
+steps:
+- task: Npm@1
+  displayName: 'Restore Packages'
+  inputs:
+    workingDir: OrchestratorV1
+
+- task: Npm@1
+  displayName: 'Run Build'
+  inputs:
+    command: custom
+    workingDir: OrchestratorV1
+    customCommand: 'run build'
+
+- task: Npm@1
+  displayName: 'Run Tests'
+  inputs:
+    command: custom
+    workingDir: OrchestratorV1
+    customCommand: 'run test'
+
+- task: Npm@1
+  displayName: 'Run Clean'
+  inputs:
+    command: custom
+    workingDir: OrchestratorV1
+    customCommand: 'run clean'
+
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results'
+  inputs:
+    testResultsFiles: '**/test-*.xml'
+
+- powershell: '@(".git", ".vscode", "*.yaml", "Artifacts", "OrchestratorV1\Tests", "OrchestratorV1\test-*.xml") | ForEach-Object { Remove-Item -Path $_ -Force -Recurse -ErrorAction SilentlyContinue }'
+  displayName: 'Clean Artifact'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  inputs:
+    PathtoPublish: '$(Build.SourcesDirectory)'
+    ArtifactName: ReleaseOrchestrator

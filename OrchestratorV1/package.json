@@ -1,0 +1,41 @@
+{
+  "name": "releaseorchestrator",
+  "version": "1.0.0",
+  "description": "Manage and orchestrate Azure DevOps release pipelines",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://dev.azure.com/dmitryserbin/Orchestrator/_git/Orchestrator"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "mocha -r ts-node/register Tests/**/test.*.ts --no-timeouts --grep \"@task|@manual\" --invert --reporter mocha-multi-reporters --reporter-options configFile=Tests/config.json",
+    "task": "mocha -r ts-node/register Tests/**/test.*.ts --no-timeouts --grep @task",
+    "manual": "mocha -r ts-node/register Tests/**/test.*.ts --no-timeouts --grep @manual",
+    "clean": "npm prune --production"
+  },
+  "author": "Dmitry Serbin",
+  "license": "MIT",
+  "dependencies": {
+    "@types/async-retry": "^1.2.1",
+    "@types/cli-table": "^0.3.0",
+    "async-retry": "^1.2.3",
+    "azure-devops-node-api": "^6.6.3",
+    "azure-pipelines-task-lib": "^2.7.7",
+    "cli-table": "^0.3.1",
+    "moment": "^2.23.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.12.18",
+    "@types/q": "^1.5.1",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "mocha-junit-reporter": "^1.18.0",
+    "mocha-multi-reporters": "^1.1.7",
+    "ts-node": "^7.0.1",
+    "typemoq": "^2.1.0",
+    "typescript": "^3.2.2"
+  }
+}

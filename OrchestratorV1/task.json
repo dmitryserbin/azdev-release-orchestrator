@@ -1,0 +1,242 @@
+{
+  "id": "5d38d46b-4c0a-4c14-8f0c-04df59e4dc27",
+  "name": "releaseorchestrator",
+  "friendlyName": "Release Orchestrator",
+  "instanceNameFormat": "Release Orchestrator",
+  "description": "Manage and orchestrate Azure DevOps release pipelines",
+  "helpMarkDown": "For aditional information and support please refer to <https://github.com/dmitryserbin/orchestrator> project repository.",
+  "category": "Release",
+  "author": "Dmitry Serbin",
+  "preview": false,
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "groups": [
+    {
+        "name": "Advanced",
+        "displayName": "Advanced",
+        "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "EndpointType",
+      "type": "radio",
+      "label": "Azure DevOps Endpoint Type",
+      "helpMarkDown": "Select endpoint type to connect Azure DevOps: \nIntegrated = default 'SystemVssConnection' service endpoint for 'Project Collection Build Service' user account; \nService = user-defined personal access token (PAT) service endpoint \n\nNote: requires 'View releases', 'View release definition', 'Create releases' and 'Manage deployments' release pipeline permissions",
+      "required": true,
+      "defaultValue": "integrated",
+      "options": {
+        "integrated": "Integrated Endpoint",
+        "service": "Service Endpoint"
+      }
+    },
+    {
+      "name": "ConnectedService",
+      "type": "connectedService:ExternalTfs",
+      "label": "Service Endpoint",
+      "required": true,
+      "helpMarkDown": "Select service endpoint for Azure DevOps account",
+      "visibleRule": "EndpointType = service"
+    },
+    {
+      "name": "TargetProject",
+      "type": "pickList",
+      "label": "Project Name",
+      "helpMarkDown": "Target project name",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "TargetDefinition",
+      "type": "pickList",
+      "label": "Release Definition",
+      "helpMarkDown": "Target release definition name",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "ReleaseStrategy",
+      "type": "radio",
+      "label": "Release Strategy",
+      "helpMarkDown": "Create new release, target existing or latest release",
+      "required": true,
+      "defaultValue": "create",
+      "options": {
+        "create": "Create Release",
+        "specific": "Specific Release",
+        "latest": "Latest Release"
+      }
+    },
+    {
+      "name": "TargetRelease",
+      "type": "pickList",
+      "label": "Release Name",
+      "helpMarkDown": "Target release name (last 25 releases)",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "visibleRule": "ReleaseStrategy = specific"
+    },
+    {
+      "name": "TargetReleaseStages",
+      "type": "pickList",
+      "label": "Release Stages",
+      "helpMarkDown": "Target specific release stages (comma separated)",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "visibleRule": "ReleaseStrategy = specific || ReleaseStrategy = latest"
+    },
+    {
+      "name": "SourceBranchFilter",
+      "type": "boolean",
+      "label": "Source Branch Filter",
+      "helpMarkDown": "Enable target release filtering by primary artifact source branch name",
+      "defaultValue": false,
+      "required": false,
+      "visibleRule": "ReleaseStrategy = latest"
+    },
+    {
+      "name": "SourceBranchName",
+      "type": "string",
+      "label": "Artifact Source Branch Name",
+      "helpMarkDown": "Specify branch name of primary release artifact source. Default = master",
+      "defaultValue": "master",
+      "required": true,
+      "visibleRule": "ReleaseStrategy = latest && SourceBranchFilter = true"
+    },
+    {
+      "name": "ArtifactStrategy",
+      "type": "radio",
+      "label": "Artifacts Strategy",
+      "helpMarkDown": "Use default or select specific artifact",
+      "required": true,
+      "defaultValue": "default",
+      "options": {
+        "default": "Default Artifacts",
+        "specific": "Specific Artifacts"
+      },
+      "visibleRule": "ReleaseStrategy = create"
+    },
+    {
+      "name": "TargetArtifact",
+      "type": "pickList",
+      "label": "Artifact Name",
+      "helpMarkDown": "Target artifact name",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "visibleRule": "ReleaseStrategy = create && ArtifactStrategy = specific"
+    },
+    {
+      "name": "TargetArtifactVersion",
+      "type": "pickList",
+      "label": "Artifact Version",
+      "helpMarkDown": "Target artifact version",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "visibleRule": "ReleaseStrategy = create && ArtifactStrategy = specific"
+    },
+    {
+      "name": "StageStrategy",
+      "type": "radio",
+      "label": "Stages Strategy",
+      "helpMarkDown": "Use default or select specific stages",
+      "required": true,
+      "defaultValue": "default",
+      "options": {
+        "default": "Default Stages",
+        "specific": "Specific Stages"
+      },
+      "visibleRule": "ReleaseStrategy = create"
+    },
+    {
+      "name": "TargetDefinitionStages",
+      "type": "pickList",
+      "label": "Definition Stages",
+      "helpMarkDown": "Target specific release definition stages (comma separated)",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "visibleRule": "ReleaseStrategy = create && StageStrategy = specific"
+    },
+    {
+      "name": "IgnoreFailure",
+      "type": "boolean",
+      "label": "Ignore Failures",
+      "helpMarkDown": "Keep running the orchestration even if a pipeline or stage deployment fails",
+      "defaultValue": false,
+      "required": false,
+      "groupName": "Advanced"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "TargetProject",
+      "endpointId": "tfs:teamfoundation",
+      "endpointUrl": "{{endpoint.url}}/_apis/projects",
+      "resultSelector": "jsonpath:$.value[?(@.state == 'wellFormed')]",
+      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+    },
+    {
+      "target": "TargetDefinition",
+      "endpointId": "tfs:rm",
+      "endpointUrl": "{{endpoint.url}}/$(TargetProject)/_apis/release/definitions",
+      "resultSelector": "jsonpath:$.value[?(@.isDeleted == false)]",
+      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+    },
+    {
+      "target": "TargetDefinitionStages",
+      "endpointId": "tfs:rm",
+      "endpointUrl": "{{endpoint.url}}/$(TargetProject)/_apis/release/definitions/$(TargetDefinition)",
+      "resultSelector": "jsonpath:$.environments[*]",
+      "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+    },
+    {
+      "target": "TargetRelease",
+      "endpointId": "tfs:rm",
+      "endpointUrl": "{{endpoint.url}}/$(TargetProject)/_apis/release/releases?definitionId=$(TargetDefinition)&$top=25",
+      "resultSelector": "jsonpath:$.value[*]",
+      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}} (by {{{createdBy.displayName}}} at {{{createdOn}}})\" }"
+    },
+    {
+      "target": "TargetReleaseStages",
+      "endpointId": "tfs:rm",
+      "endpointUrl": "{{endpoint.url}}/$(TargetProject)/_apis/release/releases/$(TargetRelease)",
+      "resultSelector": "jsonpath:$.environments[*]",
+      "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+    },
+    {
+      "target": "TargetArtifact",
+      "endpointId": "tfs:rm",
+      "endpointUrl": "{{endpoint.url}}/$(TargetProject)/_apis/release/definitions/$(TargetDefinition)",
+      "resultSelector": "jsonpath:$.artifacts[*]",
+      "resultTemplate": "{ \"Value\" : \"{{{definitionReference.definition.id}}}\", \"DisplayValue\" : \"{{{definitionReference.definition.name}}}\" }"
+    },
+    {
+      "target": "TargetArtifactVersion",
+      "endpointId": "tfs:teamfoundation",
+      "endpointUrl": "{{endpoint.url}}/$(TargetProject)/_apis/build/builds?definitions=$(TargetArtifact)",
+      "resultSelector": "jsonpath:$.value[?(@.result == 'succeeded')]",
+      "resultTemplate": "{ \"Value\" : \"{\\\"Name\\\" : \\\"{{{definition.name}}}\\\", \\\"Id\\\" : \\\"{{{id}}}\\\"}\", \"DisplayValue\" : \"#{{{id}}} ({{{sourceBranch}}}) by {{{requestedFor.displayName}}}\" }"
+    }
+  ],
+  "execution": {
+      "Node": {
+          "target": "index.js"
+      }
+  }
+}

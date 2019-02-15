@@ -1,0 +1,8 @@
+**/.DS_Store
+**/.taskkey
+**/*.sh
+**/*.vsix
+**/*.js
+**/*.log
+**/test-*.xml
+**/node_modules
