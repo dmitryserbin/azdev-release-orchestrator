@@ -177,7 +177,7 @@
       "name": "IgnoreFailure",
       "type": "boolean",
       "label": "Ignore Failures",
-      "helpMarkDown": "Keep running the orchestration even if a pipeline or stage deployment fails (set task result as partially succeeded)",
+      "helpMarkDown": "Keep running the task even if target pipeline or stage deployment fails (set task result to partially succeeded)",
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"
