@@ -42,7 +42,6 @@ export function getParameters(): IParameters {
         releaseId: "",
         stages: [],
         artifact: "",
-        ignoreFailure: tl.getBoolInput("IgnoreFailure", true),
 
     };
 

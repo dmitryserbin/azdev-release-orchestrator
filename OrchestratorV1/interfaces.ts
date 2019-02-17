@@ -36,8 +36,7 @@ export interface IParameters {
     releaseId: string;
     stages: string[];
     artifact: string;
-    sourceBranch?: string,
-    ignoreFailure: boolean;
+    sourceBranch?: string;
 
 }
 
@@ -63,7 +62,6 @@ export interface IReleaseParameters {
     projectName: string;
     releaseId: number;
     releaseStages: string[];
-    ignoreFailure: boolean;
     sleep: number;
 
 }
@@ -105,7 +103,7 @@ export interface IReleaseProgress {
     getPendingStages(): IStageProgress[];
     getIncompleted(): IStageProgress[];
     getStatus(): ReleaseStatus;
-    validate(ignoreFailure?: boolean): void;
+    validate(): void;
     display(): void;
 
 }

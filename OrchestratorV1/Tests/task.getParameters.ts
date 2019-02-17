@@ -11,7 +11,6 @@ MockInput(tmr, [
     "ReleaseStrategy",
     "StageStrategy",
     "ArtifactStrategy",
-    "IgnoreFailure",
     "TargetProject",
     "TargetDefinition",
     "TargetDefinitionStages",
