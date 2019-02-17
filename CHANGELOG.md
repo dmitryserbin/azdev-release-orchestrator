@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.4
+
+- Minor improvements & bug fixes
+
 ## 1.1.3
 
 - Add latest release artifact branch filter
