@@ -68,6 +68,12 @@ export class Helper implements IHelper {
                 undefined,
                 sourceBranch ? `refs/heads/${sourceBranch}` : undefined);
 
+            if (!availableReleases) {
+
+                throw new Error(`No ${projectName} project active releases found`);
+
+            }
+
             if (availableReleases.length <= 0) {
 
                 if (sourceBranch) {
@@ -82,7 +88,8 @@ export class Helper implements IHelper {
                 
             }
 
-            const filteredRelease: ri.Release = availableReleases[0];
+            // Get latest release by ID
+            const filteredRelease: ri.Release = availableReleases.sort((left, right) => left.id - right.id).reverse()[0];
             const targetRelease: ri.Release = await this.releaseApi.getRelease(projectName, filteredRelease.id);
 
             // Validate release environments
