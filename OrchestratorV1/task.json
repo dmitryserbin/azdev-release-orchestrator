@@ -109,7 +109,7 @@
       "name": "SourceBranchName",
       "type": "string",
       "label": "Artifact Source Branch Name",
-      "helpMarkDown": "Specify branch name of primary release artifact source. Default = refs/heads/master",
+      "helpMarkDown": "Specify branch name of primary release artifact source. Default 'refs/heads/master' (build artifacts) or 'master' (Git artifacts)",
       "defaultValue": "refs/heads/master",
       "required": true,
       "visibleRule": "ReleaseStrategy = latest && SourceBranchFilter = true"
