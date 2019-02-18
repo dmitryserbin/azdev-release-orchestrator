@@ -11,8 +11,8 @@ describe("Helper", () => {
 
     const connection: IConnection = new Connection({
 
-        url: process.env.azUrl,
-        token: process.env.azToken
+        url: process.env.azUrl ? process.env.azUrl : "http://my-azdev-url",
+        token: process.env.azToken ? process.env.azToken : "My-Token"
 
     } as IEndpoint);
 
