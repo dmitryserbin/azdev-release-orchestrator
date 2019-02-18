@@ -62,11 +62,11 @@ export class Helper implements IHelper {
                 undefined,
                 undefined,
                 undefined,
+                ri.ReleaseExpands.Artifacts,
                 undefined,
                 undefined,
                 undefined,
-                undefined,
-                sourceBranch ? `refs/heads/${sourceBranch}` : undefined);
+                sourceBranch ? sourceBranch : undefined);
 
             if (!availableReleases) {
 
