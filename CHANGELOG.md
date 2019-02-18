@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.5
+
+- Improve ignoreFailure logic
+- Minor improvements & bug fixes
+
 ## 1.1.3
 
 - Add latest release artifact branch filter

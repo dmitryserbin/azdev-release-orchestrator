@@ -66,7 +66,7 @@ export class Orchestrator implements IOrchestrator {
         const targetStages = parameters.stages ? parameters.stages : targetRelease.environments.map((i) => i.name);
 
         // Get release parameters
-        const releaseParameters = this.getReleaseParameters(targetProject, targetRelease, targetStages, parameters.ignoreFailure, 5000);
+        const releaseParameters = this.getReleaseParameters(targetProject, targetRelease, targetStages, 5000);
 
         // Deploy new release
         if (parameters.releaseType === ReleaseType.Create) {
@@ -101,14 +101,13 @@ export class Orchestrator implements IOrchestrator {
 
     }
     
-    private getReleaseParameters(project: ci.TeamProject, release: ri.Release, stages: string[], ignoreFailure: boolean, sleep: number): IReleaseParameters {
+    private getReleaseParameters(project: ci.TeamProject, release: ri.Release, stages: string[], sleep: number): IReleaseParameters {
 
         return {
 
             projectName: project.name,
             releaseId: release.id,
             releaseStages: stages,
-            ignoreFailure: ignoreFailure,
             sleep: sleep
 
         } as IReleaseParameters

@@ -35,7 +35,10 @@ async function run() {
 
     } catch (err) {
 
-        tl.setResult(tl.TaskResult.Failed, err.message);
+        // Get task result status
+        const taskResult = tl.getBoolInput("IgnoreFailure") ? tl.TaskResult.SucceededWithIssues : tl.TaskResult.Failed;
+
+        tl.setResult(taskResult, err.message);
 
     }
 

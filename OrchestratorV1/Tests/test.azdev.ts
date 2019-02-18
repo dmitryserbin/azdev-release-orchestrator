@@ -71,7 +71,6 @@ describe("Parameters", () => {
             ReleaseStrategy: "create",
             StageStrategy: "specific",
             ArtifactStrategy: "default",
-            IgnoreFailure: "false",
 
             TargetProject: "1",
             TargetDefinition: "2",
@@ -104,7 +103,6 @@ describe("Parameters", () => {
             ReleaseStrategy: "specific",
             StageStrategy: "specific",
             ArtifactStrategy: "default",
-            IgnoreFailure: "false",
 
             TargetProject: "1",
             TargetDefinition: "2",

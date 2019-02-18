@@ -50,7 +50,6 @@ describe("Orchestrator", () => {
         releaseType: ReleaseType.Undefined,
         stages: [ "DEV", "TEST", "PROD" ],
         artifact: "",
-        ignoreFailure: false,
 
     } as IParameters;
 

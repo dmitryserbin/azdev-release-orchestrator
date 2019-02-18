@@ -109,8 +109,8 @@
       "name": "SourceBranchName",
       "type": "string",
       "label": "Artifact Source Branch Name",
-      "helpMarkDown": "Specify branch name of primary release artifact source. Default = master",
-      "defaultValue": "master",
+      "helpMarkDown": "Specify branch name of primary release artifact source. Default 'refs/heads/master' (build artifacts) or 'master' (Git artifacts)",
+      "defaultValue": "refs/heads/master",
       "required": true,
       "visibleRule": "ReleaseStrategy = latest && SourceBranchFilter = true"
     },
@@ -177,7 +177,7 @@
       "name": "IgnoreFailure",
       "type": "boolean",
       "label": "Ignore Failures",
-      "helpMarkDown": "Keep running the orchestration even if a pipeline or stage deployment fails",
+      "helpMarkDown": "Keep running the task even if target pipeline or stage deployment fails (set task result to partially succeeded)",
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"

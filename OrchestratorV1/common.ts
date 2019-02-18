@@ -103,7 +103,7 @@ export class ReleaseProgress implements IReleaseProgress {
     }
 
     // Validate progress
-    public validate(ignoreFailure?: boolean): void {
+    public validate(): void {
 
         if (this.getStatus() === ReleaseStatus.Succeeded) {
 
@@ -111,15 +111,7 @@ export class ReleaseProgress implements IReleaseProgress {
 
         } else if (this.getStatus() === ReleaseStatus.Failed) {
 
-            if (ignoreFailure) {
-
-                console.log(`One or more release stage(s) deployment failed`);
-
-            } else {
-
-                throw new Error(`One or more release stage(s) deployment failed`);
-
-            }
+            throw new Error(`One or more release stage(s) deployment failed`);
         }
     }
 
