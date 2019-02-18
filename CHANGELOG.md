@@ -2,7 +2,7 @@
 
 ## 1.1.5
 
-- Refactor ignoreFailure logic
+- Improve ignoreFailure logic
 - Minor improvements & bug fixes
 
 ## 1.1.3
