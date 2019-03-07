@@ -48,7 +48,7 @@ export class Orchestrator implements IOrchestrator {
 
             case ReleaseType.Latest: {
 
-                targetRelease = await this.helper.findRelease(targetProject.name, targetDefinition.id, parameters.stages, parameters.sourceBranch);
+                targetRelease = await this.helper.findRelease(targetProject.name, targetDefinition.id, parameters.stages, parameters.sourceBranch, parameters.releaseTag);
 
                 break;
 

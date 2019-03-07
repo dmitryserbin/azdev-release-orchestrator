@@ -158,7 +158,7 @@ describe("Helper", () => {
 
     });
 
-    it("Should find latest active release", async () => {
+    it("Should find latest release", async () => {
 
         const projectMock = {
             
@@ -193,7 +193,46 @@ describe("Helper", () => {
 
     });
 
-    it("Should find release matching source artifact filter", async () => {
+    it("Should find release matching tag filter", async () => {
+
+        let tagFilter = "my-test-release";
+
+        const projectMock = {
+            
+            name: projectName
+        
+        } as ci.TeamProject;
+
+        const releaseMock = {
+
+            id: releasetId,
+            name: releaseName,
+            environments: releaseEnvironments,
+            tags: [ tagFilter ]
+        
+        } as ri.Release;
+
+        const releasesMock = [
+
+            releaseMock
+
+        ] as ri.Release[];
+
+        releaseApiMock.setup(x => x.getRelease(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber())).returns(() => Promise.resolve(releaseMock as ri.Release));
+        releaseApiMock.setup(x => x.getReleases(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(releasesMock));
+        webApiMock.setup(x => x.getReleaseApi()).returns(() => Promise.resolve(releaseApiMock.target));
+        
+        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target);
+        const result = await helper.findRelease(projectMock.name, definitionId, releaseStages, undefined, [ tagFilter ]);
+
+        chai.expect(result).not.null;
+        chai.expect(result.id).eq(releasetId);
+        chai.expect(result.name).eq(releaseName);
+        chai.expect(result.tags).contains(tagFilter);
+
+    });
+
+    it("Should find release matching branch filter", async () => {
 
         let sourceFilter = "my-test-branch";
 

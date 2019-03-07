@@ -45,7 +45,7 @@ export class Helper implements IHelper {
 
     }
 
-    async findRelease(projectName: string, definitionId: number, stages: string[], sourceBranch?: string): Promise<ri.Release> {
+    async findRelease(projectName: string, definitionId: number, stages: string[], sourceBranch?: string, tags?: string[]): Promise<ri.Release> {
 
         try {
 
@@ -66,19 +66,21 @@ export class Helper implements IHelper {
                 undefined,
                 undefined,
                 undefined,
-                sourceBranch ? sourceBranch : undefined);
+                sourceBranch ? sourceBranch : undefined,
+                undefined,
+                tags ? tags : undefined);
 
             if (!availableReleases) {
 
-                throw new Error(`No ${projectName} project active releases found`);
+                throw new Error(`No ${projectName} project or active releases found`);
 
             }
 
             if (availableReleases.length <= 0) {
 
-                if (sourceBranch) {
+                if (sourceBranch || tags) {
 
-                    throw new Error(`No active releases matching ${sourceBranch} source branch artifact found`);
+                    throw new Error(`No active releases matching filter (branch: ${sourceBranch}, tags: ${tags}) criteria found`);
 
                 } else {
 

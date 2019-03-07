@@ -37,6 +37,7 @@ export interface IParameters {
     stages: string[];
     artifact: string;
     sourceBranch?: string;
+    releaseTag?: string[];
 
 }
 
@@ -118,7 +119,7 @@ export interface IHelper {
 
     getProject(projectId: string): Promise<ci.TeamProject>;
     getDefinition(projectName: string, definitionId: number): Promise<ri.ReleaseDefinition>;
-    findRelease(projectName: string, definitionId: number, stages: string[], sourceBranch?: string): Promise<ri.Release>;
+    findRelease(projectName: string, definitionId: number, stages: string[], sourceBranch?: string, tags?: string[]): Promise<ri.Release>;
     getRelease(project: ci.TeamProject, releaseId: number, stages: string[]): Promise<ri.Release>;
     createRelease(project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, stages?: string[], artifact?: any): Promise<ri.Release>;
     isAutomated(release: ri.Release): Promise<boolean>;

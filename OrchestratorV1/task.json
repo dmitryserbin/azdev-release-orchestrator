@@ -97,9 +97,26 @@
       "visibleRule": "ReleaseStrategy = specific || ReleaseStrategy = latest"
     },
     {
+      "name": "ReleaseTagFilter",
+      "type": "boolean",
+      "label": "Filter Release Tag",
+      "helpMarkDown": "Enable target release filtering by tag name",
+      "defaultValue": false,
+      "required": false,
+      "visibleRule": "ReleaseStrategy = latest"
+    },
+    {
+      "name": "ReleaseTagName",
+      "type": "string",
+      "label": "Release Tag Name",
+      "helpMarkDown": "Specify tag name filter of target release",
+      "required": true,
+      "visibleRule": "ReleaseStrategy = latest && ReleaseTagFilter = true"
+    },
+    {
       "name": "SourceBranchFilter",
       "type": "boolean",
-      "label": "Source Branch Filter",
+      "label": "Filter Source Branch",
       "helpMarkDown": "Enable target release filtering by primary artifact source branch name",
       "defaultValue": false,
       "required": false,
@@ -108,7 +125,7 @@
     {
       "name": "SourceBranchName",
       "type": "string",
-      "label": "Artifact Source Branch Name",
+      "label": "Source Branch Name",
       "helpMarkDown": "Specify branch name of primary release artifact source. Default 'refs/heads/master' (build artifacts) or 'master' (Git artifacts)",
       "defaultValue": "refs/heads/master",
       "required": true,
