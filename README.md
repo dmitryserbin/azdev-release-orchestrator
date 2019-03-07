@@ -101,6 +101,7 @@ You can choose different strategy for orchestrator to perform target release dep
 ### Latest Release
 
 - Release Stages: target specific (comma separated) deployment stage(s)
+- Release Tag Filter: enable filtering target release by release pipeline tag
 - Source Branch Filter: enable filtering target release by primary artifact source branch name
 
 ## Support

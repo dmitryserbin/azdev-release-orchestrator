@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.6
+
+- Add release tag filter support
+
 ## 1.1.5
 
 - Improve ignoreFailure logic
