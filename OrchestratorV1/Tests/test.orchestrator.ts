@@ -180,4 +180,26 @@ describe("Orchestrator", () => {
 
     });
 
+    it("Should get latest release matching tag filter", async () => {
+
+        const parameters = mockParameters;
+        parameters.releaseType = ReleaseType.Latest;
+        parameters.releaseTag = [ "My-Release-Tag" ];
+
+        const release = mockRelease;
+        release.tags = parameters.releaseTag;
+
+        helperMock.setup(x => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(release));
+
+        const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
+
+        const result = await orchestrator.getRelease(parameters.releaseType, mockProject, mockDefinition, mockDetails, mockParameters);
+
+        chai.expect(result).not.null;
+        chai.expect(result.id).eq(mockRelease.id);
+        chai.expect(result.name).eq(mockRelease.name);
+        chai.expect(result.tags).eq(parameters.releaseTag);
+
+    });
+
 });

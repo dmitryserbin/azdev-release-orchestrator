@@ -40,6 +40,7 @@ export interface IParameters {
     artifact: string;
     sourceBranch?: string;
     releaseTag?: string[];
+    artifactTag?: string[];
 
 }
 
