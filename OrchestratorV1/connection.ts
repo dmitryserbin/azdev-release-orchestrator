@@ -1,6 +1,7 @@
 import * as az from "azure-devops-node-api";
 import * as ca from "azure-devops-node-api/CoreApi";
 import * as ra from "azure-devops-node-api/ReleaseApi";
+import * as ba from "azure-devops-node-api/BuildApi";
 
 import { IConnection, IEndpoint } from "./interfaces";
 
@@ -29,6 +30,14 @@ export class Connection implements IConnection {
         const releaseApi: ra.ReleaseApi = await this.webApi.getReleaseApi();
 
         return releaseApi;
+
+    }
+
+    async getBuildApi(): Promise<ba.BuildApi> {
+
+        const buildApi: ba.BuildApi = await this.webApi.getBuildApi();
+
+        return buildApi;
 
     }
 

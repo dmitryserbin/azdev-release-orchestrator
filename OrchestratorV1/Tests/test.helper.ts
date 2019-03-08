@@ -6,8 +6,10 @@ import * as TypeMoq from "typemoq";
 import * as az from "azure-devops-node-api";
 import * as ca from "azure-devops-node-api/CoreApi";
 import * as ra from "azure-devops-node-api/ReleaseApi";
+import * as ba from "azure-devops-node-api/BuildApi";
 import * as ci from "azure-devops-node-api/interfaces/CoreInterfaces";
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import * as bi from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IHelper, IReleaseDetails } from "../interfaces";
 import { Helper } from "../helper";
@@ -47,16 +49,21 @@ describe("Helper", () => {
         }
     ];
 
+    const buildId = 1;
+    const buildNumber = "My-Build-01"
+    const buildDefinitionId = 1;
+
     let webApiMock = TypeMoq.Mock.ofType<az.WebApi>();
     let coreApiMock = TypeMoq.Mock.ofType<ca.ICoreApi>();
     let releaseApiMock = TypeMoq.Mock.ofType<ra.IReleaseApi>();
+    let buildApiMock = TypeMoq.Mock.ofType<ba.IBuildApi>();
 
     it("Should get project", async () => {
 
         coreApiMock.setup(x => x.getProject(TypeMoq.It.isAnyString())).returns(() => Promise.resolve({ id: projectId} as ci.TeamProject));
         webApiMock.setup(x => x.getCoreApi()).returns(() => Promise.resolve(coreApiMock.target));
 
-        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target);
+        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.getProject(projectId);
 
         chai.expect(result).not.null;
@@ -76,7 +83,7 @@ describe("Helper", () => {
         releaseApiMock.setup(x => x.getReleaseDefinition(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber())).returns(() => Promise.resolve(definitionMock as ri.ReleaseDefinition));
         webApiMock.setup(x => x.getReleaseApi()).returns(() => Promise.resolve(releaseApiMock.target));
 
-        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target);
+        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.getDefinition(projectName, definitionId);
 
         chai.expect(result).not.null;
@@ -104,7 +111,7 @@ describe("Helper", () => {
         releaseApiMock.setup(x => x.getRelease(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber())).returns(() => Promise.resolve(releaseMock as ri.Release));
         webApiMock.setup(x => x.getReleaseApi()).returns(() => Promise.resolve(releaseApiMock.target));
 
-        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target);
+        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.getRelease(projectMock, releasetId, releaseStages);
 
         chai.expect(result).not.null;
@@ -149,7 +156,7 @@ describe("Helper", () => {
         releaseApiMock.setup(x => x.createRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyString())).returns(() => Promise.resolve(releaseMock as ri.Release));
         webApiMock.setup(x => x.getReleaseApi()).returns(() => Promise.resolve(releaseApiMock.target));
 
-        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target);
+        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.createRelease(projectMock, definitionMock, detailsMock);
 
         chai.expect(result).not.null;
@@ -174,17 +181,11 @@ describe("Helper", () => {
         
         } as ri.Release;
 
-        const releasesMock = [
-
-            releaseMock
-
-        ] as ri.Release[];
-
         releaseApiMock.setup(x => x.getRelease(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber())).returns(() => Promise.resolve(releaseMock as ri.Release));
-        releaseApiMock.setup(x => x.getReleases(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(releasesMock));
+        releaseApiMock.setup(x => x.getReleases(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve([ releaseMock ] as ri.Release[]));
         webApiMock.setup(x => x.getReleaseApi()).returns(() => Promise.resolve(releaseApiMock.target));
         
-        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target);
+        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.findRelease(projectMock.name, definitionId, releaseStages);
 
         chai.expect(result).not.null;
@@ -212,18 +213,12 @@ describe("Helper", () => {
         
         } as ri.Release;
 
-        const releasesMock = [
-
-            releaseMock
-
-        ] as ri.Release[];
-
         releaseApiMock.setup(x => x.getRelease(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber())).returns(() => Promise.resolve(releaseMock as ri.Release));
-        releaseApiMock.setup(x => x.getReleases(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(releasesMock));
+        releaseApiMock.setup(x => x.getReleases(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve([ releaseMock ] as ri.Release[]));
         webApiMock.setup(x => x.getReleaseApi()).returns(() => Promise.resolve(releaseApiMock.target));
         
-        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target);
-        const result = await helper.findRelease(projectMock.name, definitionId, releaseStages, undefined, [ tagFilter ]);
+        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
+        const result = await helper.findRelease(projectMock.name, definitionId, releaseStages, undefined, undefined, [ tagFilter ]);
 
         chai.expect(result).not.null;
         chai.expect(result.id).eq(releasetId);
@@ -279,7 +274,7 @@ describe("Helper", () => {
         releaseApiMock.setup(x => x.getReleases(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(releasesMock));
         webApiMock.setup(x => x.getReleaseApi()).returns(() => Promise.resolve(releaseApiMock.target));
         
-        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target);
+        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.findRelease(projectMock.name, definitionId, releaseStages, sourceFilter);
 
         chai.expect(result).not.null;
@@ -289,6 +284,64 @@ describe("Helper", () => {
         chai.expect(result.artifacts).length.gt(0);
         chai.expect(result.artifacts[0].definitionReference).not.null;
         chai.expect(result.artifacts[0].definitionReference.branch.name).eq(`refs/heads/${sourceFilter}`)
+
+    });
+
+    it("Should find latest build", async () => {
+
+        const projectMock = {
+            
+            name: projectName,
+        
+        } as ci.TeamProject;
+
+        const buildMock = {
+
+            id: buildId,
+            buildNumber: buildNumber,
+        
+        } as bi.Build;
+
+        buildApiMock.setup(x => x.getBuilds(TypeMoq.It.isAnyString(), TypeMoq.It.isAny())).returns(() => Promise.resolve([ buildMock ] as bi.Build[]));
+        webApiMock.setup(x => x.getBuildApi()).returns(() => Promise.resolve(buildApiMock.target));
+        
+        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
+        const result = await helper.findBuild(projectMock.name, buildDefinitionId);
+
+        chai.expect(result).not.null;
+        chai.expect(result.id).eq(buildId);
+        chai.expect(result.buildNumber).eq(buildNumber);
+
+    });
+
+    it("Should find latest build matching tag filter", async () => {
+
+        let tagFilter = "my-build-tag";
+
+        const projectMock = {
+            
+            name: projectName,
+        
+        } as ci.TeamProject;
+
+        const buildMock = {
+
+            id: buildId,
+            buildNumber: buildNumber,
+            tags: [ tagFilter ],
+        
+        } as bi.Build;
+
+        buildApiMock.setup(x => x.getBuilds(TypeMoq.It.isAnyString(), TypeMoq.It.isAny())).returns(() => Promise.resolve([ buildMock ] as bi.Build[]));
+        webApiMock.setup(x => x.getBuildApi()).returns(() => Promise.resolve(buildApiMock.target));
+        
+        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
+        const result = await helper.findBuild(projectMock.name, buildDefinitionId, [ tagFilter ]);
+
+        chai.expect(result).not.null;
+        chai.expect(result.id).eq(buildId);
+        chai.expect(result.buildNumber).eq(buildNumber);
+        chai.expect(result.tags).contains(tagFilter);
 
     });
 
@@ -302,7 +355,7 @@ describe("Helper", () => {
         
         } as ri.Release;
 
-        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target);
+        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.isAutomated(releaseMock);
 
         chai.expect(result).not.null;
@@ -325,7 +378,7 @@ describe("Helper", () => {
         
         } as ri.Release;
 
-        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target);
+        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.isAutomated(releaseMock);
 
         chai.expect(result).not.null;

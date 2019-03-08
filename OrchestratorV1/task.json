@@ -114,6 +114,23 @@
       "visibleRule": "ReleaseStrategy = latest && ReleaseTagFilter = true"
     },
     {
+      "name": "ArtifactTagFilter",
+      "type": "boolean",
+      "label": "Filter Artifact Tag",
+      "helpMarkDown": "Enable target release filtering by primary artifact tag name",
+      "defaultValue": false,
+      "required": false,
+      "visibleRule": "ReleaseStrategy = latest"
+    },
+    {
+      "name": "ArtifactTagName",
+      "type": "string",
+      "label": "Artifact Tag Name",
+      "helpMarkDown": "Specify tag name filter of primary release artifact",
+      "required": true,
+      "visibleRule": "ReleaseStrategy = latest && ArtifactTagFilter = true"
+    },
+    {
       "name": "SourceBranchFilter",
       "type": "boolean",
       "label": "Filter Source Branch",

@@ -2,6 +2,7 @@ import tl = require("azure-pipelines-task-lib/task");
 
 import * as ca from "azure-devops-node-api/CoreApi";
 import * as ra from "azure-devops-node-api/ReleaseApi";
+import * as ba from "azure-devops-node-api/BuildApi";
 
 import { IEndpoint, IParameters, IOrchestrator, IConnection, IHelper, IDeployer, IReleaseDetails } from "./interfaces";
 import { getEndpoint, getParameters, getReleaseDetails } from "./azdev";
@@ -25,8 +26,9 @@ async function run() {
         const connection: IConnection = new Connection(endpoint);
         const coreApi: ca.CoreApi = await connection.getCoreApi();
         const releaseApi: ra.ReleaseApi = await connection.getReleaseApi();
+        const buildApi: ba.BuildApi = await connection.getBuildApi();
 
-        const helper: IHelper = new Helper(coreApi, releaseApi);
+        const helper: IHelper = new Helper(coreApi, releaseApi, buildApi);
         const deployer: IDeployer = new Deployer(releaseApi);
         const orchestrator: IOrchestrator = new Orchestrator(helper, deployer);
 

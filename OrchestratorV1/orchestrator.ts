@@ -23,47 +23,11 @@ export class Orchestrator implements IOrchestrator {
 
         console.log(`Starting <${targetProject.name}> project ${ReleaseType[parameters.releaseType].toLowerCase()} <${targetDefinition.name}> release deployment`);
 
-        let targetRelease: ri.Release;
-
         // Get target release
-        switch (parameters.releaseType) {
+        const targetRelease: ri.Release = await this.getTargetRelease(parameters.releaseType, targetProject, targetDefinition, details, parameters);
 
-            case ReleaseType.Create: {
-
-                // Create new
-                targetRelease = await this.helper.createRelease(targetProject, targetDefinition, details, parameters.stages, parameters.artifact);
-
-                break;
-
-            }
-
-            case ReleaseType.Specific: {
-
-                // Use existing
-                targetRelease = await this.helper.getRelease(targetProject, Number(parameters.releaseId), parameters.stages);
-
-                break;
-
-            }
-
-            case ReleaseType.Latest: {
-
-                targetRelease = await this.helper.findRelease(targetProject.name, targetDefinition.id, parameters.stages, parameters.sourceBranch, parameters.releaseTag);
-
-                break;
-
-            }
-
-            default: {
-
-                throw new Error(`Unable to get or create release`);
-
-            }
-
-        }
-        
         // Get target stages
-        const targetStages = parameters.stages ? parameters.stages : targetRelease.environments.map((i) => i.name);
+        const targetStages: string[] = parameters.stages ? parameters.stages : targetRelease.environments.map((i) => i.name);
 
         // Get release parameters
         const releaseParameters = this.getReleaseParameters(targetProject, targetRelease, targetStages, 5000);
@@ -100,7 +64,63 @@ export class Orchestrator implements IOrchestrator {
         }
 
     }
-    
+
+    private async getTargetRelease(releaseType: ReleaseType, targetProject: ci.TeamProject, targetDefinition: ri.ReleaseDefinition, details: IReleaseDetails, parameters: IParameters): Promise<ri.Release> {
+
+        let targetRelease: ri.Release;
+
+        switch (releaseType) {
+
+            case ReleaseType.Create: {
+
+                // Create new
+                targetRelease = await this.helper.createRelease(targetProject, targetDefinition, details, parameters.stages, parameters.artifact);
+
+                break;
+
+            }
+
+            case ReleaseType.Specific: {
+
+                // Use existing
+                targetRelease = await this.helper.getRelease(targetProject, Number(parameters.releaseId), parameters.stages);
+
+                break;
+
+            }
+
+            case ReleaseType.Latest: {
+
+                let artifactVersion = undefined;
+
+                // Get build matching artifact tag
+                if (parameters.releaseTag) {
+
+                    const targetArtifactDefinition = await this.helper.getArtifactDefinition(targetDefinition);
+                    const targetArtifactBuild = await this.helper.findBuild(targetProject.name, Number(targetArtifactDefinition.id));
+
+                    artifactVersion = String(targetArtifactBuild.id);
+
+                }
+
+                targetRelease = await this.helper.findRelease(targetProject.name, targetDefinition.id, parameters.stages, parameters.sourceBranch, artifactVersion, parameters.releaseTag);
+
+                break;
+
+            }
+
+            default: {
+
+                throw new Error(`Unable to get or create release`);
+
+            }
+
+        }
+
+        return targetRelease;
+
+    }
+
     private getReleaseParameters(project: ci.TeamProject, release: ri.Release, stages: string[], sleep: number): IReleaseParameters {
 
         return {

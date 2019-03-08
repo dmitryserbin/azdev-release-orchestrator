@@ -1,7 +1,9 @@
 import * as ci from "azure-devops-node-api/interfaces/CoreInterfaces";
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import * as bi from "azure-devops-node-api/interfaces/BuildInterfaces";
 import * as ca from "azure-devops-node-api/CoreApi";
 import * as ra from "azure-devops-node-api/ReleaseApi";
+import * as ba from "azure-devops-node-api/BuildApi";
 
 export enum ReleaseType {
 
@@ -45,6 +47,7 @@ export interface IConnection {
 
     getCoreApi(): Promise<ca.CoreApi>;
     getReleaseApi(): Promise<ra.ReleaseApi>;
+    getBuildApi(): Promise<ba.BuildApi>;
 
 }
 
@@ -119,9 +122,11 @@ export interface IHelper {
 
     getProject(projectId: string): Promise<ci.TeamProject>;
     getDefinition(projectName: string, definitionId: number): Promise<ri.ReleaseDefinition>;
-    findRelease(projectName: string, definitionId: number, stages: string[], sourceBranch?: string, tags?: string[]): Promise<ri.Release>;
+    findRelease(projectName: string, definitionId: number, stages: string[], sourceBranch?: string, artifactVersion?: string, tags?: string[]): Promise<ri.Release>;
     getRelease(project: ci.TeamProject, releaseId: number, stages: string[]): Promise<ri.Release>;
     createRelease(project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, stages?: string[], artifact?: any): Promise<ri.Release>;
+    getArtifactDefinition(definition: ri.ReleaseDefinition): Promise<ri.ArtifactSourceReference>;
+    findBuild(projectName: string, definitionId: number, tags?: string[]): Promise<bi.Build>;
     isAutomated(release: ri.Release): Promise<boolean>;
 
 }
