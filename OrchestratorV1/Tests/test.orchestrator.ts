@@ -128,4 +128,21 @@ describe("Orchestrator", () => {
         
     });
 
+    it("Should create new release", async () => {
+
+        const parameters = mockParameters;
+        parameters.releaseType = ReleaseType.Create;
+
+        helperMock.setup(x => x.createRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
+
+        const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
+
+        const result = await orchestrator.getRelease(parameters.releaseType, mockProject, mockDefinition, mockDetails, mockParameters);
+
+        chai.expect(result).not.null;
+        chai.expect(result.id).eq(mockRelease.id);
+        chai.expect(result.name).eq(mockRelease.name);
+
+    });
+
 });
