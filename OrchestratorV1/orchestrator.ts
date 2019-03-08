@@ -24,7 +24,7 @@ export class Orchestrator implements IOrchestrator {
         console.log(`Starting <${targetProject.name}> project ${ReleaseType[parameters.releaseType].toLowerCase()} <${targetDefinition.name}> release deployment`);
 
         // Get target release
-        const targetRelease: ri.Release = await this.getTargetRelease(parameters.releaseType, targetProject, targetDefinition, details, parameters);
+        const targetRelease: ri.Release = await this.getRelease(parameters.releaseType, targetProject, targetDefinition, details, parameters);
 
         // Get target stages
         const targetStages: string[] = parameters.stages ? parameters.stages : targetRelease.environments.map((i) => i.name);
@@ -65,16 +65,16 @@ export class Orchestrator implements IOrchestrator {
 
     }
 
-    private async getTargetRelease(releaseType: ReleaseType, targetProject: ci.TeamProject, targetDefinition: ri.ReleaseDefinition, details: IReleaseDetails, parameters: IParameters): Promise<ri.Release> {
+    async getRelease(type: ReleaseType, project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, parameters: IParameters): Promise<ri.Release> {
 
-        let targetRelease: ri.Release;
+        let release: ri.Release;
 
-        switch (releaseType) {
+        switch (type) {
 
             case ReleaseType.Create: {
 
                 // Create new
-                targetRelease = await this.helper.createRelease(targetProject, targetDefinition, details, parameters.stages, parameters.artifact);
+                release = await this.helper.createRelease(project, definition, details, parameters.stages, parameters.artifact);
 
                 break;
 
@@ -83,7 +83,7 @@ export class Orchestrator implements IOrchestrator {
             case ReleaseType.Specific: {
 
                 // Use existing
-                targetRelease = await this.helper.getRelease(targetProject, Number(parameters.releaseId), parameters.stages);
+                release = await this.helper.getRelease(project, Number(parameters.releaseId), parameters.stages);
 
                 break;
 
@@ -96,14 +96,14 @@ export class Orchestrator implements IOrchestrator {
                 // Get build matching artifact tag
                 if (parameters.releaseTag) {
 
-                    const targetArtifactDefinition = await this.helper.getArtifactDefinition(targetDefinition);
-                    const targetArtifactBuild = await this.helper.findBuild(targetProject.name, Number(targetArtifactDefinition.id));
+                    const targetArtifactDefinition = await this.helper.getArtifactDefinition(definition);
+                    const targetArtifactBuild = await this.helper.findBuild(project.name, Number(targetArtifactDefinition.id));
 
                     artifactVersion = String(targetArtifactBuild.id);
 
                 }
 
-                targetRelease = await this.helper.findRelease(targetProject.name, targetDefinition.id, parameters.stages, parameters.sourceBranch, artifactVersion, parameters.releaseTag);
+                release = await this.helper.findRelease(project.name, definition.id, parameters.stages, parameters.sourceBranch, artifactVersion, parameters.releaseTag);
 
                 break;
 
@@ -117,7 +117,7 @@ export class Orchestrator implements IOrchestrator {
 
         }
 
-        return targetRelease;
+        return release;
 
     }
 

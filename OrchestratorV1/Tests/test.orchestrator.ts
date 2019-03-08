@@ -59,9 +59,6 @@ describe("Orchestrator", () => {
 
     helperMock.setup(x => x.getProject(TypeMoq.It.isAnyString())).returns(() => Promise.resolve(mockProject));
     helperMock.setup(x => x.getDefinition(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber())).returns(() => Promise.resolve(mockDefinition));
-    helperMock.setup(x => x.createRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
-    helperMock.setup(x => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
-    helperMock.setup(x => x.findRelease(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAnyString(), TypeMoq.It.isAnyString(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
 
     deployerMock.setup(x => x.deployAutomated(TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve());
     deployerMock.setup(x => x.deployManual(TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve());
@@ -71,52 +68,60 @@ describe("Orchestrator", () => {
         const parameters = mockParameters;
         parameters.releaseType = ReleaseType.Create;
 
-        helperMock.setup(x => x.isAutomated(TypeMoq.It.isAny())).returns(() => Promise.resolve(true));
-
-        // Run orchestrator
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
+        const orchestratorMock: TypeMoq.IMock<IOrchestrator> = TypeMoq.Mock.ofInstance(orchestrator);
+        
+        orchestratorMock.setup(x => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
+        helperMock.setup(x => x.isAutomated(TypeMoq.It.isAny())).returns(() => Promise.resolve(true));
 
         // Hide console output
         console.log = function(){};
 
-        await orchestrator.deployRelease(parameters, mockDetails);
+        // Run orchestrator
+        await orchestratorMock.target.deployRelease(parameters, mockDetails);
 
         // Restore console output
         console.log = consoleLog;
         
     });
 
-    it("Should deploy existing release", async () => {
+    it("Should deploy new manual release", async () => {
+
+        const parameters = mockParameters;
+        parameters.releaseType = ReleaseType.Create;
+
+        const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
+        const orchestratorMock: TypeMoq.IMock<IOrchestrator> = TypeMoq.Mock.ofInstance(orchestrator);
+        
+        orchestratorMock.setup(x => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
+        helperMock.setup(x => x.isAutomated(TypeMoq.It.isAny())).returns(() => Promise.resolve(false));
+
+        // Hide console output
+        console.log = function(){};
+
+        // Run orchestrator
+        await orchestratorMock.target.deployRelease(parameters, mockDetails);
+
+        // Restore console output
+        console.log = consoleLog;
+        
+    });
+
+    it("Should re-deploy existing release", async () => {
 
         const parameters = mockParameters;
         parameters.releaseId = "1";
         parameters.releaseType = ReleaseType.Specific;
 
-        // Run orchestrator
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
+        const orchestratorMock: TypeMoq.IMock<IOrchestrator> = TypeMoq.Mock.ofInstance(orchestrator);
+
+        orchestratorMock.setup(x => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
 
         // Hide console output
         console.log = function(){};
 
-        await orchestrator.deployRelease(parameters, mockDetails);
-
-        // Restore console output
-        console.log = consoleLog;
-        
-    });
-
-    it("Should deploy latest release", async () => {
-
-        const parameters = mockParameters;
-        parameters.releaseType = ReleaseType.Latest;
-
-        // Run orchestrator
-        const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
-
-        // Hide console output
-        console.log = function(){};
-
-        await orchestrator.deployRelease(parameters, mockDetails);
+        await orchestratorMock.target.deployRelease(parameters, mockDetails);
 
         // Restore console output
         console.log = consoleLog;

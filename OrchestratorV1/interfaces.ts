@@ -115,6 +115,7 @@ export interface IReleaseProgress {
 export interface IOrchestrator {
 
     deployRelease(parameters: IParameters, details: IReleaseDetails): Promise<void>;
+    getRelease(type: ReleaseType, project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, parameters: IParameters): Promise<ri.Release>;
 
 }
 
