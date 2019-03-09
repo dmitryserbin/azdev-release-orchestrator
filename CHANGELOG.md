@@ -3,6 +3,8 @@
 ## 1.1.6
 
 - Add release tag filter support
+- Add artifact tag filter support
+- Minor improvements & bugfixes
 
 ## 1.1.5
 

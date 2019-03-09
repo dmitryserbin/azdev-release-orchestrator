@@ -84,9 +84,9 @@ Please refer to Azure DevOps [approvals and gates documentation](https://docs.mi
 
 You can choose different strategy for orchestrator to perform target release deployment:
 
-- Create new release
-- Deploy specific release
-- Deploy latest available release
+- Create new release - find target release definition and create new release
+- Deploy specific release - find and re-deploy existing release from release definition
+- Deploy latest available release - find latest active release from release definition and re-deploy
 
 ### Create Release
 
@@ -95,14 +95,15 @@ You can choose different strategy for orchestrator to perform target release dep
 
 ### Specific Release
 
-- Release Name: select existing release to target
-- Release Stages: target specific (comma separated) deployment stage(s)
+- Release Name: select existing release to target (or specify release ID)
+- Release Stages: specify release deployment stage(s) (comma separated)
 
 ### Latest Release
 
-- Release Stages: target specific (comma separated) deployment stage(s)
-- Release Tag Filter: enable filtering target release by release pipeline tag
-- Source Branch Filter: enable filtering target release by primary artifact source branch name
+- Release Stages: specify release deployment stage(s) (comma separated)
+- Filter Release Tag: enable filtering target release by release pipeline tag
+- Filter Artifact Tag: enable filtering target release by primary build artifact tag
+- Filter Source Branch: enable filtering target release by primary artifact source branch name
 
 ## Support
 
