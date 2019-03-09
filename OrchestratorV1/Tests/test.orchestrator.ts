@@ -3,8 +3,9 @@ import "mocha";
 import * as chai from "chai";
 import * as TypeMoq from "typemoq";
 
-import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import * as ci from "azure-devops-node-api/interfaces/CoreInterfaces";
+import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import * as bi from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IParameters, IReleaseDetails, IOrchestrator, IHelper, IDeployer, ReleaseType } from "../interfaces";
 import { Orchestrator } from "../orchestrator";
@@ -29,6 +30,17 @@ describe("Orchestrator", () => {
 
         id: 1,
         name: "My-Release",
+        artifacts: [
+            
+            {
+
+                isPrimary: true,
+                alias: "My-Artifact",
+                definitionReference: {},
+
+            } as ri.Artifact,
+
+        ]
 
     } as ri.Release;
 
@@ -180,7 +192,7 @@ describe("Orchestrator", () => {
 
     });
 
-    it("Should get latest release matching tag filter", async () => {
+    it("Should get release matching tag filter", async () => {
 
         const parameters = mockParameters;
         parameters.releaseType = ReleaseType.Latest;
@@ -199,6 +211,57 @@ describe("Orchestrator", () => {
         chai.expect(result.id).eq(mockRelease.id);
         chai.expect(result.name).eq(mockRelease.name);
         chai.expect(result.tags).eq(parameters.releaseTag);
+
+    });
+
+    it("Should get release matching artifact tag filter", async () => {
+
+        const parameters = mockParameters;
+        parameters.releaseType = ReleaseType.Latest;
+        parameters.artifactTag = [ "My-Artifact-Tag" ];
+
+        const release = mockRelease;
+
+        const buildMock: bi.Build = {
+
+            id: 1,
+            buildNumber: "My-Build-Number",
+
+        } as bi.Build;
+
+        const versionReferenceMock = {
+
+            id: "1",
+            name: "My-Artifact-Name",
+
+        } as ri.ArtifactSourceReference;
+
+        const definitionReferenceMock = {
+
+            id: "1",
+            name: "My-Definition-Name",
+
+        } as ri.ArtifactSourceReference;
+        
+        release.artifacts[0].definitionReference = {
+
+            definition: definitionReferenceMock,
+            version: versionReferenceMock,
+        
+        };
+
+        helperMock.setup(x => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
+        helperMock.setup(x => x.getArtifactDefinition(TypeMoq.It.isAny())).returns(() => Promise.resolve(definitionReferenceMock));
+        helperMock.setup(x => x.findBuild(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(buildMock));
+
+        const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
+
+        const result = await orchestrator.getRelease(parameters.releaseType, mockProject, mockDefinition, mockDetails, mockParameters);
+
+        chai.expect(result).not.null;
+        chai.expect(result.id).eq(mockRelease.id);
+        chai.expect(result.name).eq(mockRelease.name);
+        chai.expect(result.artifacts[0].definitionReference.version.id).eq(String(buildMock.id));
 
     });
 
