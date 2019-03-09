@@ -19,7 +19,20 @@ export class Orchestrator implements IOrchestrator {
 
         // Get targets
         const targetProject: ci.TeamProject = await this.helper.getProject(parameters.projectId);
+
+        if (!targetProject) {
+
+            throw new Error(`Project ${parameters.projectId} not found`);
+
+        }
+
         const targetDefinition: ri.ReleaseDefinition = await this.helper.getDefinition(targetProject.name, Number(parameters.definitionId));
+
+        if (!targetDefinition) {
+
+            throw new Error(`Definition ${parameters.definitionId} not found`);
+
+        }
 
         console.log(`Starting <${targetProject.name}> project ${ReleaseType[parameters.releaseType].toLowerCase()} <${targetDefinition.name}> release deployment`);
 
