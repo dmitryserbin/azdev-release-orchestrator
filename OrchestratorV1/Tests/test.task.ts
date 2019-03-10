@@ -24,9 +24,9 @@ describe("Run", ()  => {
         TargetProject: "761623f0-c4c0-4dab-884b-a428a01c200f",
         TargetDefinition: "1",
         TargetDefinitionStages: "DEV,TEST,PROD",
-        TargetRelease: "79",
+        TargetRelease: null,
         TargetReleaseStages: "DEV,TEST,PROD",
-        TargetArtifactVersion: "{\"Name\" : \"HelloYo\", \"Id\" : \"3\"}",
+        TargetArtifactVersion: "{ \"Name\" : \"HelloYo\", \"Id\" : \"3\" }",
         ReleaseTagFilter: "false",
         ReleaseTagName: null,
         ArtifactTagFilter: "false",
@@ -65,6 +65,7 @@ describe("Run", ()  => {
 
         let variables = defaultVariables;
         variables.ReleaseStrategy = "specific";
+        variables.TargetRelease = "79";
         SetProcessVariables(variables);
 
         const tr: mt.MockTestRunner = new mt.MockTestRunner(path.join(__dirname, "task.index.js"));

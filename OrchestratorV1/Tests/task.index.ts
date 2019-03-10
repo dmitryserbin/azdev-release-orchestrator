@@ -20,6 +20,12 @@ MockInput(tmr, [
     "TargetRelease",
     "TargetReleaseStages",
     "TargetArtifactVersion",
+    "ReleaseTagFilter",
+    "ReleaseTagName",
+    "ArtifactTagFilter",
+    "ArtifactTagName",
+    "SourceBranchFilter",
+    "SourceBranchName",
 
     "ConnectedService",
     "SYSTEM_TEAMPROJECT",
