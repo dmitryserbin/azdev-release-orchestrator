@@ -44,7 +44,7 @@ describe("Run", ()  => {
 
     it("Should deploy new release @task", async () => {
 
-        let variables = defaultVariables;
+        let variables = Object.assign({}, defaultVariables);
         variables.ReleaseStrategy = "create";
         SetProcessVariables(variables);
 
@@ -63,7 +63,7 @@ describe("Run", ()  => {
     
     it("Should re-deploy specific release @task", async () => {
 
-        let variables = defaultVariables;
+        let variables = Object.assign({}, defaultVariables);
         variables.ReleaseStrategy = "specific";
         variables.TargetRelease = "79";
         SetProcessVariables(variables);
@@ -83,7 +83,7 @@ describe("Run", ()  => {
 
     it("Should re-deploy latest active release @task", async () => {
 
-        let variables = defaultVariables;
+        let variables = Object.assign({}, defaultVariables);
         variables.ReleaseStrategy = "latest";
         SetProcessVariables(variables);
 
@@ -102,7 +102,7 @@ describe("Run", ()  => {
 
     it("Should re-deploy latest release filtered by release tag @task", async () => {
 
-        let variables = defaultVariables;
+        let variables = Object.assign({}, defaultVariables);
         variables.ReleaseStrategy = "latest";
         variables.ReleaseTagFilter = "true",
         variables.ReleaseTagName = "Release-Yo";
@@ -123,7 +123,7 @@ describe("Run", ()  => {
 
     it("Should re-deploy latest release filtered by artifact tag @task", async () => {
 
-        let variables = defaultVariables;
+        let variables = Object.assign({}, defaultVariables);
         variables.ReleaseStrategy = "latest";
         variables.ArtifactTagFilter = "true",
         variables.ArtifactTagName = "Build-Yo";
@@ -144,10 +144,10 @@ describe("Run", ()  => {
 
     it("Should re-deploy latest release filtered by artifact branch @task", async () => {
 
-        let variables = defaultVariables;
+        let variables = Object.assign({}, defaultVariables);
         variables.ReleaseStrategy = "latest";
         variables.SourceBranchFilter = "true",
-        variables.SourceBranchName = "working/test";
+        variables.SourceBranchName = "refs/heads/working/test";
         SetProcessVariables(variables);
 
         const tr: mt.MockTestRunner = new mt.MockTestRunner(path.join(__dirname, "task.index.js"));
