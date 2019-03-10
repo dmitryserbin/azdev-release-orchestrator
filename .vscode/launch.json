@@ -8,13 +8,13 @@
             "type": "node",
             "request": "launch",
             "name": "Macha Tests",
-            "program": "${workspaceFolder}/ReleaseOrchestratorV1/node_modules/mocha/bin/_mocha",
+            "program": "${workspaceFolder}/OrchestratorV1/node_modules/mocha/bin/_mocha",
             "args": [
                 "--require", "ts-node/register",
                 "-u", "tdd",
                 "--timeout", "999999",
                 "--colors", "--recursive",
-                "${workspaceFolder}/ReleaseOrchestratorV1/Tests/**/*.test.ts"
+                "${workspaceFolder}/OrchestratorV1/Tests/**/*.test.ts"
             ],
         }
     ]

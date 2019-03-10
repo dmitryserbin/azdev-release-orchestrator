@@ -39,15 +39,15 @@
     },
     "links": {
         "getstarted": {
-            "uri": "https://github.com/dmitryserbin/orchestrator"
+            "uri": "https://github.com/dmitryserbin/azdev-release-orchestrator"
         },
         "support": {
-            "uri": "https://github.com/dmitryserbin/orchestrator/issues"
+            "uri": "https://github.com/dmitryserbin/azdev-release-orchestrator/issues"
         }
     },
     "repository": {
         "type": "git",
-        "uri": "https://github.com/dmitryserbin/orchestrator"
+        "uri": "https://github.com/dmitryserbin/azdev-release-orchestrator"
     },
     "files": [
         {
