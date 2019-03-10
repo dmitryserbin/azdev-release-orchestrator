@@ -4,7 +4,7 @@
 
 - Add release tag filter support
 - Add artifact tag filter support
-- Minor improvements & bugfixes
+- Minor improvements & bugfixes ([#2](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/2))
 
 ## 1.1.5
 
@@ -21,7 +21,7 @@
 
 ## 1.1.0
 
-- Added 'Latest' release strategy ([#1](https://github.com/dmitryserbin/orchestrator/issues/1))
+- Added 'Latest' release strategy ([#1](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/1))
 - Major code refactor and minor bug fixes
 - Addressed intermittent ECONNRESET issue 
 - Added unit and integration tests
