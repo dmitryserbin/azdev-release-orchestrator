@@ -110,7 +110,7 @@ export class Orchestrator implements IOrchestrator {
                 if (parameters.artifactTag) {
 
                     const targetArtifactDefinition = await this.helper.getArtifactDefinition(definition);
-                    const targetArtifactBuild = await this.helper.findBuild(project.name, Number(targetArtifactDefinition.id));
+                    const targetArtifactBuild = await this.helper.findBuild(project.name, Number(targetArtifactDefinition.id), parameters.artifactTag);
 
                     artifactVersion = String(targetArtifactBuild.id);
 
