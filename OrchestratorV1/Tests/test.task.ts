@@ -100,27 +100,6 @@ describe("Run", ()  => {
 
     });
 
-    it("Should re-deploy latest release filtered by artifact branch @task", async () => {
-
-        let variables = defaultVariables;
-        variables.ReleaseStrategy = "latest";
-        variables.SourceBranchFilter = "true",
-        variables.SourceBranchName = "working/test";
-        SetProcessVariables(variables);
-
-        const tr: mt.MockTestRunner = new mt.MockTestRunner(path.join(__dirname, "task.index.js"));
-        tr.run();
-
-        console.log(tr.stdout);
-
-        chai.assert.isTrue(tr.succeeded, "Should have succeeded");
-        chai.assert.isEmpty(tr.warningIssues, "Should have succeeded");
-        chai.assert.isEmpty(tr.errorIssues, "Should have no errors");
-
-        ClearProcessVariables(variables);
-
-    });
-
     it("Should re-deploy latest release filtered by release tag @task", async () => {
 
         let variables = defaultVariables;
@@ -147,7 +126,28 @@ describe("Run", ()  => {
         let variables = defaultVariables;
         variables.ReleaseStrategy = "latest";
         variables.ArtifactTagFilter = "true",
-        variables.SourceBranchName = "Build-Yo";
+        variables.ArtifactTagName = "Build-Yo";
+        SetProcessVariables(variables);
+
+        const tr: mt.MockTestRunner = new mt.MockTestRunner(path.join(__dirname, "task.index.js"));
+        tr.run();
+
+        console.log(tr.stdout);
+
+        chai.assert.isTrue(tr.succeeded, "Should have succeeded");
+        chai.assert.isEmpty(tr.warningIssues, "Should have succeeded");
+        chai.assert.isEmpty(tr.errorIssues, "Should have no errors");
+
+        ClearProcessVariables(variables);
+
+    });
+
+    it("Should re-deploy latest release filtered by artifact branch @task", async () => {
+
+        let variables = defaultVariables;
+        variables.ReleaseStrategy = "latest";
+        variables.SourceBranchFilter = "true",
+        variables.SourceBranchName = "working/test";
         SetProcessVariables(variables);
 
         const tr: mt.MockTestRunner = new mt.MockTestRunner(path.join(__dirname, "task.index.js"));
