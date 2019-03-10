@@ -27,9 +27,13 @@ describe("Run", ()  => {
         TargetRelease: "79",
         TargetReleaseStages: "DEV,TEST,PROD",
         TargetArtifactVersion: "{\"Name\" : \"HelloYo\", \"Id\" : \"3\"}",
+        ReleaseTagFilter: "false",
+        ReleaseTagName: null,
+        ArtifactTagFilter: "false",
+        ArtifactTagName: null,
         SourceBranchFilter: "false",
         SourceBranchName: null,
-
+        
         ConnectedService: "My-Endpoint",
         SYSTEM_TEAMPROJECT: "HelloYo",
         RELEASE_RELEASENAME: "HelloYo-20180101-1",
@@ -95,12 +99,54 @@ describe("Run", ()  => {
 
     });
 
-    it("Should re-deploy latest filtered release @task", async () => {
+    it("Should re-deploy latest release filtered by artifact branch @task", async () => {
 
         let variables = defaultVariables;
         variables.ReleaseStrategy = "latest";
         variables.SourceBranchFilter = "true",
         variables.SourceBranchName = "working/test";
+        SetProcessVariables(variables);
+
+        const tr: mt.MockTestRunner = new mt.MockTestRunner(path.join(__dirname, "task.index.js"));
+        tr.run();
+
+        console.log(tr.stdout);
+
+        chai.assert.isTrue(tr.succeeded, "Should have succeeded");
+        chai.assert.isEmpty(tr.warningIssues, "Should have succeeded");
+        chai.assert.isEmpty(tr.errorIssues, "Should have no errors");
+
+        ClearProcessVariables(variables);
+
+    });
+
+    it("Should re-deploy latest release filtered by release tag @task", async () => {
+
+        let variables = defaultVariables;
+        variables.ReleaseStrategy = "latest";
+        variables.ReleaseTagFilter = "true",
+        variables.ReleaseTagName = "Release-Yo";
+        SetProcessVariables(variables);
+
+        const tr: mt.MockTestRunner = new mt.MockTestRunner(path.join(__dirname, "task.index.js"));
+        tr.run();
+
+        console.log(tr.stdout);
+
+        chai.assert.isTrue(tr.succeeded, "Should have succeeded");
+        chai.assert.isEmpty(tr.warningIssues, "Should have succeeded");
+        chai.assert.isEmpty(tr.errorIssues, "Should have no errors");
+
+        ClearProcessVariables(variables);
+
+    });
+
+    it("Should re-deploy latest release filtered by artifact tag @task", async () => {
+
+        let variables = defaultVariables;
+        variables.ReleaseStrategy = "latest";
+        variables.ArtifactTagFilter = "true",
+        variables.SourceBranchName = "Build-Yo";
         SetProcessVariables(variables);
 
         const tr: mt.MockTestRunner = new mt.MockTestRunner(path.join(__dirname, "task.index.js"));
