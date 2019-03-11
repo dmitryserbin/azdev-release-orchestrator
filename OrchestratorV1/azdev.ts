@@ -42,6 +42,9 @@ export function getParameters(): IParameters {
         releaseId: "",
         stages: [],
         artifact: "",
+        releaseTag: [],
+        artifactTag: [],
+        sourceBranch: "",
 
     };
 
@@ -105,16 +108,16 @@ export function getParameters(): IParameters {
             // Get release tag filter
             if (releaseTagFilter) {
 
-                const releaseTagName: string = tl.getInput("ReleaseTagName", false);
-                parameters.releaseTag = [ releaseTagName ];
+                const releaseTagName: string[] = tl.getDelimitedInput("ReleaseTagName", "|", false);
+                parameters.releaseTag = releaseTagName;
 
             }
 
             // Get artifact tag filter
             if (artifactTagFilter) {
 
-                const artifactTagName: string = tl.getInput("ArtifactTagName", false);
-                parameters.artifactTag = [ artifactTagName ];
+                const artifactTagName: string[] = tl.getDelimitedInput("ArtifactTagName", "|", false);
+                parameters.artifactTag = artifactTagName;
 
             }
 
@@ -123,7 +126,7 @@ export function getParameters(): IParameters {
 
                 const sourceBranchName: string = tl.getInput("SourceBranchName", false);
                 parameters.sourceBranch = sourceBranchName;
-
+                
             }
 
             break;

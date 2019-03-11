@@ -106,13 +106,29 @@ export class Orchestrator implements IOrchestrator {
 
                 let artifactVersion = undefined;
 
+                // Confirm release tag filter
+                if (parameters.releaseTag && parameters.releaseTag.length >= 1) {
+
+                    console.log(`Applying <${parameters.releaseTag}> release tag(s) filter`);
+
+                }
+
                 // Get build matching artifact tag
-                if (parameters.artifactTag) {
+                if (parameters.artifactTag && parameters.artifactTag.length >= 1) {
+
+                    console.log(`Applying <${parameters.artifactTag}> artifact tag(s) filter`);
 
                     const targetArtifactDefinition = await this.helper.getArtifactDefinition(definition);
                     const targetArtifactBuild = await this.helper.findBuild(project.name, Number(targetArtifactDefinition.id), parameters.artifactTag);
 
                     artifactVersion = String(targetArtifactBuild.id);
+
+                }
+
+                // Confirm source branch filter
+                if (parameters.sourceBranch) {
+
+                    console.log(`Applying <${parameters.sourceBranch}> artifact branch filter`);
 
                 }
 
