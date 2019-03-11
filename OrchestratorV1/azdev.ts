@@ -126,7 +126,7 @@ export function getParameters(): IParameters {
 
                 const sourceBranchName: string = tl.getInput("SourceBranchName", false);
                 parameters.sourceBranch = sourceBranchName;
-                
+
             }
 
             break;
