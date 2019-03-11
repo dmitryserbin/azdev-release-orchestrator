@@ -205,7 +205,13 @@ describe("Orchestrator", () => {
 
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
 
+        // Hide console output
+        console.log = function(){};
+
         const result = await orchestrator.getRelease(parameters.releaseType, mockProject, mockDefinition, mockDetails, mockParameters);
+
+        // Restore console output
+        console.log = consoleLog;
 
         chai.expect(result).not.null;
         chai.expect(result.id).eq(mockRelease.id);
@@ -256,7 +262,13 @@ describe("Orchestrator", () => {
 
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
 
+        // Hide console output
+        console.log = function(){};
+
         const result = await orchestrator.getRelease(parameters.releaseType, mockProject, mockDefinition, mockDetails, mockParameters);
+
+        // Restore console output
+        console.log = consoleLog;
 
         chai.expect(result).not.null;
         chai.expect(result.id).eq(mockRelease.id);
