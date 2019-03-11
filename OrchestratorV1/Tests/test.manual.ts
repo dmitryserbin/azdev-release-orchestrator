@@ -2,6 +2,7 @@ import "mocha";
 
 import * as ca from "azure-devops-node-api/CoreApi";
 import * as ra from "azure-devops-node-api/ReleaseApi";
+import * as ba from "azure-devops-node-api/BuildApi";
 
 import { IHelper, IConnection, IEndpoint } from "../interfaces";
 import { Helper } from "../helper";
@@ -20,7 +21,8 @@ describe("Helper", () => {
 
         const coreApi: ca.CoreApi = await connection.getCoreApi();
         const releaseApi: ra.ReleaseApi = await connection.getReleaseApi();
-        const helper: IHelper = new Helper(coreApi, releaseApi);
+        const buildApi: ba.BuildApi = await connection.getBuildApi();
+        const helper: IHelper = new Helper(coreApi, releaseApi, buildApi);
 
     });
 

@@ -1,7 +1,9 @@
+import * as ci from "azure-devops-node-api/interfaces/CoreInterfaces";
+import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import * as bi from "azure-devops-node-api/interfaces/BuildInterfaces";
 import * as ca from "azure-devops-node-api/CoreApi";
 import * as ra from "azure-devops-node-api/ReleaseApi";
-import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
-import * as ci from "azure-devops-node-api/interfaces/CoreInterfaces";
+import * as ba from "azure-devops-node-api/BuildApi";
 
 import { IHelper, IReleaseDetails } from "./interfaces";
 
@@ -9,11 +11,13 @@ export class Helper implements IHelper {
 
     private coreApi: ca.ICoreApi;
     private releaseApi: ra.IReleaseApi;
+    private buildApi: ba.IBuildApi;
 
-    constructor(coreApi: ca.ICoreApi, releaseApi: ra.IReleaseApi) {
+    constructor(coreApi: ca.ICoreApi, releaseApi: ra.IReleaseApi, buildApi: ba.IBuildApi) {
 
         this.coreApi = coreApi;
         this.releaseApi = releaseApi;
+        this.buildApi = buildApi;
         
     }
 
@@ -45,7 +49,7 @@ export class Helper implements IHelper {
 
     }
 
-    async findRelease(projectName: string, definitionId: number, stages: string[], sourceBranch?: string): Promise<ri.Release> {
+    async findRelease(projectName: string, definitionId: number, stages: string[], sourceBranch?: string, artifactVersion?: string, tags?: string[]): Promise<ri.Release> {
 
         try {
 
@@ -65,20 +69,22 @@ export class Helper implements IHelper {
                 ri.ReleaseExpands.Artifacts,
                 undefined,
                 undefined,
+                artifactVersion ? artifactVersion : undefined,
+                sourceBranch ? sourceBranch : undefined,
                 undefined,
-                sourceBranch ? sourceBranch : undefined);
+                tags ? tags : undefined);
 
             if (!availableReleases) {
 
-                throw new Error(`No ${projectName} project active releases found`);
+                throw new Error(`No ${projectName} project ${definitionId} definition releases found`);
 
             }
 
             if (availableReleases.length <= 0) {
 
-                if (sourceBranch) {
+                if (sourceBranch || artifactVersion || tags) {
 
-                    throw new Error(`No active releases matching ${sourceBranch} source branch artifact found`);
+                    throw new Error(`No active releases matching filter (branch: ${sourceBranch}, version: ${artifactVersion}, tags: ${tags}) criteria found`);
 
                 } else {
 
@@ -160,6 +166,67 @@ export class Helper implements IHelper {
             throw new Error(`Unable to create new release. ${e}`);
 
         }
+
+    }
+
+    async findBuild(projectName: string, definitionId: number, tags?: string[]): Promise<bi.Build> {
+
+        try {
+
+            const availableBuilds: bi.Build[] = await this.buildApi.getBuilds(
+                projectName,
+                [ definitionId ],
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                tags);
+
+            if (!availableBuilds) {
+
+                throw new Error(`No ${projectName} project ${definitionId} definition builds found`);
+
+            }
+
+            if (availableBuilds.length <= 0) {
+
+                if (tags) {
+
+                    throw new Error(`No active builds matching filter (tags: ${tags}) criteria found`);
+
+                } else {
+
+                    throw new Error(`No active builds found`);
+
+                }
+                
+            }
+
+            return availableBuilds[0];
+
+        } catch (e) {
+
+            throw new Error(`Unable to find target build. ${e}`);
+
+        }
+
+    }
+
+    async getArtifactDefinition(definition: ri.ReleaseDefinition): Promise<ri.ArtifactSourceReference> {
+
+        const primaryArtifact: ri.Artifact = definition.artifacts.filter((i) => i.isPrimary == true && i.type == "Build")[0];
+
+        if (!primaryArtifact) {
+
+            throw new Error(`No primary build artifact found`);
+
+        }
+
+        return primaryArtifact.definitionReference.definition;
 
     }
 

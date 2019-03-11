@@ -98,7 +98,25 @@ export function getParameters(): IParameters {
             const targetReleaseStages: string = tl.getInput("TargetReleaseStages", true);
             parameters.stages = targetReleaseStages.split(",");
 
+            const releaseTagFilter: boolean = tl.getBoolInput("ReleaseTagFilter");
+            const artifactTagFilter: boolean = tl.getBoolInput("ArtifactTagFilter");
             const sourceBranchFilter: boolean = tl.getBoolInput("SourceBranchFilter");
+
+            // Get release tag filter
+            if (releaseTagFilter) {
+
+                const releaseTagName: string = tl.getInput("ReleaseTagName", true);
+                parameters.releaseTag = [ releaseTagName ];
+
+            }
+
+            // Get artifact tag filter
+            if (artifactTagFilter) {
+
+                const artifactTagName: string = tl.getInput("ArtifactTagName", true);
+                parameters.artifactTag = [ artifactTagName ];
+
+            }
 
             // Get artifacts source branch filter
             if (sourceBranchFilter) {
