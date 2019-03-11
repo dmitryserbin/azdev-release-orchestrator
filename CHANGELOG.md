@@ -2,7 +2,7 @@
 
 ## 1.1.7
 
-- Improve task variables support
+- Improve task parameters support
 
 ## 1.1.6
 
