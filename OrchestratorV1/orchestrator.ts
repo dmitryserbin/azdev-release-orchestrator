@@ -109,14 +109,14 @@ export class Orchestrator implements IOrchestrator {
                 // Confirm release tag filter
                 if (parameters.releaseTag && parameters.releaseTag.length >= 1) {
 
-                    console.log(`Applying <${parameters.releaseTag}> release tag(s) filter`);
+                    console.log(`Using <${parameters.releaseTag}> tag(s) for target release filter`);
 
                 }
 
                 // Get build matching artifact tag
                 if (parameters.artifactTag && parameters.artifactTag.length >= 1) {
 
-                    console.log(`Applying <${parameters.artifactTag}> artifact tag(s) filter`);
+                    console.log(`Using <${parameters.artifactTag}> artifact tag(s) for target release filter`);
 
                     const targetArtifactDefinition = await this.helper.getArtifactDefinition(definition);
                     const targetArtifactBuild = await this.helper.findBuild(project.name, Number(targetArtifactDefinition.id), parameters.artifactTag);
@@ -128,7 +128,7 @@ export class Orchestrator implements IOrchestrator {
                 // Confirm source branch filter
                 if (parameters.sourceBranch) {
 
-                    console.log(`Applying <${parameters.sourceBranch}> artifact branch filter`);
+                    console.log(`Using <${parameters.sourceBranch}> artifact branch for target release filter`);
 
                 }
 
