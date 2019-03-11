@@ -105,7 +105,7 @@ export function getParameters(): IParameters {
             // Get release tag filter
             if (releaseTagFilter) {
 
-                const releaseTagName: string = tl.getInput("ReleaseTagName", true);
+                const releaseTagName: string = tl.getInput("ReleaseTagName", false);
                 parameters.releaseTag = [ releaseTagName ];
 
             }
@@ -113,7 +113,7 @@ export function getParameters(): IParameters {
             // Get artifact tag filter
             if (artifactTagFilter) {
 
-                const artifactTagName: string = tl.getInput("ArtifactTagName", true);
+                const artifactTagName: string = tl.getInput("ArtifactTagName", false);
                 parameters.artifactTag = [ artifactTagName ];
 
             }
@@ -121,7 +121,7 @@ export function getParameters(): IParameters {
             // Get artifacts source branch filter
             if (sourceBranchFilter) {
 
-                const sourceBranchName: string = tl.getInput("SourceBranchName", true);
+                const sourceBranchName: string = tl.getInput("SourceBranchName", false);
                 parameters.sourceBranch = sourceBranchName;
 
             }
