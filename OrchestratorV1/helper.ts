@@ -72,7 +72,7 @@ export class Helper implements IHelper {
                 artifactVersion ? artifactVersion : undefined,
                 sourceBranch ? sourceBranch : undefined,
                 undefined,
-                tags ? tags : undefined);
+                (tags && tags.length) ? tags : undefined);
 
             if (!availableReleases) {
 
@@ -82,9 +82,9 @@ export class Helper implements IHelper {
 
             if (availableReleases.length <= 0) {
 
-                if (sourceBranch || artifactVersion || tags) {
+                if (tags || artifactVersion || sourceBranch) {
 
-                    throw new Error(`No active releases matching filter (branch: ${sourceBranch}, version: ${artifactVersion}, tags: ${tags}) criteria found`);
+                    throw new Error(`No active releases matching filter (tags: ${tags}, artifact: ${artifactVersion}, branch: ${sourceBranch}) criteria found`);
 
                 } else {
 

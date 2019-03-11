@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.7
+
+- Improve task parameters support
+
 ## 1.1.6
 
 - Add release tag filter support

@@ -42,6 +42,9 @@ export function getParameters(): IParameters {
         releaseId: "",
         stages: [],
         artifact: "",
+        releaseTag: [],
+        artifactTag: [],
+        sourceBranch: "",
 
     };
 
@@ -55,8 +58,8 @@ export function getParameters(): IParameters {
             // Get definition stages
             if (stageStrategy === "specific") {
 
-                const targetDefinitionStages: string = tl.getInput("TargetDefinitionStages", true);
-                parameters.stages = targetDefinitionStages.split(",");
+                const targetDefinitionStages: string[] = tl.getDelimitedInput("TargetDefinitionStages", ",", true);
+                parameters.stages = targetDefinitionStages;
 
             }
 
@@ -82,8 +85,8 @@ export function getParameters(): IParameters {
             parameters.releaseId = targetRelease;
 
             // Get release stages
-            const targetReleaseStages: string = tl.getInput("TargetReleaseStages", true);
-            parameters.stages = targetReleaseStages.split(",");
+            const targetReleaseStages: string[] = tl.getDelimitedInput("TargetReleaseStages", ",", true);
+            parameters.stages = targetReleaseStages;
 
             break;
 
@@ -95,8 +98,8 @@ export function getParameters(): IParameters {
             parameters.releaseType = ReleaseType.Latest;
 
             // Get release stages
-            const targetReleaseStages: string = tl.getInput("TargetReleaseStages", true);
-            parameters.stages = targetReleaseStages.split(",");
+            const targetReleaseStages: string[] = tl.getDelimitedInput("TargetReleaseStages", ",", true);
+            parameters.stages = targetReleaseStages;
 
             const releaseTagFilter: boolean = tl.getBoolInput("ReleaseTagFilter");
             const artifactTagFilter: boolean = tl.getBoolInput("ArtifactTagFilter");
@@ -105,23 +108,23 @@ export function getParameters(): IParameters {
             // Get release tag filter
             if (releaseTagFilter) {
 
-                const releaseTagName: string = tl.getInput("ReleaseTagName", true);
-                parameters.releaseTag = [ releaseTagName ];
+                const releaseTagName: string[] = tl.getDelimitedInput("ReleaseTagName", ",", false);
+                parameters.releaseTag = releaseTagName;
 
             }
 
             // Get artifact tag filter
             if (artifactTagFilter) {
 
-                const artifactTagName: string = tl.getInput("ArtifactTagName", true);
-                parameters.artifactTag = [ artifactTagName ];
+                const artifactTagName: string[] = tl.getDelimitedInput("ArtifactTagName", ",", false);
+                parameters.artifactTag = artifactTagName;
 
             }
 
             // Get artifacts source branch filter
             if (sourceBranchFilter) {
 
-                const sourceBranchName: string = tl.getInput("SourceBranchName", true);
+                const sourceBranchName: string = tl.getInput("SourceBranchName", false);
                 parameters.sourceBranch = sourceBranchName;
 
             }

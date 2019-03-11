@@ -38,9 +38,9 @@ export interface IParameters {
     releaseId: string;
     stages: string[];
     artifact: string;
-    sourceBranch?: string;
-    releaseTag?: string[];
-    artifactTag?: string[];
+    releaseTag: string[];
+    artifactTag: string[];
+    sourceBranch: string;
 
 }
 
