@@ -58,8 +58,8 @@ export function getParameters(): IParameters {
             // Get definition stages
             if (stageStrategy === "specific") {
 
-                const targetDefinitionStages: string = tl.getInput("TargetDefinitionStages", true);
-                parameters.stages = targetDefinitionStages.split(",");
+                const targetDefinitionStages: string[] = tl.getDelimitedInput("TargetDefinitionStages", ",", true);
+                parameters.stages = targetDefinitionStages;
 
             }
 
@@ -85,8 +85,8 @@ export function getParameters(): IParameters {
             parameters.releaseId = targetRelease;
 
             // Get release stages
-            const targetReleaseStages: string = tl.getInput("TargetReleaseStages", true);
-            parameters.stages = targetReleaseStages.split(",");
+            const targetReleaseStages: string[] = tl.getDelimitedInput("TargetReleaseStages", ",", true);
+            parameters.stages = targetReleaseStages;
 
             break;
 
@@ -98,8 +98,8 @@ export function getParameters(): IParameters {
             parameters.releaseType = ReleaseType.Latest;
 
             // Get release stages
-            const targetReleaseStages: string = tl.getInput("TargetReleaseStages", true);
-            parameters.stages = targetReleaseStages.split(",");
+            const targetReleaseStages: string[] = tl.getDelimitedInput("TargetReleaseStages", ",", true);
+            parameters.stages = targetReleaseStages;
 
             const releaseTagFilter: boolean = tl.getBoolInput("ReleaseTagFilter");
             const artifactTagFilter: boolean = tl.getBoolInput("ArtifactTagFilter");
@@ -108,7 +108,7 @@ export function getParameters(): IParameters {
             // Get release tag filter
             if (releaseTagFilter) {
 
-                const releaseTagName: string[] = tl.getDelimitedInput("ReleaseTagName", "|", false);
+                const releaseTagName: string[] = tl.getDelimitedInput("ReleaseTagName", ",", false);
                 parameters.releaseTag = releaseTagName;
 
             }
@@ -116,7 +116,7 @@ export function getParameters(): IParameters {
             // Get artifact tag filter
             if (artifactTagFilter) {
 
-                const artifactTagName: string[] = tl.getDelimitedInput("ArtifactTagName", "|", false);
+                const artifactTagName: string[] = tl.getDelimitedInput("ArtifactTagName", ",", false);
                 parameters.artifactTag = artifactTagName;
 
             }
