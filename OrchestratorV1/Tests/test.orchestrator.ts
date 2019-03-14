@@ -249,7 +249,7 @@ describe("Orchestrator", () => {
 
         } as ri.ArtifactSourceReference;
         
-        release.artifacts[0].definitionReference = {
+        release.artifacts![0].definitionReference = {
 
             definition: definitionReferenceMock,
             version: versionReferenceMock,
@@ -273,7 +273,7 @@ describe("Orchestrator", () => {
         chai.expect(result).not.null;
         chai.expect(result.id).eq(mockRelease.id);
         chai.expect(result.name).eq(mockRelease.name);
-        chai.expect(result.artifacts[0].definitionReference.version.id).eq(String(buildMock.id));
+        chai.expect(result.artifacts![0].definitionReference!.version.id).eq(String(buildMock.id));
 
     });
 

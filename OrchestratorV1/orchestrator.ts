@@ -26,7 +26,7 @@ export class Orchestrator implements IOrchestrator {
 
         }
 
-        const targetDefinition: ri.ReleaseDefinition = await this.helper.getDefinition(targetProject.name, Number(parameters.definitionId));
+        const targetDefinition: ri.ReleaseDefinition = await this.helper.getDefinition(targetProject.name!, Number(parameters.definitionId));
 
         if (!targetDefinition) {
 
@@ -40,7 +40,7 @@ export class Orchestrator implements IOrchestrator {
         const targetRelease: ri.Release = await this.getRelease(parameters.releaseType, targetProject, targetDefinition, details, parameters);
 
         // Get target stages
-        const targetStages: string[] = parameters.stages ? parameters.stages : targetRelease.environments.map((i) => i.name);
+        const targetStages: string[] = parameters.stages ? parameters.stages : targetRelease.environments!.map((i) => i.name!);
 
         // Get release parameters
         const releaseParameters = this.getReleaseParameters(targetProject, targetRelease, targetStages, 5000);
@@ -119,7 +119,7 @@ export class Orchestrator implements IOrchestrator {
                     console.log(`Using <${parameters.artifactTag}> artifact tag(s) for target release filter`);
 
                     const targetArtifactDefinition = await this.helper.getArtifactDefinition(definition);
-                    const targetArtifactBuild = await this.helper.findBuild(project.name, Number(targetArtifactDefinition.id), parameters.artifactTag);
+                    const targetArtifactBuild = await this.helper.findBuild(project.name!, Number(targetArtifactDefinition.id), parameters.artifactTag);
 
                     artifactVersion = String(targetArtifactBuild.id);
 
@@ -132,7 +132,7 @@ export class Orchestrator implements IOrchestrator {
 
                 }
 
-                release = await this.helper.findRelease(project.name, definition.id, parameters.stages, parameters.sourceBranch, artifactVersion, parameters.releaseTag);
+                release = await this.helper.findRelease(project.name!, definition.id!, parameters.stages, parameters.sourceBranch, artifactVersion, parameters.releaseTag);
 
                 break;
 

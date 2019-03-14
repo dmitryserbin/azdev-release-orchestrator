@@ -95,11 +95,11 @@ export class Helper implements IHelper {
             }
 
             // Get latest release by ID
-            const filteredRelease: ri.Release = availableReleases.sort((left, right) => left.id - right.id).reverse()[0];
-            const targetRelease: ri.Release = await this.releaseApi.getRelease(projectName, filteredRelease.id);
+            const filteredRelease: ri.Release = availableReleases.sort((left, right) => left.id! - right.id!).reverse()[0];
+            const targetRelease: ri.Release = await this.releaseApi.getRelease(projectName, filteredRelease.id!);
 
             // Validate release environments
-            await this.validateStages(stages, targetRelease.environments.map((i) => i.name));
+            await this.validateStages(stages, targetRelease.environments!.map((i) => i.name!));
 
             return targetRelease;
 
@@ -115,10 +115,10 @@ export class Helper implements IHelper {
 
         try {
 
-            const targetRelease: ri.Release = await this.releaseApi.getRelease(project.name, releaseId);
+            const targetRelease: ri.Release = await this.releaseApi.getRelease(project.name!, releaseId);
         
             // Validate release environments
-            await this.validateStages(stages, targetRelease.environments.map((i) => i.name));
+            await this.validateStages(stages, targetRelease.environments!.map((i) => i.name!));
         
             return targetRelease;
 
@@ -154,12 +154,12 @@ export class Helper implements IHelper {
             // Set target artifacts filter
             if (artifact) {
 
-                releaseMetadata.artifacts = await this.getArtifacts(project.name, definition.id, artifact);
+                releaseMetadata.artifacts = await this.getArtifacts(project.name!, definition.id!, artifact);
 
             }
 
             // Create release
-            return this.releaseApi.createRelease(releaseMetadata, project.name);
+            return this.releaseApi.createRelease(releaseMetadata, project.name!);
 
         } catch (e) {
 
@@ -218,7 +218,7 @@ export class Helper implements IHelper {
 
     async getArtifactDefinition(definition: ri.ReleaseDefinition): Promise<ri.ArtifactSourceReference> {
 
-        const primaryArtifact: ri.Artifact = definition.artifacts.filter((i) => i.isPrimary == true && i.type == "Build")[0];
+        const primaryArtifact: ri.Artifact = definition.artifacts!.filter((i) => i.isPrimary == true && i.type == "Build")[0];
 
         if (!primaryArtifact) {
 
@@ -226,7 +226,7 @@ export class Helper implements IHelper {
 
         }
 
-        return primaryArtifact.definitionReference.definition;
+        return primaryArtifact.definitionReference!.definition;
 
     }
 
@@ -234,7 +234,7 @@ export class Helper implements IHelper {
 
         // Detect if environment conditions met
         // To determine automated release status
-        const conditions: number = release.environments.filter((e) => e.conditions.some((i) => i.result === true)).length;
+        const conditions: number = release.environments!.filter((e) => e.conditions!.some((i) => i.result === true)).length;
         
         return conditions > 0 ? true : false;
 
@@ -243,7 +243,7 @@ export class Helper implements IHelper {
     private async getStages(definition: ri.ReleaseDefinition, stages: string[]): Promise<string[]> {
 
         // Get definition stages
-        const definitionStages = definition.environments.map((i) => i.name);
+        const definitionStages: string[] = definition.environments!.map((i) => i.name!);
 
         // Validate definition environments
         await this.validateStages(stages, definitionStages);
@@ -258,15 +258,15 @@ export class Helper implements IHelper {
 
         const releaseArtifacts: ri.ArtifactMetadata[] = [];
 
-        for (const result of definitionArtifacts.artifactVersions) {
+        for (const result of definitionArtifacts.artifactVersions!) {
 
             const targetVersion = (result.alias === artifact.alias) ?
 
                 // Get specified artifact
-                (result.versions.filter((i) => i.id === artifact.version)[0]) :
+                (result.versions!.filter((i) => i.id === artifact.version)[0]) :
 
                 // Get latest artifact
-                (result.versions[0]);
+                (result.versions![0]);
 
             if (!targetVersion) {
 
