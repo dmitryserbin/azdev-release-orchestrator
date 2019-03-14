@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.8
+
+- Minor improvements & bugfixes
+
 ## 1.1.7
 
 - Improve task parameters support
