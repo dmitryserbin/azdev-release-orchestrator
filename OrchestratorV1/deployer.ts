@@ -266,7 +266,7 @@ export class Deployer implements IDeployer {
         
     }
 
-    async getReleaseStatus(projectName: string, releaseId: number, retry: number = 5): Promise<ri.Release> {
+    async getReleaseStatus(projectName: string, releaseId: number, retry: number = 10, timeout: number = 3000): Promise<ri.Release> {
 
         try {
 
@@ -291,6 +291,7 @@ export class Deployer implements IDeployer {
                 
             }, {
 
+                minTimeout: timeout,
                 retries: retry
                 
             });
