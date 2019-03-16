@@ -1,7 +1,10 @@
 # Changelog
 
-## 1.1.8
+## 1.2.0
 
+- Add new release filters support
+- Improve task user interface
+- Remove specific artifact support
 - Minor improvements & bugfixes
 
 ## 1.1.7
