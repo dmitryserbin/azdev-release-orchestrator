@@ -70,8 +70,8 @@
       "defaultValue": "create",
       "options": {
         "create": "Create Release",
-        "specific": "Specific Release",
-        "latest": "Latest Release"
+        "latest": "Latest Release",
+        "specific": "Specific Release"
       }
     },
     {
@@ -97,6 +97,26 @@
       "visibleRule": "ReleaseStrategy = specific || ReleaseStrategy = latest"
     },
     {
+      "name": "DefinitionStagesFilter",
+      "type": "boolean",
+      "label": "Filter Definition Stages",
+      "helpMarkDown": "Use default or target specific release definition stages",
+      "defaultValue": false,
+      "required": false,
+      "visibleRule": "ReleaseStrategy = create"
+    },
+    {
+      "name": "TargetDefinitionStages",
+      "type": "pickList",
+      "label": "Definition Stages",
+      "helpMarkDown": "Target specific release definition stages (comma separated)",
+      "required": true,
+      "properties": {
+        "EditableOptions": true
+      },
+      "visibleRule": "ReleaseStrategy = create && DefinitionStagesFilter = true"
+    },
+    {
       "name": "ReleaseTagFilter",
       "type": "boolean",
       "label": "Filter Release Tag",
@@ -111,7 +131,7 @@
       "label": "Release Tag Name",
       "helpMarkDown": "Specify tag name filter of target release",
       "required": true,
-      "visibleRule": "ReleaseStrategy = latest && ReleaseTagFilter = true"
+      "visibleRule": "ReleaseTagFilter = true"
     },
     {
       "name": "ArtifactTagFilter",
@@ -120,7 +140,7 @@
       "helpMarkDown": "Enable target release filtering by primary artifact tag name",
       "defaultValue": false,
       "required": false,
-      "visibleRule": "ReleaseStrategy = latest"
+      "visibleRule": "ReleaseStrategy = create || ReleaseStrategy = latest"
     },
     {
       "name": "ArtifactTagName",
@@ -128,7 +148,7 @@
       "label": "Artifact Tag Name",
       "helpMarkDown": "Specify tag name filter of primary release artifact",
       "required": true,
-      "visibleRule": "ReleaseStrategy = latest && ArtifactTagFilter = true"
+      "visibleRule": "ArtifactTagFilter = true"
     },
     {
       "name": "SourceBranchFilter",
@@ -137,7 +157,7 @@
       "helpMarkDown": "Enable target release filtering by primary artifact source branch name",
       "defaultValue": false,
       "required": false,
-      "visibleRule": "ReleaseStrategy = latest"
+      "visibleRule": "ReleaseStrategy = create || ReleaseStrategy = latest"
     },
     {
       "name": "SourceBranchName",
@@ -146,66 +166,7 @@
       "helpMarkDown": "Specify branch name of primary release artifact source. Default 'refs/heads/master' (build artifacts) or 'master' (Git artifacts)",
       "defaultValue": "refs/heads/master",
       "required": true,
-      "visibleRule": "ReleaseStrategy = latest && SourceBranchFilter = true"
-    },
-    {
-      "name": "ArtifactStrategy",
-      "type": "radio",
-      "label": "Artifacts Strategy",
-      "helpMarkDown": "Use default or select specific artifact",
-      "required": true,
-      "defaultValue": "default",
-      "options": {
-        "default": "Default Artifacts",
-        "specific": "Specific Artifacts"
-      },
-      "visibleRule": "ReleaseStrategy = create"
-    },
-    {
-      "name": "TargetArtifact",
-      "type": "pickList",
-      "label": "Artifact Name",
-      "helpMarkDown": "Select target artifact name or specify artifact definition ID",
-      "required": true,
-      "properties": {
-        "EditableOptions": true
-      },
-      "visibleRule": "ReleaseStrategy = create && ArtifactStrategy = specific"
-    },
-    {
-      "name": "TargetArtifactVersion",
-      "type": "pickList",
-      "label": "Artifact Version",
-      "helpMarkDown": "Select target artifact version or specify artifact version ID",
-      "required": true,
-      "properties": {
-        "EditableOptions": true
-      },
-      "visibleRule": "ReleaseStrategy = create && ArtifactStrategy = specific"
-    },
-    {
-      "name": "StageStrategy",
-      "type": "radio",
-      "label": "Stages Strategy",
-      "helpMarkDown": "Use default or select specific stages",
-      "required": true,
-      "defaultValue": "default",
-      "options": {
-        "default": "Default Stages",
-        "specific": "Specific Stages"
-      },
-      "visibleRule": "ReleaseStrategy = create"
-    },
-    {
-      "name": "TargetDefinitionStages",
-      "type": "pickList",
-      "label": "Definition Stages",
-      "helpMarkDown": "Target specific release definition stages (comma separated)",
-      "required": true,
-      "properties": {
-        "EditableOptions": true
-      },
-      "visibleRule": "ReleaseStrategy = create && StageStrategy = specific"
+      "visibleRule": "SourceBranchFilter = true"
     },
     {
       "name": "IgnoreFailure",
@@ -252,20 +213,6 @@
       "endpointUrl": "{{endpoint.url}}/$(TargetProject)/_apis/release/releases/$(TargetRelease)",
       "resultSelector": "jsonpath:$.environments[*]",
       "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
-    },
-    {
-      "target": "TargetArtifact",
-      "endpointId": "tfs:rm",
-      "endpointUrl": "{{endpoint.url}}/$(TargetProject)/_apis/release/definitions/$(TargetDefinition)",
-      "resultSelector": "jsonpath:$.artifacts[*]",
-      "resultTemplate": "{ \"Value\" : \"{{{definitionReference.definition.id}}}\", \"DisplayValue\" : \"{{{definitionReference.definition.name}}}\" }"
-    },
-    {
-      "target": "TargetArtifactVersion",
-      "endpointId": "tfs:teamfoundation",
-      "endpointUrl": "{{endpoint.url}}/$(TargetProject)/_apis/build/builds?definitions=$(TargetArtifact)",
-      "resultSelector": "jsonpath:$.value[?(@.result == 'succeeded')]",
-      "resultTemplate": "{ \"Value\" : \"{\\\"Name\\\" : \\\"{{{definition.name}}}\\\", \\\"Id\\\" : \\\"{{{id}}}\\\"}\", \"DisplayValue\" : \"#{{{id}}} ({{{sourceBranch}}}) by {{{requestedFor.displayName}}}\" }"
     }
   ],
   "execution": {
