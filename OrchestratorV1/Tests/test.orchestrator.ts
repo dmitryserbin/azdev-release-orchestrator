@@ -61,7 +61,6 @@ describe("Orchestrator", () => {
         releaseId: "",
         releaseType: ReleaseType.Undefined,
         stages: [ "DEV", "TEST", "PROD" ],
-        artifact: "",
 
     } as IParameters;
 

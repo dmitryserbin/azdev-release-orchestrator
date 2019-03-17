@@ -87,16 +87,7 @@ export class Orchestrator implements IOrchestrator {
             case ReleaseType.Create: {
 
                 // Create new
-                release = await this.helper.createRelease(project, definition, details, parameters.stages, parameters.artifact);
-
-                break;
-
-            }
-
-            case ReleaseType.Specific: {
-
-                // Use existing
-                release = await this.helper.getRelease(project, Number(parameters.releaseId), parameters.stages);
+                release = await this.helper.createRelease(project, definition, details, parameters.stages);
 
                 break;
 
@@ -133,6 +124,15 @@ export class Orchestrator implements IOrchestrator {
                 }
 
                 release = await this.helper.findRelease(project.name!, definition.id!, parameters.stages, parameters.sourceBranch, artifactVersion, parameters.releaseTag);
+
+                break;
+
+            }
+
+            case ReleaseType.Specific: {
+
+                // Use existing
+                release = await this.helper.getRelease(project, Number(parameters.releaseId), parameters.stages);
 
                 break;
 

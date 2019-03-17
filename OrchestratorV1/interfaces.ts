@@ -37,7 +37,6 @@ export interface IParameters {
     definitionId: string;
     releaseId: string;
     stages: string[];
-    artifact: string;
     releaseTag: string[];
     artifactTag: string[];
     sourceBranch: string;
