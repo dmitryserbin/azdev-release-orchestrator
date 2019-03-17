@@ -22,9 +22,9 @@ The **Release Orchestrator** task performing Azure DevOps release pipeline execu
 
 It uses either **integrated** (SystemVssConnection) or **user-defined**  personal access token (PAT) Azure DevOps service endpoint to connect to projects' pipelines.
 
-- Create new, deploy specific release or latest release
+- Create new, deploy latest release or specific release
 - Target specific release deployment stages
-- Filter release definition artifact version
+- Apply release deployment filters
 - Track release progress and display results
 
 ## Prerequisites
@@ -85,18 +85,14 @@ Please refer to Azure DevOps [approvals and gates documentation](https://docs.mi
 You can choose different strategy for orchestrator to perform target release deployment:
 
 - Create new release - find target release definition and create new release
-- Deploy specific release - find and re-deploy existing release from release definition
-- Deploy latest available release - find latest active release from release definition and re-deploy
+- Deploy latest available release - find and re-deploy latest active release from release definition
+- Deploy specific release - find and re-deploy specific release from release definition
 
 ### Create Release
 
-- Artifacts Strategy: select specific release definition artifact version (optional)
-- Stages Strategy: deploy default or target specific (comma separated) deployment stage(s)
-
-### Specific Release
-
-- Release Name: select existing release to target (or specify release ID)
-- Release Stages: specify release deployment stage(s) (comma separated)
+- Definition Stages: target specific deployment stage(s) (comma separated) (optional)
+- Filter Artifact Tag: enable new release filtering by primary build artifact tag (optional)
+- Filter Source Branch: enable new release filtering by primary artifact source branch name (optional)
 
 ### Latest Release
 
@@ -104,6 +100,11 @@ You can choose different strategy for orchestrator to perform target release dep
 - Filter Release Tag: enable filtering target release by release pipeline tag (optional)
 - Filter Artifact Tag: enable filtering target release by primary build artifact tag (optional)
 - Filter Source Branch: enable filtering target release by primary artifact source branch name (optional)
+
+### Specific Release
+
+- Release Name: select existing release to target (or specify release ID)
+- Release Stages: specify release deployment stage(s) (comma separated)
 
 ## Support
 
