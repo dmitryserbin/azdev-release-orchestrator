@@ -16,13 +16,11 @@ describe("Run", ()  => {
         EndpointAccount: process.env.azAccount ? process.env.azAccount : "My-Account",
         EndpointToken: process.env.azToken ? process.env.azToken : "My-Secret-Token",
 
-        ReleaseStrategy: null,
-        StageStrategy: "specific",
-        ArtifactStrategy: "default",
-        IgnoreFailure: "false",
-
         TargetProject: "761623f0-c4c0-4dab-884b-a428a01c200f",
         TargetDefinition: "1",
+        ReleaseStrategy: null,
+        IgnoreFailure: "false",
+
         DefinitionStagesFilter: "false",
         TargetDefinitionStages: "DEV,TEST,PROD",
         TargetRelease: null,
