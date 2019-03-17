@@ -86,8 +86,40 @@ export class Orchestrator implements IOrchestrator {
 
             case ReleaseType.Create: {
 
+                let filteredArtifact = undefined;
+
+                // Get primary definition artifact
+                const primaryArtifact: ri.Artifact = definition.artifacts!.filter(i => i.isPrimary == true)[0];
+
+                if (primaryArtifact) {
+
+                    let artifactVersion = undefined;
+
+                    // Get build matching artifact tag
+                    if (parameters.artifactTag && parameters.artifactTag.length >= 1) {
+
+                        console.log(`Using <${parameters.artifactTag}> artifact tag(s) for target release filter`);
+
+                        const targetArtifactDefinition = await this.helper.getArtifactDefinition(definition);
+                        const targetArtifactBuild = await this.helper.findBuild(project.name!, Number(targetArtifactDefinition.id), parameters.artifactTag);
+
+                        artifactVersion = String(targetArtifactBuild.id);
+
+                    }
+
+                    // Confirm source branch filter
+                    if (parameters.sourceBranch) {
+
+                        console.log(`Using <${parameters.sourceBranch}> artifact branch for target release filter`);
+
+                    }
+
+                    filteredArtifact = await this.helper.getArtifacts(project.name!, definition.id!, primaryArtifact.sourceId!, artifactVersion, parameters.sourceBranch);
+
+                }
+
                 // Create new
-                release = await this.helper.createRelease(project, definition, details, parameters.stages);
+                release = await this.helper.createRelease(project, definition, details, parameters.stages, filteredArtifact);
 
                 break;
 

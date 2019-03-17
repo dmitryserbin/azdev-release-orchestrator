@@ -130,7 +130,7 @@ export class Helper implements IHelper {
 
     }
 
-    async createRelease(project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, stages?: string[], artifact?: any): Promise<ri.Release> {
+    async createRelease(project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, stages?: string[], artifacts?: ri.ArtifactMetadata[]): Promise<ri.Release> {
 
         try {
 
@@ -151,10 +151,10 @@ export class Helper implements IHelper {
 
             }
 
-            // Set target artifacts filter
-            if (artifact) {
+            // Set custom artifacts filter
+            if (artifacts) {
 
-                releaseMetadata.artifacts = await this.getArtifacts(project.name!, definition.id!, artifact);
+                releaseMetadata.artifacts = artifacts;
 
             }
 
@@ -216,6 +216,81 @@ export class Helper implements IHelper {
 
     }
 
+    async getArtifacts(projectName: string, definitionId: number, primaryId: string, versionId?: string, sourceBranch?: string): Promise<ri.ArtifactMetadata[]> {
+
+        let result: ri.ArtifactMetadata[] = [];
+
+        // Get available versions
+        const definitionArtifacts: ri.ArtifactVersionQueryResult = await this.releaseApi.getArtifactVersions(projectName, definitionId);
+
+        // Create artifacts metadata
+        for (const artifact of definitionArtifacts.artifactVersions!) {
+
+            // Use default (latest)
+            let targetVersion: ri.BuildVersion = artifact.versions![0];
+            
+            // Filter primary artifact
+            if (artifact.sourceId === primaryId) {
+
+                // Filter by version ID
+                if (versionId && !sourceBranch) {
+
+                    targetVersion = artifact.versions!.filter(i => i.id === versionId)[0];
+
+                }
+
+                // Filter by source branch
+                if (sourceBranch && !versionId) {
+
+                    targetVersion = artifact.versions!.filter(i => i.sourceBranch === sourceBranch)[0];
+
+                }
+
+                // Filter by version ID and source branch
+                if (versionId && sourceBranch) {
+
+                    targetVersion = artifact.versions!.filter(i => i.id === versionId && i.sourceBranch === sourceBranch)[0];
+
+                }
+
+            }
+
+            // Validate version
+            if (!targetVersion) {
+
+                if (versionId || sourceBranch) {
+
+                    throw new Error(`No <${artifact.alias}> artifact matching filter (version: ${versionId}, branch: ${sourceBranch}) criteria found`);
+
+                } else {
+
+                    throw new Error(`Unable to detect <${artifact.alias}> target artifact`);
+
+                }
+
+            }
+
+            result.push({
+
+                alias: artifact.alias,
+                instanceReference: {
+
+                    id: targetVersion.id,
+                    name: targetVersion.name,
+                    sourceBranch: targetVersion.sourceBranch,
+                    sourceVersion: targetVersion.sourceVersion,
+                    sourceRepositoryId: targetVersion.sourceRepositoryId,
+                    sourceRepositoryType: targetVersion.sourceRepositoryType,
+
+                },
+
+            } as ri.ArtifactMetadata);
+        }
+
+        return result;
+
+    }
+
     async getArtifactDefinition(definition: ri.ReleaseDefinition): Promise<ri.ArtifactSourceReference> {
 
         const primaryArtifact: ri.Artifact = definition.artifacts!.filter((i) => i.isPrimary == true && i.type == "Build")[0];
@@ -249,50 +324,6 @@ export class Helper implements IHelper {
         await this.validateStages(stages, definitionStages);
 
         return definitionStages.filter((i) => stages.indexOf(i) === -1);
-
-    }
-
-    private async getArtifacts(projectName: string, definitionId: number, artifact: any): Promise<ri.ArtifactMetadata[]> {
-
-        const definitionArtifacts: ri.ArtifactVersionQueryResult = await this.releaseApi.getArtifactVersions(projectName, definitionId);
-
-        const releaseArtifacts: ri.ArtifactMetadata[] = [];
-
-        for (const result of definitionArtifacts.artifactVersions!) {
-
-            const targetVersion = (result.alias === artifact.alias) ?
-
-                // Get specified artifact
-                (result.versions!.filter((i) => i.id === artifact.version)[0]) :
-
-                // Get latest artifact
-                (result.versions![0]);
-
-            if (!targetVersion) {
-
-                throw new Error(`Unable to detect <${result.alias}> target artifact`);
-
-            }
-
-            // Add to release artifacts
-            releaseArtifacts.push({
-
-                alias: result.alias,
-                instanceReference: {
-
-                    id: targetVersion.id,
-                    name: targetVersion.name,
-                    sourceBranch: targetVersion.sourceBranch,
-                    sourceVersion: targetVersion.sourceVersion,
-                    sourceRepositoryId: targetVersion.sourceRepositoryId,
-                    sourceRepositoryType: targetVersion.sourceRepositoryType,
-
-                },
-
-            } as ri.ArtifactMetadata);
-        }
-
-        return releaseArtifacts;
 
     }
 
