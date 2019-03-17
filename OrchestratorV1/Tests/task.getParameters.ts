@@ -15,6 +15,10 @@ MockInput(tmr, [
     "TargetDefinitionStages",
     "TargetRelease",
     "TargetReleaseStages",
+    "ArtifactTagFilter",
+    "ArtifactTagName",
+    "SourceBranchFilter",
+    "SourceBranchName"
 
 ]);
 

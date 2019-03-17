@@ -71,6 +71,36 @@ describe("Parameters", () => {
             ReleaseStrategy: "create",
             TargetProject: "1",
             TargetDefinition: "2",
+
+        };
+
+        SetProcessVariables(variables);
+
+        const tr: mt.MockTestRunner = new mt.MockTestRunner(path.join(__dirname, "task.getParameters.js"));
+        tr.run();
+
+        chai.assert.isTrue(tr.succeeded, "Should have succeeded");
+        chai.assert.isEmpty(tr.warningIssues, "Should have succeeded");
+        chai.assert.isEmpty(tr.errorIssues, "Should have no errors");
+
+        chai.assert.isTrue(tr.stdOutContained(`projectId: '${variables.TargetProject}'`), "Should display project ID");
+        chai.assert.isTrue(tr.stdOutContained(`definitionId: '${variables.TargetDefinition}'`), "Should display definition ID");
+        chai.assert.isTrue(tr.stdOutContained(`releaseType: 'Create'`), "Should display release type");
+        chai.assert.isTrue(tr.stdOutContained(`stages: []`), "Should display stages");
+        chai.assert.isTrue(tr.stdOutContained(`artifactTag: []`), "Should display artifact filter");
+        chai.assert.isTrue(tr.stdOutContained(`sourceBranch: ''`), "Should display source branch filter");
+
+        ClearProcessVariables(variables);
+
+    });
+
+    it("Should get new release with stages parameters", async () => {
+
+        const variables: any = {
+
+            ReleaseStrategy: "create",
+            TargetProject: "1",
+            TargetDefinition: "2",
             DefinitionStagesFilter: "true",
             TargetDefinitionStages: "DEV,TEST,PROD",
 
@@ -89,6 +119,72 @@ describe("Parameters", () => {
         chai.assert.isTrue(tr.stdOutContained(`definitionId: '${variables.TargetDefinition}'`), "Should display definition ID");
         chai.assert.isTrue(tr.stdOutContained(`releaseType: 'Create'`), "Should display release type");
         chai.assert.isTrue(tr.stdOutContained(`stages: [ 'DEV', 'TEST', 'PROD' ]`), "Should display stages");
+        chai.assert.isTrue(tr.stdOutContained(`artifactTag: []`), "Should display artifact filter");
+        chai.assert.isTrue(tr.stdOutContained(`sourceBranch: ''`), "Should display source branch filter");
+
+        ClearProcessVariables(variables);
+
+    });
+
+    it("Should get new release with artifacts parameters", async () => {
+
+        const variables: any = {
+
+            ReleaseStrategy: "create",
+            TargetProject: "1",
+            TargetDefinition: "2",
+            ArtifactTagFilter: "true",
+            ArtifactTagName: "My-Artifact-Tag",
+
+        };
+
+        SetProcessVariables(variables);
+
+        const tr: mt.MockTestRunner = new mt.MockTestRunner(path.join(__dirname, "task.getParameters.js"));
+        tr.run();
+
+        chai.assert.isTrue(tr.succeeded, "Should have succeeded");
+        chai.assert.isEmpty(tr.warningIssues, "Should have succeeded");
+        chai.assert.isEmpty(tr.errorIssues, "Should have no errors");
+
+        chai.assert.isTrue(tr.stdOutContained(`projectId: '${variables.TargetProject}'`), "Should display project ID");
+        chai.assert.isTrue(tr.stdOutContained(`definitionId: '${variables.TargetDefinition}'`), "Should display definition ID");
+        chai.assert.isTrue(tr.stdOutContained(`releaseType: 'Create'`), "Should display release type");
+        chai.assert.isTrue(tr.stdOutContained(`stages: []`), "Should display stages");
+        chai.assert.isTrue(tr.stdOutContained(`artifactTag: [ 'My-Artifact-Tag' ]`), "Should display artifact filter");
+        chai.assert.isTrue(tr.stdOutContained(`sourceBranch: ''`), "Should display source branch filter");
+
+        ClearProcessVariables(variables);
+
+    });
+
+    it("Should get new release with branch parameters", async () => {
+
+        const variables: any = {
+
+            ReleaseStrategy: "create",
+            TargetProject: "1",
+            TargetDefinition: "2",
+            SourceBranchFilter: "true",
+            SourceBranchName: "My-Source-Branch",
+
+        };
+
+        SetProcessVariables(variables);
+
+        const tr: mt.MockTestRunner = new mt.MockTestRunner(path.join(__dirname, "task.getParameters.js"));
+        tr.run();
+
+        chai.assert.isTrue(tr.succeeded, "Should have succeeded");
+        chai.assert.isEmpty(tr.warningIssues, "Should have succeeded");
+        chai.assert.isEmpty(tr.errorIssues, "Should have no errors");
+
+        chai.assert.isTrue(tr.stdOutContained(`projectId: '${variables.TargetProject}'`), "Should display project ID");
+        chai.assert.isTrue(tr.stdOutContained(`definitionId: '${variables.TargetDefinition}'`), "Should display definition ID");
+        chai.assert.isTrue(tr.stdOutContained(`releaseType: 'Create'`), "Should display release type");
+        chai.assert.isTrue(tr.stdOutContained(`stages: []`), "Should display stages");
+        chai.assert.isTrue(tr.stdOutContained(`artifactTag: []`), "Should display artifact filter");
+        chai.assert.isTrue(tr.stdOutContained(`sourceBranch: 'My-Source-Branch'`), "Should display source branch filter");
 
         ClearProcessVariables(variables);
 
