@@ -5,7 +5,7 @@ import * as ca from "azure-devops-node-api/CoreApi";
 import * as ra from "azure-devops-node-api/ReleaseApi";
 import * as ba from "azure-devops-node-api/BuildApi";
 
-import { IHelper, IReleaseDetails } from "./interfaces";
+import { IHelper, IReleaseDetails, IReleaseFilter } from "./interfaces";
 
 export class Helper implements IHelper {
 
@@ -49,7 +49,7 @@ export class Helper implements IHelper {
 
     }
 
-    async findRelease(projectName: string, definitionId: number, stages: string[], sourceBranch?: string, artifactVersion?: string, tags?: string[]): Promise<ri.Release> {
+    async findRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter): Promise<ri.Release> {
 
         try {
 
@@ -69,10 +69,10 @@ export class Helper implements IHelper {
                 ri.ReleaseExpands.Artifacts,
                 undefined,
                 undefined,
-                artifactVersion ? artifactVersion : undefined,
-                sourceBranch ? sourceBranch : undefined,
+                filter.artifactVersion ? filter.artifactVersion : undefined,
+                filter.sourceBranch ? filter.sourceBranch : undefined,
                 undefined,
-                (tags && tags.length) ? tags : undefined);
+                (filter.tag && filter.tag.length) ? filter.tag : undefined);
 
             if (!availableReleases) {
 
@@ -82,9 +82,9 @@ export class Helper implements IHelper {
 
             if (availableReleases.length <= 0) {
 
-                if (tags || artifactVersion || sourceBranch) {
+                if (filter.tag || filter.artifactVersion || filter.sourceBranch) {
 
-                    throw new Error(`No active releases matching filter (tags: ${tags}, artifact: ${artifactVersion}, branch: ${sourceBranch}) criteria found`);
+                    throw new Error(`No active releases matching filter (tags: ${filter.tag}, artifact: ${filter.artifactVersion}, branch: ${filter.sourceBranch}) criteria found`);
 
                 } else {
 
@@ -145,14 +145,14 @@ export class Helper implements IHelper {
             } as ri.ReleaseStartMetadata;
 
             // Set manual stages filter
-            if (stages) {
+            if (stages && stages.length > 0) {
 
                 releaseMetadata.manualEnvironments = await this.getStages(definition, stages);
 
             }
 
             // Set custom artifacts filter
-            if (artifacts) {
+            if (artifacts && artifacts.length > 0) {
 
                 releaseMetadata.artifacts = artifacts;
 
@@ -288,20 +288,6 @@ export class Helper implements IHelper {
         }
 
         return result;
-
-    }
-
-    async getArtifactDefinition(definition: ri.ReleaseDefinition): Promise<ri.ArtifactSourceReference> {
-
-        const primaryArtifact: ri.Artifact = definition.artifacts!.filter((i) => i.isPrimary == true && i.type == "Build")[0];
-
-        if (!primaryArtifact) {
-
-            throw new Error(`No primary build artifact found`);
-
-        }
-
-        return primaryArtifact.definitionReference!.definition;
 
     }
 

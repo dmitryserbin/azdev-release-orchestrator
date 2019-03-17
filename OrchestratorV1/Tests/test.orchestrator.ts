@@ -180,7 +180,7 @@ describe("Orchestrator", () => {
         const parameters = mockParameters;
         parameters.releaseType = ReleaseType.Latest;
 
-        helperMock.setup(x => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
+        helperMock.setup(x => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
 
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
 
@@ -201,7 +201,7 @@ describe("Orchestrator", () => {
         const release = mockRelease;
         release.tags = parameters.releaseTag;
 
-        helperMock.setup(x => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(release));
+        helperMock.setup(x => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(release));
 
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
 
@@ -256,8 +256,7 @@ describe("Orchestrator", () => {
         
         };
 
-        helperMock.setup(x => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
-        helperMock.setup(x => x.getArtifactDefinition(TypeMoq.It.isAny())).returns(() => Promise.resolve(definitionReferenceMock));
+        helperMock.setup(x => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
         helperMock.setup(x => x.findBuild(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(buildMock));
 
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
