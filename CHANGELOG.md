@@ -3,9 +3,9 @@
 ## 1.2.0
 
 - Add new release filters support
-- Improve task user interface
 - Remove specific artifact support
-- Minor improvements & bugfixes
+- Improve task user interface
+- Increase retry & timeout
 
 ## 1.1.7
 
