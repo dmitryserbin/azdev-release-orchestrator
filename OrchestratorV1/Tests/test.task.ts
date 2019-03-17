@@ -58,6 +58,48 @@ describe("Run", ()  => {
         ClearProcessVariables(variables);
 
     });
+
+    it("Should deploy new release filtered by artifact tag @task", async () => {
+
+        let variables = Object.assign({}, defaultVariables);
+        variables.ReleaseStrategy = "create";
+        variables.ArtifactTagFilter = "true";
+        variables.ArtifactTagName = "Build-Yo";
+        SetProcessVariables(variables);
+
+        const tr: mt.MockTestRunner = new mt.MockTestRunner(path.join(__dirname, "task.index.js"));
+        tr.run();
+
+        console.log(tr.stdout);
+
+        chai.assert.isTrue(tr.succeeded, "Should have succeeded");
+        chai.assert.isEmpty(tr.warningIssues, "Should have succeeded");
+        chai.assert.isEmpty(tr.errorIssues, "Should have no errors");
+
+        ClearProcessVariables(variables);
+
+    });
+
+    it("Should deploy new release filtered by artifact branch @task", async () => {
+
+        let variables = Object.assign({}, defaultVariables);
+        variables.ReleaseStrategy = "create";
+        variables.SourceBranchFilter = "true";
+        variables.SourceBranchName = "refs/heads/working/test";
+        SetProcessVariables(variables);
+
+        const tr: mt.MockTestRunner = new mt.MockTestRunner(path.join(__dirname, "task.index.js"));
+        tr.run();
+
+        console.log(tr.stdout);
+
+        chai.assert.isTrue(tr.succeeded, "Should have succeeded");
+        chai.assert.isEmpty(tr.warningIssues, "Should have succeeded");
+        chai.assert.isEmpty(tr.errorIssues, "Should have no errors");
+
+        ClearProcessVariables(variables);
+
+    });
     
     it("Should re-deploy specific release @task", async () => {
 
