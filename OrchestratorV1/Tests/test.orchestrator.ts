@@ -23,6 +23,7 @@ describe("Orchestrator", () => {
 
         id: 1,
         name: "My-Definition",
+        artifacts: []
 
     } as ri.ReleaseDefinition;
 
@@ -139,7 +140,7 @@ describe("Orchestrator", () => {
         
     });
 
-    it("Should create new release", async () => {
+    it("Should get new release", async () => {
 
         const parameters = mockParameters;
         parameters.releaseType = ReleaseType.Create;
