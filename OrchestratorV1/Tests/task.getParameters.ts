@@ -9,14 +9,12 @@ const tmr: mr.TaskMockRunner = new mr.TaskMockRunner(path.join(__dirname, "mock.
 MockInput(tmr, [
 
     "ReleaseStrategy",
-    "StageStrategy",
-    "ArtifactStrategy",
     "TargetProject",
     "TargetDefinition",
+    "DefinitionStagesFilter",
     "TargetDefinitionStages",
     "TargetRelease",
     "TargetReleaseStages",
-    "TargetArtifactVersion",
 
 ]);
 
