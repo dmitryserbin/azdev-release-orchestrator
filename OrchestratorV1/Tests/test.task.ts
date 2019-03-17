@@ -23,10 +23,10 @@ describe("Run", ()  => {
 
         TargetProject: "761623f0-c4c0-4dab-884b-a428a01c200f",
         TargetDefinition: "1",
+        DefinitionStagesFilter: "false",
         TargetDefinitionStages: "DEV,TEST,PROD",
         TargetRelease: null,
         TargetReleaseStages: "DEV,TEST,PROD",
-        TargetArtifactVersion: "{ \"Name\" : \"HelloYo\", \"Id\" : \"3\" }",
         ReleaseTagFilter: "false",
         ReleaseTagName: null,
         ArtifactTagFilter: "false",
