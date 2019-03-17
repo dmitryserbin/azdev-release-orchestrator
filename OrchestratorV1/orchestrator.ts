@@ -41,7 +41,13 @@ export class Orchestrator implements IOrchestrator {
         const targetRelease: ri.Release = await this.getRelease(parameters.releaseType, targetProject, targetDefinition, details, parameters);
 
         // Get target stages
-        const targetStages: string[] = parameters.stages ? parameters.stages : targetRelease.environments!.map((i) => i.name!);
+        const targetStages: string[] = (parameters.stages && parameters.stages.length > 0) ? parameters.stages : targetRelease.environments!.map((i) => i.name!);
+
+        if (targetStages.length == 0) {
+
+            throw new Error(`Unable to detect ${targetRelease.name} release stages`);
+
+        }
 
         // Get release parameters
         const releaseParameters = {
