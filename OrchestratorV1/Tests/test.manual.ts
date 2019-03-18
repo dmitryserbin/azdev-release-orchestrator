@@ -4,9 +4,10 @@ import * as ca from "azure-devops-node-api/CoreApi";
 import * as ra from "azure-devops-node-api/ReleaseApi";
 import * as ba from "azure-devops-node-api/BuildApi";
 
-import { IHelper, IConnection, IEndpoint } from "../interfaces";
+import { IHelper, IConnection, IEndpoint, IDeployer } from "../interfaces";
 import { Helper } from "../helper";
 import { Connection } from "../connection";
+import { Deployer } from "../deployer";
 
 describe("Helper", () => {
 
@@ -23,6 +24,7 @@ describe("Helper", () => {
         const releaseApi: ra.ReleaseApi = await connection.getReleaseApi();
         const buildApi: ba.BuildApi = await connection.getBuildApi();
         const helper: IHelper = new Helper(coreApi, releaseApi, buildApi);
+        const deployer: IDeployer = new Deployer(releaseApi);
 
     });
 
