@@ -270,7 +270,6 @@ export class Deployer implements IDeployer {
         let progress: ri.Release | undefined;
         let retryCount: number = 0;
 
-        // ECONNRESET safe retry
         while (retryCount < retry) {
 
             try {
