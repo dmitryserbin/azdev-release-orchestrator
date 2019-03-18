@@ -272,32 +272,16 @@ export class Deployer implements IDeployer {
 
             let progress: ri.Release | undefined;
 
+            // ECONNRESET safe retry
             await Retry(async () => {
 
-                // ECONNRESET safe retry
-                await this.releaseApi.getRelease(projectName, releaseId).then(function (result) {
+                progress = await this.releaseApi.getRelease(projectName, releaseId)
 
-                    progress = result;
-
-                }).catch(function (err) {
-
-                    if (err.code == "ECONNRESET") {
-
-                        console.log(`Retry retrieving release status..`);
-
-                    } else {
-
-                        throw err;
-
-                    }
-
-                });
-                
             }, {
 
                 minTimeout: timeout,
                 retries: retry,
-                
+
             });
 
             if (!progress) {
@@ -305,14 +289,10 @@ export class Deployer implements IDeployer {
                 throw new Error(`Unable to get ${releaseId} release progress`);
     
             }
-    
+
             return progress;
 
         } catch (e) {
-
-            // Added to help troubleshooting
-            // Intermittent ECONNRESET errors
-            console.log(e);
 
             throw e;
 
