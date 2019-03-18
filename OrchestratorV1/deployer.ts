@@ -266,7 +266,7 @@ export class Deployer implements IDeployer {
         
     }
 
-    async getReleaseStatus(projectName: string, releaseId: number, retry: number = 10, timeout: number = 3000): Promise<ri.Release> {
+    async getReleaseStatus(projectName: string, releaseId: number, retry: number = 10, timeout: number = 5000): Promise<ri.Release> {
 
         try {
 
@@ -281,18 +281,22 @@ export class Deployer implements IDeployer {
 
                 }).catch(function (err) {
 
-                    if (err.code !== "ECONNRESET") {
+                    if (err.code == "ECONNRESET") {
+
+                        console.log(`Retry retrieving release status..`);
+
+                    } else {
 
                         throw err;
 
-                    };
+                    }
 
                 });
                 
             }, {
 
                 minTimeout: timeout,
-                retries: retry
+                retries: retry,
                 
             });
 
