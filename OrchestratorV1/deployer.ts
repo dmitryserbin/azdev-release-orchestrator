@@ -268,19 +268,19 @@ export class Deployer implements IDeployer {
     async getReleaseStatus(projectName: string, releaseId: number, retry: number = 10, timeout: number = 5000): Promise<ri.Release> {
 
         let progress: ri.Release | undefined;
-        let retryCount: number = 0;
+        let retryAttempt: number = 0;
 
-        while (retryCount < retry) {
+        while (retryAttempt < retry) {
 
             try {
 
-                retryCount++;
+                retryAttempt++;
 
                 // Get release status
                 progress = await this.releaseApi.getRelease(projectName, releaseId);
 
                 // Stop retrying on success
-                retryCount = retry;
+                retryAttempt = retry;
 
             } catch {
 
