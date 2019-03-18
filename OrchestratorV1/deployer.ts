@@ -1,6 +1,5 @@
 import Table from "cli-table";
 import Moment from "moment";
-import Retry from "async-retry";
 
 import * as ra from "azure-devops-node-api/ReleaseApi";
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
@@ -268,35 +267,41 @@ export class Deployer implements IDeployer {
 
     async getReleaseStatus(projectName: string, releaseId: number, retry: number = 10, timeout: number = 5000): Promise<ri.Release> {
 
-        try {
+        let progress: ri.Release | undefined;
+        let retryCount: number = 0;
 
-            let progress: ri.Release | undefined;
+        // ECONNRESET safe retry
+        while (retryCount < retry) {
 
-            // ECONNRESET safe retry
-            await Retry(async () => {
+            try {
 
-                progress = await this.releaseApi.getRelease(projectName, releaseId)
+                retryCount++;
 
-            }, {
+                // Get release status
+                progress = await this.releaseApi.getRelease(projectName, releaseId);
 
-                minTimeout: timeout,
-                retries: retry,
+                // Stop retrying on success
+                retryCount = retry;
 
-            });
+            } catch {
 
-            if (!progress) {
+                console.log(`Retry retrieving release status..`);
 
-                throw new Error(`Unable to get ${releaseId} release progress`);
-    
+                // Delay before next retry
+                await this.delay(timeout);
+
             }
 
-            return progress;
+        }
 
-        } catch (e) {
+        if (!progress) {
 
-            throw e;
+            throw new Error(`Unable to get ${releaseId} release progress`);
 
         }
+
+        return progress;
+
     }
 
     private async getStageStatus(releaseStatus: ri.Release, stageName: string): Promise<ri.ReleaseEnvironment> {
