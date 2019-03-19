@@ -5,6 +5,7 @@
 - Add new release filters support
 - Remove specific artifact support
 - Improve task user interface
+- Improve default endpoint support
 - Increase retry & timeout
 
 ## 1.1.7

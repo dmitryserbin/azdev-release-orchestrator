@@ -10,7 +10,7 @@ export function MockInput(tmr: mr.TaskMockRunner, variables: string[]): void
 
 }
 
-export function MockEndpoint(tmr: mr.TaskMockRunner, type: string = "integrated", name: string = "SystemVssConnection", account: string = "Integrated", token: string = "Integrated"): void
+export function MockEndpoint(tmr: mr.TaskMockRunner, type: string = "integrated", name: string = "SYSTEMVSSCONNECTION", account: string = "Integrated", token: string = "Integrated"): void
 {
     // Set inputs
     tmr.setInput("EndpointType", type);

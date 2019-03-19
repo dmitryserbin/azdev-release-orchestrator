@@ -6,7 +6,9 @@ export function getEndpoint(): IEndpoint {
 
     const endpointType: string = tl.getInput("EndpointType", true);
 
-    let endpointName: string = "SystemVssConnection";
+    // Use upper-case default endpoint name
+    // For better compartability with non-Windows systems
+    let endpointName: string = "SYSTEMVSSCONNECTION";
     let tokenParameterName: string = "AccessToken";
 
     // Get service endpoint
