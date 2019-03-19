@@ -270,6 +270,8 @@ export class Deployer implements IDeployer {
         let progress: ri.Release | undefined;
         let retryAttempt: number = 0;
 
+        // Retry mechanism to address intermittent ECONNRESET errors
+        // https://github.com/Microsoft/azure-devops-node-api/issues/292
         while (retryAttempt < retry) {
 
             try {
