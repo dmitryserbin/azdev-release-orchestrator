@@ -50,7 +50,7 @@ describe("Helper", () => {
     ];
 
     const buildId = 1;
-    const buildNumber = "My-Build-01"
+    const buildNumber = "My-Build-01";
     const buildDefinitionId = 1;
 
     let webApiMock = TypeMoq.Mock.ofType<az.WebApi>();
