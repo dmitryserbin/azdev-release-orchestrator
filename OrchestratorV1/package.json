@@ -17,19 +17,17 @@
   "author": "Dmitry Serbin",
   "license": "MIT",
   "dependencies": {
-    "@types/async-retry": "^1.2.1",
     "@types/cli-table": "^0.3.0",
-    "async-retry": "^1.2.3",
-    "azure-devops-node-api": "^6.6.3",
-    "azure-pipelines-task-lib": "^2.7.7",
+    "azure-devops-node-api": "^7.0.0",
+    "azure-pipelines-task-lib": "^2.8.0",
     "cli-table": "^0.3.1",
     "moment": "^2.24.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
-    "@types/node": "^11.11.0",
-    "@types/q": "^1.5.1",
+    "@types/node": "^11.11.3",
+    "@types/q": "^1.5.2",
     "chai": "^4.2.0",
     "mocha": "^6.0.2",
     "mocha-junit-reporter": "^1.18.0",

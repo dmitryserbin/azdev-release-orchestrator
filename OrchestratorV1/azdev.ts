@@ -6,7 +6,9 @@ export function getEndpoint(): IEndpoint {
 
     const endpointType: string = tl.getInput("EndpointType", true);
 
-    let endpointName: string = "SystemVssConnection";
+    // Use upper-case default endpoint name
+    // For better compartability with non-Windows systems
+    let endpointName: string = "SYSTEMVSSCONNECTION";
     let tokenParameterName: string = "AccessToken";
 
     // Get service endpoint
@@ -31,8 +33,6 @@ export function getEndpoint(): IEndpoint {
 export function getParameters(): IParameters {
 
     const releaseStrategy: string = tl.getInput("ReleaseStrategy", true);
-    const stageStrategy: string = tl.getInput("StageStrategy", true);
-    const artifactStrategy: string = tl.getInput("ArtifactStrategy", true);
 
     let parameters: IParameters = {
 
@@ -41,7 +41,6 @@ export function getParameters(): IParameters {
         definitionId: tl.getInput("TargetDefinition", true),
         releaseId: "",
         stages: [],
-        artifact: "",
         releaseTag: [],
         artifactTag: [],
         sourceBranch: "",
@@ -55,38 +54,33 @@ export function getParameters(): IParameters {
 
             parameters.releaseType = ReleaseType.Create;
 
+            const definitionStagesFilter: boolean = tl.getBoolInput("DefinitionStagesFilter");
+            const artifactTagFilter: boolean = tl.getBoolInput("ArtifactTagFilter");
+            const sourceBranchFilter: boolean = tl.getBoolInput("SourceBranchFilter");
+
             // Get definition stages
-            if (stageStrategy === "specific") {
+            if (definitionStagesFilter) {
 
                 const targetDefinitionStages: string[] = tl.getDelimitedInput("TargetDefinitionStages", ",", true);
                 parameters.stages = targetDefinitionStages;
 
             }
 
-            // Get definition artifact
-            if (artifactStrategy === "specific") {
+             // Get artifact tag filter
+             if (artifactTagFilter) {
 
-                const targetArtifactVersion: string = tl.getInput("TargetArtifactVersion", true);
-                parameters.artifact = JSON.parse(targetArtifactVersion);
+                const artifactTagName: string[] = tl.getDelimitedInput("ArtifactTagName", ",", false);
+                parameters.artifactTag = artifactTagName;
 
             }
 
-            break;
+            // Get artifacts source branch filter
+            if (sourceBranchFilter) {
 
-        }
+                const sourceBranchName: string = tl.getInput("SourceBranchName", false);
+                parameters.sourceBranch = sourceBranchName;
 
-        // Re-deploy release
-        case "specific": {
-
-            parameters.releaseType = ReleaseType.Specific;
-
-            // Get release ID
-            const targetRelease: string = tl.getInput("TargetRelease", true);
-            parameters.releaseId = targetRelease;
-
-            // Get release stages
-            const targetReleaseStages: string[] = tl.getDelimitedInput("TargetReleaseStages", ",", true);
-            parameters.stages = targetReleaseStages;
+            }
 
             break;
 
@@ -128,6 +122,23 @@ export function getParameters(): IParameters {
                 parameters.sourceBranch = sourceBranchName;
 
             }
+
+            break;
+
+        }
+
+        // Specific release
+        case "specific": {
+
+            parameters.releaseType = ReleaseType.Specific;
+
+            // Get release ID
+            const targetRelease: string = tl.getInput("TargetRelease", true);
+            parameters.releaseId = targetRelease;
+
+            // Get release stages
+            const targetReleaseStages: string[] = tl.getDelimitedInput("TargetReleaseStages", ",", true);
+            parameters.stages = targetReleaseStages;
 
             break;
 

@@ -37,7 +37,6 @@ export interface IParameters {
     definitionId: string;
     releaseId: string;
     stages: string[];
-    artifact: string;
     releaseTag: string[];
     artifactTag: string[];
     sourceBranch: string;
@@ -113,6 +112,14 @@ export interface IReleaseProgress {
 
 }
 
+export interface IReleaseFilter {
+
+    artifactVersion?: string,
+    sourceBranch?: string,
+    tag?: string[],
+
+}
+
 export interface IOrchestrator {
 
     deployRelease(parameters: IParameters, details: IReleaseDetails): Promise<void>;
@@ -124,11 +131,11 @@ export interface IHelper {
 
     getProject(projectId: string): Promise<ci.TeamProject>;
     getDefinition(projectName: string, definitionId: number): Promise<ri.ReleaseDefinition>;
-    findRelease(projectName: string, definitionId: number, stages: string[], sourceBranch?: string, artifactVersion?: string, tags?: string[]): Promise<ri.Release>;
     getRelease(project: ci.TeamProject, releaseId: number, stages: string[]): Promise<ri.Release>;
-    createRelease(project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, stages?: string[], artifact?: any): Promise<ri.Release>;
-    getArtifactDefinition(definition: ri.ReleaseDefinition): Promise<ri.ArtifactSourceReference>;
+    findRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter): Promise<ri.Release>;
+    createRelease(project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, stages?: string[], artifacts?: ri.ArtifactMetadata[]): Promise<ri.Release>;
     findBuild(projectName: string, definitionId: number, tags?: string[]): Promise<bi.Build>;
+    getArtifacts(projectName: string, definitionId: number, primaryId: string, versionId?: string, sourceBranch?: string): Promise<ri.ArtifactMetadata[]>;
     isAutomated(release: ri.Release): Promise<boolean>;
 
 }

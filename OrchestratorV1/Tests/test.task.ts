@@ -16,17 +16,15 @@ describe("Run", ()  => {
         EndpointAccount: process.env.azAccount ? process.env.azAccount : "My-Account",
         EndpointToken: process.env.azToken ? process.env.azToken : "My-Secret-Token",
 
-        ReleaseStrategy: null,
-        StageStrategy: "specific",
-        ArtifactStrategy: "default",
-        IgnoreFailure: "false",
-
         TargetProject: "761623f0-c4c0-4dab-884b-a428a01c200f",
         TargetDefinition: "1",
+        ReleaseStrategy: null,
+        IgnoreFailure: "false",
+
+        DefinitionStagesFilter: "false",
         TargetDefinitionStages: "DEV,TEST,PROD",
         TargetRelease: null,
         TargetReleaseStages: "DEV,TEST,PROD",
-        TargetArtifactVersion: "{ \"Name\" : \"HelloYo\", \"Id\" : \"3\" }",
         ReleaseTagFilter: "false",
         ReleaseTagName: null,
         ArtifactTagFilter: "false",
@@ -46,6 +44,48 @@ describe("Run", ()  => {
 
         let variables = Object.assign({}, defaultVariables);
         variables.ReleaseStrategy = "create";
+        SetProcessVariables(variables);
+
+        const tr: mt.MockTestRunner = new mt.MockTestRunner(path.join(__dirname, "task.index.js"));
+        tr.run();
+
+        console.log(tr.stdout);
+
+        chai.assert.isTrue(tr.succeeded, "Should have succeeded");
+        chai.assert.isEmpty(tr.warningIssues, "Should have succeeded");
+        chai.assert.isEmpty(tr.errorIssues, "Should have no errors");
+
+        ClearProcessVariables(variables);
+
+    });
+
+    it("Should deploy new release filtered by artifact tag @task", async () => {
+
+        let variables = Object.assign({}, defaultVariables);
+        variables.ReleaseStrategy = "create";
+        variables.ArtifactTagFilter = "true";
+        variables.ArtifactTagName = "Build-Yo";
+        SetProcessVariables(variables);
+
+        const tr: mt.MockTestRunner = new mt.MockTestRunner(path.join(__dirname, "task.index.js"));
+        tr.run();
+
+        console.log(tr.stdout);
+
+        chai.assert.isTrue(tr.succeeded, "Should have succeeded");
+        chai.assert.isEmpty(tr.warningIssues, "Should have succeeded");
+        chai.assert.isEmpty(tr.errorIssues, "Should have no errors");
+
+        ClearProcessVariables(variables);
+
+    });
+
+    it("Should deploy new release filtered by artifact branch @task", async () => {
+
+        let variables = Object.assign({}, defaultVariables);
+        variables.ReleaseStrategy = "create";
+        variables.SourceBranchFilter = "true";
+        variables.SourceBranchName = "refs/heads/working/test";
         SetProcessVariables(variables);
 
         const tr: mt.MockTestRunner = new mt.MockTestRunner(path.join(__dirname, "task.index.js"));

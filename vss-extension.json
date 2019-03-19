@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "release-orchestrator",
     "name": "Release Orchestrator",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "publisher": "dmitryserbin",
     "public": true,
     "targets": [

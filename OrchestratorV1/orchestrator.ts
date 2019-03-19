@@ -1,7 +1,8 @@
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import * as bi from "azure-devops-node-api/interfaces/BuildInterfaces";
 import * as ci from "azure-devops-node-api/interfaces/CoreInterfaces";
 
-import { ReleaseType, IParameters, IReleaseParameters, IOrchestrator, IDeployer, IHelper, IReleaseDetails } from "./interfaces";
+import { ReleaseType, IParameters, IReleaseParameters, IOrchestrator, IDeployer, IHelper, IReleaseDetails, IReleaseFilter } from "./interfaces";
 
 export class Orchestrator implements IOrchestrator {
 
@@ -26,7 +27,7 @@ export class Orchestrator implements IOrchestrator {
 
         }
 
-        const targetDefinition: ri.ReleaseDefinition = await this.helper.getDefinition(targetProject.name, Number(parameters.definitionId));
+        const targetDefinition: ri.ReleaseDefinition = await this.helper.getDefinition(targetProject.name!, Number(parameters.definitionId));
 
         if (!targetDefinition) {
 
@@ -40,11 +41,24 @@ export class Orchestrator implements IOrchestrator {
         const targetRelease: ri.Release = await this.getRelease(parameters.releaseType, targetProject, targetDefinition, details, parameters);
 
         // Get target stages
-        const targetStages: string[] = parameters.stages ? parameters.stages : targetRelease.environments.map((i) => i.name);
+        const targetStages: string[] = (parameters.stages && parameters.stages.length > 0) ? parameters.stages : targetRelease.environments!.map((i) => i.name!);
+
+        if (targetStages.length == 0) {
+
+            throw new Error(`Unable to detect ${targetRelease.name} release stages`);
+
+        }
 
         // Get release parameters
-        const releaseParameters = this.getReleaseParameters(targetProject, targetRelease, targetStages, 5000);
+        const releaseParameters = {
 
+            projectName: targetProject.name,
+            releaseId: targetRelease.id,
+            releaseStages: targetStages,
+            sleep: 5000,
+
+        } as IReleaseParameters;
+        
         // Deploy new release
         if (parameters.releaseType === ReleaseType.Create) {
 
@@ -86,17 +100,10 @@ export class Orchestrator implements IOrchestrator {
 
             case ReleaseType.Create: {
 
-                // Create new
-                release = await this.helper.createRelease(project, definition, details, parameters.stages, parameters.artifact);
+                // Get new release filtered artifacts
+                const filteredArtifact: ri.ArtifactMetadata[] = await this.getReleaseArtifact(project, definition, parameters.artifactTag, parameters.sourceBranch);
 
-                break;
-
-            }
-
-            case ReleaseType.Specific: {
-
-                // Use existing
-                release = await this.helper.getRelease(project, Number(parameters.releaseId), parameters.stages);
+                release = await this.helper.createRelease(project, definition, details, parameters.stages, filteredArtifact);
 
                 break;
 
@@ -104,35 +111,18 @@ export class Orchestrator implements IOrchestrator {
 
             case ReleaseType.Latest: {
 
-                let artifactVersion = undefined;
+                // Get existing release filters
+                const releaseFilters: IReleaseFilter = await this.getReleaseFilters(project, definition, parameters.releaseTag, parameters.artifactTag, parameters.sourceBranch);
 
-                // Confirm release tag filter
-                if (parameters.releaseTag && parameters.releaseTag.length >= 1) {
+                release = await this.helper.findRelease(project.name!, definition.id!, parameters.stages, releaseFilters);
 
-                    console.log(`Using <${parameters.releaseTag}> tag(s) for target release filter`);
+                break;
 
-                }
+            }
 
-                // Get build matching artifact tag
-                if (parameters.artifactTag && parameters.artifactTag.length >= 1) {
+            case ReleaseType.Specific: {
 
-                    console.log(`Using <${parameters.artifactTag}> artifact tag(s) for target release filter`);
-
-                    const targetArtifactDefinition = await this.helper.getArtifactDefinition(definition);
-                    const targetArtifactBuild = await this.helper.findBuild(project.name, Number(targetArtifactDefinition.id), parameters.artifactTag);
-
-                    artifactVersion = String(targetArtifactBuild.id);
-
-                }
-
-                // Confirm source branch filter
-                if (parameters.sourceBranch) {
-
-                    console.log(`Using <${parameters.sourceBranch}> artifact branch for target release filter`);
-
-                }
-
-                release = await this.helper.findRelease(project.name, definition.id, parameters.stages, parameters.sourceBranch, artifactVersion, parameters.releaseTag);
+                release = await this.helper.getRelease(project, Number(parameters.releaseId), parameters.stages);
 
                 break;
 
@@ -150,16 +140,91 @@ export class Orchestrator implements IOrchestrator {
 
     }
 
-    private getReleaseParameters(project: ci.TeamProject, release: ri.Release, stages: string[], sleep: number): IReleaseParameters {
+    private async getReleaseArtifact(project: ci.TeamProject, definition: ri.ReleaseDefinition, artifactTag?: string[], sourceBranch?: string): Promise<ri.ArtifactMetadata[]> {
 
-        return {
+        let result: ri.ArtifactMetadata[] = [];
 
-            projectName: project.name,
-            releaseId: release.id,
-            releaseStages: stages,
-            sleep: sleep
+        // Get primary definition build artifact
+        const primaryArtifact: ri.Artifact = definition.artifacts!.filter(i => i.isPrimary == true && i.type == "Build")[0];
 
-        } as IReleaseParameters
+        if (primaryArtifact) {
+
+            let artifactVersion = undefined;
+
+            // Get build matching artifact tag
+            if (artifactTag && artifactTag.length >= 1) {
+
+                console.log(`Using <${artifactTag}> artifact tag(s) for target release filter`);
+
+                const targetArtifactBuild: bi.Build = await this.helper.findBuild(project.name!, Number(primaryArtifact.definitionReference!.definition.id), artifactTag);
+
+                artifactVersion = String(targetArtifactBuild.id);
+
+            }
+
+            // Confirm source branch filter
+            if (sourceBranch) {
+
+                console.log(`Using <${sourceBranch}> artifact branch for target release filter`);
+
+            }
+
+            result = await this.helper.getArtifacts(project.name!, definition.id!, primaryArtifact.sourceId!, artifactVersion, sourceBranch);
+
+        }
+
+        return result;
+
+    }
+
+    private async getReleaseFilters(project: ci.TeamProject, definition: ri.ReleaseDefinition, releaseTag?: string[], artifactTag?: string[], sourceBranch?: string): Promise<IReleaseFilter> {
+
+        let result: IReleaseFilter = {
+
+            artifactVersion: undefined,
+            sourceBranch: undefined,
+            tag: undefined,
+
+        };
+
+        // Get primary definition build artifact
+        const primaryArtifact: ri.Artifact = definition.artifacts!.filter(i => i.isPrimary == true && i.type == "Build")[0];
+
+        // Get release tag filter
+        if (releaseTag && releaseTag.length >= 1) {
+
+            console.log(`Using <${releaseTag}> tag(s) for target release filter`);
+
+            result.tag = releaseTag;
+
+        }
+
+        if (primaryArtifact) {
+
+            // Get artifact tag filter
+            if (artifactTag && artifactTag.length >= 1) {
+
+                console.log(`Using <${artifactTag}> artifact tag(s) for target release filter`);
+
+                // Get build matching artifact tag
+                const targetArtifactBuild: bi.Build = await this.helper.findBuild(project.name!, Number(primaryArtifact.definitionReference!.definition.id), artifactTag);
+
+                result.artifactVersion = String(targetArtifactBuild.id);
+
+            }
+
+            // Get source branch filter
+            if (sourceBranch) {
+
+                console.log(`Using <${sourceBranch}> artifact branch for target release filter`);
+
+                result.sourceBranch = sourceBranch;
+
+            }
+
+        }
+
+        return result;
 
     }
 

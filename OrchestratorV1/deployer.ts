@@ -1,6 +1,5 @@
 import Table from "cli-table";
 import Moment from "moment";
-import Retry from "async-retry";
 
 import * as ra from "azure-devops-node-api/ReleaseApi";
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
@@ -32,7 +31,7 @@ export class Deployer implements IDeployer {
                 releaseProgress.url = releaseStatus._links.web.href;
 
                 // Get release stage
-                let releaseStage: any = releaseStatus.environments.find((i: ri.ReleaseEnvironment) => i.name === stage.name);
+                let releaseStage: any = releaseStatus.environments!.find((i: ri.ReleaseEnvironment) => i.name === stage.name);
 
                 console.log(`Deploying <${releaseStage.name}> release stage (last status <${ri.EnvironmentStatus[releaseStage.status]}>)`);
 
@@ -137,7 +136,7 @@ export class Deployer implements IDeployer {
                     const stageStatus = await this.getStageStatus(releaseStatus, stage.name);
 
                     stage.id = stageStatus.id;
-                    stage.release = stageStatus.release.name;
+                    stage.release = stageStatus.release!.name;
 
                     const approveParameters = {
 
@@ -188,7 +187,7 @@ export class Deployer implements IDeployer {
     async approveStage(stage: ri.ReleaseEnvironment, parameters: IApproveParameters, releaseDetails: IReleaseDetails): Promise<IStageApproval> {
 
         // Get pending approvals
-        const pendingApprovals = stage.preDeployApprovals.filter((i) => i.status === ri.ApprovalStatus.Pending);
+        const pendingApprovals = stage.preDeployApprovals!.filter((i) => i.status === ri.ApprovalStatus.Pending);
 
         if (pendingApprovals.length > 0) {
 
@@ -201,7 +200,7 @@ export class Deployer implements IDeployer {
             for (const request of pendingApprovals) {
 
                 // Update status
-                parameters.status.status = request.status;
+                parameters.status.status = request.status!;
 
                 // console.log(`id ${request.id} | type: ${request.approvalType} | approver: ${request.approver.displayName} | status: ${request.status}`);
 
@@ -213,9 +212,9 @@ export class Deployer implements IDeployer {
                         status: ri.ApprovalStatus.Approved,
                         comments: `Approved by Azure DevOps release orchestrator`,
 
-                    } as ri.ReleaseApproval, parameters.projectName, request.id);
+                    } as ri.ReleaseApproval, parameters.projectName, request.id!);
 
-                    parameters.status.status = requestStatus.status;
+                    parameters.status.status = requestStatus.status!;
 
                     // Stop loop is approval succeeded
                     // No need to approve following request
@@ -254,7 +253,7 @@ export class Deployer implements IDeployer {
                         status: ri.EnvironmentStatus.Canceled,
                         comment: "Approval waiting time limit exceeded",
 
-                    } as ri.ReleaseEnvironmentUpdateMetadata, parameters.projectName, stage.release.id, stage.id);
+                    } as ri.ReleaseEnvironmentUpdateMetadata, parameters.projectName, stage.release!.id!, stage.id!);
 
                 }
 
@@ -266,57 +265,49 @@ export class Deployer implements IDeployer {
         
     }
 
-    async getReleaseStatus(projectName: string, releaseId: number, retry: number = 5): Promise<ri.Release> {
+    async getReleaseStatus(projectName: string, releaseId: number, retry: number = 10, timeout: number = 5000): Promise<ri.Release> {
 
-        try {
+        let progress: ri.Release | undefined;
+        let retryAttempt: number = 0;
 
-            let progress: ri.Release | undefined;
+        // Retry mechanism to address intermittent ECONNRESET errors
+        // https://github.com/Microsoft/azure-devops-node-api/issues/292
+        while (retryAttempt < retry) {
 
-            await Retry(async () => {
+            try {
 
-                // ECONNRESET safe retry
-                await this.releaseApi.getRelease(projectName, releaseId).then(function (result) {
+                retryAttempt++;
 
-                    progress = result;
+                // Get release status
+                progress = await this.releaseApi.getRelease(projectName, releaseId);
 
-                }).catch(function (err) {
+                // Stop retrying on success
+                retryAttempt = retry;
 
-                    if (err.code !== "ECONNRESET") {
+            } catch {
 
-                        throw err;
+                console.log(`Retry retrieving release status..`);
 
-                    };
+                // Delay before next retry
+                await this.delay(timeout);
 
-                });
-                
-            }, {
-
-                retries: retry
-                
-            });
-
-            if (!progress) {
-
-                throw new Error(`Unable to get ${releaseId} release progress`);
-    
             }
-    
-            return progress;
-
-        } catch (e) {
-
-            // Added to help troubleshooting
-            // Intermittent ECONNRESET errors
-            console.log(e);
-
-            throw e;
 
         }
+
+        if (!progress) {
+
+            throw new Error(`Unable to get ${releaseId} release progress`);
+
+        }
+
+        return progress;
+
     }
 
     private async getStageStatus(releaseStatus: ri.Release, stageName: string): Promise<ri.ReleaseEnvironment> {
 
-        const progress = releaseStatus.environments.find((i) => i.name === stageName);
+        const progress = releaseStatus.environments!.find((i) => i.name === stageName);
 
         if (!progress) {
 
@@ -330,20 +321,20 @@ export class Deployer implements IDeployer {
 
     private async displayStatus(stage: ri.ReleaseEnvironment): Promise<void> {
 
-        console.log(`Stage <${stage.name}> (${stage.id}) deployment completed with <${ri.EnvironmentStatus[stage.status]}> status`);
+        console.log(`Stage <${stage.name}> (${stage.id}) deployment completed with <${ri.EnvironmentStatus[stage.status!]}> status`);
 
         // Get latest deployment attempt
-        const deploymentAttempt: ri.DeploymentAttempt = stage.deploySteps.sort((left, right) => left.deploymentId - right.deploymentId).reverse()[0];
+        const deploymentAttempt: ri.DeploymentAttempt = stage.deploySteps!.sort((left, right) => left.deploymentId! - right.deploymentId!).reverse()[0];
 
-        for (const phase of deploymentAttempt.releaseDeployPhases) {
+        for (const phase of deploymentAttempt.releaseDeployPhases!) {
 
-            console.log(`Phase <${phase.name}> completed with <${ri.DeployPhaseStatus[phase.status]}> status`);
+            console.log(`Phase <${phase.name}> completed with <${ri.DeployPhaseStatus[phase.status!]}> status`);
 
-            for (const job of phase.deploymentJobs) {
+            for (const job of phase.deploymentJobs!) {
 
                 const table = new Table({ head: ["Agent", "Task", "Status", "Duration"] });
 
-                for (const task of job.tasks) {
+                for (const task of job.tasks!) {
 
                     table.push([
 

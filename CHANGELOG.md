@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0
+
+- Add new release filters support
+- Remove specific artifact support
+- Improve task user interface
+- Improve default endpoint support
+- Increase retry & timeout
+
 ## 1.1.7
 
 - Improve task parameters support

@@ -5,7 +5,7 @@ import * as ca from "azure-devops-node-api/CoreApi";
 import * as ra from "azure-devops-node-api/ReleaseApi";
 import * as ba from "azure-devops-node-api/BuildApi";
 
-import { IHelper, IReleaseDetails } from "./interfaces";
+import { IHelper, IReleaseDetails, IReleaseFilter } from "./interfaces";
 
 export class Helper implements IHelper {
 
@@ -49,7 +49,7 @@ export class Helper implements IHelper {
 
     }
 
-    async findRelease(projectName: string, definitionId: number, stages: string[], sourceBranch?: string, artifactVersion?: string, tags?: string[]): Promise<ri.Release> {
+    async findRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter): Promise<ri.Release> {
 
         try {
 
@@ -69,10 +69,10 @@ export class Helper implements IHelper {
                 ri.ReleaseExpands.Artifacts,
                 undefined,
                 undefined,
-                artifactVersion ? artifactVersion : undefined,
-                sourceBranch ? sourceBranch : undefined,
+                filter.artifactVersion ? filter.artifactVersion : undefined,
+                filter.sourceBranch ? filter.sourceBranch : undefined,
                 undefined,
-                (tags && tags.length) ? tags : undefined);
+                (filter.tag && filter.tag.length) ? filter.tag : undefined);
 
             if (!availableReleases) {
 
@@ -82,9 +82,9 @@ export class Helper implements IHelper {
 
             if (availableReleases.length <= 0) {
 
-                if (tags || artifactVersion || sourceBranch) {
+                if (filter.tag || filter.artifactVersion || filter.sourceBranch) {
 
-                    throw new Error(`No active releases matching filter (tags: ${tags}, artifact: ${artifactVersion}, branch: ${sourceBranch}) criteria found`);
+                    throw new Error(`No active releases matching filter (tags: ${filter.tag}, artifact: ${filter.artifactVersion}, branch: ${filter.sourceBranch}) criteria found`);
 
                 } else {
 
@@ -95,11 +95,11 @@ export class Helper implements IHelper {
             }
 
             // Get latest release by ID
-            const filteredRelease: ri.Release = availableReleases.sort((left, right) => left.id - right.id).reverse()[0];
-            const targetRelease: ri.Release = await this.releaseApi.getRelease(projectName, filteredRelease.id);
+            const filteredRelease: ri.Release = availableReleases.sort((left, right) => left.id! - right.id!).reverse()[0];
+            const targetRelease: ri.Release = await this.releaseApi.getRelease(projectName, filteredRelease.id!);
 
             // Validate release environments
-            await this.validateStages(stages, targetRelease.environments.map((i) => i.name));
+            await this.validateStages(stages, targetRelease.environments!.map((i) => i.name!));
 
             return targetRelease;
 
@@ -115,10 +115,10 @@ export class Helper implements IHelper {
 
         try {
 
-            const targetRelease: ri.Release = await this.releaseApi.getRelease(project.name, releaseId);
+            const targetRelease: ri.Release = await this.releaseApi.getRelease(project.name!, releaseId);
         
             // Validate release environments
-            await this.validateStages(stages, targetRelease.environments.map((i) => i.name));
+            await this.validateStages(stages, targetRelease.environments!.map((i) => i.name!));
         
             return targetRelease;
 
@@ -130,7 +130,7 @@ export class Helper implements IHelper {
 
     }
 
-    async createRelease(project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, stages?: string[], artifact?: any): Promise<ri.Release> {
+    async createRelease(project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, stages?: string[], artifacts?: ri.ArtifactMetadata[]): Promise<ri.Release> {
 
         try {
 
@@ -145,21 +145,21 @@ export class Helper implements IHelper {
             } as ri.ReleaseStartMetadata;
 
             // Set manual stages filter
-            if (stages) {
+            if (stages && stages.length > 0) {
 
                 releaseMetadata.manualEnvironments = await this.getStages(definition, stages);
 
             }
 
-            // Set target artifacts filter
-            if (artifact) {
+            // Set custom artifacts filter
+            if (artifacts && artifacts.length > 0) {
 
-                releaseMetadata.artifacts = await this.getArtifacts(project.name, definition.id, artifact);
+                releaseMetadata.artifacts = artifacts;
 
             }
 
             // Create release
-            return this.releaseApi.createRelease(releaseMetadata, project.name);
+            return this.releaseApi.createRelease(releaseMetadata, project.name!);
 
         } catch (e) {
 
@@ -216,68 +216,63 @@ export class Helper implements IHelper {
 
     }
 
-    async getArtifactDefinition(definition: ri.ReleaseDefinition): Promise<ri.ArtifactSourceReference> {
+    async getArtifacts(projectName: string, definitionId: number, primaryId: string, versionId?: string, sourceBranch?: string): Promise<ri.ArtifactMetadata[]> {
 
-        const primaryArtifact: ri.Artifact = definition.artifacts.filter((i) => i.isPrimary == true && i.type == "Build")[0];
+        let result: ri.ArtifactMetadata[] = [];
 
-        if (!primaryArtifact) {
-
-            throw new Error(`No primary build artifact found`);
-
-        }
-
-        return primaryArtifact.definitionReference.definition;
-
-    }
-
-    async isAutomated(release: ri.Release): Promise<boolean> {
-
-        // Detect if environment conditions met
-        // To determine automated release status
-        const conditions: number = release.environments.filter((e) => e.conditions.some((i) => i.result === true)).length;
-        
-        return conditions > 0 ? true : false;
-
-    }
-
-    private async getStages(definition: ri.ReleaseDefinition, stages: string[]): Promise<string[]> {
-
-        // Get definition stages
-        const definitionStages = definition.environments.map((i) => i.name);
-
-        // Validate definition environments
-        await this.validateStages(stages, definitionStages);
-
-        return definitionStages.filter((i) => stages.indexOf(i) === -1);
-
-    }
-
-    private async getArtifacts(projectName: string, definitionId: number, artifact: any): Promise<ri.ArtifactMetadata[]> {
-
+        // Get available versions
         const definitionArtifacts: ri.ArtifactVersionQueryResult = await this.releaseApi.getArtifactVersions(projectName, definitionId);
 
-        const releaseArtifacts: ri.ArtifactMetadata[] = [];
+        // Create artifacts metadata
+        for (const artifact of definitionArtifacts.artifactVersions!) {
 
-        for (const result of definitionArtifacts.artifactVersions) {
+            // Use default (latest)
+            let targetVersion: ri.BuildVersion = artifact.versions![0];
+            
+            // Filter primary artifact
+            if (artifact.sourceId === primaryId) {
 
-            const targetVersion = (result.alias === artifact.alias) ?
+                // Filter by version ID
+                if (versionId && !sourceBranch) {
 
-                // Get specified artifact
-                (result.versions.filter((i) => i.id === artifact.version)[0]) :
+                    targetVersion = artifact.versions!.filter(i => i.id === versionId)[0];
 
-                // Get latest artifact
-                (result.versions[0]);
+                }
 
-            if (!targetVersion) {
+                // Filter by source branch
+                if (sourceBranch && !versionId) {
 
-                throw new Error(`Unable to detect <${result.alias}> target artifact`);
+                    targetVersion = artifact.versions!.filter(i => i.sourceBranch === sourceBranch)[0];
+
+                }
+
+                // Filter by version ID and source branch
+                if (versionId && sourceBranch) {
+
+                    targetVersion = artifact.versions!.filter(i => i.id === versionId && i.sourceBranch === sourceBranch)[0];
+
+                }
 
             }
 
-            // Add to release artifacts
-            releaseArtifacts.push({
+            // Validate version
+            if (!targetVersion) {
 
-                alias: result.alias,
+                if (versionId || sourceBranch) {
+
+                    throw new Error(`No <${artifact.alias}> artifact matching filter (version: ${versionId}, branch: ${sourceBranch}) criteria found`);
+
+                } else {
+
+                    throw new Error(`Unable to detect <${artifact.alias}> target artifact`);
+
+                }
+
+            }
+
+            result.push({
+
+                alias: artifact.alias,
                 instanceReference: {
 
                     id: targetVersion.id,
@@ -292,7 +287,29 @@ export class Helper implements IHelper {
             } as ri.ArtifactMetadata);
         }
 
-        return releaseArtifacts;
+        return result;
+
+    }
+
+    async isAutomated(release: ri.Release): Promise<boolean> {
+
+        // Detect if environment conditions met
+        // To determine automated release status
+        const conditions: number = release.environments!.filter((e) => e.conditions!.some((i) => i.result === true)).length;
+        
+        return conditions > 0 ? true : false;
+
+    }
+
+    private async getStages(definition: ri.ReleaseDefinition, stages: string[]): Promise<string[]> {
+
+        // Get definition stages
+        const definitionStages: string[] = definition.environments!.map((i) => i.name!);
+
+        // Validate definition environments
+        await this.validateStages(stages, definitionStages);
+
+        return definitionStages.filter((i) => stages.indexOf(i) === -1);
 
     }
 

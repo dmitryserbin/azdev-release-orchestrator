@@ -10,16 +10,15 @@ MockEndpoint(tmr, process.env.EndpointType, process.env.EndpointName, process.en
 
 MockInput(tmr, [
 
-    "ReleaseStrategy",
-    "StageStrategy",
-    "ArtifactStrategy",
-    "IgnoreFailure",
     "TargetProject",
     "TargetDefinition",
+    "ReleaseStrategy",
+    "IgnoreFailure",
+
+    "DefinitionStagesFilter",
     "TargetDefinitionStages",
     "TargetRelease",
     "TargetReleaseStages",
-    "TargetArtifactVersion",
     "ReleaseTagFilter",
     "ReleaseTagName",
     "ArtifactTagFilter",

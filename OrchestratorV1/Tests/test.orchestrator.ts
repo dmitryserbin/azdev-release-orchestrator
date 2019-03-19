@@ -23,6 +23,7 @@ describe("Orchestrator", () => {
 
         id: 1,
         name: "My-Definition",
+        artifacts: []
 
     } as ri.ReleaseDefinition;
 
@@ -61,7 +62,6 @@ describe("Orchestrator", () => {
         releaseId: "",
         releaseType: ReleaseType.Undefined,
         stages: [ "DEV", "TEST", "PROD" ],
-        artifact: "",
 
     } as IParameters;
 
@@ -140,7 +140,7 @@ describe("Orchestrator", () => {
         
     });
 
-    it("Should create new release", async () => {
+    it("Should get new release", async () => {
 
         const parameters = mockParameters;
         parameters.releaseType = ReleaseType.Create;
@@ -180,7 +180,7 @@ describe("Orchestrator", () => {
         const parameters = mockParameters;
         parameters.releaseType = ReleaseType.Latest;
 
-        helperMock.setup(x => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
+        helperMock.setup(x => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
 
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
 
@@ -201,7 +201,7 @@ describe("Orchestrator", () => {
         const release = mockRelease;
         release.tags = parameters.releaseTag;
 
-        helperMock.setup(x => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(release));
+        helperMock.setup(x => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(release));
 
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
 
@@ -249,15 +249,14 @@ describe("Orchestrator", () => {
 
         } as ri.ArtifactSourceReference;
         
-        release.artifacts[0].definitionReference = {
+        release.artifacts![0].definitionReference = {
 
             definition: definitionReferenceMock,
             version: versionReferenceMock,
         
         };
 
-        helperMock.setup(x => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
-        helperMock.setup(x => x.getArtifactDefinition(TypeMoq.It.isAny())).returns(() => Promise.resolve(definitionReferenceMock));
+        helperMock.setup(x => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
         helperMock.setup(x => x.findBuild(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(buildMock));
 
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
@@ -273,7 +272,7 @@ describe("Orchestrator", () => {
         chai.expect(result).not.null;
         chai.expect(result.id).eq(mockRelease.id);
         chai.expect(result.name).eq(mockRelease.name);
-        chai.expect(result.artifacts[0].definitionReference.version.id).eq(String(buildMock.id));
+        chai.expect(result.artifacts![0].definitionReference!.version.id).eq(String(buildMock.id));
 
     });
 
