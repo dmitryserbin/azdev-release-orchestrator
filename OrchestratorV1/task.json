@@ -172,7 +172,7 @@
       "name": "IgnoreFailure",
       "type": "boolean",
       "label": "Ignore Failures",
-      "helpMarkDown": "Keep running the task even if target pipeline or stage deployment fails (set task result to partially succeeded)",
+      "helpMarkDown": "Suppress errors and set task result to partially succeeded in case of failure",
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"
@@ -181,7 +181,7 @@
       "name": "Debug",
       "type": "boolean",
       "label": "Debug Mode",
-      "helpMarkDown": "Enables debug mode to help troubleshooting issues. Default = false",
+      "helpMarkDown": "Enable debug mode to help troubleshooting issues. Default = false",
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"
