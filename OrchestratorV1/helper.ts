@@ -1,3 +1,5 @@
+import Debug from "debug";
+
 import * as ci from "azure-devops-node-api/interfaces/CoreInterfaces";
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import * as bi from "azure-devops-node-api/interfaces/BuildInterfaces";
@@ -6,6 +8,8 @@ import * as ra from "azure-devops-node-api/ReleaseApi";
 import * as ba from "azure-devops-node-api/BuildApi";
 
 import { IHelper, IReleaseDetails, IReleaseFilter } from "./interfaces";
+
+const logger = Debug("release-orchestrator:Helper");
 
 export class Helper implements IHelper {
 
@@ -23,6 +27,8 @@ export class Helper implements IHelper {
 
     async getProject(projectId: string): Promise<ci.TeamProject> {
 
+        const verbose = logger.extend("getProject");
+
         const targetProject = await this.coreApi.getProject(projectId);
 
         if (!targetProject) {
@@ -31,11 +37,15 @@ export class Helper implements IHelper {
 
         }
 
+        verbose(targetProject);
+
         return targetProject;
 
     }
 
     async getDefinition(projectName: string, definitionId: number): Promise<ri.ReleaseDefinition> {
+
+        const verbose = logger.extend("getDefinition");
 
         const targetDefinition: ri.ReleaseDefinition = await this.releaseApi.getReleaseDefinition(projectName, definitionId);
     
@@ -45,11 +55,15 @@ export class Helper implements IHelper {
     
         }
 
+        verbose(targetDefinition);
+
         return targetDefinition;
 
     }
 
     async findRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter): Promise<ri.Release> {
+
+        const verbose = logger.extend("findRelease");
 
         try {
 
@@ -101,6 +115,8 @@ export class Helper implements IHelper {
             // Validate release environments
             await this.validateStages(stages, targetRelease.environments!.map((i) => i.name!));
 
+            verbose(targetRelease);
+
             return targetRelease;
 
         } catch (e) {
@@ -113,12 +129,16 @@ export class Helper implements IHelper {
 
     async getRelease(project: ci.TeamProject, releaseId: number, stages: string[]): Promise<ri.Release> {
 
+        const verbose = logger.extend("getRelease");
+
         try {
 
             const targetRelease: ri.Release = await this.releaseApi.getRelease(project.name!, releaseId);
         
             // Validate release environments
             await this.validateStages(stages, targetRelease.environments!.map((i) => i.name!));
+
+            verbose(targetRelease);
         
             return targetRelease;
 
@@ -131,6 +151,8 @@ export class Helper implements IHelper {
     }
 
     async createRelease(project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, stages?: string[], artifacts?: ri.ArtifactMetadata[]): Promise<ri.Release> {
+
+        const verbose = logger.extend("createRelease");
 
         try {
 
@@ -159,7 +181,11 @@ export class Helper implements IHelper {
             }
 
             // Create release
-            return this.releaseApi.createRelease(releaseMetadata, project.name!);
+            const targetRelease: ri.Release = await this.releaseApi.createRelease(releaseMetadata, project.name!);
+
+            verbose(targetRelease);
+
+            return targetRelease;
 
         } catch (e) {
 
@@ -170,6 +196,8 @@ export class Helper implements IHelper {
     }
 
     async findBuild(projectName: string, definitionId: number, tags?: string[]): Promise<bi.Build> {
+
+        const verbose = logger.extend("findBuild");
 
         try {
 
@@ -206,7 +234,11 @@ export class Helper implements IHelper {
                 
             }
 
-            return availableBuilds[0];
+            const targetBuild: bi.Build = availableBuilds[0];
+
+            verbose(targetBuild);
+
+            return targetBuild;
 
         } catch (e) {
 
@@ -217,6 +249,8 @@ export class Helper implements IHelper {
     }
 
     async getArtifacts(projectName: string, definitionId: number, primaryId: string, versionId?: string, sourceBranch?: string): Promise<ri.ArtifactMetadata[]> {
+
+        const verbose = logger.extend("getArtifacts");
 
         let result: ri.ArtifactMetadata[] = [];
 
@@ -287,17 +321,23 @@ export class Helper implements IHelper {
             } as ri.ArtifactMetadata);
         }
 
+        verbose(result);
+
         return result;
 
     }
 
     async isAutomated(release: ri.Release): Promise<boolean> {
 
+        const verbose = logger.extend("isAutomated");
+
         // Detect if environment conditions met
         // To determine automated release status
-        const conditions: number = release.environments!.filter((e) => e.conditions!.some((i) => i.result === true)).length;
+        const conditions: ri.ReleaseEnvironment[] = release.environments!.filter((e) => e.conditions!.some((i) => i.result === true));
+
+        verbose(conditions);
         
-        return conditions > 0 ? true : false;
+        return conditions.length > 0 ? true : false;
 
     }
 

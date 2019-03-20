@@ -15,6 +15,13 @@ async function run() {
 
     try {
 
+        // Enable debug mode
+        if (tl.getBoolInput("Debug", false)) {
+
+            tl.setVariable("DEBUG", "release-orchestrator:*", false);
+
+        }
+
         // Get endpoint
         const endpoint: IEndpoint = await getEndpoint();
 

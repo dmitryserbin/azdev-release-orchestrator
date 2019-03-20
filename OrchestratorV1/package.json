@@ -11,16 +11,18 @@
     "build": "tsc",
     "test": "mocha -r ts-node/register Tests/**/test.*.ts --no-timeouts --grep \"@task|@manual\" --invert --reporter mocha-multi-reporters --reporter-options configFile=Tests/config.json",
     "task": "mocha -r ts-node/register Tests/**/test.*.ts --no-timeouts --grep @task",
-    "manual": "mocha -r ts-node/register Tests/**/test.*.ts --no-timeouts --grep @manual",
+    "manual": "set DEBUG=release-orchestrator:* & mocha -r ts-node/register Tests/**/test.*.ts --no-timeouts --grep @manual",
     "clean": "npm prune --production"
   },
   "author": "Dmitry Serbin",
   "license": "MIT",
   "dependencies": {
     "@types/cli-table": "^0.3.0",
+    "@types/debug": "^4.1.2",
     "azure-devops-node-api": "^7.0.0",
     "azure-pipelines-task-lib": "^2.8.0",
     "cli-table": "^0.3.1",
+    "debug": "^4.1.1",
     "moment": "^2.24.0"
   },
   "devDependencies": {

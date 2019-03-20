@@ -176,6 +176,15 @@
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"
+    },
+    {
+      "name": "Debug",
+      "type": "boolean",
+      "label": "Enable Debug",
+      "helpMarkDown": "Enables task debug mode (also system.debug = true) to help troubleshooting issues. Default = false",
+      "defaultValue": false,
+      "required": false,
+      "groupName": "Advanced"
     }
   ],
   "dataSourceBindings": [
