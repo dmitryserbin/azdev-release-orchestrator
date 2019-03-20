@@ -180,8 +180,8 @@
     {
       "name": "Debug",
       "type": "boolean",
-      "label": "Enable Debug",
-      "helpMarkDown": "Enables task debug mode (also system.debug = true) to help troubleshooting issues. Default = false",
+      "label": "Debug Mode",
+      "helpMarkDown": "Enables debug mode to help troubleshooting issues. Default = false",
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"
