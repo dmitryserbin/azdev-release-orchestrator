@@ -354,10 +354,14 @@ export class Deployer implements IDeployer {
 
     private async displayStatus(stage: ri.ReleaseEnvironment): Promise<void> {
 
+        const verbose = logger.extend("displayStatus");
+
         console.log(`Stage <${stage.name}> (${stage.id}) deployment completed with <${ri.EnvironmentStatus[stage.status!]}> status`);
 
         // Get latest deployment attempt
         const deploymentAttempt: ri.DeploymentAttempt = stage.deploySteps!.sort((left, right) => left.deploymentId! - right.deploymentId!).reverse()[0];
+
+        verbose(deploymentAttempt);
 
         for (const phase of deploymentAttempt.releaseDeployPhases!) {
 
