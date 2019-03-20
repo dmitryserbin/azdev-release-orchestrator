@@ -101,7 +101,7 @@ export class Deployer implements IDeployer {
                     // Display status
                     if (stage.isCompleted()) {
 
-                        await this.displayStatus(stageStatus);
+                        await this.displayStageProgress(stageStatus);
 
                         break;
 
@@ -172,7 +172,7 @@ export class Deployer implements IDeployer {
                     // Display status
                     if (stage.isCompleted()) {
 
-                        await this.displayStatus(stageStatus);
+                        await this.displayStageProgress(stageStatus);
 
                         break;
 
@@ -352,9 +352,9 @@ export class Deployer implements IDeployer {
 
     }
 
-    private async displayStatus(stage: ri.ReleaseEnvironment): Promise<void> {
+    private async displayStageProgress(stage: ri.ReleaseEnvironment): Promise<void> {
 
-        const verbose = logger.extend("displayStatus");
+        const verbose = logger.extend("displayStageProgress");
 
         console.log(`Stage <${stage.name}> (${stage.id}) deployment completed with <${ri.EnvironmentStatus[stage.status!]}> status`);
 
