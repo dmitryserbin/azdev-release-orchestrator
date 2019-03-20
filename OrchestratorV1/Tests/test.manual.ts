@@ -21,9 +21,6 @@ describe("Helper", () => {
 
     it("Helper @manual", async () => {
 
-        // Force debug mode
-        process.env.DEBUG = "releaseorchestrator:*";
-
         const parameters = {
 
             projectId: "761623f0-c4c0-4dab-884b-a428a01c200f",
