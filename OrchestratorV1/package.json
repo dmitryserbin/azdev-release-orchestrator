@@ -11,22 +11,24 @@
     "build": "tsc",
     "test": "mocha -r ts-node/register Tests/**/test.*.ts --no-timeouts --grep \"@task|@manual\" --invert --reporter mocha-multi-reporters --reporter-options configFile=Tests/config.json",
     "task": "mocha -r ts-node/register Tests/**/test.*.ts --no-timeouts --grep @task",
-    "manual": "mocha -r ts-node/register Tests/**/test.*.ts --no-timeouts --grep @manual",
+    "manual": "set DEBUG=release-orchestrator:* & mocha -r ts-node/register Tests/**/test.*.ts --no-timeouts --grep @manual",
     "clean": "npm prune --production"
   },
   "author": "Dmitry Serbin",
   "license": "MIT",
   "dependencies": {
     "@types/cli-table": "^0.3.0",
+    "@types/debug": "^4.1.2",
     "azure-devops-node-api": "^7.0.0",
     "azure-pipelines-task-lib": "^2.8.0",
     "cli-table": "^0.3.1",
+    "debug": "^4.1.1",
     "moment": "^2.24.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
-    "@types/node": "^11.11.3",
+    "@types/node": "^11.11.4",
     "@types/q": "^1.5.2",
     "chai": "^4.2.0",
     "mocha": "^6.0.2",
@@ -34,6 +36,6 @@
     "mocha-multi-reporters": "^1.1.7",
     "ts-node": "^8.0.3",
     "typemoq": "^2.1.0",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.3.4000"
   }
 }

@@ -1,3 +1,4 @@
+import Debug from "debug";
 import Table from "cli-table";
 import Moment from "moment";
 
@@ -6,6 +7,8 @@ import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IReleaseParameters, IStageApproval, IApproveParameters, IDeployer, ReleaseStatus, IReleaseDetails } from "./interfaces";
 import { ReleaseProgress } from "./common";
+
+const logger = Debug("release-orchestrator:Deployer");
 
 export class Deployer implements IDeployer {
 
@@ -19,8 +22,12 @@ export class Deployer implements IDeployer {
 
     async deployManual(parameters: IReleaseParameters, releaseDetails: IReleaseDetails): Promise<void> {
 
+        const verbose = logger.extend("deployManual");
+
         // Initialize progress
         const releaseProgress: ReleaseProgress = new ReleaseProgress(parameters.releaseStages);
+
+        verbose(releaseProgress);
 
         try {
 
@@ -30,14 +37,14 @@ export class Deployer implements IDeployer {
                 const releaseStatus = await this.getReleaseStatus(parameters.projectName, parameters.releaseId);
                 releaseProgress.url = releaseStatus._links.web.href;
 
-                // Get release stage
-                let releaseStage: any = releaseStatus.environments!.find((i: ri.ReleaseEnvironment) => i.name === stage.name);
+                // Get stage status
+                let releaseStage: ri.ReleaseEnvironment = await this.getStageStatus(releaseStatus, stage.name);
 
-                console.log(`Deploying <${releaseStage.name}> release stage (last status <${ri.EnvironmentStatus[releaseStage.status]}>)`);
+                console.log(`Deploying <${releaseStage.name}> release stage (last status <${ri.EnvironmentStatus[releaseStage.status!]}>)`);
 
                 stage.id = releaseStage.id;
-                stage.release = releaseStage.release.name;
-                stage.status = releaseStage.status;
+                stage.release = releaseStage.release!.name;
+                stage.status = releaseStage.status!;
 
                 // Start stage deployment process
                 // Or skip if stage is in progress
@@ -47,13 +54,17 @@ export class Deployer implements IDeployer {
 
                     try {
 
-                        // Start stage deployment
-                        releaseStage = await this.releaseApi.updateReleaseEnvironment({
+                        const stageStatus: ri.ReleaseEnvironmentUpdateMetadata = {
 
                             status: ri.EnvironmentStatus.InProgress,
                             comment: `Requested via ${releaseDetails.releaseName} (${releaseDetails.projectName}) by ${releaseDetails.requesterName}`,
 
-                        } as ri.ReleaseEnvironmentUpdateMetadata, parameters.projectName, parameters.releaseId, releaseStage.id);
+                        };
+
+                        verbose(stageStatus);
+
+                        // Start stage deployment
+                        releaseStage = await this.releaseApi.updateReleaseEnvironment(stageStatus, parameters.projectName, parameters.releaseId, releaseStage.id!);
 
                     } catch (e) {
 
@@ -61,7 +72,7 @@ export class Deployer implements IDeployer {
 
                     }
 
-                    stage.status = releaseStage.status;
+                    stage.status = releaseStage.status!;
 
                 }
 
@@ -90,7 +101,7 @@ export class Deployer implements IDeployer {
                     // Display status
                     if (stage.isCompleted()) {
 
-                        await this.displayStatus(stageStatus);
+                        await this.displayStageProgress(stageStatus);
 
                         break;
 
@@ -120,8 +131,12 @@ export class Deployer implements IDeployer {
 
     async deployAutomated(parameters: IReleaseParameters, releaseDetails: IReleaseDetails): Promise<void> {
 
+        const verbose = logger.extend("deployAutomated");
+
         // Initialize progress
         const releaseProgress: ReleaseProgress = new ReleaseProgress(parameters.releaseStages);
+
+        verbose(releaseProgress);
 
         try {
 
@@ -157,7 +172,7 @@ export class Deployer implements IDeployer {
                     // Display status
                     if (stage.isCompleted()) {
 
-                        await this.displayStatus(stageStatus);
+                        await this.displayStageProgress(stageStatus);
 
                         break;
 
@@ -186,6 +201,8 @@ export class Deployer implements IDeployer {
 
     async approveStage(stage: ri.ReleaseEnvironment, parameters: IApproveParameters, releaseDetails: IReleaseDetails): Promise<IStageApproval> {
 
+        const verbose = logger.extend("approveStage");
+
         // Get pending approvals
         const pendingApprovals = stage.preDeployApprovals!.filter((i) => i.status === ri.ApprovalStatus.Pending);
 
@@ -198,6 +215,8 @@ export class Deployer implements IDeployer {
             // Approve pending requests in sequence
             // To support multiple approvals scenarios
             for (const request of pendingApprovals) {
+
+                verbose(request);
 
                 // Update status
                 parameters.status.status = request.status!;
@@ -213,6 +232,8 @@ export class Deployer implements IDeployer {
                         comments: `Approved by Azure DevOps release orchestrator`,
 
                     } as ri.ReleaseApproval, parameters.projectName, request.id!);
+
+                    verbose(requestStatus);
 
                     parameters.status.status = requestStatus.status!;
 
@@ -255,17 +276,23 @@ export class Deployer implements IDeployer {
 
                     } as ri.ReleaseEnvironmentUpdateMetadata, parameters.projectName, stage.release!.id!, stage.id!);
 
+                    verbose(releaseStage);
+
                 }
 
             }
 
         }
 
+        verbose(`Stage ${stage.name} approval status ${ri.ApprovalStatus[parameters.status.status!]} retrieved`);
+
         return parameters.status;
         
     }
 
     async getReleaseStatus(projectName: string, releaseId: number, retry: number = 10, timeout: number = 5000): Promise<ri.Release> {
+
+        const verbose = logger.extend("getReleaseStatus");
 
         let progress: ri.Release | undefined;
         let retryAttempt: number = 0;
@@ -300,12 +327,16 @@ export class Deployer implements IDeployer {
             throw new Error(`Unable to get ${releaseId} release progress`);
 
         }
+        
+        verbose(`Release ${progress.name} status ${ri.ReleaseStatus[progress.status!]} retrieved`);
 
         return progress;
 
     }
 
     private async getStageStatus(releaseStatus: ri.Release, stageName: string): Promise<ri.ReleaseEnvironment> {
+
+        const verbose = logger.extend("getStageStatus");
 
         const progress = releaseStatus.environments!.find((i) => i.name === stageName);
 
@@ -315,16 +346,22 @@ export class Deployer implements IDeployer {
 
         }
 
+        verbose(`Stage ${progress.name} status ${ri.EnvironmentStatus[progress.status!]} retrieved`);
+
         return progress;
 
     }
 
-    private async displayStatus(stage: ri.ReleaseEnvironment): Promise<void> {
+    private async displayStageProgress(stage: ri.ReleaseEnvironment): Promise<void> {
+
+        const verbose = logger.extend("displayStageProgress");
 
         console.log(`Stage <${stage.name}> (${stage.id}) deployment completed with <${ri.EnvironmentStatus[stage.status!]}> status`);
 
         // Get latest deployment attempt
         const deploymentAttempt: ri.DeploymentAttempt = stage.deploySteps!.sort((left, right) => left.deploymentId! - right.deploymentId!).reverse()[0];
+
+        verbose(deploymentAttempt);
 
         for (const phase of deploymentAttempt.releaseDeployPhases!) {
 
@@ -356,6 +393,10 @@ export class Deployer implements IDeployer {
     }
 
     private async delay(ms: number) {
+
+        const verbose = logger.extend("delay");
+
+        verbose(`Start ${ms}ms delay`);
 
         return new Promise((resolve) => setTimeout(resolve, ms));
     

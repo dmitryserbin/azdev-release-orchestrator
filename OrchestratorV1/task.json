@@ -172,7 +172,7 @@
       "name": "IgnoreFailure",
       "type": "boolean",
       "label": "Ignore Failures",
-      "helpMarkDown": "Keep running the task even if target pipeline or stage deployment fails (set task result to partially succeeded)",
+      "helpMarkDown": "Suppress errors and set task result to partially succeeded in case of failure. Default = false",
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"

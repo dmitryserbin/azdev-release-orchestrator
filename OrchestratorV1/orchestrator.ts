@@ -1,8 +1,12 @@
+import Debug from "debug";
+
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import * as bi from "azure-devops-node-api/interfaces/BuildInterfaces";
 import * as ci from "azure-devops-node-api/interfaces/CoreInterfaces";
 
 import { ReleaseType, IParameters, IReleaseParameters, IOrchestrator, IDeployer, IHelper, IReleaseDetails, IReleaseFilter } from "./interfaces";
+
+const logger = Debug("release-orchestrator:Orchestrator");
 
 export class Orchestrator implements IOrchestrator {
 
@@ -18,22 +22,13 @@ export class Orchestrator implements IOrchestrator {
 
     async deployRelease(parameters: IParameters, details: IReleaseDetails) {
 
-        // Get targets
+        const verbose = logger.extend("deployRelease");
+
+        // Get target project
         const targetProject: ci.TeamProject = await this.helper.getProject(parameters.projectId);
 
-        if (!targetProject) {
-
-            throw new Error(`Project ${parameters.projectId} not found`);
-
-        }
-
+        // Get target definition
         const targetDefinition: ri.ReleaseDefinition = await this.helper.getDefinition(targetProject.name!, Number(parameters.definitionId));
-
-        if (!targetDefinition) {
-
-            throw new Error(`Definition ${parameters.definitionId} not found`);
-
-        }
 
         console.log(`Starting <${targetProject.name}> project ${ReleaseType[parameters.releaseType].toLowerCase()} <${targetDefinition.name}> release deployment`);
 
@@ -49,6 +44,8 @@ export class Orchestrator implements IOrchestrator {
 
         }
 
+        verbose(targetStages);
+
         // Get release parameters
         const releaseParameters = {
 
@@ -58,6 +55,8 @@ export class Orchestrator implements IOrchestrator {
             sleep: 5000,
 
         } as IReleaseParameters;
+
+        verbose(parameters.releaseType);
         
         // Deploy new release
         if (parameters.releaseType === ReleaseType.Create) {
@@ -94,7 +93,11 @@ export class Orchestrator implements IOrchestrator {
 
     async getRelease(type: ReleaseType, project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, parameters: IParameters): Promise<ri.Release> {
 
+        const verbose = logger.extend("getRelease");
+
         let release: ri.Release;
+
+        verbose(type);
 
         switch (type) {
 
@@ -142,6 +145,8 @@ export class Orchestrator implements IOrchestrator {
 
     private async getReleaseArtifact(project: ci.TeamProject, definition: ri.ReleaseDefinition, artifactTag?: string[], sourceBranch?: string): Promise<ri.ArtifactMetadata[]> {
 
+        const verbose = logger.extend("getReleaseArtifact");
+
         let result: ri.ArtifactMetadata[] = [];
 
         // Get primary definition build artifact
@@ -173,11 +178,15 @@ export class Orchestrator implements IOrchestrator {
 
         }
 
+        verbose(result);
+
         return result;
 
     }
 
     private async getReleaseFilters(project: ci.TeamProject, definition: ri.ReleaseDefinition, releaseTag?: string[], artifactTag?: string[], sourceBranch?: string): Promise<IReleaseFilter> {
+
+        const verbose = logger.extend("getReleaseFilters");
 
         let result: IReleaseFilter = {
 
@@ -223,6 +232,8 @@ export class Orchestrator implements IOrchestrator {
             }
 
         }
+
+        verbose(result);
 
         return result;
 

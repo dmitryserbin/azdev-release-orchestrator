@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.1
+
+- Add debug mode support
+- Minor improvements
+
 ## 1.2.0
 
 - Add new release filters support

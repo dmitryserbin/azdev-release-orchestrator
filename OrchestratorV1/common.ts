@@ -1,8 +1,11 @@
+import Debug from "debug";
 import Table from "cli-table";
 
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { ReleaseStatus, IStageProgress, IStageApproval, IReleaseProgress } from "./interfaces";
+
+const logger = Debug("release-orchestrator");
 
 export class StageProgress implements IStageProgress {
 
@@ -16,17 +19,29 @@ export class StageProgress implements IStageProgress {
     // Stage pending
     public isPending(): boolean {
 
-        return (this.status !== ri.EnvironmentStatus.Queued &&
+        const verbose = logger.extend("StageProgress:isPending");
+
+        const status: boolean = (this.status !== ri.EnvironmentStatus.Queued &&
             this.status !== ri.EnvironmentStatus.InProgress);
+
+        verbose(status);
+
+        return status;
 
     }
 
     // Stage completed
     public isCompleted(): boolean {
 
-        return (this.status === ri.EnvironmentStatus.Succeeded ||
+        const verbose = logger.extend("StageProgress:isCompleted");
+
+        const status: boolean = (this.status === ri.EnvironmentStatus.Succeeded ||
             this.status === ri.EnvironmentStatus.Rejected ||
             this.status === ri.EnvironmentStatus.Canceled);
+
+        verbose(status);
+
+        return status;
 
     }
 
@@ -57,23 +72,38 @@ export class ReleaseProgress implements IReleaseProgress {
     // Get pending stages
     public getPendingStages(): IStageProgress[] {
 
-        return this.progress.filter((i) => i.isPending());
+        const verbose = logger.extend("ReleaseProgress:getPendingStages");
+
+        const result: IStageProgress[] = this.progress.filter((i) => i.isPending());
+
+        verbose(result);
+
+        return result;
 
     }
 
     // Get incomplited stages
     public getIncompleted(): IStageProgress[] {
 
-        return this.progress.filter((i) => !i.isCompleted());
+        const verbose = logger.extend("ReleaseProgress:getIncompleted");
+
+        const result: IStageProgress[] = this.progress.filter((i) => !i.isCompleted());
+
+        verbose(result);
+
+        return result;
 
     }
 
     // Get release status
     public getStatus(): ReleaseStatus {
 
+        const verbose = logger.extend("ReleaseProgress:getStatus");
+
+        let result: ReleaseStatus = ReleaseStatus.Undefined;
+
         // All stages completed
-        const completed: boolean = this.progress.filter((i) =>
-            i.isCompleted()).length === this.progress.length;
+        const completed: boolean = this.progress.filter((i) => i.isCompleted()).length === this.progress.length;
 
         if (completed) {
 
@@ -84,21 +114,25 @@ export class ReleaseProgress implements IReleaseProgress {
             if (failed) {
 
                 // Failed
-                return ReleaseStatus.Failed;
+                result = ReleaseStatus.Failed;
 
             } else {
 
                 // Succeeded
-                return ReleaseStatus.Succeeded;
+                result = ReleaseStatus.Succeeded;
 
             }
 
         } else {
 
             // In progress
-            return ReleaseStatus.InProgress;
+            result = ReleaseStatus.InProgress;
 
         }
+
+        verbose(result);
+
+        return result;
 
     }
 

@@ -1,9 +1,13 @@
+import Debug from "debug";
+
 import * as az from "azure-devops-node-api";
 import * as ca from "azure-devops-node-api/CoreApi";
 import * as ra from "azure-devops-node-api/ReleaseApi";
 import * as ba from "azure-devops-node-api/BuildApi";
 
 import { IConnection, IEndpoint } from "./interfaces";
+
+const logger = Debug("release-orchestrator:Connection");
 
 export class Connection implements IConnection {
 
@@ -15,11 +19,15 @@ export class Connection implements IConnection {
         
         this.webApi = new az.WebApi(endpoint.url, auth);
 
+        logger(`Azure DevOps Web API initialized`);
+
     }
 
     async getCoreApi(): Promise<ca.CoreApi> {
 
         const coreApi: ca.CoreApi = await this.webApi.getCoreApi();
+
+        logger(`Azure DevOps Core API initialized`);
 
         return coreApi;
 
@@ -29,6 +37,8 @@ export class Connection implements IConnection {
 
         const releaseApi: ra.ReleaseApi = await this.webApi.getReleaseApi();
 
+        logger(`Azure DevOps Release API initialized`);
+
         return releaseApi;
 
     }
@@ -36,6 +46,8 @@ export class Connection implements IConnection {
     async getBuildApi(): Promise<ba.BuildApi> {
 
         const buildApi: ba.BuildApi = await this.webApi.getBuildApi();
+
+        logger(`Azure DevOps Build API initialized`);
 
         return buildApi;
 
