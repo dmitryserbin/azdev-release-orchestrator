@@ -109,8 +109,9 @@ You can choose different strategy for orchestrator to perform target release dep
 ## Advanced
 
 - Ignore Failures: suppress errors and set task result to partially succeeded in case of failure
-- Debug Mode: enable debug mode to help troubleshooting issues
 
 ## Support
 
-For aditional information and support please refer to [project repository](https://github.com/dmitryserbin/azdev-release-orchestrator). For help with Azure DevOps and release pipelines please refer to [official documentation](https://docs.microsoft.com/en-us/azure/devops).
+For aditional information and support please refer to [project repository](https://github.com/dmitryserbin/azdev-release-orchestrator). To enable debug mode to help troubleshooting issues, please configure `DEBUG=release-orchestrator:*` custom release [variable](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/variables).
+
+For help with Azure DevOps and release pipelines please refer to [official documentation](https://docs.microsoft.com/en-us/azure/devops).
