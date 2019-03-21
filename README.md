@@ -84,17 +84,21 @@ Please refer to Azure DevOps [approvals and gates documentation](https://docs.mi
 
 You can choose different strategy for orchestrator to perform target release deployment:
 
-- Create new release - find target release definition and create new release
-- Deploy latest available release - find and re-deploy latest active release from release definition
-- Deploy specific release - find and re-deploy specific release from release definition
+- Create new release - find target release definition and create new release (use [default stage triggers](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#env-triggers) or target specific stages)
+- Deploy latest available release - find and re-deploy latest active release from release definition (target specific stages only)
+- Deploy specific release - find and re-deploy specific release from release definition (target specific stages only)
 
 ### Create Release
 
-- Definition Stages: target specific deployment stage(s) (comma separated) (optional)
+By default, new release deployment uses default stage [triggers](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#env-triggers) configured in the target pipeline. In order to deploy specific or manual stages, you need to specify target stages using `Filter Definition Stages` option.
+
+- Filter Definition Stages: target specific deployment stage(s) (comma separated) (optional)
 - Filter Artifact Tag: enable new release filtering by primary build artifact tag (optional)
 - Filter Source Branch: enable new release filtering by primary artifact source branch name (optional)
 
 ### Latest Release
+
+Deploying latest release requires you to provide target stages for deployment. The target stages will be re-deployed in sequential order, exactly as you specified.
 
 - Release Stages: specify release deployment stage(s) (comma separated)
 - Filter Release Tag: enable filtering target release by release pipeline tag (optional)
@@ -102,6 +106,8 @@ You can choose different strategy for orchestrator to perform target release dep
 - Filter Source Branch: enable filtering target release by primary artifact source branch name (optional)
 
 ### Specific Release
+
+Deploying specific release requires you to provide target stages for deployment. The target stages will be re-deployed in sequential order, exactly as you specified.
 
 - Release Name: select existing release to target (or specify release ID)
 - Release Stages: specify release deployment stage(s) (comma separated)
