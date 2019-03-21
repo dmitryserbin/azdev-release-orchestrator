@@ -172,7 +172,7 @@
       "name": "IgnoreFailure",
       "type": "boolean",
       "label": "Ignore Failures",
-      "helpMarkDown": "Suppress errors and set task result to partially succeeded in case of failure",
+      "helpMarkDown": "Suppress errors and set task result to partially succeeded in case of failure. Default = false",
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"
