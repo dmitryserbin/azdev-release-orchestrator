@@ -176,15 +176,6 @@
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"
-    },
-    {
-      "name": "Debug",
-      "type": "boolean",
-      "label": "Debug Mode",
-      "helpMarkDown": "Enable debug mode to help troubleshooting issues. Default = false",
-      "defaultValue": false,
-      "required": false,
-      "groupName": "Advanced"
     }
   ],
   "dataSourceBindings": [
