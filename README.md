@@ -84,9 +84,9 @@ Please refer to Azure DevOps [approvals and gates documentation](https://docs.mi
 
 You can choose different strategy for orchestrator to perform target release deployment:
 
-- Create new release - find target release definition and create new release (use [default stage triggers](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#env-triggers) or target specific stages)
-- Deploy latest available release - find and re-deploy latest active release from release definition (target specific stages only)
-- Deploy specific release - find and re-deploy specific release from release definition (target specific stages only)
+- Create new release: create new release using [default stage triggers](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#env-triggers) or target specific stages
+- Deploy latest release: find and re-deploy latest active release from release definition (target specific stages only)
+- Deploy specific release: find and re-deploy specific release from release definition (target specific stages only)
 
 ### Create Release
 

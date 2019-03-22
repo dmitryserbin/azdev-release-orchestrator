@@ -1,73 +1,73 @@
 {
-    "manifestVersion": 1,
-    "id": "release-orchestrator",
-    "name": "Release Orchestrator",
-    "version": "1.2.0",
-    "publisher": "dmitryserbin",
-    "public": true,
-    "targets": [
-        {
-            "id": "Microsoft.VisualStudio.Services"
-        }
-    ],    
-    "description": "Managing and orchestrating Azure DevOps release pipelines",
-    "categories": [
-        "Build and release"
-    ],
-    "tags": [
-        "Release",
-        "Pipeline",
-        "Orchestration",
-        "Microservices",
-        "Deploy",
-        "DevOps",
-        "Tasks"
-    ],
-    "icons": {
-        "default": "Images/icon.png"        
+  "manifestVersion": 1,
+  "id": "release-orchestrator",
+  "name": "Release Orchestrator",
+  "version": "1.2.0",
+  "publisher": "dmitryserbin",
+  "public": true,
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "description": "Managing and orchestrating Azure DevOps release pipelines",
+  "categories": [
+    "Build and release"
+  ],
+  "tags": [
+    "Release",
+    "Pipeline",
+    "Orchestration",
+    "Microservices",
+    "Deploy",
+    "DevOps",
+    "Tasks"
+  ],
+  "icons": {
+    "default": "Images/icon.png"
+  },
+  "content": {
+    "details": {
+      "path": "README.md"
     },
-    "content": {
-        "details": {
-            "path": "README.md"
-        },
-        "changelog": {
-            "path": "CHANGELOG.md"
-        },
-        "license": {
-            "path": "LICENSE"
-        }
+    "changelog": {
+      "path": "CHANGELOG.md"
     },
-    "links": {
-        "getstarted": {
-            "uri": "https://github.com/dmitryserbin/azdev-release-orchestrator"
-        },
-        "support": {
-            "uri": "https://github.com/dmitryserbin/azdev-release-orchestrator/issues"
-        }
+    "license": {
+      "path": "LICENSE"
+    }
+  },
+  "links": {
+    "getstarted": {
+      "uri": "https://github.com/dmitryserbin/azdev-release-orchestrator"
     },
-    "repository": {
-        "type": "git",
-        "uri": "https://github.com/dmitryserbin/azdev-release-orchestrator"
+    "support": {
+      "uri": "https://github.com/dmitryserbin/azdev-release-orchestrator/issues"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/dmitryserbin/azdev-release-orchestrator"
+  },
+  "files": [
+    {
+      "path": "OrchestratorV1"
     },
-    "files": [
-        {
-            "path": "OrchestratorV1"
-        },
-        {
-            "path": "Images",
-            "addressable": true
-        }
-    ],
-    "contributions": [
-        {
-            "id": "release-orchestrator",
-            "type": "ms.vss-distributed-task.task",
-            "targets": [
-                "ms.vss-distributed-task.tasks"
-            ],
-            "properties": {
-                "name": "OrchestratorV1"
-            }
-        }
-    ]
+    {
+      "path": "Images",
+      "addressable": true
+    }
+  ],
+  "contributions": [
+    {
+      "id": "release-orchestrator",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "OrchestratorV1"
+      }
+    }
+  ]
 }
