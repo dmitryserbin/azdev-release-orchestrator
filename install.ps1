@@ -53,7 +53,7 @@ try
     Write-Host "##[section] Uploading new <$Path> task"
     
     # Upload task
-    tfx build tasks upload --task-path (Split-Path -Path $Path -Parent)
+    tfx build tasks upload --task-path $Path
 }
 catch
 {
