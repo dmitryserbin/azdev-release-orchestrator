@@ -34,7 +34,13 @@ steps:
   inputs:
     testResultsFiles: '**/test-*.xml'
 
-- powershell: '@(".git", ".vscode", "*.yaml", "Artifacts", "OrchestratorV1\Tests", "OrchestratorV1\test-*.xml") | ForEach-Object { Remove-Item -Path $_ -Force -Recurse -ErrorAction SilentlyContinue }'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Scripts'
+  inputs:
+    PathtoPublish: 'Scripts'
+    ArtifactName: Scripts
+
+- powershell: '@(".git", ".vscode", "*.yaml", "Artifacts", "Scripts", "OrchestratorV1\Tests", "OrchestratorV1\test-*.xml") | ForEach-Object { Remove-Item -Path $_ -Force -Recurse -ErrorAction SilentlyContinue }'
   displayName: 'Clean Artifact'
 
 - task: PublishBuildArtifacts@1
