@@ -1,15 +1,15 @@
 import tl = require("azure-pipelines-task-lib/task");
 
+import * as ba from "azure-devops-node-api/BuildApi";
 import * as ca from "azure-devops-node-api/CoreApi";
 import * as ra from "azure-devops-node-api/ReleaseApi";
-import * as ba from "azure-devops-node-api/BuildApi";
 
-import { IEndpoint, IParameters, IOrchestrator, IConnection, IHelper, IDeployer, IReleaseDetails } from "./interfaces";
 import { getEndpoint, getParameters, getReleaseDetails } from "./azdev";
-import { Orchestrator } from "./orchestrator";
 import { Connection } from "./connection";
-import { Helper } from "./helper";
 import { Deployer } from "./deployer";
+import { Helper } from "./helper";
+import { IConnection, IDeployer, IEndpoint, IHelper, IOrchestrator, IParameters, IReleaseDetails } from "./interfaces";
+import { Orchestrator } from "./orchestrator";
 
 async function run() {
 

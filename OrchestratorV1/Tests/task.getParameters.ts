@@ -18,7 +18,7 @@ MockInput(tmr, [
     "ArtifactTagFilter",
     "ArtifactTagName",
     "SourceBranchFilter",
-    "SourceBranchName"
+    "SourceBranchName",
 
 ]);
 

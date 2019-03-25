@@ -1,11 +1,11 @@
 import Debug from "debug";
 
+import * as ba from "azure-devops-node-api/BuildApi";
+import * as ca from "azure-devops-node-api/CoreApi";
+import * as bi from "azure-devops-node-api/interfaces/BuildInterfaces";
 import * as ci from "azure-devops-node-api/interfaces/CoreInterfaces";
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
-import * as bi from "azure-devops-node-api/interfaces/BuildInterfaces";
-import * as ca from "azure-devops-node-api/CoreApi";
 import * as ra from "azure-devops-node-api/ReleaseApi";
-import * as ba from "azure-devops-node-api/BuildApi";
 
 import { IHelper, IReleaseDetails, IReleaseFilter } from "./interfaces";
 
@@ -22,10 +22,10 @@ export class Helper implements IHelper {
         this.coreApi = coreApi;
         this.releaseApi = releaseApi;
         this.buildApi = buildApi;
-        
+
     }
 
-    async getProject(projectId: string): Promise<ci.TeamProject> {
+    public async getProject(projectId: string): Promise<ci.TeamProject> {
 
         const verbose = logger.extend("getProject");
 
@@ -43,16 +43,16 @@ export class Helper implements IHelper {
 
     }
 
-    async getDefinition(projectName: string, definitionId: number): Promise<ri.ReleaseDefinition> {
+    public async getDefinition(projectName: string, definitionId: number): Promise<ri.ReleaseDefinition> {
 
         const verbose = logger.extend("getDefinition");
 
         const targetDefinition: ri.ReleaseDefinition = await this.releaseApi.getReleaseDefinition(projectName, definitionId);
-    
+
         if (!targetDefinition) {
-    
+
             throw new Error(`Definition <${definitionId}> not found`);
-    
+
         }
 
         verbose(targetDefinition);
@@ -61,7 +61,7 @@ export class Helper implements IHelper {
 
     }
 
-    async findRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter): Promise<ri.Release> {
+    public async findRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter): Promise<ri.Release> {
 
         const verbose = logger.extend("findRelease");
 
@@ -105,7 +105,7 @@ export class Helper implements IHelper {
                     throw new Error(`No active releases found`);
 
                 }
-                
+
             }
 
             // Get latest release by ID
@@ -127,19 +127,19 @@ export class Helper implements IHelper {
 
     }
 
-    async getRelease(project: ci.TeamProject, releaseId: number, stages: string[]): Promise<ri.Release> {
+    public async getRelease(project: ci.TeamProject, releaseId: number, stages: string[]): Promise<ri.Release> {
 
         const verbose = logger.extend("getRelease");
 
         try {
 
             const targetRelease: ri.Release = await this.releaseApi.getRelease(project.name!, releaseId);
-        
+
             // Validate release environments
             await this.validateStages(stages, targetRelease.environments!.map((i) => i.name!));
 
             verbose(targetRelease);
-        
+
             return targetRelease;
 
         } catch (e) {
@@ -150,7 +150,7 @@ export class Helper implements IHelper {
 
     }
 
-    async createRelease(project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, stages?: string[], artifacts?: ri.ArtifactMetadata[]): Promise<ri.Release> {
+    public async createRelease(project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, stages?: string[], artifacts?: ri.ArtifactMetadata[]): Promise<ri.Release> {
 
         const verbose = logger.extend("createRelease");
 
@@ -195,7 +195,7 @@ export class Helper implements IHelper {
 
     }
 
-    async findBuild(projectName: string, definitionId: number, tags?: string[]): Promise<bi.Build> {
+    public async findBuild(projectName: string, definitionId: number, tags?: string[]): Promise<bi.Build> {
 
         const verbose = logger.extend("findBuild");
 
@@ -231,7 +231,7 @@ export class Helper implements IHelper {
                     throw new Error(`No active builds found`);
 
                 }
-                
+
             }
 
             const targetBuild: bi.Build = availableBuilds[0];
@@ -248,11 +248,11 @@ export class Helper implements IHelper {
 
     }
 
-    async getArtifacts(projectName: string, definitionId: number, primaryId: string, versionId?: string, sourceBranch?: string): Promise<ri.ArtifactMetadata[]> {
+    public async getArtifacts(projectName: string, definitionId: number, primaryId: string, versionId?: string, sourceBranch?: string): Promise<ri.ArtifactMetadata[]> {
 
         const verbose = logger.extend("getArtifacts");
 
-        let result: ri.ArtifactMetadata[] = [];
+        const result: ri.ArtifactMetadata[] = [];
 
         // Get available versions
         const definitionArtifacts: ri.ArtifactVersionQueryResult = await this.releaseApi.getArtifactVersions(projectName, definitionId);
@@ -262,28 +262,28 @@ export class Helper implements IHelper {
 
             // Use default (latest)
             let targetVersion: ri.BuildVersion = artifact.versions![0];
-            
+
             // Filter primary artifact
             if (artifact.sourceId === primaryId) {
 
                 // Filter by version ID
                 if (versionId && !sourceBranch) {
 
-                    targetVersion = artifact.versions!.filter(i => i.id === versionId)[0];
+                    targetVersion = artifact.versions!.filter((i) => i.id === versionId)[0];
 
                 }
 
                 // Filter by source branch
                 if (sourceBranch && !versionId) {
 
-                    targetVersion = artifact.versions!.filter(i => i.sourceBranch === sourceBranch)[0];
+                    targetVersion = artifact.versions!.filter((i) => i.sourceBranch === sourceBranch)[0];
 
                 }
 
                 // Filter by version ID and source branch
                 if (versionId && sourceBranch) {
 
-                    targetVersion = artifact.versions!.filter(i => i.id === versionId && i.sourceBranch === sourceBranch)[0];
+                    targetVersion = artifact.versions!.filter((i) => i.id === versionId && i.sourceBranch === sourceBranch)[0];
 
                 }
 
@@ -327,7 +327,7 @@ export class Helper implements IHelper {
 
     }
 
-    async isAutomated(release: ri.Release): Promise<boolean> {
+    public async isAutomated(release: ri.Release): Promise<boolean> {
 
         const verbose = logger.extend("isAutomated");
 
@@ -336,7 +336,7 @@ export class Helper implements IHelper {
         const conditions: ri.ReleaseEnvironment[] = release.environments!.filter((e) => e.conditions!.some((i) => i.result === true));
 
         verbose(conditions);
-        
+
         return conditions.length > 0 ? true : false;
 
     }
@@ -358,11 +358,11 @@ export class Helper implements IHelper {
         for (const stage of required) {
 
             if (existing.indexOf(stage) === -1) {
-    
+
                 throw new Error(`Release does not contain <${stage}> stage`);
-    
+
             }
-    
+
         }
 
     }

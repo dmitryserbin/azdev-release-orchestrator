@@ -2,8 +2,8 @@ import "mocha";
 
 import * as chai from "chai";
 
-import { IConnection, IEndpoint } from "../interfaces";
 import { Connection } from "../connection";
+import { IConnection, IEndpoint } from "../interfaces";
 
 describe("Connection", () => {
 
@@ -14,14 +14,14 @@ describe("Connection", () => {
 
         const endpoint = {
 
-            url: url,
-            token: token,
+            url,
+            token,
 
         } as IEndpoint;
 
         const connection: IConnection = new Connection(endpoint);
 
-        chai.expect(connection).not.null;
+        chai.expect(connection).to.not.eq(null);
 
     });
 

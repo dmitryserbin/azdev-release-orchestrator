@@ -1,5 +1,5 @@
-import { IParameters } from "../interfaces";
 import { getParameters } from "../azdev";
+import { IParameters } from "../interfaces";
 
 const parameters: IParameters = getParameters();
 

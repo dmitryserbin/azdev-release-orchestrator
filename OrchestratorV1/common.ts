@@ -1,9 +1,9 @@
-import Debug from "debug";
 import Table from "cli-table";
+import Debug from "debug";
 
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { ReleaseStatus, IStageProgress, IStageApproval, IReleaseProgress } from "./interfaces";
+import { IReleaseProgress, IStageApproval, IStageProgress, ReleaseStatus } from "./interfaces";
 
 const logger = Debug("release-orchestrator");
 
@@ -59,7 +59,7 @@ export class ReleaseProgress implements IReleaseProgress {
             const approval = {
 
                 status: ri.ApprovalStatus.Undefined,
-                count: 0
+                count: 0,
 
             } as IStageApproval;
 

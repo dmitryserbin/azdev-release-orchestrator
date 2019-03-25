@@ -1,16 +1,16 @@
+import * as ba from "azure-devops-node-api/BuildApi";
+import * as ca from "azure-devops-node-api/CoreApi";
+import * as bi from "azure-devops-node-api/interfaces/BuildInterfaces";
 import * as ci from "azure-devops-node-api/interfaces/CoreInterfaces";
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
-import * as bi from "azure-devops-node-api/interfaces/BuildInterfaces";
-import * as ca from "azure-devops-node-api/CoreApi";
 import * as ra from "azure-devops-node-api/ReleaseApi";
-import * as ba from "azure-devops-node-api/BuildApi";
 
 export enum ReleaseType {
 
     Undefined = "Undefined",
     Create = "Create",
     Specific = "Specific",
-    Latest = "Latest"
+    Latest = "Latest",
 
 }
 
@@ -32,7 +32,7 @@ export interface IEndpoint {
 
 export interface IParameters {
 
-    releaseType: ReleaseType,
+    releaseType: ReleaseType;
     projectId: string;
     definitionId: string;
     releaseId: string;
@@ -93,7 +93,7 @@ export interface IStageProgress {
     status: ri.EnvironmentStatus;
     id?: number;
     release?: string;
-    
+
     isPending(): boolean;
     isCompleted(): boolean;
 
@@ -114,9 +114,9 @@ export interface IReleaseProgress {
 
 export interface IReleaseFilter {
 
-    artifactVersion?: string,
-    sourceBranch?: string,
-    tag?: string[],
+    artifactVersion?: string;
+    sourceBranch?: string;
+    tag?: string[];
 
 }
 

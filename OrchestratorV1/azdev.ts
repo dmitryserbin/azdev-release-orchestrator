@@ -24,7 +24,7 @@ export function getEndpoint(): IEndpoint {
         url: tl.getEndpointUrl(endpointName, false),
         token: tl.getEndpointAuthorizationParameter(endpointName, tokenParameterName, false),
 
-    }
+    };
 
     return endpoint;
 
@@ -34,7 +34,7 @@ export function getParameters(): IParameters {
 
     const releaseStrategy: string = tl.getInput("ReleaseStrategy", true);
 
-    let parameters: IParameters = {
+    const parameters: IParameters = {
 
         releaseType: ReleaseType.Undefined,
         projectId: tl.getInput("TargetProject", true),
@@ -67,7 +67,7 @@ export function getParameters(): IParameters {
             }
 
              // Get artifact tag filter
-             if (artifactTagFilter) {
+            if (artifactTagFilter) {
 
                 const artifactTagName: string[] = tl.getDelimitedInput("ArtifactTagName", ",", false);
                 parameters.artifactTag = artifactTagName;
