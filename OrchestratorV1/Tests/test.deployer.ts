@@ -92,7 +92,7 @@ describe("Deployer", () => {
         const deployer: IDeployer = new Deployer(releaseApiMock.target);
 
         // Hide console output
-        console.log = function(){};
+        console.log = () => { /**/ };
 
         const result = await deployer.approveStage(releaseStage, approveParameters, releaseDetails);
 
@@ -155,7 +155,7 @@ describe("Deployer", () => {
         const deployer: IDeployer = new Deployer(releaseApiMock.target);
 
         // Hide console output
-        console.log = function(){};
+        console.log = () => { /**/ };
 
         const result = await deployer.approveStage(releaseStage, approveParameters, releaseDetails);
 

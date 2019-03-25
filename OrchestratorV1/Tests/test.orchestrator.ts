@@ -87,7 +87,7 @@ describe("Orchestrator", () => {
         helperMock.setup((x) => x.isAutomated(TypeMoq.It.isAny())).returns(() => Promise.resolve(true));
 
         // Hide console output
-        console.log = function(){};
+        console.log = () => { /**/ };
 
         // Run orchestrator
         await orchestratorMock.target.deployRelease(parameters, mockDetails);
@@ -109,7 +109,7 @@ describe("Orchestrator", () => {
         helperMock.setup((x) => x.isAutomated(TypeMoq.It.isAny())).returns(() => Promise.resolve(false));
 
         // Hide console output
-        console.log = function(){};
+        console.log = () => { /**/ };
 
         // Run orchestrator
         await orchestratorMock.target.deployRelease(parameters, mockDetails);
@@ -131,7 +131,7 @@ describe("Orchestrator", () => {
         orchestratorMock.setup((x) => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
 
         // Hide console output
-        console.log = function(){};
+        console.log = () => { /**/ };
 
         await orchestratorMock.target.deployRelease(parameters, mockDetails);
 
@@ -206,7 +206,7 @@ describe("Orchestrator", () => {
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
 
         // Hide console output
-        console.log = function(){};
+        console.log = () => { /**/ };
 
         const result = await orchestrator.getRelease(parameters.releaseType, mockProject, mockDefinition, mockDetails, mockParameters);
 
@@ -262,7 +262,7 @@ describe("Orchestrator", () => {
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
 
         // Hide console output
-        console.log = function(){};
+        console.log = () => { /**/ };
 
         const result = await orchestrator.getRelease(parameters.releaseType, mockProject, mockDefinition, mockDetails, mockParameters);
 
