@@ -5,7 +5,7 @@ import * as path from "path";
 
 import * as mt from "azure-pipelines-task-lib/mock-test";
 
-import { SetProcessVariables, ClearProcessVariables } from "./helpers";
+import { ClearProcessVariables, SetProcessVariables } from "./helpers";
 
 describe("Run", ()  => {
 
@@ -31,7 +31,7 @@ describe("Run", ()  => {
         ArtifactTagName: null,
         SourceBranchFilter: "false",
         SourceBranchName: null,
-        
+
         ConnectedService: "My-Endpoint",
         SYSTEM_TEAMPROJECT: "HelloYo",
         RELEASE_RELEASENAME: "HelloYo-20180101-1",
@@ -42,7 +42,7 @@ describe("Run", ()  => {
 
     it("Should deploy new release @task", async () => {
 
-        let variables = Object.assign({}, defaultVariables);
+        const variables = Object.assign({}, defaultVariables);
         variables.ReleaseStrategy = "create";
         SetProcessVariables(variables);
 
@@ -61,7 +61,7 @@ describe("Run", ()  => {
 
     it("Should deploy new release filtered by artifact tag @task", async () => {
 
-        let variables = Object.assign({}, defaultVariables);
+        const variables = Object.assign({}, defaultVariables);
         variables.ReleaseStrategy = "create";
         variables.ArtifactTagFilter = "true";
         variables.ArtifactTagName = "Build-Yo";
@@ -82,7 +82,7 @@ describe("Run", ()  => {
 
     it("Should deploy new release filtered by artifact branch @task", async () => {
 
-        let variables = Object.assign({}, defaultVariables);
+        const variables = Object.assign({}, defaultVariables);
         variables.ReleaseStrategy = "create";
         variables.SourceBranchFilter = "true";
         variables.SourceBranchName = "refs/heads/working/test";
@@ -100,10 +100,10 @@ describe("Run", ()  => {
         ClearProcessVariables(variables);
 
     });
-    
+
     it("Should re-deploy specific release @task", async () => {
 
-        let variables = Object.assign({}, defaultVariables);
+        const variables = Object.assign({}, defaultVariables);
         variables.ReleaseStrategy = "specific";
         variables.TargetRelease = "79";
         SetProcessVariables(variables);
@@ -123,7 +123,7 @@ describe("Run", ()  => {
 
     it("Should re-deploy latest active release @task", async () => {
 
-        let variables = Object.assign({}, defaultVariables);
+        const variables = Object.assign({}, defaultVariables);
         variables.ReleaseStrategy = "latest";
         SetProcessVariables(variables);
 
@@ -142,7 +142,7 @@ describe("Run", ()  => {
 
     it("Should re-deploy latest release filtered by release tag @task", async () => {
 
-        let variables = Object.assign({}, defaultVariables);
+        const variables = Object.assign({}, defaultVariables);
         variables.ReleaseStrategy = "latest";
         variables.ReleaseTagFilter = "true",
         variables.ReleaseTagName = "Release-Yo";
@@ -163,7 +163,7 @@ describe("Run", ()  => {
 
     it("Should re-deploy latest release filtered by artifact tag @task", async () => {
 
-        let variables = Object.assign({}, defaultVariables);
+        const variables = Object.assign({}, defaultVariables);
         variables.ReleaseStrategy = "latest";
         variables.ArtifactTagFilter = "true",
         variables.ArtifactTagName = "Build-Yo";
@@ -184,7 +184,7 @@ describe("Run", ()  => {
 
     it("Should re-deploy latest release filtered by artifact branch @task", async () => {
 
-        let variables = Object.assign({}, defaultVariables);
+        const variables = Object.assign({}, defaultVariables);
         variables.ReleaseStrategy = "latest";
         variables.SourceBranchFilter = "true",
         variables.SourceBranchName = "refs/heads/working/test";

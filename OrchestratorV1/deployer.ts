@@ -1,12 +1,12 @@
-import Debug from "debug";
 import Table from "cli-table";
+import Debug from "debug";
 import Moment from "moment";
 
-import * as ra from "azure-devops-node-api/ReleaseApi";
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import * as ra from "azure-devops-node-api/ReleaseApi";
 
-import { IReleaseParameters, IStageApproval, IApproveParameters, IDeployer, ReleaseStatus, IReleaseDetails } from "./interfaces";
 import { ReleaseProgress } from "./common";
+import { IApproveParameters, IDeployer, IReleaseDetails, IReleaseParameters, IStageApproval, ReleaseStatus } from "./interfaces";
 
 const logger = Debug("release-orchestrator:Deployer");
 
@@ -20,7 +20,7 @@ export class Deployer implements IDeployer {
 
     }
 
-    async deployManual(parameters: IReleaseParameters, releaseDetails: IReleaseDetails): Promise<void> {
+    public async deployManual(parameters: IReleaseParameters, releaseDetails: IReleaseDetails): Promise<void> {
 
         const verbose = logger.extend("deployManual");
 
@@ -34,7 +34,7 @@ export class Deployer implements IDeployer {
             // Deploy stages sequentially
             for (const stage of releaseProgress.getPendingStages()) {
 
-                const releaseStatus = await this.getReleaseStatus(parameters.projectName, parameters.releaseId);
+                let releaseStatus = await this.getReleaseStatus(parameters.projectName, parameters.releaseId);
                 releaseProgress.url = releaseStatus._links.web.href;
 
                 // Get stage status
@@ -79,7 +79,7 @@ export class Deployer implements IDeployer {
                 // Monitor stage progress
                 do {
 
-                    const releaseStatus = await this.getReleaseStatus(parameters.projectName, parameters.releaseId);
+                    releaseStatus = await this.getReleaseStatus(parameters.projectName, parameters.releaseId);
                     const stageStatus = await this.getStageStatus(releaseStatus, stage.name);
 
                     const approveParameters = {
@@ -87,7 +87,7 @@ export class Deployer implements IDeployer {
                         projectName: parameters.projectName,
                         status: stage.approval,
                         retry: 60,
-                        sleep: 60000
+                        sleep: 60000,
 
                     } as IApproveParameters;
 
@@ -129,7 +129,7 @@ export class Deployer implements IDeployer {
 
     }
 
-    async deployAutomated(parameters: IReleaseParameters, releaseDetails: IReleaseDetails): Promise<void> {
+    public async deployAutomated(parameters: IReleaseParameters, releaseDetails: IReleaseDetails): Promise<void> {
 
         const verbose = logger.extend("deployAutomated");
 
@@ -158,7 +158,7 @@ export class Deployer implements IDeployer {
                         projectName: parameters.projectName,
                         status: stage.approval,
                         retry: 60,
-                        sleep: 60000
+                        sleep: 60000,
 
                     } as IApproveParameters;
 
@@ -199,7 +199,7 @@ export class Deployer implements IDeployer {
 
     }
 
-    async approveStage(stage: ri.ReleaseEnvironment, parameters: IApproveParameters, releaseDetails: IReleaseDetails): Promise<IStageApproval> {
+    public async approveStage(stage: ri.ReleaseEnvironment, parameters: IApproveParameters, releaseDetails: IReleaseDetails): Promise<IStageApproval> {
 
         const verbose = logger.extend("approveStage");
 
@@ -287,10 +287,10 @@ export class Deployer implements IDeployer {
         verbose(`Stage ${stage.name} approval status ${ri.ApprovalStatus[parameters.status.status!]} retrieved`);
 
         return parameters.status;
-        
+
     }
 
-    async getReleaseStatus(projectName: string, releaseId: number, retry: number = 10, timeout: number = 5000): Promise<ri.Release> {
+    public async getReleaseStatus(projectName: string, releaseId: number, retry: number = 10, timeout: number = 5000): Promise<ri.Release> {
 
         const verbose = logger.extend("getReleaseStatus");
 
@@ -327,7 +327,7 @@ export class Deployer implements IDeployer {
             throw new Error(`Unable to get ${releaseId} release progress`);
 
         }
-        
+
         verbose(`Release ${progress.name} status ${ri.ReleaseStatus[progress.status!]} retrieved`);
 
         return progress;
@@ -377,7 +377,7 @@ export class Deployer implements IDeployer {
 
                         task.agentName ? task.agentName : "-",
                         task.name ? task.name : "-",
-                        task.status? ri.TaskStatus[task.status] : "-",
+                        task.status ? ri.TaskStatus[task.status] : "-",
                         task.startTime && task.finishTime ? Moment.duration(new Date(task.startTime).getTime() - new Date (task.finishTime).getTime()).humanize() : "-",
 
                     ]);
@@ -399,7 +399,7 @@ export class Deployer implements IDeployer {
         verbose(`Start ${ms}ms delay`);
 
         return new Promise((resolve) => setTimeout(resolve, ms));
-    
+
     }
 
 }

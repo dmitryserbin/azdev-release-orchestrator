@@ -5,20 +5,20 @@ import * as path from "path";
 
 import * as mt from "azure-pipelines-task-lib/mock-test";
 
-import { SetProcessVariables, ClearProcessVariables } from "./helpers";
+import { ClearProcessVariables, SetProcessVariables } from "./helpers";
 
 describe("Endpoint", () => {
 
     it("Should get service endpoint", async () => {
 
-        var variables: any = {
+        const variables: any = {
 
             EndpointType: "service",
             EndpointName: "MyEndpoint",
             EndpointAccount: "MyAccount",
-            EndpointToken: "MyToken"
+            EndpointToken: "MyToken",
 
-        }
+        };
 
         SetProcessVariables(variables);
 
@@ -38,11 +38,11 @@ describe("Endpoint", () => {
 
     it("Should get integrated endpoint", async () => {
 
-        var variables: any = {
+        const variables: any = {
 
             EndpointType: "integrated",
 
-        }
+        };
 
         SetProcessVariables(variables);
 

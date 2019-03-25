@@ -1,10 +1,10 @@
 import Debug from "debug";
 
-import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import * as bi from "azure-devops-node-api/interfaces/BuildInterfaces";
 import * as ci from "azure-devops-node-api/interfaces/CoreInterfaces";
+import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { ReleaseType, IParameters, IReleaseParameters, IOrchestrator, IDeployer, IHelper, IReleaseDetails, IReleaseFilter } from "./interfaces";
+import { IDeployer, IHelper, IOrchestrator, IParameters, IReleaseDetails, IReleaseFilter, IReleaseParameters, ReleaseType } from "./interfaces";
 
 const logger = Debug("release-orchestrator:Orchestrator");
 
@@ -20,7 +20,7 @@ export class Orchestrator implements IOrchestrator {
 
     }
 
-    async deployRelease(parameters: IParameters, details: IReleaseDetails) {
+    public async deployRelease(parameters: IParameters, details: IReleaseDetails) {
 
         const verbose = logger.extend("deployRelease");
 
@@ -38,7 +38,7 @@ export class Orchestrator implements IOrchestrator {
         // Get target stages
         const targetStages: string[] = (parameters.stages && parameters.stages.length > 0) ? parameters.stages : targetRelease.environments!.map((i) => i.name!);
 
-        if (targetStages.length == 0) {
+        if (targetStages.length === 0) {
 
             throw new Error(`Unable to detect ${targetRelease.name} release stages`);
 
@@ -57,7 +57,7 @@ export class Orchestrator implements IOrchestrator {
         } as IReleaseParameters;
 
         verbose(parameters.releaseType);
-        
+
         // Deploy new release
         if (parameters.releaseType === ReleaseType.Create) {
 
@@ -91,7 +91,7 @@ export class Orchestrator implements IOrchestrator {
 
     }
 
-    async getRelease(type: ReleaseType, project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, parameters: IParameters): Promise<ri.Release> {
+    public async getRelease(type: ReleaseType, project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, parameters: IParameters): Promise<ri.Release> {
 
         const verbose = logger.extend("getRelease");
 
@@ -150,11 +150,11 @@ export class Orchestrator implements IOrchestrator {
         let result: ri.ArtifactMetadata[] = [];
 
         // Get primary definition build artifact
-        const primaryArtifact: ri.Artifact = definition.artifacts!.filter(i => i.isPrimary == true && i.type == "Build")[0];
+        const primaryArtifact: ri.Artifact = definition.artifacts!.filter((i) => i.isPrimary === true && i.type === "Build")[0];
 
         if (primaryArtifact) {
 
-            let artifactVersion = undefined;
+            let artifactVersion;
 
             // Get build matching artifact tag
             if (artifactTag && artifactTag.length >= 1) {
@@ -188,7 +188,7 @@ export class Orchestrator implements IOrchestrator {
 
         const verbose = logger.extend("getReleaseFilters");
 
-        let result: IReleaseFilter = {
+        const result: IReleaseFilter = {
 
             artifactVersion: undefined,
             sourceBranch: undefined,
@@ -197,7 +197,7 @@ export class Orchestrator implements IOrchestrator {
         };
 
         // Get primary definition build artifact
-        const primaryArtifact: ri.Artifact = definition.artifacts!.filter(i => i.isPrimary == true && i.type == "Build")[0];
+        const primaryArtifact: ri.Artifact = definition.artifacts!.filter((i) => i.isPrimary === true && i.type === "Build")[0];
 
         // Get release tag filter
         if (releaseTag && releaseTag.length >= 1) {

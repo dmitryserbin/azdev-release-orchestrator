@@ -3,11 +3,11 @@ import "mocha";
 import * as chai from "chai";
 import * as TypeMoq from "typemoq";
 
+import * as bi from "azure-devops-node-api/interfaces/BuildInterfaces";
 import * as ci from "azure-devops-node-api/interfaces/CoreInterfaces";
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
-import * as bi from "azure-devops-node-api/interfaces/BuildInterfaces";
 
-import { IParameters, IReleaseDetails, IOrchestrator, IHelper, IDeployer, ReleaseType } from "../interfaces";
+import { IDeployer, IHelper, IOrchestrator, IParameters, IReleaseDetails, ReleaseType } from "../interfaces";
 import { Orchestrator } from "../orchestrator";
 
 describe("Orchestrator", () => {
@@ -15,7 +15,7 @@ describe("Orchestrator", () => {
     const mockProject = {
 
         id: "My-Project-Id",
-        name: "My-Project"
+        name: "My-Project",
 
     } as ci.TeamProject;
 
@@ -23,7 +23,7 @@ describe("Orchestrator", () => {
 
         id: 1,
         name: "My-Definition",
-        artifacts: []
+        artifacts: [],
 
     } as ri.ReleaseDefinition;
 
@@ -32,7 +32,7 @@ describe("Orchestrator", () => {
         id: 1,
         name: "My-Release",
         artifacts: [
-            
+
             {
 
                 isPrimary: true,
@@ -41,7 +41,7 @@ describe("Orchestrator", () => {
 
             } as ri.Artifact,
 
-        ]
+        ],
 
     } as ri.Release;
 
@@ -65,15 +65,15 @@ describe("Orchestrator", () => {
 
     } as IParameters;
 
-    let consoleLog = console.log;
-    let helperMock = TypeMoq.Mock.ofType<IHelper>();
-    let deployerMock = TypeMoq.Mock.ofType<IDeployer>();
+    const consoleLog = console.log;
+    const helperMock = TypeMoq.Mock.ofType<IHelper>();
+    const deployerMock = TypeMoq.Mock.ofType<IDeployer>();
 
-    helperMock.setup(x => x.getProject(TypeMoq.It.isAnyString())).returns(() => Promise.resolve(mockProject));
-    helperMock.setup(x => x.getDefinition(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber())).returns(() => Promise.resolve(mockDefinition));
+    helperMock.setup((x) => x.getProject(TypeMoq.It.isAnyString())).returns(() => Promise.resolve(mockProject));
+    helperMock.setup((x) => x.getDefinition(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber())).returns(() => Promise.resolve(mockDefinition));
 
-    deployerMock.setup(x => x.deployAutomated(TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve());
-    deployerMock.setup(x => x.deployManual(TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve());
+    deployerMock.setup((x) => x.deployAutomated(TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve());
+    deployerMock.setup((x) => x.deployManual(TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve());
 
     it("Should deploy new automated release", async () => {
 
@@ -82,9 +82,9 @@ describe("Orchestrator", () => {
 
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
         const orchestratorMock: TypeMoq.IMock<IOrchestrator> = TypeMoq.Mock.ofInstance(orchestrator);
-        
-        orchestratorMock.setup(x => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
-        helperMock.setup(x => x.isAutomated(TypeMoq.It.isAny())).returns(() => Promise.resolve(true));
+
+        orchestratorMock.setup((x) => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
+        helperMock.setup((x) => x.isAutomated(TypeMoq.It.isAny())).returns(() => Promise.resolve(true));
 
         // Hide console output
         console.log = function(){};
@@ -94,7 +94,7 @@ describe("Orchestrator", () => {
 
         // Restore console output
         console.log = consoleLog;
-        
+
     });
 
     it("Should deploy new manual release", async () => {
@@ -104,9 +104,9 @@ describe("Orchestrator", () => {
 
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
         const orchestratorMock: TypeMoq.IMock<IOrchestrator> = TypeMoq.Mock.ofInstance(orchestrator);
-        
-        orchestratorMock.setup(x => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
-        helperMock.setup(x => x.isAutomated(TypeMoq.It.isAny())).returns(() => Promise.resolve(false));
+
+        orchestratorMock.setup((x) => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
+        helperMock.setup((x) => x.isAutomated(TypeMoq.It.isAny())).returns(() => Promise.resolve(false));
 
         // Hide console output
         console.log = function(){};
@@ -116,7 +116,7 @@ describe("Orchestrator", () => {
 
         // Restore console output
         console.log = consoleLog;
-        
+
     });
 
     it("Should re-deploy existing release", async () => {
@@ -128,7 +128,7 @@ describe("Orchestrator", () => {
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
         const orchestratorMock: TypeMoq.IMock<IOrchestrator> = TypeMoq.Mock.ofInstance(orchestrator);
 
-        orchestratorMock.setup(x => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
+        orchestratorMock.setup((x) => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
 
         // Hide console output
         console.log = function(){};
@@ -137,7 +137,7 @@ describe("Orchestrator", () => {
 
         // Restore console output
         console.log = consoleLog;
-        
+
     });
 
     it("Should get new release", async () => {
@@ -145,7 +145,7 @@ describe("Orchestrator", () => {
         const parameters = mockParameters;
         parameters.releaseType = ReleaseType.Create;
 
-        helperMock.setup(x => x.createRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
+        helperMock.setup((x) => x.createRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
 
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
 
@@ -163,7 +163,7 @@ describe("Orchestrator", () => {
         parameters.releaseId = "1";
         parameters.releaseType = ReleaseType.Specific;
 
-        helperMock.setup(x => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
+        helperMock.setup((x) => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
 
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
 
@@ -180,7 +180,7 @@ describe("Orchestrator", () => {
         const parameters = mockParameters;
         parameters.releaseType = ReleaseType.Latest;
 
-        helperMock.setup(x => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
+        helperMock.setup((x) => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
 
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
 
@@ -201,7 +201,7 @@ describe("Orchestrator", () => {
         const release = mockRelease;
         release.tags = parameters.releaseTag;
 
-        helperMock.setup(x => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(release));
+        helperMock.setup((x) => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(release));
 
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
 
@@ -248,16 +248,16 @@ describe("Orchestrator", () => {
             name: "My-Definition-Name",
 
         } as ri.ArtifactSourceReference;
-        
+
         release.artifacts![0].definitionReference = {
 
             definition: definitionReferenceMock,
             version: versionReferenceMock,
-        
+
         };
 
-        helperMock.setup(x => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
-        helperMock.setup(x => x.findBuild(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(buildMock));
+        helperMock.setup((x) => x.findRelease(TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
+        helperMock.setup((x) => x.findBuild(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(buildMock));
 
         const orchestrator: IOrchestrator = new Orchestrator(helperMock.target, deployerMock.target);
 

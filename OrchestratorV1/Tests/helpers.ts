@@ -1,17 +1,17 @@
 import * as mr from "azure-pipelines-task-lib/mock-run";
 
-export function MockInput(tmr: mr.TaskMockRunner, variables: string[]): void
-{
-    variables.forEach(i => {
-        
-        tmr.setInput(i, <string>process.env[i]);
+export function MockInput(tmr: mr.TaskMockRunner, variables: string[]): void {
+
+    variables.forEach((i) => {
+
+        tmr.setInput(i, process.env[i] as string);
 
     });
 
 }
 
-export function MockEndpoint(tmr: mr.TaskMockRunner, type: string = "integrated", name: string = "SYSTEMVSSCONNECTION", account: string = "Integrated", token: string = "Integrated"): void
-{
+export function MockEndpoint(tmr: mr.TaskMockRunner, type: string = "integrated", name: string = "SYSTEMVSSCONNECTION", account: string = "Integrated", token: string = "Integrated"): void {
+
     // Set inputs
     tmr.setInput("EndpointType", type);
 
@@ -27,11 +27,12 @@ export function MockEndpoint(tmr: mr.TaskMockRunner, type: string = "integrated"
     // Set endpoint
     process.env[`ENDPOINT_URL_${name}`] = `https://dev.azure.com/${account}`;
     process.env[`ENDPOINT_AUTH_PARAMETER_${name}_${tokenParameterName}`] = token;
+
 }
 
 export function SetProcessVariables(variables: any): void {
 
-    Object.keys(variables).forEach(i => {
+    Object.keys(variables).forEach((i) => {
 
         process.env[i] = variables[i];
 
@@ -41,7 +42,7 @@ export function SetProcessVariables(variables: any): void {
 
 export function ClearProcessVariables(variables: any): void {
 
-    Object.keys(variables).forEach(i => {
+    Object.keys(variables).forEach((i) => {
 
         delete process.env[i];
 

@@ -1,9 +1,9 @@
 import Debug from "debug";
 
 import * as az from "azure-devops-node-api";
+import * as ba from "azure-devops-node-api/BuildApi";
 import * as ca from "azure-devops-node-api/CoreApi";
 import * as ra from "azure-devops-node-api/ReleaseApi";
-import * as ba from "azure-devops-node-api/BuildApi";
 
 import { IConnection, IEndpoint } from "./interfaces";
 
@@ -13,17 +13,17 @@ export class Connection implements IConnection {
 
     private webApi: az.WebApi;
 
-    constructor (endpoint: IEndpoint) {
+    constructor(endpoint: IEndpoint) {
 
         const auth = az.getPersonalAccessTokenHandler(endpoint.token);
-        
+
         this.webApi = new az.WebApi(endpoint.url, auth);
 
         logger(`Azure DevOps Web API initialized`);
 
     }
 
-    async getCoreApi(): Promise<ca.CoreApi> {
+    public async getCoreApi(): Promise<ca.CoreApi> {
 
         const coreApi: ca.CoreApi = await this.webApi.getCoreApi();
 
@@ -33,7 +33,7 @@ export class Connection implements IConnection {
 
     }
 
-    async getReleaseApi(): Promise<ra.ReleaseApi> {
+    public async getReleaseApi(): Promise<ra.ReleaseApi> {
 
         const releaseApi: ra.ReleaseApi = await this.webApi.getReleaseApi();
 
@@ -43,7 +43,7 @@ export class Connection implements IConnection {
 
     }
 
-    async getBuildApi(): Promise<ba.BuildApi> {
+    public async getBuildApi(): Promise<ba.BuildApi> {
 
         const buildApi: ba.BuildApi = await this.webApi.getBuildApi();
 
