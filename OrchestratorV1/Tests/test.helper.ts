@@ -66,7 +66,7 @@ describe("Helper", () => {
         const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.getProject(projectId);
 
-        chai.expect(result).not.null;
+        chai.expect(result).to.not.eq(null);
         chai.expect(result.id).eq(projectId);
 
     });
@@ -86,7 +86,7 @@ describe("Helper", () => {
         const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.getDefinition(projectName, definitionId);
 
-        chai.expect(result).not.null;
+        chai.expect(result).to.not.eq(null);
         chai.expect(result.id).eq(definitionId);
         chai.expect(result.name).eq(definitionName);
 
@@ -114,7 +114,7 @@ describe("Helper", () => {
         const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.getRelease(projectMock, releasetId, releaseStages);
 
-        chai.expect(result).not.null;
+        chai.expect(result).to.not.eq(null);
         chai.expect(result.id).eq(releasetId);
         chai.expect(result.name).eq(releaseName);
 
@@ -159,7 +159,7 @@ describe("Helper", () => {
         const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.createRelease(projectMock, definitionMock, detailsMock);
 
-        chai.expect(result).not.null;
+        chai.expect(result).to.not.eq(null);
         chai.expect(result.id).eq(releasetId);
         chai.expect(result.name).eq(releaseName);
 
@@ -196,7 +196,7 @@ describe("Helper", () => {
         const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.findRelease(projectMock.name!, definitionId, releaseStages, filtersMock);
 
-        chai.expect(result).not.null;
+        chai.expect(result).to.not.eq(null);
         chai.expect(result.id).eq(releasetId);
         chai.expect(result.name).eq(releaseName);
 
@@ -236,7 +236,7 @@ describe("Helper", () => {
         const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.findRelease(projectMock.name!, definitionId, releaseStages, filtersMock);
 
-        chai.expect(result).not.null;
+        chai.expect(result).to.not.eq(null);
         chai.expect(result.id).eq(releasetId);
         chai.expect(result.name).eq(releaseName);
         chai.expect(result.tags).contains(tagFilter);
@@ -296,12 +296,12 @@ describe("Helper", () => {
         const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.findRelease(projectMock.name!, definitionId, releaseStages, filtersMock);
 
-        chai.expect(result).not.null;
+        chai.expect(result).to.not.eq(null);
         chai.expect(result.id).eq(releasetId);
         chai.expect(result.name).eq(releaseName);
-        chai.expect(result.artifacts).not.null;
+        chai.expect(result.artifacts).to.not.eq(null);
         chai.expect(result.artifacts).length.gt(0);
-        chai.expect(result.artifacts![0].definitionReference).not.null;
+        chai.expect(result.artifacts![0].definitionReference).to.not.eq(null);
         chai.expect(result.artifacts![0].definitionReference!.branch.name).eq(`refs/heads/${sourceFilter}`);
 
     });
@@ -327,7 +327,7 @@ describe("Helper", () => {
         const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.findBuild(projectMock.name!, buildDefinitionId);
 
-        chai.expect(result).not.null;
+        chai.expect(result).to.not.eq(null);
         chai.expect(result.id).eq(buildId);
         chai.expect(result.buildNumber).eq(buildNumber);
 
@@ -357,7 +357,7 @@ describe("Helper", () => {
         const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.findBuild(projectMock.name!, buildDefinitionId, [ tagFilter ]);
 
-        chai.expect(result).not.null;
+        chai.expect(result).to.not.eq(null);
         chai.expect(result.id).eq(buildId);
         chai.expect(result.buildNumber).eq(buildNumber);
         chai.expect(result.tags).contains(tagFilter);
@@ -377,8 +377,8 @@ describe("Helper", () => {
         const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.isAutomated(releaseMock);
 
-        chai.expect(result).not.null;
-        chai.expect(result).is.false;
+        chai.expect(result).to.not.eq(null);
+        chai.expect(result).to.eq(false);
 
     });
 
@@ -400,8 +400,8 @@ describe("Helper", () => {
         const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
         const result = await helper.isAutomated(releaseMock);
 
-        chai.expect(result).not.null;
-        chai.expect(result).is.true;
+        chai.expect(result).to.not.eq(null);
+        chai.expect(result).to.eq(true);
 
     });
 

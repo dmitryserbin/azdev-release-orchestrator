@@ -42,7 +42,7 @@ describe("Deployer", () => {
 
         const result = await deployer.getReleaseStatus(projectName, releaseId);
 
-        chai.expect(result).not.null;
+        chai.expect(result).to.not.eq(null);
         chai.expect(result.id).eq(releaseId);
         chai.expect(result.name).eq(releaseName);
 
@@ -99,7 +99,7 @@ describe("Deployer", () => {
         // Restore console output
         console.log = consoleLog;
 
-        chai.expect(result).not.null;
+        chai.expect(result).to.not.eq(null);
         chai.expect(result.status).eq(ri.ApprovalStatus.Undefined);
         chai.expect(result.count).eq(0);
 
@@ -162,7 +162,7 @@ describe("Deployer", () => {
         // Restore console output
         console.log = consoleLog;
 
-        chai.expect(result).not.null;
+        chai.expect(result).to.not.eq(null);
         chai.expect(result.status).eq(ri.ApprovalStatus.Approved);
         chai.expect(result.count).eq(1);
 

@@ -20,7 +20,7 @@ describe("StageProgress", () => {
 
         const underTest: StageProgress = new StageProgress("My-Stage", approval, ri.EnvironmentStatus.NotStarted);
 
-        chai.expect(underTest).not.null;
+        chai.expect(underTest).to.not.eq(null);
 
     });
 
@@ -42,11 +42,11 @@ describe("StageProgress", () => {
             if (underTest.status !== ri.EnvironmentStatus.Queued &&
                 underTest.status !== ri.EnvironmentStatus.InProgress) {
 
-                chai.expect(underTest.isPending()).true;
+                chai.expect(underTest.isPending()).to.eq(true);
 
             } else {
 
-                chai.expect(underTest.isPending()).false;
+                chai.expect(underTest.isPending()).to.eq(false);
 
             }
 
@@ -73,11 +73,11 @@ describe("StageProgress", () => {
                 underTest.status === ri.EnvironmentStatus.Rejected ||
                 underTest.status === ri.EnvironmentStatus.Canceled) {
 
-                chai.expect(underTest.isCompleted()).true;
+                chai.expect(underTest.isCompleted()).to.eq(true);
 
             } else {
 
-                chai.expect(underTest.isCompleted()).false;
+                chai.expect(underTest.isCompleted()).to.eq(false);
 
             }
 
@@ -95,7 +95,7 @@ describe("ReleaseProgress", () => {
 
         const underTest: ReleaseProgress = new ReleaseProgress(mockStages);
 
-        chai.expect(underTest).not.null;
+        chai.expect(underTest).to.not.eq(null);
 
     });
 

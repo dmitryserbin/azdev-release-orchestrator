@@ -21,7 +21,7 @@ describe("Connection", () => {
 
         const connection: IConnection = new Connection(endpoint);
 
-        chai.expect(connection).not.null;
+        chai.expect(connection).to.not.eq(null);
 
     });
 

@@ -151,7 +151,7 @@ describe("Orchestrator", () => {
 
         const result = await orchestrator.getRelease(parameters.releaseType, mockProject, mockDefinition, mockDetails, mockParameters);
 
-        chai.expect(result).not.null;
+        chai.expect(result).to.not.eq(null);
         chai.expect(result.id).eq(mockRelease.id);
         chai.expect(result.name).eq(mockRelease.name);
 
@@ -169,7 +169,7 @@ describe("Orchestrator", () => {
 
         const result = await orchestrator.getRelease(parameters.releaseType, mockProject, mockDefinition, mockDetails, mockParameters);
 
-        chai.expect(result).not.null;
+        chai.expect(result).to.not.eq(null);
         chai.expect(result.id).eq(mockRelease.id);
         chai.expect(result.name).eq(mockRelease.name);
 
@@ -186,7 +186,7 @@ describe("Orchestrator", () => {
 
         const result = await orchestrator.getRelease(parameters.releaseType, mockProject, mockDefinition, mockDetails, mockParameters);
 
-        chai.expect(result).not.null;
+        chai.expect(result).to.not.eq(null);
         chai.expect(result.id).eq(mockRelease.id);
         chai.expect(result.name).eq(mockRelease.name);
 
@@ -213,7 +213,7 @@ describe("Orchestrator", () => {
         // Restore console output
         console.log = consoleLog;
 
-        chai.expect(result).not.null;
+        chai.expect(result).to.not.eq(null);
         chai.expect(result.id).eq(mockRelease.id);
         chai.expect(result.name).eq(mockRelease.name);
         chai.expect(result.tags).eq(parameters.releaseTag);
@@ -269,7 +269,7 @@ describe("Orchestrator", () => {
         // Restore console output
         console.log = consoleLog;
 
-        chai.expect(result).not.null;
+        chai.expect(result).to.not.eq(null);
         chai.expect(result.id).eq(mockRelease.id);
         chai.expect(result.name).eq(mockRelease.name);
         chai.expect(result.artifacts![0].definitionReference!.version.id).eq(String(buildMock.id));
