@@ -10,9 +10,9 @@
 
 The **Release Orchestrator** [extension](https://marketplace.visualstudio.com/items?itemName=dmitryserbin.release-orchestrator) adds a task to easily execute and track progress of multiple release pipelines in Azure DevOps. You can use this task to orchestrate numerous pipelines and deploy microservices components in a specific order.
 
-Build | Extension | CodeFactor
-:------|:-------|:-------
-[![Build](https://dev.azure.com/dmitryserbin/Orchestrator/_apis/build/status/Orchestrator-master)](https://dev.azure.com/dmitryserbin/Orchestrator/_build/latest?definitionId=6) | [![Extension](https://vsmarketplacebadge.apphb.com/version/dmitryserbin.release-orchestrator.svg)](https://marketplace.visualstudio.com/items?itemName=dmitryserbin.release-orchestrator) | [![CodeFactor](https://www.codefactor.io/repository/github/dmitryserbin/azdev-release-orchestrator/badge)](https://www.codefactor.io/repository/github/dmitryserbin/azdev-release-orchestrator)
+Extension | Build | Code
+:-------|:-------|:-------
+[![Extension](https://vsmarketplacebadge.apphb.com/version/dmitryserbin.release-orchestrator.svg)](https://marketplace.visualstudio.com/items?itemName=dmitryserbin.release-orchestrator) | [![Build](https://dev.azure.com/dmitryserbin/Orchestrator/_apis/build/status/Orchestrator-master)](https://dev.azure.com/dmitryserbin/Orchestrator/_build/latest?definitionId=6) | [![CodeFactor](https://www.codefactor.io/repository/github/dmitryserbin/azdev-release-orchestrator/badge)](https://www.codefactor.io/repository/github/dmitryserbin/azdev-release-orchestrator)
 
 ## Features
 
