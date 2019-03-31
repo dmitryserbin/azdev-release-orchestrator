@@ -19,8 +19,8 @@ export class Connection implements IConnection {
 
         const auth = az.getPersonalAccessTokenHandler(endpoint.token);
 
-        // Use integrate etry mechanism to address
-        // Intermittent Azure DevOps connection errors
+        // Use integrated retry mechanism to address
+        // Intermittent Azure DevOps connectivity errors
         const options = {
 
             allowRetries: true,
