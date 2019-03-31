@@ -290,37 +290,11 @@ export class Deployer implements IDeployer {
 
     }
 
-    public async getReleaseStatus(projectName: string, releaseId: number, retry: number = 10, timeout: number = 5000): Promise<ri.Release> {
+    public async getReleaseStatus(projectName: string, releaseId: number): Promise<ri.Release> {
 
         const verbose = logger.extend("getReleaseStatus");
 
-        let progress: ri.Release | undefined;
-        let retryAttempt: number = 0;
-
-        // Retry mechanism to address intermittent ECONNRESET errors
-        // https://github.com/Microsoft/azure-devops-node-api/issues/292
-        while (retryAttempt < retry) {
-
-            try {
-
-                retryAttempt++;
-
-                // Get release status
-                progress = await this.releaseApi.getRelease(projectName, releaseId);
-
-                // Stop retrying on success
-                retryAttempt = retry;
-
-            } catch {
-
-                console.log(`Retry retrieving release status..`);
-
-                // Delay before next retry
-                await this.delay(timeout);
-
-            }
-
-        }
+        const progress: ri.Release = await this.releaseApi.getRelease(projectName, releaseId);
 
         if (!progress) {
 

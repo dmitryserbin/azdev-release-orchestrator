@@ -5,6 +5,8 @@ import * as ba from "azure-devops-node-api/BuildApi";
 import * as ca from "azure-devops-node-api/CoreApi";
 import * as ra from "azure-devops-node-api/ReleaseApi";
 
+import * as vi from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
+
 import { IConnection, IEndpoint } from "./interfaces";
 
 const logger = Debug("release-orchestrator:Connection");
@@ -17,7 +19,16 @@ export class Connection implements IConnection {
 
         const auth = az.getPersonalAccessTokenHandler(endpoint.token);
 
-        this.webApi = new az.WebApi(endpoint.url, auth);
+        // Use integrated retry mechanism to address
+        // Intermittent Azure DevOps connectivity errors
+        const options = {
+
+            allowRetries: true,
+            maxRetries: 10,
+
+        } as vi.IRequestOptions;
+
+        this.webApi = new az.WebApi(endpoint.url, auth, options);
 
         logger(`Azure DevOps Web API initialized`);
 
