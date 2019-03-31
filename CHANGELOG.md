@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.2
+
+- Switch to native retry mechanism
+
 ## 1.2.1
 
 - Add debug mode support
