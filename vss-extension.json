@@ -12,7 +12,7 @@
   ],
   "description": "Managing and orchestrating Azure DevOps release pipelines",
   "categories": [
-    "Build and release"
+    "Azure Pipelines"
   ],
   "tags": [
     "Release",
@@ -28,13 +28,13 @@
   },
   "content": {
     "details": {
-      "path": "README.md"
+      "path": "readme.md"
     },
     "changelog": {
-      "path": "CHANGELOG.md"
+      "path": "changelog.md"
     },
     "license": {
-      "path": "LICENSE"
+      "path": "license.md"
     }
   },
   "links": {
