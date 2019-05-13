@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.3
+
+- Increase max retries
+
 ## 1.2.2
 
 - Switch to native retry mechanism
