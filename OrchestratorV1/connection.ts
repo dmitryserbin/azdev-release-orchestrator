@@ -24,7 +24,7 @@ export class Connection implements IConnection {
         const options = {
 
             allowRetries: true,
-            maxRetries: 10,
+            maxRetries: 20,
 
         } as vi.IRequestOptions;
 
