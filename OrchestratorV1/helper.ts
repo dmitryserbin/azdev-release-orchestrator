@@ -326,6 +326,94 @@ export class Helper implements IHelper {
 
     }
 
+    public async updateStage(status: ri.ReleaseEnvironmentUpdateMetadata, projectName: string, releaseId: number, stageId: number): Promise<ri.ReleaseEnvironment> {
+
+        const verbose = logger.extend("updateStage");
+
+        const releaseStage: ri.ReleaseEnvironment = await this.releaseApi.updateReleaseEnvironment(status, projectName, releaseId, stageId);
+
+        if (!releaseStage) {
+
+            throw new Error(`Updated stage <${stageId}> not found`);
+
+        }
+
+        verbose(releaseStage);
+
+        return releaseStage;
+    }
+
+    public async updateApproval(status: ri.ReleaseApproval, projectName: string, requestId: number): Promise<ri.ReleaseApproval> {
+
+        const verbose = logger.extend("updateApproval");
+
+        const approvalStatus: ri.ReleaseApproval = await this.releaseApi.updateReleaseApproval(status, projectName, requestId);
+
+        verbose(approvalStatus);
+
+        return approvalStatus;
+
+    }
+
+    public async getReleaseStatus(projectName: string, releaseId: number): Promise<ri.Release> {
+
+        const verbose = logger.extend("getReleaseStatus");
+
+        let retryAttempt: number = 0;
+        let progress: ri.Release | undefined;
+
+        // Retry mechanism to address
+        // Intermittent ECONNRESET errors
+        while (retryAttempt < this.options.retryCount) {
+
+            try {
+
+                retryAttempt++;
+
+                progress = await this.releaseApi.getRelease(projectName, releaseId);
+
+                retryAttempt = this.options.retryTimeout;
+
+            } catch {
+
+                console.log(`Retry retrieving release status..`);
+
+                await this.delay(this.options.retryTimeout);
+
+            }
+
+        }
+
+        if (!progress) {
+
+            throw new Error(`Unable to get ${releaseId} release progress`);
+
+        }
+
+        verbose(`Release ${progress.name} status ${ri.ReleaseStatus[progress.status!]} retrieved`);
+
+        return progress;
+
+    }
+
+    public async getStageStatus(releaseStatus: ri.Release, stageName: string): Promise<ri.ReleaseEnvironment> {
+
+        const verbose = logger.extend("getStageStatus");
+
+        const progress = releaseStatus.environments!.find((i) => i.name === stageName);
+
+        if (!progress) {
+
+            throw new Error(`Unable to get ${stageName} stage progress`);
+
+        }
+
+        verbose(`Stage ${progress.name} status ${ri.EnvironmentStatus[progress.status!]} retrieved`);
+
+        return progress;
+
+    }
+
     public async getArtifacts(projectName: string, definitionId: number, primaryId: string, versionId?: string, sourceBranch?: string): Promise<ri.ArtifactMetadata[]> {
 
         const verbose = logger.extend("getArtifacts");

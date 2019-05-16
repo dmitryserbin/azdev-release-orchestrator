@@ -30,7 +30,7 @@ async function run() {
 
         const options: IOptions = { retryCount: 10, retryTimeout: 5000 };
         const helper: IHelper = new Helper(coreApi, releaseApi, buildApi, options);
-        const deployer: IDeployer = new Deployer(releaseApi, options);
+        const deployer: IDeployer = new Deployer(helper);
         const orchestrator: IOrchestrator = new Orchestrator(helper, deployer);
 
         // Run orchestrator
