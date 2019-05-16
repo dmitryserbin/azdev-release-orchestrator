@@ -46,7 +46,7 @@ describe("Helper", () => {
         const releaseApi: ra.ReleaseApi = await connection.getReleaseApi();
         const buildApi: ba.BuildApi = await connection.getBuildApi();
         const helper: IHelper = new Helper(coreApi, releaseApi, buildApi, options);
-        const deployer: IDeployer = new Deployer(releaseApi, options);
+        const deployer: IDeployer = new Deployer(helper);
         const orchestrator: IOrchestrator = new Orchestrator(helper, deployer);
 
         await orchestrator.deployRelease(parameters, details);
