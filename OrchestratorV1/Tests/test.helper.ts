@@ -61,7 +61,7 @@ describe("Helper", () => {
 
     it("Should get project", async () => {
 
-        coreApiMock.setup((x) => x.getProject(TypeMoq.It.isAnyString())).returns(() => Promise.resolve({ id: projectId} as ci.TeamProject));
+        coreApiMock.setup((x) => x.getProject(TypeMoq.It.isAnyString())).returns(() => Promise.resolve({ id: projectId } as ci.TeamProject));
         webApiMock.setup((x) => x.getCoreApi()).returns(() => Promise.resolve(coreApiMock.target));
 
         const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target, options);
