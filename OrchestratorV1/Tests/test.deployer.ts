@@ -7,7 +7,7 @@ import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import * as ra from "azure-devops-node-api/ReleaseApi";
 
 import { Deployer } from "../deployer";
-import { IApproveParameters, IDeployer, IReleaseDetails, IStageApproval } from "../interfaces";
+import { IApproveParameters, IDeployer, IOptions, IReleaseDetails, IStageApproval } from "../interfaces";
 
 describe("Deployer", () => {
 
@@ -24,8 +24,10 @@ describe("Deployer", () => {
     const stageId = 1;
     const stageName = "DEV";
 
-    const consoleLog = console.log;
+    const options: IOptions = { retryCount: 10, retryTimeout: 5000 };
     const releaseApiMock = TypeMoq.Mock.ofType<ra.IReleaseApi>();
+
+    const consoleLog = console.log;
 
     it("Should get release status", async () => {
 
@@ -38,7 +40,7 @@ describe("Deployer", () => {
 
         releaseApiMock.setup((x) => x.getRelease(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber())).returns(() => Promise.resolve(release));
 
-        const deployer: IDeployer = new Deployer(releaseApiMock.target);
+        const deployer: IDeployer = new Deployer(releaseApiMock.target, options);
 
         const result = await deployer.getReleaseStatus(projectName, releaseId);
 
@@ -89,7 +91,7 @@ describe("Deployer", () => {
 
         } as IApproveParameters;
 
-        const deployer: IDeployer = new Deployer(releaseApiMock.target);
+        const deployer: IDeployer = new Deployer(releaseApiMock.target, options);
 
         // Hide console output
         console.log = () => { /**/ };
@@ -152,7 +154,7 @@ describe("Deployer", () => {
 
         } as ri.ReleaseApproval));
 
-        const deployer: IDeployer = new Deployer(releaseApiMock.target);
+        const deployer: IDeployer = new Deployer(releaseApiMock.target, options);
 
         // Hide console output
         console.log = () => { /**/ };

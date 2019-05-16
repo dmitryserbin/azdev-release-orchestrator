@@ -120,6 +120,13 @@ export interface IReleaseFilter {
 
 }
 
+export interface IOptions {
+
+    retryCount: number;
+    retryTimeout: number;
+
+}
+
 export interface IOrchestrator {
 
     deployRelease(parameters: IParameters, details: IReleaseDetails): Promise<void>;

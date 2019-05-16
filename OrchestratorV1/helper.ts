@@ -7,18 +7,20 @@ import * as ci from "azure-devops-node-api/interfaces/CoreInterfaces";
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import * as ra from "azure-devops-node-api/ReleaseApi";
 
-import { IHelper, IReleaseDetails, IReleaseFilter } from "./interfaces";
+import { IHelper, IOptions, IReleaseDetails, IReleaseFilter } from "./interfaces";
 
 const logger = Debug("release-orchestrator:Helper");
 
 export class Helper implements IHelper {
 
+    private options: IOptions;
     private coreApi: ca.ICoreApi;
     private releaseApi: ra.IReleaseApi;
     private buildApi: ba.IBuildApi;
 
-    constructor(coreApi: ca.ICoreApi, releaseApi: ra.IReleaseApi, buildApi: ba.IBuildApi) {
+    constructor(coreApi: ca.ICoreApi, releaseApi: ra.IReleaseApi, buildApi: ba.IBuildApi, options: IOptions) {
 
+        this.options = options;
         this.coreApi = coreApi;
         this.releaseApi = releaseApi;
         this.buildApi = buildApi;
@@ -29,7 +31,30 @@ export class Helper implements IHelper {
 
         const verbose = logger.extend("getProject");
 
-        const targetProject = await this.coreApi.getProject(projectId);
+        let retryAttempt: number = 0;
+        let targetProject: ci.TeamProject | undefined;
+
+        // Retry mechanism to address
+        // Intermittent ECONNRESET errors
+        while (retryAttempt < this.options.retryCount) {
+
+            try {
+
+                retryAttempt++;
+
+                targetProject = await this.coreApi.getProject(projectId);
+
+                retryAttempt = this.options.retryTimeout;
+
+            } catch {
+
+                console.log(`Retry retrieving target project..`);
+
+                await this.delay(this.options.retryTimeout);
+
+            }
+
+        }
 
         if (!targetProject) {
 
@@ -47,7 +72,30 @@ export class Helper implements IHelper {
 
         const verbose = logger.extend("getDefinition");
 
-        const targetDefinition: ri.ReleaseDefinition = await this.releaseApi.getReleaseDefinition(projectName, definitionId);
+        let retryAttempt: number = 0;
+        let targetDefinition: ri.ReleaseDefinition | undefined;
+
+        // Retry mechanism to address
+        // Intermittent ECONNRESET errors
+        while (retryAttempt < this.options.retryCount) {
+
+            try {
+
+                retryAttempt++;
+
+                targetDefinition = await this.releaseApi.getReleaseDefinition(projectName, definitionId);
+
+                retryAttempt = this.options.retryTimeout;
+
+            } catch {
+
+                console.log(`Retry retrieving release definition..`);
+
+                await this.delay(this.options.retryTimeout);
+
+            }
+
+        }
 
         if (!targetDefinition) {
 
@@ -131,9 +179,39 @@ export class Helper implements IHelper {
 
         const verbose = logger.extend("getRelease");
 
+        let retryAttempt: number = 0;
+
         try {
 
-            const targetRelease: ri.Release = await this.releaseApi.getRelease(project.name!, releaseId);
+            let targetRelease: ri.Release | undefined;
+
+            // Retry mechanism to address
+            // Intermittent ECONNRESET errors
+            while (retryAttempt < this.options.retryCount) {
+
+                try {
+
+                    retryAttempt++;
+
+                    targetRelease = await this.releaseApi.getRelease(project.name!, releaseId);
+
+                    retryAttempt = this.options.retryTimeout;
+
+                } catch {
+
+                    console.log(`Retry retrieving release..`);
+
+                    await this.delay(this.options.retryTimeout);
+
+                }
+
+            }
+
+            if (!targetRelease) {
+
+                throw new Error(`Release <${releaseId}> not found`);
+
+            }
 
             // Validate release environments
             await this.validateStages(stages, targetRelease.environments!.map((i) => i.name!));
@@ -364,6 +442,16 @@ export class Helper implements IHelper {
             }
 
         }
+
+    }
+
+    private async delay(ms: number) {
+
+        const verbose = logger.extend("delay");
+
+        verbose(`Start ${ms}ms delay`);
+
+        return new Promise((resolve) => setTimeout(resolve, ms));
 
     }
 

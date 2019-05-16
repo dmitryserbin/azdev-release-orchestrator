@@ -6,16 +6,18 @@ import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import * as ra from "azure-devops-node-api/ReleaseApi";
 
 import { ReleaseProgress } from "./common";
-import { IApproveParameters, IDeployer, IReleaseDetails, IReleaseParameters, IStageApproval, ReleaseStatus } from "./interfaces";
+import { IApproveParameters, IDeployer, IOptions, IReleaseDetails, IReleaseParameters, IStageApproval, ReleaseStatus } from "./interfaces";
 
 const logger = Debug("release-orchestrator:Deployer");
 
 export class Deployer implements IDeployer {
 
+    private options: IOptions;
     private releaseApi: ra.IReleaseApi;
 
-    constructor(releaseApi: ra.IReleaseApi) {
+    constructor(releaseApi: ra.IReleaseApi, options: IOptions) {
 
+        this.options = options;
         this.releaseApi = releaseApi;
 
     }
@@ -294,7 +296,30 @@ export class Deployer implements IDeployer {
 
         const verbose = logger.extend("getReleaseStatus");
 
-        const progress: ri.Release = await this.releaseApi.getRelease(projectName, releaseId);
+        let retryAttempt: number = 0;
+        let progress: ri.Release | undefined;
+
+        // Retry mechanism to address
+        // Intermittent ECONNRESET errors
+        while (retryAttempt < this.options.retryCount) {
+
+            try {
+
+                retryAttempt++;
+
+                progress = await this.releaseApi.getRelease(projectName, releaseId);
+
+                retryAttempt = this.options.retryTimeout;
+
+            } catch {
+
+                console.log(`Retry retrieving release status..`);
+
+                await this.delay(this.options.retryTimeout);
+
+            }
+
+        }
 
         if (!progress) {
 
