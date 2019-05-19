@@ -1,7 +1,7 @@
 import { IRetryOptions } from "./interfaces";
 
 // tslint:disable-next-line:ban-types
-export function Retry(options: IRetryOptions): Function {
+export function Retry(options: IRetryOptions = { attempts: 10, timeout: 5000 }): Function {
 
     // tslint:disable-next-line:only-arrow-functions
     return function(target: any, name: string, descriptor: TypedPropertyDescriptor<any>) {
