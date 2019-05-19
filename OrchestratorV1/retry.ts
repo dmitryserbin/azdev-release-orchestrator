@@ -16,7 +16,7 @@ export function Retry(options: IRetryOptions): Function {
 
             } catch (e) {
 
-                e.message = `Failed retrying ${name} for ${options.attempts} times`;
+                e.message = `Failed retrying <${name}> for <${options.attempts}> times`;
 
                 throw e;
 

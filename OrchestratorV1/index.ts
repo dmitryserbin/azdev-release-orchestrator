@@ -8,7 +8,7 @@ import { getEndpoint, getParameters, getReleaseDetails } from "./azdev";
 import { Connection } from "./connection";
 import { Deployer } from "./deployer";
 import { Helper } from "./helper";
-import { IConnection, IDeployer, IEndpoint, IHelper, IRetryOptions, IOrchestrator, IParameters, IReleaseDetails } from "./interfaces";
+import { IConnection, IDeployer, IEndpoint, IHelper, IOrchestrator, IParameters, IReleaseDetails, IRetryOptions } from "./interfaces";
 import { Orchestrator } from "./orchestrator";
 
 async function run() {
