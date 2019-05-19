@@ -28,7 +28,7 @@ export function Retry(options: IRetryOptions = { attempts: 10, timeout: 5000 }):
     };
 
     // tslint:disable-next-line:ban-types
-    async function retryAsync(target: Function, args: any[], attempts: number, timeount: number): Promise<any> {
+    async function retryAsync(target: Function, args: any[], attempts: number, timeout: number): Promise<any> {
 
         try {
 
@@ -42,9 +42,9 @@ export function Retry(options: IRetryOptions = { attempts: 10, timeout: 5000 }):
 
             }
 
-            await new Promise((resolve) => setTimeout(resolve, timeount));
+            await new Promise((resolve) => setTimeout(resolve, timeout));
 
-            return retryAsync.apply(target, [target, args, attempts, timeount]);
+            return retryAsync.apply(target, [target, args, attempts, timeout]);
 
         }
 
