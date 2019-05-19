@@ -109,6 +109,100 @@ export class Helper implements IHelper {
 
     }
 
+    public async getRelease(project: ci.TeamProject, releaseId: number, stages: string[]): Promise<ri.Release> {
+
+        const verbose = logger.extend("getRelease");
+
+        let retryAttempt: number = 0;
+
+        try {
+
+            let targetRelease: ri.Release | undefined;
+
+            // Retry mechanism to address
+            // Intermittent ECONNRESET errors
+            while (retryAttempt < this.options.attempts) {
+
+                try {
+
+                    retryAttempt++;
+
+                    targetRelease = await this.releaseApi.getRelease(project.name!, releaseId);
+
+                    retryAttempt = this.options.timeout;
+
+                } catch {
+
+                    console.log(`Retry retrieving release..`);
+
+                    await this.delay(this.options.timeout);
+
+                }
+
+            }
+
+            if (!targetRelease) {
+
+                throw new Error(`Release <${releaseId}> not found`);
+
+            }
+
+            // Validate release environments
+            await this.validateStages(stages, targetRelease.environments!.map((i) => i.name!));
+
+            verbose(targetRelease);
+
+            return targetRelease;
+
+        } catch (e) {
+
+            throw new Error(`Unable to get existing release. ${e}`);
+
+        }
+
+    }
+
+    public async getReleaseStatus(projectName: string, releaseId: number): Promise<ri.Release> {
+
+        const verbose = logger.extend("getReleaseStatus");
+
+        let retryAttempt: number = 0;
+        let progress: ri.Release | undefined;
+
+        // Retry mechanism to address
+        // Intermittent ECONNRESET errors
+        while (retryAttempt < this.options.attempts) {
+
+            try {
+
+                retryAttempt++;
+
+                progress = await this.releaseApi.getRelease(projectName, releaseId);
+
+                retryAttempt = this.options.timeout;
+
+            } catch {
+
+                console.log(`Retry retrieving release status..`);
+
+                await this.delay(this.options.timeout);
+
+            }
+
+        }
+
+        if (!progress) {
+
+            throw new Error(`Unable to get ${releaseId} release progress`);
+
+        }
+
+        verbose(`Release ${progress.name} status ${ri.ReleaseStatus[progress.status!]} retrieved`);
+
+        return progress;
+
+    }
+
     public async findRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter): Promise<ri.Release> {
 
         const verbose = logger.extend("findRelease");
@@ -170,59 +264,6 @@ export class Helper implements IHelper {
         } catch (e) {
 
             throw new Error(`Unable to find target release. ${e}`);
-
-        }
-
-    }
-
-    public async getRelease(project: ci.TeamProject, releaseId: number, stages: string[]): Promise<ri.Release> {
-
-        const verbose = logger.extend("getRelease");
-
-        let retryAttempt: number = 0;
-
-        try {
-
-            let targetRelease: ri.Release | undefined;
-
-            // Retry mechanism to address
-            // Intermittent ECONNRESET errors
-            while (retryAttempt < this.options.attempts) {
-
-                try {
-
-                    retryAttempt++;
-
-                    targetRelease = await this.releaseApi.getRelease(project.name!, releaseId);
-
-                    retryAttempt = this.options.timeout;
-
-                } catch {
-
-                    console.log(`Retry retrieving release..`);
-
-                    await this.delay(this.options.timeout);
-
-                }
-
-            }
-
-            if (!targetRelease) {
-
-                throw new Error(`Release <${releaseId}> not found`);
-
-            }
-
-            // Validate release environments
-            await this.validateStages(stages, targetRelease.environments!.map((i) => i.name!));
-
-            verbose(targetRelease);
-
-            return targetRelease;
-
-        } catch (e) {
-
-            throw new Error(`Unable to get existing release. ${e}`);
 
         }
 
@@ -352,47 +393,6 @@ export class Helper implements IHelper {
         verbose(approvalStatus);
 
         return approvalStatus;
-
-    }
-
-    public async getReleaseStatus(projectName: string, releaseId: number): Promise<ri.Release> {
-
-        const verbose = logger.extend("getReleaseStatus");
-
-        let retryAttempt: number = 0;
-        let progress: ri.Release | undefined;
-
-        // Retry mechanism to address
-        // Intermittent ECONNRESET errors
-        while (retryAttempt < this.options.attempts) {
-
-            try {
-
-                retryAttempt++;
-
-                progress = await this.releaseApi.getRelease(projectName, releaseId);
-
-                retryAttempt = this.options.timeout;
-
-            } catch {
-
-                console.log(`Retry retrieving release status..`);
-
-                await this.delay(this.options.timeout);
-
-            }
-
-        }
-
-        if (!progress) {
-
-            throw new Error(`Unable to get ${releaseId} release progress`);
-
-        }
-
-        verbose(`Release ${progress.name} status ${ri.ReleaseStatus[progress.status!]} retrieved`);
-
-        return progress;
 
     }
 
