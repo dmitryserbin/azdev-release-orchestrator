@@ -27,7 +27,32 @@ describe("Helper", () => {
 
         }
 
+        @Retry(options)
+        public static async passRetry() {
+
+            console.log(`Retrying for the ${count++} time at ${new Date().toLocaleTimeString()}`);
+
+            if (count === 1) {
+
+                throw new Error("Ooops!");
+
+            }
+
+        }
+
     }
+
+    it("Should retry and pass", async () => {
+
+        // Hide console output
+        console.log = () => { /**/ };
+
+        await chai.expect(RetryThis.passRetry()).not.to.be.rejected;
+
+        // Restore console output
+        console.log = consoleLog;
+
+    });
 
     it("Should retry and fail", async () => {
 
