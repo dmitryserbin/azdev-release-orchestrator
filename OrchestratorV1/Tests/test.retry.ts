@@ -5,14 +5,14 @@ import chaiAsPromised from "chai-as-promised";
 
 chai.use(chaiAsPromised);
 
-import { IOptions } from "../interfaces";
+import { IRetryOptions } from "../interfaces";
 import { Retry } from "../retry";
 
 describe("Helper", () => {
 
     let count: number = 1;
 
-    const options: IOptions = { retryCount: 3, retryTimeout: 1000 };
+    const options: IRetryOptions = { attempts: 3, timeout: 1000 };
 
     const consoleLog = console.log;
 

@@ -120,10 +120,10 @@ export interface IReleaseFilter {
 
 }
 
-export interface IOptions {
+export interface IRetryOptions {
 
-    retryCount: number;
-    retryTimeout: number;
+    attempts: number;
+    timeout: number;
 
 }
 

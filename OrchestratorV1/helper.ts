@@ -7,18 +7,18 @@ import * as ci from "azure-devops-node-api/interfaces/CoreInterfaces";
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import * as ra from "azure-devops-node-api/ReleaseApi";
 
-import { IHelper, IOptions, IReleaseDetails, IReleaseFilter } from "./interfaces";
+import { IHelper, IReleaseDetails, IReleaseFilter, IRetryOptions } from "./interfaces";
 
 const logger = Debug("release-orchestrator:Helper");
 
 export class Helper implements IHelper {
 
-    private options: IOptions;
+    private options: IRetryOptions;
     private coreApi: ca.ICoreApi;
     private releaseApi: ra.IReleaseApi;
     private buildApi: ba.IBuildApi;
 
-    constructor(coreApi: ca.ICoreApi, releaseApi: ra.IReleaseApi, buildApi: ba.IBuildApi, options: IOptions) {
+    constructor(coreApi: ca.ICoreApi, releaseApi: ra.IReleaseApi, buildApi: ba.IBuildApi, options: IRetryOptions) {
 
         this.options = options;
         this.coreApi = coreApi;
@@ -36,7 +36,7 @@ export class Helper implements IHelper {
 
         // Retry mechanism to address
         // Intermittent ECONNRESET errors
-        while (retryAttempt < this.options.retryCount) {
+        while (retryAttempt < this.options.attempts) {
 
             try {
 
@@ -44,13 +44,13 @@ export class Helper implements IHelper {
 
                 targetProject = await this.coreApi.getProject(projectId);
 
-                retryAttempt = this.options.retryTimeout;
+                retryAttempt = this.options.timeout;
 
             } catch {
 
                 console.log(`Retry retrieving target project..`);
 
-                await this.delay(this.options.retryTimeout);
+                await this.delay(this.options.timeout);
 
             }
 
@@ -77,7 +77,7 @@ export class Helper implements IHelper {
 
         // Retry mechanism to address
         // Intermittent ECONNRESET errors
-        while (retryAttempt < this.options.retryCount) {
+        while (retryAttempt < this.options.attempts) {
 
             try {
 
@@ -85,13 +85,13 @@ export class Helper implements IHelper {
 
                 targetDefinition = await this.releaseApi.getReleaseDefinition(projectName, definitionId);
 
-                retryAttempt = this.options.retryTimeout;
+                retryAttempt = this.options.timeout;
 
             } catch {
 
                 console.log(`Retry retrieving release definition..`);
 
-                await this.delay(this.options.retryTimeout);
+                await this.delay(this.options.timeout);
 
             }
 
@@ -187,7 +187,7 @@ export class Helper implements IHelper {
 
             // Retry mechanism to address
             // Intermittent ECONNRESET errors
-            while (retryAttempt < this.options.retryCount) {
+            while (retryAttempt < this.options.attempts) {
 
                 try {
 
@@ -195,13 +195,13 @@ export class Helper implements IHelper {
 
                     targetRelease = await this.releaseApi.getRelease(project.name!, releaseId);
 
-                    retryAttempt = this.options.retryTimeout;
+                    retryAttempt = this.options.timeout;
 
                 } catch {
 
                     console.log(`Retry retrieving release..`);
 
-                    await this.delay(this.options.retryTimeout);
+                    await this.delay(this.options.timeout);
 
                 }
 
@@ -364,7 +364,7 @@ export class Helper implements IHelper {
 
         // Retry mechanism to address
         // Intermittent ECONNRESET errors
-        while (retryAttempt < this.options.retryCount) {
+        while (retryAttempt < this.options.attempts) {
 
             try {
 
@@ -372,13 +372,13 @@ export class Helper implements IHelper {
 
                 progress = await this.releaseApi.getRelease(projectName, releaseId);
 
-                retryAttempt = this.options.retryTimeout;
+                retryAttempt = this.options.timeout;
 
             } catch {
 
                 console.log(`Retry retrieving release status..`);
 
-                await this.delay(this.options.retryTimeout);
+                await this.delay(this.options.timeout);
 
             }
 

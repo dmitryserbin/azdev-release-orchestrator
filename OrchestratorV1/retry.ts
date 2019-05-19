@@ -1,7 +1,7 @@
-import { IOptions } from "./interfaces";
+import { IRetryOptions } from "./interfaces";
 
 // tslint:disable-next-line:ban-types
-export function Retry(options: IOptions): Function {
+export function Retry(options: IRetryOptions): Function {
 
     // tslint:disable-next-line:only-arrow-functions
     return function(target: any, name: string, descriptor: TypedPropertyDescriptor<any>) {
@@ -12,11 +12,11 @@ export function Retry(options: IOptions): Function {
 
             try {
 
-                return await retryAsync.apply(this, [originalMethod, args, options.retryCount, options.retryTimeout]);
+                return await retryAsync.apply(this, [originalMethod, args, options.attempts, options.timeout]);
 
             } catch (e) {
 
-                e.message = `Failed retrying ${name} for ${options.retryCount} times`;
+                e.message = `Failed retrying ${name} for ${options.attempts} times`;
 
                 throw e;
 
@@ -28,7 +28,7 @@ export function Retry(options: IOptions): Function {
     };
 
     // tslint:disable-next-line:ban-types
-    async function retryAsync(target: Function, args: any[], retryCount: number, retryTimeout: number): Promise<any> {
+    async function retryAsync(target: Function, args: any[], attempts: number, timeount: number): Promise<any> {
 
         try {
 
@@ -36,16 +36,15 @@ export function Retry(options: IOptions): Function {
 
         } catch (e) {
 
-            if (--retryCount < 0) {
+            if (--attempts < 0) {
 
                 throw new Error(e);
 
             }
 
-            // Sleep before retry
-            await new Promise((resolve) => setTimeout(resolve, retryTimeout));
+            await new Promise((resolve) => setTimeout(resolve, timeount));
 
-            return retryAsync.apply(target, [target, args, retryCount, retryTimeout]);
+            return retryAsync.apply(target, [target, args, attempts, timeount]);
 
         }
 

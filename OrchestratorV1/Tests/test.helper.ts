@@ -12,7 +12,7 @@ import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import * as ra from "azure-devops-node-api/ReleaseApi";
 
 import { Helper } from "../helper";
-import { IHelper, IOptions, IReleaseDetails, IReleaseFilter } from "../interfaces";
+import { IHelper, IRetryOptions, IReleaseDetails, IReleaseFilter } from "../interfaces";
 
 describe("Helper", () => {
 
@@ -53,7 +53,7 @@ describe("Helper", () => {
     const buildNumber = "My-Build-01";
     const buildDefinitionId = 1;
 
-    const options: IOptions = { retryCount: 10, retryTimeout: 5000 };
+    const options: IRetryOptions = { attempts: 10, timeout: 5000 };
     const webApiMock = TypeMoq.Mock.ofType<az.WebApi>();
     const coreApiMock = TypeMoq.Mock.ofType<ca.ICoreApi>();
     const releaseApiMock = TypeMoq.Mock.ofType<ra.IReleaseApi>();
