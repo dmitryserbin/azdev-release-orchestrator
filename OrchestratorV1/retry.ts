@@ -50,6 +50,7 @@ async function retryAsync(target: Function, args: any[], attempts: number, timeo
 
     try {
 
+        // @ts-ignore
         return await target.apply(this, args);
 
     } catch (e) {
@@ -64,6 +65,7 @@ async function retryAsync(target: Function, args: any[], attempts: number, timeo
 
         await new Promise((resolve) => setTimeout(resolve, timeout));
 
+        // @ts-ignore
         return retryAsync.apply(this, [target, args, attempts, timeout]);
 
     }
