@@ -37,7 +37,7 @@ describe("Retry", () => {
 
         }
 
-        @Retry(options)
+        @Retry({ attempts: options.attempts, timeout: options.timeout })
         public static async decoratorRetryPass() {
 
             console.log(`Retrying for the ${count++} time at ${new Date().toLocaleTimeString()}`);
@@ -50,7 +50,7 @@ describe("Retry", () => {
 
         }
 
-        @Retry(options)
+        @Retry({ attempts: options.attempts, timeout: options.timeout })
         public static async decoratorRetryFail() {
 
             console.log(`Retrying for the ${count++} time at ${new Date().toLocaleTimeString()}`);
