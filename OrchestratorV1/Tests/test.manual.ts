@@ -25,9 +25,9 @@ describe("Helper", () => {
 
             projectId: "761623f0-c4c0-4dab-884b-a428a01c200f",
             definitionId: "1",
-            releaseId: "79",
-            releaseType: ReleaseType.Specific,
-            stages: [ "PROD" ],
+            releaseId: "",
+            releaseType: ReleaseType.Create,
+            stages: [ "DEV", "TEST", "PROD" ],
 
         } as IParameters;
 
