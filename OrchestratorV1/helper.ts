@@ -448,14 +448,4 @@ export class Helper implements IHelper {
 
     }
 
-    private async delay(ms: number) {
-
-        const verbose = logger.extend("delay");
-
-        verbose(`Start ${ms}ms delay`);
-
-        return new Promise((resolve) => setTimeout(resolve, ms));
-
-    }
-
 }
