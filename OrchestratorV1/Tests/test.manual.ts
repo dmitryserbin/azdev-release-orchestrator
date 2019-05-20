@@ -7,7 +7,7 @@ import * as ra from "azure-devops-node-api/ReleaseApi";
 import { Connection } from "../connection";
 import { Deployer } from "../deployer";
 import { Helper } from "../helper";
-import { IConnection, IDeployer, IEndpoint, IHelper, IOrchestrator, IParameters, IReleaseDetails, IRetryOptions, ReleaseType } from "../interfaces";
+import { IConnection, IDeployer, IEndpoint, IHelper, IOrchestrator, IParameters, IReleaseDetails, ReleaseType } from "../interfaces";
 import { Orchestrator } from "../orchestrator";
 
 describe("Helper", () => {
@@ -41,11 +41,10 @@ describe("Helper", () => {
 
         } as IReleaseDetails;
 
-        const options: IRetryOptions = { attempts: 3, timeout: 1000 };
         const coreApi: ca.CoreApi = await connection.getCoreApi();
         const releaseApi: ra.ReleaseApi = await connection.getReleaseApi();
         const buildApi: ba.BuildApi = await connection.getBuildApi();
-        const helper: IHelper = new Helper(coreApi, releaseApi, buildApi, options);
+        const helper: IHelper = new Helper(coreApi, releaseApi, buildApi);
         const deployer: IDeployer = new Deployer(helper);
         const orchestrator: IOrchestrator = new Orchestrator(helper, deployer);
 

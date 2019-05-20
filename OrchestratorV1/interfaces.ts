@@ -120,13 +120,6 @@ export interface IReleaseFilter {
 
 }
 
-export interface IRetryOptions {
-
-    attempts: number;
-    timeout: number;
-
-}
-
 export interface IHelper {
 
     getProject(projectId: string): Promise<ci.TeamProject>;

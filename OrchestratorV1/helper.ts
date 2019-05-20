@@ -7,21 +7,19 @@ import * as ci from "azure-devops-node-api/interfaces/CoreInterfaces";
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import * as ra from "azure-devops-node-api/ReleaseApi";
 
-import { IHelper, IReleaseDetails, IReleaseFilter, IRetryOptions } from "./interfaces";
-import { retryAsync } from "./retry";
+import { IHelper, IReleaseDetails, IReleaseFilter } from "./interfaces";
+import { Retry } from "./retry";
 
 const logger = Debug("release-orchestrator:Helper");
 
 export class Helper implements IHelper {
 
-    private options: IRetryOptions;
     private coreApi: ca.ICoreApi;
     private releaseApi: ra.IReleaseApi;
     private buildApi: ba.IBuildApi;
 
-    constructor(coreApi: ca.ICoreApi, releaseApi: ra.IReleaseApi, buildApi: ba.IBuildApi, options: IRetryOptions) {
+    constructor(coreApi: ca.ICoreApi, releaseApi: ra.IReleaseApi, buildApi: ba.IBuildApi) {
 
-        this.options = options;
         this.coreApi = coreApi;
         this.releaseApi = releaseApi;
         this.buildApi = buildApi;
@@ -33,7 +31,7 @@ export class Helper implements IHelper {
         const verbose = logger.extend("getProject");
 
         // Retry to address ECONNRESET errors
-        const targetProject: ci.TeamProject = await retryAsync(this.coreApi.getProject, [ projectId ], this.options);
+        const targetProject: ci.TeamProject = await this.getProjectRetry(projectId);
 
         if (!targetProject) {
 
@@ -52,7 +50,7 @@ export class Helper implements IHelper {
         const verbose = logger.extend("getDefinition");
 
         // Retry to address ECONNRESET errors
-        const targetDefinition: ri.ReleaseDefinition = await retryAsync(this.releaseApi.getReleaseDefinition, [ projectName, definitionId ], this.options);
+        const targetDefinition: ri.ReleaseDefinition = await this.getReleaseDefinitionRetry(projectName, definitionId);
 
         if (!targetDefinition) {
 
@@ -73,7 +71,7 @@ export class Helper implements IHelper {
         try {
 
             // Retry to address ECONNRESET errors
-            const targetRelease: ri.Release = await retryAsync(this.releaseApi.getRelease, [ project.name!, releaseId ], this.options);
+            const targetRelease: ri.Release = await this.getReleaseRetry(project.name!, releaseId);
 
             if (!targetRelease) {
 
@@ -101,7 +99,7 @@ export class Helper implements IHelper {
         const verbose = logger.extend("getReleaseStatus");
 
         // Retry to address ECONNRESET errors
-        const progress: ri.Release = await retryAsync(this.releaseApi.getRelease, [ projectName, releaseId ], this.options);
+        const progress: ri.Release = await this.getReleaseRetry(projectName, releaseId);
 
         if (!progress) {
 
@@ -122,26 +120,7 @@ export class Helper implements IHelper {
         try {
 
             // Retry to address ECONNRESET errors
-            const availableReleases: ri.Release[] = await retryAsync(this.releaseApi.getReleases, [
-                projectName,
-                definitionId,
-                undefined,
-                undefined,
-                undefined,
-                ri.ReleaseStatus.Active,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                ri.ReleaseExpands.Artifacts,
-                undefined,
-                undefined,
-                filter.artifactVersion ? filter.artifactVersion : undefined,
-                filter.sourceBranch ? filter.sourceBranch : undefined,
-                undefined,
-                (filter.tag && filter.tag.length) ? filter.tag : undefined ], this.options);
+            const availableReleases: ri.Release[] = await this.getReleasesRetry(projectName, definitionId, filter.artifactVersion, filter.sourceBranch, filter.tag);
 
             if (!availableReleases) {
 
@@ -167,7 +146,7 @@ export class Helper implements IHelper {
             const filteredRelease: ri.Release = availableReleases.sort((left, right) => left.id! - right.id!).reverse()[0];
 
             // Retry to address ECONNRESET errors
-            const targetRelease: ri.Release = await retryAsync(this.releaseApi.getRelease, [ projectName, filteredRelease.id! ], this.options);
+            const targetRelease: ri.Release = await this.getReleaseRetry(projectName, filteredRelease.id!);
 
             // Validate release environments
             await this.validateStages(stages, targetRelease.environments!.map((i) => i.name!));
@@ -445,6 +424,78 @@ export class Helper implements IHelper {
             }
 
         }
+
+    }
+
+    @Retry()
+    private async getProjectRetry(projectId: string): Promise<ci.TeamProject> {
+
+        return await this.coreApi.getProject(projectId);
+
+    }
+
+    @Retry()
+    private async getReleaseRetry(projectName: string, releaseId: number): Promise<ri.Release> {
+
+        return this.releaseApi.getRelease(projectName, releaseId);
+
+    }
+
+    @Retry()
+    private async getReleaseDefinitionRetry(projectName: string, definitionId: number): Promise<ri.ReleaseDefinition> {
+
+        return await this.releaseApi.getReleaseDefinition(projectName, definitionId);
+
+    }
+
+    @Retry()
+    private async getBuildsRetry(projectName: string, definitionId: number, tags?: string[]): Promise<bi.Build[]> {
+
+        return await this.buildApi.getBuilds(
+            projectName,
+            [ definitionId ],
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            tags);
+
+    }
+
+    @Retry()
+    private async getReleasesRetry(projectName: string, definitionId: number, artifactVersion?: string, sourceBranch?: string, tags?: string[]): Promise<ri.Release[]> {
+
+        return await this.releaseApi.getReleases(
+            projectName,
+            definitionId,
+            undefined,
+            undefined,
+            undefined,
+            ri.ReleaseStatus.Active,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            ri.ReleaseExpands.Artifacts,
+            undefined,
+            undefined,
+            artifactVersion ? artifactVersion : undefined,
+            sourceBranch ? sourceBranch : undefined,
+            undefined,
+            (tags && tags.length) ? tags : undefined);
+
+    }
+
+    @Retry()
+    private async getArtifactVersionsRetry(projectName: string, definitionId: number): Promise<ri.ArtifactVersionQueryResult> {
+
+        return await this.releaseApi.getArtifactVersions(projectName, definitionId);
 
     }
 

@@ -5,8 +5,7 @@ import chaiAsPromised from "chai-as-promised";
 
 chai.use(chaiAsPromised);
 
-import { IRetryOptions } from "../interfaces";
-import { Retry, retryAsync } from "../retry";
+import { IRetryOptions, Retry } from "../retry";
 
 describe("Retry", () => {
 
@@ -16,26 +15,6 @@ describe("Retry", () => {
     const consoleLog = console.log;
 
     class RetryThis {
-
-        public static async methodRetryPass() {
-
-            console.log(`Retrying for the ${count++} time at ${new Date().toLocaleTimeString()}`);
-
-            if (count === 1) {
-
-                throw new Error("Ooops!");
-
-            }
-
-        }
-
-        public static async methodRetryFail() {
-
-            console.log(`Retrying for the ${count++} time at ${new Date().toLocaleTimeString()}`);
-
-            throw new Error("Ooops!");
-
-        }
 
         @Retry({ attempts: options.attempts, timeout: options.timeout })
         public static async decoratorRetryPass() {
@@ -63,30 +42,6 @@ describe("Retry", () => {
     beforeEach(() => {
 
         count = 0;
-
-    });
-
-    it("Should method retry and pass", async () => {
-
-        // Hide console output
-        console.log = () => { /**/ };
-
-        await chai.expect(retryAsync(RetryThis.methodRetryPass, [], options)).not.to.be.rejected;
-
-        // Restore console output
-        console.log = consoleLog;
-
-    });
-
-    it("Should method retry and fail", async () => {
-
-        // Hide console output
-        console.log = () => { /**/ };
-
-        await chai.expect(retryAsync(RetryThis.methodRetryFail, [], options)).to.be.rejected;
-
-        // Restore console output
-        console.log = consoleLog;
 
     });
 

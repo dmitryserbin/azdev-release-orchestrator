@@ -8,7 +8,7 @@ import { getEndpoint, getParameters, getReleaseDetails } from "./azdev";
 import { Connection } from "./connection";
 import { Deployer } from "./deployer";
 import { Helper } from "./helper";
-import { IConnection, IDeployer, IEndpoint, IHelper, IOrchestrator, IParameters, IReleaseDetails, IRetryOptions } from "./interfaces";
+import { IConnection, IDeployer, IEndpoint, IHelper, IOrchestrator, IParameters, IReleaseDetails } from "./interfaces";
 import { Orchestrator } from "./orchestrator";
 
 async function run() {
@@ -28,8 +28,7 @@ async function run() {
         const releaseApi: ra.ReleaseApi = await connection.getReleaseApi();
         const buildApi: ba.BuildApi = await connection.getBuildApi();
 
-        const options: IRetryOptions = { attempts: 10, timeout: 5000 };
-        const helper: IHelper = new Helper(coreApi, releaseApi, buildApi, options);
+        const helper: IHelper = new Helper(coreApi, releaseApi, buildApi);
         const deployer: IDeployer = new Deployer(helper);
         const orchestrator: IOrchestrator = new Orchestrator(helper, deployer);
 

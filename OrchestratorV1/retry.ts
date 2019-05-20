@@ -1,8 +1,13 @@
 import Debug from "debug";
 
-import { IRetryOptions } from "./interfaces";
-
 const logger = Debug("release-orchestrator:Retry");
+
+export interface IRetryOptions {
+
+    attempts: number;
+    timeout: number;
+
+}
 
 // tslint:disable-next-line:ban-types
 export function Retry(options: IRetryOptions = { attempts: 10, timeout: 5000 }): Function {
@@ -21,7 +26,7 @@ export function Retry(options: IRetryOptions = { attempts: 10, timeout: 5000 }):
 
                 verbose(`Executing <${propertyKey}> with <${options.attempts}> retries`);
 
-                return await retryAsync.apply(this, [originalMethod, args, options]);
+                return await retryAsync.apply(this, [originalMethod, args, options.attempts, options.timeout]);
 
             } catch (e) {
 
@@ -39,7 +44,7 @@ export function Retry(options: IRetryOptions = { attempts: 10, timeout: 5000 }):
 }
 
 // tslint:disable-next-line:ban-types
-export async function retryAsync(target: Function, args: any[], options: IRetryOptions = { attempts: 10, timeout: 5000 }): Promise<any> {
+async function retryAsync(target: Function, args: any[], attempts: number, timeout: number): Promise<any> {
 
     const verbose = logger.extend("retryAsync");
 
@@ -49,17 +54,17 @@ export async function retryAsync(target: Function, args: any[], options: IRetryO
 
     } catch (e) {
 
-        if (--options.attempts < 0) {
+        if (--attempts < 0) {
 
             throw new Error(e);
 
         }
 
-        verbose(`Retrying <${target.name}> in <${options.timeout / 1000}> seconds`);
+        verbose(`Retrying <${target.name}> in <${timeout / 1000}> seconds`);
 
-        await new Promise((resolve) => setTimeout(resolve, options.timeout));
+        await new Promise((resolve) => setTimeout(resolve, timeout));
 
-        return retryAsync.apply(this, [target, args, { attempts: options.attempts, timeout: options.timeout }]);
+        return retryAsync.apply(this, [target, args, attempts, timeout]);
 
     }
 
