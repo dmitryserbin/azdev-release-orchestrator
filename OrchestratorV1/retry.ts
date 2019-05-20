@@ -18,7 +18,7 @@ export function Retry(options: IRetryOptions = { attempts: 10, timeout: 5000 }):
 
             try {
 
-                verbose(`Executing <${target.name}> with <${options.attempts}> attempts`);
+                verbose(`Executing <${target.name}> with <${options.attempts}> retries`);
 
                 return await retryAsync.apply(this, [originalMethod, args, options]);
 
