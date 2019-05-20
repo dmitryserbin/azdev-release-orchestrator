@@ -12,7 +12,7 @@ import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import * as ra from "azure-devops-node-api/ReleaseApi";
 
 import { Helper } from "../helper";
-import { IHelper, IRetryOptions, IReleaseDetails, IReleaseFilter } from "../interfaces";
+import { IHelper, IReleaseDetails, IReleaseFilter, IRetryOptions } from "../interfaces";
 
 describe("Helper", () => {
 
