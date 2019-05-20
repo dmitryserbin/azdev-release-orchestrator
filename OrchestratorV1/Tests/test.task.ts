@@ -105,7 +105,7 @@ describe("Run", ()  => {
 
         const variables = Object.assign({}, defaultVariables);
         variables.ReleaseStrategy = "specific";
-        variables.TargetRelease = "79";
+        variables.TargetRelease = "162";
         SetProcessVariables(variables);
 
         const tr: mt.MockTestRunner = new mt.MockTestRunner(path.join(__dirname, "task.index.js"));
