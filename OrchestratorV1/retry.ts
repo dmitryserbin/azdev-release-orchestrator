@@ -12,7 +12,7 @@ export function Retry(options: IRetryOptions = { attempts: 10, timeout: 5000 }):
 
             try {
 
-                return await retryAsync.apply(this, [originalMethod, args, { attempts: options.attempts, timeout: options.timeout }]);
+                return await retryAsync.apply(this, [originalMethod, args, options]);
 
             } catch (e) {
 
