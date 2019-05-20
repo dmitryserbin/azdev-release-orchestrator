@@ -8,6 +8,7 @@ import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import * as ra from "azure-devops-node-api/ReleaseApi";
 
 import { IHelper, IReleaseDetails, IReleaseFilter, IRetryOptions } from "./interfaces";
+import { retryAsync } from "./retry";
 
 const logger = Debug("release-orchestrator:Helper");
 
@@ -31,30 +32,8 @@ export class Helper implements IHelper {
 
         const verbose = logger.extend("getProject");
 
-        let retryAttempt: number = 0;
-        let targetProject: ci.TeamProject | undefined;
-
-        // Retry mechanism to address
-        // Intermittent ECONNRESET errors
-        while (retryAttempt < this.options.attempts) {
-
-            try {
-
-                retryAttempt++;
-
-                targetProject = await this.coreApi.getProject(projectId);
-
-                retryAttempt = this.options.timeout;
-
-            } catch {
-
-                console.log(`Retry retrieving target project..`);
-
-                await this.delay(this.options.timeout);
-
-            }
-
-        }
+        // Retry to address ECONNRESET errors
+        const targetProject: ci.TeamProject = await retryAsync(this.coreApi.getProject, [ projectId ], this.options.attempts, this.options.timeout);
 
         if (!targetProject) {
 
@@ -72,30 +51,8 @@ export class Helper implements IHelper {
 
         const verbose = logger.extend("getDefinition");
 
-        let retryAttempt: number = 0;
-        let targetDefinition: ri.ReleaseDefinition | undefined;
-
-        // Retry mechanism to address
-        // Intermittent ECONNRESET errors
-        while (retryAttempt < this.options.attempts) {
-
-            try {
-
-                retryAttempt++;
-
-                targetDefinition = await this.releaseApi.getReleaseDefinition(projectName, definitionId);
-
-                retryAttempt = this.options.timeout;
-
-            } catch {
-
-                console.log(`Retry retrieving release definition..`);
-
-                await this.delay(this.options.timeout);
-
-            }
-
-        }
+        // Retry to address ECONNRESET errors
+        const targetDefinition: ri.ReleaseDefinition = await retryAsync(this.releaseApi.getReleaseDefinition, [ projectName, definitionId ], this.options.attempts, this.options.timeout);
 
         if (!targetDefinition) {
 
@@ -113,33 +70,10 @@ export class Helper implements IHelper {
 
         const verbose = logger.extend("getRelease");
 
-        let retryAttempt: number = 0;
-
         try {
 
-            let targetRelease: ri.Release | undefined;
-
-            // Retry mechanism to address
-            // Intermittent ECONNRESET errors
-            while (retryAttempt < this.options.attempts) {
-
-                try {
-
-                    retryAttempt++;
-
-                    targetRelease = await this.releaseApi.getRelease(project.name!, releaseId);
-
-                    retryAttempt = this.options.timeout;
-
-                } catch {
-
-                    console.log(`Retry retrieving release..`);
-
-                    await this.delay(this.options.timeout);
-
-                }
-
-            }
+            // Retry to address ECONNRESET errors
+            const targetRelease: ri.Release = await retryAsync(this.releaseApi.getRelease, [ project.name!, releaseId ], this.options.attempts, this.options.timeout);
 
             if (!targetRelease) {
 
@@ -166,30 +100,8 @@ export class Helper implements IHelper {
 
         const verbose = logger.extend("getReleaseStatus");
 
-        let retryAttempt: number = 0;
-        let progress: ri.Release | undefined;
-
-        // Retry mechanism to address
-        // Intermittent ECONNRESET errors
-        while (retryAttempt < this.options.attempts) {
-
-            try {
-
-                retryAttempt++;
-
-                progress = await this.releaseApi.getRelease(projectName, releaseId);
-
-                retryAttempt = this.options.timeout;
-
-            } catch {
-
-                console.log(`Retry retrieving release status..`);
-
-                await this.delay(this.options.timeout);
-
-            }
-
-        }
+        // Retry to address ECONNRESET errors
+        const progress: ri.Release = await retryAsync(this.releaseApi.getRelease, [ projectName, releaseId ], this.options.attempts, this.options.timeout);
 
         if (!progress) {
 
@@ -209,7 +121,8 @@ export class Helper implements IHelper {
 
         try {
 
-            const availableReleases: ri.Release[] = await this.releaseApi.getReleases(
+            // Retry to address ECONNRESET errors
+            const availableReleases: ri.Release[] = await retryAsync(this.releaseApi.getReleases, [
                 projectName,
                 definitionId,
                 undefined,
@@ -228,7 +141,7 @@ export class Helper implements IHelper {
                 filter.artifactVersion ? filter.artifactVersion : undefined,
                 filter.sourceBranch ? filter.sourceBranch : undefined,
                 undefined,
-                (filter.tag && filter.tag.length) ? filter.tag : undefined);
+                (filter.tag && filter.tag.length) ? filter.tag : undefined ], this.options.attempts, this.options.timeout);
 
             if (!availableReleases) {
 
@@ -252,7 +165,9 @@ export class Helper implements IHelper {
 
             // Get latest release by ID
             const filteredRelease: ri.Release = availableReleases.sort((left, right) => left.id! - right.id!).reverse()[0];
-            const targetRelease: ri.Release = await this.releaseApi.getRelease(projectName, filteredRelease.id!);
+
+            // Retry to address ECONNRESET errors
+            const targetRelease: ri.Release = await retryAsync(this.releaseApi.getRelease, [ projectName, filteredRelease.id! ], this.options.attempts, this.options.timeout);
 
             // Validate release environments
             await this.validateStages(stages, targetRelease.environments!.map((i) => i.name!));

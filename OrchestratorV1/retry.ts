@@ -27,26 +27,26 @@ export function Retry(options: IRetryOptions = { attempts: 10, timeout: 5000 }):
 
     };
 
-    // tslint:disable-next-line:ban-types
-    async function retryAsync(target: Function, args: any[], attempts: number, timeout: number): Promise<any> {
+}
 
-        try {
+// tslint:disable-next-line:ban-types
+export async function retryAsync(target: Function, args: any[], attempts: number, timeout: number): Promise<any> {
 
-            return await target.apply(target, args);
+    try {
 
-        } catch (e) {
+        return await target.apply(target, args);
 
-            if (--attempts < 0) {
+    } catch (e) {
 
-                throw new Error(e);
+        if (--attempts < 0) {
 
-            }
-
-            await new Promise((resolve) => setTimeout(resolve, timeout));
-
-            return retryAsync.apply(target, [target, args, attempts, timeout]);
+            throw new Error(e);
 
         }
+
+        await new Promise((resolve) => setTimeout(resolve, timeout));
+
+        return retryAsync.apply(target, [target, args, attempts, timeout]);
 
     }
 
