@@ -214,18 +214,7 @@ export class Helper implements IHelper {
 
         try {
 
-            const availableBuilds: bi.Build[] = await this.buildApi.getBuilds(
-                projectName,
-                [ definitionId ],
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                tags);
+            const availableBuilds: bi.Build[] = await this.getBuildsRetry(projectName, definitionId, tags);
 
             if (!availableBuilds) {
 
@@ -315,7 +304,7 @@ export class Helper implements IHelper {
         const result: ri.ArtifactMetadata[] = [];
 
         // Get available versions
-        const definitionArtifacts: ri.ArtifactVersionQueryResult = await this.releaseApi.getArtifactVersions(projectName, definitionId);
+        const definitionArtifacts: ri.ArtifactVersionQueryResult = await this.getArtifactVersionsRetry(projectName, definitionId);
 
         // Create artifacts metadata
         for (const artifact of definitionArtifacts.artifactVersions!) {
