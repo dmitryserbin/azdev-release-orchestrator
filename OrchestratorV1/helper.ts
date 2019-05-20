@@ -309,6 +309,14 @@ export class Helper implements IHelper {
         // Create artifacts metadata
         for (const artifact of definitionArtifacts.artifactVersions!) {
 
+            verbose(artifact);
+
+            if (artifact.errorMessage) {
+
+                throw new Error(`Artifact <${artifact.alias}> error. ${artifact.errorMessage}`);
+
+            }
+
             // Use default (latest)
             let targetVersion: ri.BuildVersion = artifact.versions![0];
 
@@ -347,7 +355,7 @@ export class Helper implements IHelper {
 
                 } else {
 
-                    throw new Error(`Unable to detect <${artifact.alias}> target artifact`);
+                    throw new Error(`No <${artifact.alias}> artifact versions found`);
 
                 }
 
