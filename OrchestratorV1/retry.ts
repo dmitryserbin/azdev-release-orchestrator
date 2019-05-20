@@ -30,7 +30,7 @@ export function Retry(options: IRetryOptions = { attempts: 10, timeout: 5000 }):
 }
 
 // tslint:disable-next-line:ban-types
-export async function retryAsync(target: Function, args: any[], attempts: number, timeout: number): Promise<any> {
+export async function retryAsync(target: Function, args: any[], attempts: number = 10, timeout: number = 5000): Promise<any> {
 
     try {
 
