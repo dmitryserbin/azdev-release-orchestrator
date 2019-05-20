@@ -9,22 +9,23 @@ export function Retry(options: IRetryOptions = { attempts: 10, timeout: 5000 }):
 
     const verbose = logger.extend("retry");
 
-    // tslint:disable-next-line:only-arrow-functions
-    return function(target: any, name: string, descriptor: TypedPropertyDescriptor<any>) {
+    // tslint:disable-next-line:only-arrow-functions ban-types
+    return function(target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
 
-        const originalMethod: any = descriptor.value;
+        // tslint:disable-next-line:ban-types
+        const originalMethod: Function = descriptor.value;
 
         descriptor.value = async function(...args: any[]) {
 
             try {
 
-                verbose(`Executing <${target.name}> with <${options.attempts}> retries`);
+                verbose(`Executing <${propertyKey}> with <${options.attempts}> retries`);
 
                 return await retryAsync.apply(this, [originalMethod, args, options]);
 
             } catch (e) {
 
-                e.message = `Failed retrying <${name}> for <${options.attempts}> times`;
+                e.message = `Failed retrying <${name}> for <${options.attempts}> times. ${e.message}`;
 
                 throw e;
 
@@ -44,7 +45,7 @@ export async function retryAsync(target: Function, args: any[], options: IRetryO
 
     try {
 
-        return await target.apply(target, args);
+        return await target.apply(this, args);
 
     } catch (e) {
 
@@ -58,7 +59,7 @@ export async function retryAsync(target: Function, args: any[], options: IRetryO
 
         await new Promise((resolve) => setTimeout(resolve, options.timeout));
 
-        return retryAsync.apply(target, [target, args, { attempts: options.attempts, timeout: options.timeout }]);
+        return retryAsync.apply(this, [target, args, { attempts: options.attempts, timeout: options.timeout }]);
 
     }
 

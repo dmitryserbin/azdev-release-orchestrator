@@ -41,7 +41,7 @@ describe("Helper", () => {
 
         } as IReleaseDetails;
 
-        const options: IRetryOptions = { attempts: 10, timeout: 5000 };
+        const options: IRetryOptions = { attempts: 3, timeout: 1000 };
         const coreApi: ca.CoreApi = await connection.getCoreApi();
         const releaseApi: ra.ReleaseApi = await connection.getReleaseApi();
         const buildApi: ba.BuildApi = await connection.getBuildApi();
