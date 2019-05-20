@@ -71,7 +71,7 @@ describe("Retry", () => {
         // Hide console output
         console.log = () => { /**/ };
 
-        await chai.expect(retryAsync(RetryThis.methodRetryPass, [], options.attempts, options.timeout)).not.to.be.rejected;
+        await chai.expect(retryAsync(RetryThis.methodRetryPass, [], options)).not.to.be.rejected;
 
         // Restore console output
         console.log = consoleLog;
@@ -83,7 +83,7 @@ describe("Retry", () => {
         // Hide console output
         console.log = () => { /**/ };
 
-        await chai.expect(retryAsync(RetryThis.methodRetryFail, [], options.attempts, options.timeout)).to.be.rejected;
+        await chai.expect(retryAsync(RetryThis.methodRetryFail, [], options)).to.be.rejected;
 
         // Restore console output
         console.log = consoleLog;

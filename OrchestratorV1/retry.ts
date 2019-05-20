@@ -12,7 +12,7 @@ export function Retry(options: IRetryOptions = { attempts: 10, timeout: 5000 }):
 
             try {
 
-                return await retryAsync.apply(this, [originalMethod, args, options.attempts, options.timeout]);
+                return await retryAsync.apply(this, [originalMethod, args, { attempts: options.attempts, timeout: options.timeout }]);
 
             } catch (e) {
 
@@ -30,7 +30,7 @@ export function Retry(options: IRetryOptions = { attempts: 10, timeout: 5000 }):
 }
 
 // tslint:disable-next-line:ban-types
-export async function retryAsync(target: Function, args: any[], attempts: number = 10, timeout: number = 5000): Promise<any> {
+export async function retryAsync(target: Function, args: any[], options: IRetryOptions = { attempts: 10, timeout: 5000 }): Promise<any> {
 
     try {
 
@@ -38,15 +38,15 @@ export async function retryAsync(target: Function, args: any[], attempts: number
 
     } catch (e) {
 
-        if (--attempts < 0) {
+        if (--options.attempts < 0) {
 
             throw new Error(e);
 
         }
 
-        await new Promise((resolve) => setTimeout(resolve, timeout));
+        await new Promise((resolve) => setTimeout(resolve, options.timeout));
 
-        return retryAsync.apply(target, [target, args, attempts, timeout]);
+        return retryAsync.apply(target, [target, args, { attempts: options.attempts, timeout: options.timeout }]);
 
     }
 

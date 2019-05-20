@@ -33,7 +33,7 @@ export class Helper implements IHelper {
         const verbose = logger.extend("getProject");
 
         // Retry to address ECONNRESET errors
-        const targetProject: ci.TeamProject = await retryAsync(this.coreApi.getProject, [ projectId ], this.options.attempts, this.options.timeout);
+        const targetProject: ci.TeamProject = await retryAsync(this.coreApi.getProject, [ projectId ], this.options);
 
         if (!targetProject) {
 
@@ -52,7 +52,7 @@ export class Helper implements IHelper {
         const verbose = logger.extend("getDefinition");
 
         // Retry to address ECONNRESET errors
-        const targetDefinition: ri.ReleaseDefinition = await retryAsync(this.releaseApi.getReleaseDefinition, [ projectName, definitionId ], this.options.attempts, this.options.timeout);
+        const targetDefinition: ri.ReleaseDefinition = await retryAsync(this.releaseApi.getReleaseDefinition, [ projectName, definitionId ], this.options);
 
         if (!targetDefinition) {
 
@@ -73,7 +73,7 @@ export class Helper implements IHelper {
         try {
 
             // Retry to address ECONNRESET errors
-            const targetRelease: ri.Release = await retryAsync(this.releaseApi.getRelease, [ project.name!, releaseId ], this.options.attempts, this.options.timeout);
+            const targetRelease: ri.Release = await retryAsync(this.releaseApi.getRelease, [ project.name!, releaseId ], this.options);
 
             if (!targetRelease) {
 
@@ -101,7 +101,7 @@ export class Helper implements IHelper {
         const verbose = logger.extend("getReleaseStatus");
 
         // Retry to address ECONNRESET errors
-        const progress: ri.Release = await retryAsync(this.releaseApi.getRelease, [ projectName, releaseId ], this.options.attempts, this.options.timeout);
+        const progress: ri.Release = await retryAsync(this.releaseApi.getRelease, [ projectName, releaseId ], this.options);
 
         if (!progress) {
 
@@ -141,7 +141,7 @@ export class Helper implements IHelper {
                 filter.artifactVersion ? filter.artifactVersion : undefined,
                 filter.sourceBranch ? filter.sourceBranch : undefined,
                 undefined,
-                (filter.tag && filter.tag.length) ? filter.tag : undefined ], this.options.attempts, this.options.timeout);
+                (filter.tag && filter.tag.length) ? filter.tag : undefined ], this.options);
 
             if (!availableReleases) {
 
@@ -167,7 +167,7 @@ export class Helper implements IHelper {
             const filteredRelease: ri.Release = availableReleases.sort((left, right) => left.id! - right.id!).reverse()[0];
 
             // Retry to address ECONNRESET errors
-            const targetRelease: ri.Release = await retryAsync(this.releaseApi.getRelease, [ projectName, filteredRelease.id! ], this.options.attempts, this.options.timeout);
+            const targetRelease: ri.Release = await retryAsync(this.releaseApi.getRelease, [ projectName, filteredRelease.id! ], this.options);
 
             // Validate release environments
             await this.validateStages(stages, targetRelease.environments!.map((i) => i.name!));
