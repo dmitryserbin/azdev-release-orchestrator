@@ -25,9 +25,9 @@ describe("Helper", () => {
 
             projectId: "761623f0-c4c0-4dab-884b-a428a01c200f",
             definitionId: "1",
-            releaseId: "79",
-            releaseType: ReleaseType.Specific,
-            stages: [ "PROD" ],
+            releaseId: "",
+            releaseType: ReleaseType.Create,
+            stages: [ "DEV", "TEST", "PROD" ],
 
         } as IParameters;
 
@@ -45,7 +45,7 @@ describe("Helper", () => {
         const releaseApi: ra.ReleaseApi = await connection.getReleaseApi();
         const buildApi: ba.BuildApi = await connection.getBuildApi();
         const helper: IHelper = new Helper(coreApi, releaseApi, buildApi);
-        const deployer: IDeployer = new Deployer(releaseApi);
+        const deployer: IDeployer = new Deployer(helper);
         const orchestrator: IOrchestrator = new Orchestrator(helper, deployer);
 
         await orchestrator.deployRelease(parameters, details);

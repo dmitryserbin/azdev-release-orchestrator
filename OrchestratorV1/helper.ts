@@ -8,6 +8,7 @@ import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import * as ra from "azure-devops-node-api/ReleaseApi";
 
 import { IHelper, IReleaseDetails, IReleaseFilter } from "./interfaces";
+import { Retry } from "./retry";
 
 const logger = Debug("release-orchestrator:Helper");
 
@@ -29,7 +30,8 @@ export class Helper implements IHelper {
 
         const verbose = logger.extend("getProject");
 
-        const targetProject = await this.coreApi.getProject(projectId);
+        // Retry to address ECONNRESET errors
+        const targetProject: ci.TeamProject = await this.getProjectRetry(projectId);
 
         if (!targetProject) {
 
@@ -47,7 +49,8 @@ export class Helper implements IHelper {
 
         const verbose = logger.extend("getDefinition");
 
-        const targetDefinition: ri.ReleaseDefinition = await this.releaseApi.getReleaseDefinition(projectName, definitionId);
+        // Retry to address ECONNRESET errors
+        const targetDefinition: ri.ReleaseDefinition = await this.getReleaseDefinitionRetry(projectName, definitionId);
 
         if (!targetDefinition) {
 
@@ -61,32 +64,63 @@ export class Helper implements IHelper {
 
     }
 
+    public async getRelease(project: ci.TeamProject, releaseId: number, stages: string[]): Promise<ri.Release> {
+
+        const verbose = logger.extend("getRelease");
+
+        try {
+
+            // Retry to address ECONNRESET errors
+            const targetRelease: ri.Release = await this.getReleaseRetry(project.name!, releaseId);
+
+            if (!targetRelease) {
+
+                throw new Error(`Release <${releaseId}> not found`);
+
+            }
+
+            // Validate release environments
+            await this.validateStages(stages, targetRelease.environments!.map((i) => i.name!));
+
+            verbose(targetRelease);
+
+            return targetRelease;
+
+        } catch (e) {
+
+            throw new Error(`Unable to get existing release. ${e}`);
+
+        }
+
+    }
+
+    public async getReleaseStatus(projectName: string, releaseId: number): Promise<ri.Release> {
+
+        const verbose = logger.extend("getReleaseStatus");
+
+        // Retry to address ECONNRESET errors
+        const progress: ri.Release = await this.getReleaseRetry(projectName, releaseId);
+
+        if (!progress) {
+
+            throw new Error(`Unable to get ${releaseId} release progress`);
+
+        }
+
+        verbose(`Release ${progress.name} status ${ri.ReleaseStatus[progress.status!]} retrieved`);
+
+        return progress;
+
+    }
+
     public async findRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter): Promise<ri.Release> {
 
         const verbose = logger.extend("findRelease");
 
         try {
 
-            const availableReleases: ri.Release[] = await this.releaseApi.getReleases(
-                projectName,
-                definitionId,
-                undefined,
-                undefined,
-                undefined,
-                ri.ReleaseStatus.Active,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                ri.ReleaseExpands.Artifacts,
-                undefined,
-                undefined,
-                filter.artifactVersion ? filter.artifactVersion : undefined,
-                filter.sourceBranch ? filter.sourceBranch : undefined,
-                undefined,
-                (filter.tag && filter.tag.length) ? filter.tag : undefined);
+            // Retry to address ECONNRESET errors
+            const availableReleases: ri.Release[] = await this.getReleasesRetry(projectName, definitionId, filter.artifactVersion, filter.sourceBranch, filter.tag);
 
             if (!availableReleases) {
 
@@ -110,7 +144,9 @@ export class Helper implements IHelper {
 
             // Get latest release by ID
             const filteredRelease: ri.Release = availableReleases.sort((left, right) => left.id! - right.id!).reverse()[0];
-            const targetRelease: ri.Release = await this.releaseApi.getRelease(projectName, filteredRelease.id!);
+
+            // Retry to address ECONNRESET errors
+            const targetRelease: ri.Release = await this.getReleaseRetry(projectName, filteredRelease.id!);
 
             // Validate release environments
             await this.validateStages(stages, targetRelease.environments!.map((i) => i.name!));
@@ -122,29 +158,6 @@ export class Helper implements IHelper {
         } catch (e) {
 
             throw new Error(`Unable to find target release. ${e}`);
-
-        }
-
-    }
-
-    public async getRelease(project: ci.TeamProject, releaseId: number, stages: string[]): Promise<ri.Release> {
-
-        const verbose = logger.extend("getRelease");
-
-        try {
-
-            const targetRelease: ri.Release = await this.releaseApi.getRelease(project.name!, releaseId);
-
-            // Validate release environments
-            await this.validateStages(stages, targetRelease.environments!.map((i) => i.name!));
-
-            verbose(targetRelease);
-
-            return targetRelease;
-
-        } catch (e) {
-
-            throw new Error(`Unable to get existing release. ${e}`);
 
         }
 
@@ -201,18 +214,7 @@ export class Helper implements IHelper {
 
         try {
 
-            const availableBuilds: bi.Build[] = await this.buildApi.getBuilds(
-                projectName,
-                [ definitionId ],
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                tags);
+            const availableBuilds: bi.Build[] = await this.getBuildsRetry(projectName, definitionId, tags);
 
             if (!availableBuilds) {
 
@@ -248,6 +250,53 @@ export class Helper implements IHelper {
 
     }
 
+    public async updateStage(status: ri.ReleaseEnvironmentUpdateMetadata, projectName: string, releaseId: number, stageId: number): Promise<ri.ReleaseEnvironment> {
+
+        const verbose = logger.extend("updateStage");
+
+        const releaseStage: ri.ReleaseEnvironment = await this.releaseApi.updateReleaseEnvironment(status, projectName, releaseId, stageId);
+
+        if (!releaseStage) {
+
+            throw new Error(`Updated stage <${stageId}> not found`);
+
+        }
+
+        verbose(releaseStage);
+
+        return releaseStage;
+    }
+
+    public async updateApproval(status: ri.ReleaseApproval, projectName: string, requestId: number): Promise<ri.ReleaseApproval> {
+
+        const verbose = logger.extend("updateApproval");
+
+        const approvalStatus: ri.ReleaseApproval = await this.releaseApi.updateReleaseApproval(status, projectName, requestId);
+
+        verbose(approvalStatus);
+
+        return approvalStatus;
+
+    }
+
+    public async getStageStatus(releaseStatus: ri.Release, stageName: string): Promise<ri.ReleaseEnvironment> {
+
+        const verbose = logger.extend("getStageStatus");
+
+        const progress = releaseStatus.environments!.find((i) => i.name === stageName);
+
+        if (!progress) {
+
+            throw new Error(`Unable to get ${stageName} stage progress`);
+
+        }
+
+        verbose(`Stage ${progress.name} status ${ri.EnvironmentStatus[progress.status!]} retrieved`);
+
+        return progress;
+
+    }
+
     public async getArtifacts(projectName: string, definitionId: number, primaryId: string, versionId?: string, sourceBranch?: string): Promise<ri.ArtifactMetadata[]> {
 
         const verbose = logger.extend("getArtifacts");
@@ -255,10 +304,18 @@ export class Helper implements IHelper {
         const result: ri.ArtifactMetadata[] = [];
 
         // Get available versions
-        const definitionArtifacts: ri.ArtifactVersionQueryResult = await this.releaseApi.getArtifactVersions(projectName, definitionId);
+        const definitionArtifacts: ri.ArtifactVersionQueryResult = await this.getArtifactVersionsRetry(projectName, definitionId);
 
         // Create artifacts metadata
         for (const artifact of definitionArtifacts.artifactVersions!) {
+
+            verbose(artifact);
+
+            if (artifact.errorMessage) {
+
+                throw new Error(`Artifact <${artifact.alias}> error. ${artifact.errorMessage}`);
+
+            }
 
             // Use default (latest)
             let targetVersion: ri.BuildVersion = artifact.versions![0];
@@ -298,7 +355,7 @@ export class Helper implements IHelper {
 
                 } else {
 
-                    throw new Error(`Unable to detect <${artifact.alias}> target artifact`);
+                    throw new Error(`No <${artifact.alias}> artifact versions found`);
 
                 }
 
@@ -364,6 +421,78 @@ export class Helper implements IHelper {
             }
 
         }
+
+    }
+
+    @Retry()
+    private async getProjectRetry(projectId: string): Promise<ci.TeamProject> {
+
+        return await this.coreApi.getProject(projectId);
+
+    }
+
+    @Retry()
+    private async getReleaseRetry(projectName: string, releaseId: number): Promise<ri.Release> {
+
+        return this.releaseApi.getRelease(projectName, releaseId);
+
+    }
+
+    @Retry()
+    private async getReleaseDefinitionRetry(projectName: string, definitionId: number): Promise<ri.ReleaseDefinition> {
+
+        return await this.releaseApi.getReleaseDefinition(projectName, definitionId);
+
+    }
+
+    @Retry()
+    private async getBuildsRetry(projectName: string, definitionId: number, tags?: string[]): Promise<bi.Build[]> {
+
+        return await this.buildApi.getBuilds(
+            projectName,
+            [ definitionId ],
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            tags);
+
+    }
+
+    @Retry()
+    private async getReleasesRetry(projectName: string, definitionId: number, artifactVersion?: string, sourceBranch?: string, tags?: string[]): Promise<ri.Release[]> {
+
+        return await this.releaseApi.getReleases(
+            projectName,
+            definitionId,
+            undefined,
+            undefined,
+            undefined,
+            ri.ReleaseStatus.Active,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            ri.ReleaseExpands.Artifacts,
+            undefined,
+            undefined,
+            artifactVersion ? artifactVersion : undefined,
+            sourceBranch ? sourceBranch : undefined,
+            undefined,
+            (tags && tags.length) ? tags : undefined);
+
+    }
+
+    @Retry()
+    private async getArtifactVersionsRetry(projectName: string, definitionId: number): Promise<ri.ArtifactVersionQueryResult> {
+
+        return await this.releaseApi.getArtifactVersions(projectName, definitionId);
 
     }
 

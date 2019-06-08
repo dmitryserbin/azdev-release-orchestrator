@@ -28,7 +28,7 @@ describe("Helper", () => {
     const definitionId = 1;
     const definitionName = "My-Definition";
 
-    const releasetId = 1;
+    const releaseId = 1;
     const releaseName = "My-Release";
     const releaseStages = [ "DEV", "TEST", "PROD" ];
     const releaseEnvironments = [
@@ -60,7 +60,7 @@ describe("Helper", () => {
 
     it("Should get project", async () => {
 
-        coreApiMock.setup((x) => x.getProject(TypeMoq.It.isAnyString())).returns(() => Promise.resolve({ id: projectId} as ci.TeamProject));
+        coreApiMock.setup((x) => x.getProject(TypeMoq.It.isAnyString())).returns(() => Promise.resolve({ id: projectId } as ci.TeamProject));
         webApiMock.setup((x) => x.getCoreApi()).returns(() => Promise.resolve(coreApiMock.target));
 
         const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
@@ -102,7 +102,7 @@ describe("Helper", () => {
 
         const releaseMock = {
 
-            id: releasetId,
+            id: releaseId,
             name: releaseName,
             environments: releaseEnvironments,
 
@@ -112,10 +112,10 @@ describe("Helper", () => {
         webApiMock.setup((x) => x.getReleaseApi()).returns(() => Promise.resolve(releaseApiMock.target));
 
         const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
-        const result = await helper.getRelease(projectMock, releasetId, releaseStages);
+        const result = await helper.getRelease(projectMock, releaseId, releaseStages);
 
         chai.expect(result).to.not.eq(null);
-        chai.expect(result.id).eq(releasetId);
+        chai.expect(result.id).eq(releaseId);
         chai.expect(result.name).eq(releaseName);
 
     });
@@ -137,7 +137,7 @@ describe("Helper", () => {
 
         const releaseMock = {
 
-            id: releasetId,
+            id: releaseId,
             name: releaseName,
             environments: releaseEnvironments,
 
@@ -160,7 +160,7 @@ describe("Helper", () => {
         const result = await helper.createRelease(projectMock, definitionMock, detailsMock);
 
         chai.expect(result).to.not.eq(null);
-        chai.expect(result.id).eq(releasetId);
+        chai.expect(result.id).eq(releaseId);
         chai.expect(result.name).eq(releaseName);
 
     });
@@ -175,7 +175,7 @@ describe("Helper", () => {
 
         const releaseMock = {
 
-            id: releasetId,
+            id: releaseId,
             name: releaseName,
             environments: releaseEnvironments,
 
@@ -197,7 +197,7 @@ describe("Helper", () => {
         const result = await helper.findRelease(projectMock.name!, definitionId, releaseStages, filtersMock);
 
         chai.expect(result).to.not.eq(null);
-        chai.expect(result.id).eq(releasetId);
+        chai.expect(result.id).eq(releaseId);
         chai.expect(result.name).eq(releaseName);
 
     });
@@ -214,7 +214,7 @@ describe("Helper", () => {
 
         const releaseMock = {
 
-            id: releasetId,
+            id: releaseId,
             name: releaseName,
             environments: releaseEnvironments,
             tags: [ tagFilter ],
@@ -237,7 +237,7 @@ describe("Helper", () => {
         const result = await helper.findRelease(projectMock.name!, definitionId, releaseStages, filtersMock);
 
         chai.expect(result).to.not.eq(null);
-        chai.expect(result.id).eq(releasetId);
+        chai.expect(result.id).eq(releaseId);
         chai.expect(result.name).eq(releaseName);
         chai.expect(result.tags).contains(tagFilter);
 
@@ -274,7 +274,7 @@ describe("Helper", () => {
 
         const releaseMock = {
 
-            id: releasetId,
+            id: releaseId,
             name: releaseName,
             environments: releaseEnvironments,
             artifacts: [ artifactMock ],
@@ -297,7 +297,7 @@ describe("Helper", () => {
         const result = await helper.findRelease(projectMock.name!, definitionId, releaseStages, filtersMock);
 
         chai.expect(result).to.not.eq(null);
-        chai.expect(result.id).eq(releasetId);
+        chai.expect(result.id).eq(releaseId);
         chai.expect(result.name).eq(releaseName);
         chai.expect(result.artifacts).to.not.eq(null);
         chai.expect(result.artifacts).length.gt(0);
@@ -368,7 +368,7 @@ describe("Helper", () => {
 
         const releaseMock = {
 
-            id: releasetId,
+            id: releaseId,
             name: releaseName,
             environments: releaseEnvironments,
 
@@ -391,7 +391,7 @@ describe("Helper", () => {
 
         const releaseMock = {
 
-            id: releasetId,
+            id: releaseId,
             name: releaseName,
             environments: targetEnvironments,
 
@@ -402,6 +402,27 @@ describe("Helper", () => {
 
         chai.expect(result).to.not.eq(null);
         chai.expect(result).to.eq(true);
+
+    });
+
+    it("Should get release status", async () => {
+
+        const release = {
+
+            id: releaseId,
+            name: releaseName,
+
+        } as ri.Release;
+
+        releaseApiMock.setup((x) => x.getRelease(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber())).returns(() => Promise.resolve(release));
+
+        const helper: IHelper = new Helper(coreApiMock.target, releaseApiMock.target, buildApiMock.target);
+
+        const result = await helper.getReleaseStatus(projectName, releaseId);
+
+        chai.expect(result).to.not.eq(null);
+        chai.expect(result.id).eq(releaseId);
+        chai.expect(result.name).eq(releaseName);
 
     });
 

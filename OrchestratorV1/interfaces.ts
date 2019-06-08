@@ -120,13 +120,6 @@ export interface IReleaseFilter {
 
 }
 
-export interface IOrchestrator {
-
-    deployRelease(parameters: IParameters, details: IReleaseDetails): Promise<void>;
-    getRelease(type: ReleaseType, project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, parameters: IParameters): Promise<ri.Release>;
-
-}
-
 export interface IHelper {
 
     getProject(projectId: string): Promise<ci.TeamProject>;
@@ -135,6 +128,10 @@ export interface IHelper {
     findRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter): Promise<ri.Release>;
     createRelease(project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, stages?: string[], artifacts?: ri.ArtifactMetadata[]): Promise<ri.Release>;
     findBuild(projectName: string, definitionId: number, tags?: string[]): Promise<bi.Build>;
+    updateStage(status: ri.ReleaseEnvironmentUpdateMetadata, projectName: string, releaseId: number, stageId: number): Promise<ri.ReleaseEnvironment>;
+    updateApproval(status: ri.ReleaseApproval, projectName: string, requestId: number): Promise<ri.ReleaseApproval>;
+    getReleaseStatus(projectName: string, releaseId: number): Promise<ri.Release>;
+    getStageStatus(releaseStatus: ri.Release, stageName: string): Promise<ri.ReleaseEnvironment>;
     getArtifacts(projectName: string, definitionId: number, primaryId: string, versionId?: string, sourceBranch?: string): Promise<ri.ArtifactMetadata[]>;
     isAutomated(release: ri.Release): Promise<boolean>;
 
@@ -145,5 +142,11 @@ export interface IDeployer {
     deployManual(parameters: IReleaseParameters, releaseDetails: IReleaseDetails): Promise<void>;
     deployAutomated(parameters: IReleaseParameters, releaseDetails: IReleaseDetails): Promise<void>;
     approveStage(stage: ri.ReleaseEnvironment, parameters: IApproveParameters, releaseDetails: IReleaseDetails): Promise<IStageApproval>;
-    getReleaseStatus(projectName: string, releaseId: number): Promise<ri.Release>;
+}
+
+export interface IOrchestrator {
+
+    deployRelease(parameters: IParameters, details: IReleaseDetails): Promise<void>;
+    getRelease(type: ReleaseType, project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, parameters: IParameters): Promise<ri.Release>;
+
 }

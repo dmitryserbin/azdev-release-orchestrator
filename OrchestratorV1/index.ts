@@ -29,7 +29,7 @@ async function run() {
         const buildApi: ba.BuildApi = await connection.getBuildApi();
 
         const helper: IHelper = new Helper(coreApi, releaseApi, buildApi);
-        const deployer: IDeployer = new Deployer(releaseApi);
+        const deployer: IDeployer = new Deployer(helper);
         const orchestrator: IOrchestrator = new Orchestrator(helper, deployer);
 
         // Run orchestrator

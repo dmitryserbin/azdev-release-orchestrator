@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.4
+
+- Add retry mechanism
+
 ## 1.2.3
 
 - Increase max retries
@@ -48,7 +52,7 @@
 
 - Added 'Latest' release strategy ([#1](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/1))
 - Major code refactor and minor bug fixes
-- Addressed intermittent ECONNRESET issue 
+- Addressed intermittent ECONNRESET issue
 - Added unit and integration tests
 
 ## 1.0.0

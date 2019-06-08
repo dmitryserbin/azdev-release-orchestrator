@@ -4,10 +4,9 @@ import * as chai from "chai";
 import * as TypeMoq from "typemoq";
 
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
-import * as ra from "azure-devops-node-api/ReleaseApi";
 
 import { Deployer } from "../deployer";
-import { IApproveParameters, IDeployer, IReleaseDetails, IStageApproval } from "../interfaces";
+import { IApproveParameters, IDeployer, IHelper, IReleaseDetails, IStageApproval } from "../interfaces";
 
 describe("Deployer", () => {
 
@@ -18,35 +17,12 @@ describe("Deployer", () => {
     const requesterId = "1";
 
     const projectName = "My-Project";
-    const releaseId = 1;
-    const releaseName = "My-Release";
-
     const stageId = 1;
     const stageName = "DEV";
 
+    const helperMock = TypeMoq.Mock.ofType<IHelper>();
+
     const consoleLog = console.log;
-    const releaseApiMock = TypeMoq.Mock.ofType<ra.IReleaseApi>();
-
-    it("Should get release status", async () => {
-
-        const release = {
-
-            id: releaseId,
-            name: releaseName,
-
-        } as ri.Release;
-
-        releaseApiMock.setup((x) => x.getRelease(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber())).returns(() => Promise.resolve(release));
-
-        const deployer: IDeployer = new Deployer(releaseApiMock.target);
-
-        const result = await deployer.getReleaseStatus(projectName, releaseId);
-
-        chai.expect(result).to.not.eq(null);
-        chai.expect(result.id).eq(releaseId);
-        chai.expect(result.name).eq(releaseName);
-
-    });
 
     it("Should skip stage approval", async () => {
 
@@ -89,7 +65,7 @@ describe("Deployer", () => {
 
         } as IApproveParameters;
 
-        const deployer: IDeployer = new Deployer(releaseApiMock.target);
+        const deployer: IDeployer = new Deployer(helperMock.target);
 
         // Hide console output
         console.log = () => { /**/ };
@@ -146,13 +122,13 @@ describe("Deployer", () => {
 
         } as IApproveParameters;
 
-        releaseApiMock.setup((x) => x.updateReleaseApproval(TypeMoq.It.isAny(), TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber())).returns(() => Promise.resolve({
+        helperMock.setup((x) => x.updateApproval(TypeMoq.It.isAny(), TypeMoq.It.isAnyString(), TypeMoq.It.isAnyNumber())).returns(() => Promise.resolve({
 
             status: ri.ApprovalStatus.Approved,
 
         } as ri.ReleaseApproval));
 
-        const deployer: IDeployer = new Deployer(releaseApiMock.target);
+        const deployer: IDeployer = new Deployer(helperMock.target);
 
         // Hide console output
         console.log = () => { /**/ };
