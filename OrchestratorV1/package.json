@@ -19,7 +19,7 @@
   "dependencies": {
     "@types/cli-table": "^0.3.0",
     "@types/debug": "^4.1.4",
-    "azure-devops-node-api": "^9.0.0",
+    "azure-devops-node-api": "^8.0.0",
     "azure-pipelines-task-lib": "^2.8.0",
     "cli-table": "^0.3.1",
     "debug": "^4.1.1",
