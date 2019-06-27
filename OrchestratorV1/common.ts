@@ -36,6 +36,7 @@ export class StageProgress implements IStageProgress {
         const verbose = logger.extend("StageProgress:isCompleted");
 
         const status: boolean = (this.status === ri.EnvironmentStatus.Succeeded ||
+            this.status === ri.EnvironmentStatus.PartiallySucceeded ||
             this.status === ri.EnvironmentStatus.Rejected ||
             this.status === ri.EnvironmentStatus.Canceled);
 
