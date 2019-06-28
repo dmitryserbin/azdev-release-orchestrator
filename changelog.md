@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.5
+
+- Address partially succeeded status issue
+
 ## 1.2.4
 
 - Add retry mechanism

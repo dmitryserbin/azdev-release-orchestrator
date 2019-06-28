@@ -70,6 +70,7 @@ describe("StageProgress", () => {
             underTest.status = (ri.EnvironmentStatus as any)[key];
 
             if (underTest.status === ri.EnvironmentStatus.Succeeded ||
+                underTest.status === ri.EnvironmentStatus.PartiallySucceeded ||
                 underTest.status === ri.EnvironmentStatus.Rejected ||
                 underTest.status === ri.EnvironmentStatus.Canceled) {
 
