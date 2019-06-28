@@ -103,35 +103,36 @@ export class ReleaseProgress implements IReleaseProgress {
 
         let result: ReleaseStatus = ReleaseStatus.Undefined;
 
-        // All stages completed
+        // Get stages completion status
         const completed: boolean = this.progress.filter((i) => i.isCompleted()).length === this.progress.length;
 
         if (completed) {
 
-            // Any rejected or canceled stages
+            verbose(`All release stages completed`);
+
+            // Get rejected or canceled stages
             const failed: boolean = this.progress.filter((i) =>
                 i.status === ri.EnvironmentStatus.Rejected || i.status === ri.EnvironmentStatus.Canceled).length > 0;
 
             if (failed) {
 
-                // Failed
                 result = ReleaseStatus.Failed;
 
             } else {
 
-                // Succeeded
                 result = ReleaseStatus.Succeeded;
 
             }
 
         } else {
 
-            // In progress
+            verbose(`Some release stages in progress`);
+
             result = ReleaseStatus.InProgress;
 
         }
 
-        verbose(result);
+        verbose(`Release ${ReleaseStatus[result]} status`);
 
         return result;
 
