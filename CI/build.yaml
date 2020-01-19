@@ -4,47 +4,47 @@ queue:
 
 steps:
 - task: Npm@1
-  displayName: 'Restore Packages'
+  displayName: Restore packages
   inputs:
     workingDir: OrchestratorV1
 
 - task: Npm@1
-  displayName: 'Run Build'
-  inputs:
-    command: custom
-    workingDir: OrchestratorV1
-    customCommand: 'run build'
-
-- task: Npm@1
-  displayName: 'Run Tests'
+  displayName: Run build
   inputs:
     command: custom
     workingDir: OrchestratorV1
-    customCommand: 'run test'
+    customCommand: run build
 
 - task: Npm@1
-  displayName: 'Run Clean'
+  displayName: Run tests
+  inputs:
+    command: custom
+    workingDir: OrchestratorV1
+    customCommand: run test
+
+- task: Npm@1
+  displayName: Run clean
   inputs:
     command: custom
     workingDir: OrchestratorV1
     customCommand: 'run clean'
 
 - task: PublishTestResults@2
-  displayName: 'Publish Test Results'
+  displayName: Publish test results
   inputs:
     testResultsFiles: '**/test-*.xml'
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Scripts'
+  displayName: Publish scripts
   inputs:
-    PathtoPublish: 'Scripts'
+    PathtoPublish: scripts
     ArtifactName: Scripts
 
 - powershell: '@(".git", ".vscode", "*.yaml", "Artifacts", "Scripts", "OrchestratorV1\Tests", "OrchestratorV1\test-*.xml") | ForEach-Object { Remove-Item -Path $_ -Force -Recurse -ErrorAction SilentlyContinue }'
-  displayName: 'Clean Artifact'
+  displayName: Clean artifact
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact'
+  displayName: Publish artifact
   inputs:
-    PathtoPublish: '$(Build.SourcesDirectory)'
+    PathtoPublish: $(Build.SourcesDirectory)
     ArtifactName: ReleaseOrchestrator
