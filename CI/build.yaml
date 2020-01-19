@@ -27,7 +27,7 @@ steps:
   inputs:
     command: custom
     workingDir: OrchestratorV1
-    customCommand: 'run clean'
+    customCommand: run clean
 
 - task: PublishTestResults@2
   displayName: Publish test results
