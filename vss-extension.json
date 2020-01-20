@@ -28,13 +28,13 @@
   },
   "content": {
     "details": {
-      "path": "readme.md"
+      "path": "README.md"
     },
     "changelog": {
-      "path": "changelog.md"
+      "path": "CHANGELOG.md"
     },
     "license": {
-      "path": "license.md"
+      "path": "LICENSE"
     }
   },
   "links": {
