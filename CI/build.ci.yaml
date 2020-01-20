@@ -4,25 +4,25 @@ queue:
 
 steps:
 - task: Npm@1
-  displayName: 'Restore Packages'
+  displayName: Restore packages
   inputs:
     workingDir: OrchestratorV1
 
 - task: Npm@1
-  displayName: 'Run Build'
+  displayName: Run build
   inputs:
     command: custom
     workingDir: OrchestratorV1
-    customCommand: 'run build'
+    customCommand: run build
 
 - task: Npm@1
-  displayName: 'Run Tests'
+  displayName: Run tests
   inputs:
     command: custom
     workingDir: OrchestratorV1
-    customCommand: 'run test'
+    customCommand: run test
 
 - task: PublishTestResults@2
-  displayName: 'Publish Test Results'
+  displayName: Publish test results
   inputs:
     testResultsFiles: '**/test-*.xml'

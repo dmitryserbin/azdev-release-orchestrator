@@ -434,7 +434,7 @@ export class Helper implements IHelper {
     @Retry()
     private async getReleaseRetry(projectName: string, releaseId: number): Promise<ri.Release> {
 
-        return this.releaseApi.getRelease(projectName, releaseId);
+        return await this.releaseApi.getRelease(projectName, releaseId);
 
     }
 
