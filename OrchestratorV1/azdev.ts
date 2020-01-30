@@ -25,7 +25,7 @@ export function getEndpoint(): IEndpoint {
         if (!endpointName) {
 
             throw new Error(`Unable to get <ConnectedService> input`);
-    
+
         }
 
         tokenParameterName = "ApiToken";
@@ -133,7 +133,7 @@ export function getParameters(): IParameters {
                 if (!sourceBranchName) {
 
                     throw new Error(`Unable to get <SourceBranchName> input`);
-            
+
                 }
 
                 parameters.sourceBranch = sourceBranchName;
@@ -181,7 +181,7 @@ export function getParameters(): IParameters {
                 if (!sourceBranchName) {
 
                     throw new Error(`Unable to get <SourceBranchName> input`);
-            
+
                 }
 
                 parameters.sourceBranch = sourceBranchName;
@@ -203,7 +203,7 @@ export function getParameters(): IParameters {
             if (!targetRelease) {
 
                 throw new Error(`Unable to get <TargetRelease> input`);
-        
+
             }
 
             parameters.releaseId = targetRelease;
