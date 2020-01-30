@@ -4,25 +4,54 @@ import { IEndpoint, IParameters, IReleaseDetails, ReleaseType } from "./interfac
 
 export function getEndpoint(): IEndpoint {
 
-    const endpointType: string = tl.getInput("EndpointType", true);
+    const endpointType: string | undefined = tl.getInput("EndpointType", true);
+
+    if (!endpointType) {
+
+        throw new Error(`Unable to get <EndpointType> input`);
+
+    }
 
     // Use upper-case default endpoint name
     // For better compartability with non-Windows systems
-    let endpointName: string = "SYSTEMVSSCONNECTION";
+    let endpointName: string | undefined = "SYSTEMVSSCONNECTION";
     let tokenParameterName: string = "AccessToken";
 
     // Get service endpoint
     if (endpointType === "service") {
 
         endpointName = tl.getInput("ConnectedService", true);
+
+        if (!endpointName) {
+
+            throw new Error(`Unable to get <ConnectedService> input`);
+    
+        }
+
         tokenParameterName = "ApiToken";
+
+    }
+
+    const url: string = tl.getEndpointUrl(endpointName, false);
+
+    if (!url) {
+
+        throw new Error(`Unable to get <${endpointName}> endpoint URL`);
+
+    }
+
+    const token: string | undefined = tl.getEndpointAuthorizationParameter(endpointName, tokenParameterName, false);
+
+    if (!token) {
+
+        throw new Error(`Unable to get <${endpointName}> endpoint token`);
 
     }
 
     const endpoint: IEndpoint = {
 
-        url: tl.getEndpointUrl(endpointName, false),
-        token: tl.getEndpointAuthorizationParameter(endpointName, tokenParameterName, false),
+        url,
+        token,
 
     };
 
@@ -32,13 +61,35 @@ export function getEndpoint(): IEndpoint {
 
 export function getParameters(): IParameters {
 
-    const releaseStrategy: string = tl.getInput("ReleaseStrategy", true);
+    const releaseStrategy: string | undefined = tl.getInput("ReleaseStrategy", true);
+
+    if (!releaseStrategy) {
+
+        throw new Error(`Unable to get <ReleaseStrategy> input`);
+
+    }
+
+    const targetProject: string | undefined = tl.getInput("TargetProject", true);
+
+    if (!targetProject) {
+
+        throw new Error(`Unable to get <TargetProject> input`);
+
+    }
+
+    const targetDefinition: string | undefined = tl.getInput("TargetDefinition", true);
+
+    if (!targetDefinition) {
+
+        throw new Error(`Unable to get <TargetDefinition> input`);
+
+    }
 
     const parameters: IParameters = {
 
         releaseType: ReleaseType.Undefined,
-        projectId: tl.getInput("TargetProject", true),
-        definitionId: tl.getInput("TargetDefinition", true),
+        projectId: targetProject,
+        definitionId: targetDefinition,
         releaseId: "",
         stages: [],
         releaseTag: [],
@@ -77,7 +128,14 @@ export function getParameters(): IParameters {
             // Get artifacts source branch filter
             if (sourceBranchFilter) {
 
-                const sourceBranchName: string = tl.getInput("SourceBranchName", false);
+                const sourceBranchName: string | undefined = tl.getInput("SourceBranchName", false);
+
+                if (!sourceBranchName) {
+
+                    throw new Error(`Unable to get <SourceBranchName> input`);
+            
+                }
+
                 parameters.sourceBranch = sourceBranchName;
 
             }
@@ -118,7 +176,14 @@ export function getParameters(): IParameters {
             // Get artifacts source branch filter
             if (sourceBranchFilter) {
 
-                const sourceBranchName: string = tl.getInput("SourceBranchName", false);
+                const sourceBranchName: string | undefined = tl.getInput("SourceBranchName", false);
+
+                if (!sourceBranchName) {
+
+                    throw new Error(`Unable to get <SourceBranchName> input`);
+            
+                }
+
                 parameters.sourceBranch = sourceBranchName;
 
             }
@@ -133,7 +198,14 @@ export function getParameters(): IParameters {
             parameters.releaseType = ReleaseType.Specific;
 
             // Get release ID
-            const targetRelease: string = tl.getInput("TargetRelease", true);
+            const targetRelease: string | undefined = tl.getInput("TargetRelease", true);
+
+            if (!targetRelease) {
+
+                throw new Error(`Unable to get <TargetRelease> input`);
+        
+            }
+
             parameters.releaseId = targetRelease;
 
             // Get release stages
