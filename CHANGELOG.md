@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.7
+
+- Minor internal improvements
+
 ## 1.2.6
 
 - Address get release status issue
