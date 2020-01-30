@@ -4,49 +4,23 @@ import { IEndpoint, IParameters, IReleaseDetails, ReleaseType } from "./interfac
 
 export function getEndpoint(): IEndpoint {
 
-    const endpointType: string | undefined = tl.getInput("EndpointType", true);
-
-    if (!endpointType) {
-
-        throw new Error(`Unable to get <EndpointType> input`);
-
-    }
+    const endpointType: string = tl.getInput("EndpointType", true)!;
 
     // Use upper-case default endpoint name
     // For better compartability with non-Windows systems
-    let endpointName: string | undefined = "SYSTEMVSSCONNECTION";
+    let endpointName: string = "SYSTEMVSSCONNECTION";
     let tokenParameterName: string = "AccessToken";
 
     // Get service endpoint
     if (endpointType === "service") {
 
-        endpointName = tl.getInput("ConnectedService", true);
-
-        if (!endpointName) {
-
-            throw new Error(`Unable to get <ConnectedService> input`);
-
-        }
-
+        endpointName = tl.getInput("ConnectedService", true)!;
         tokenParameterName = "ApiToken";
 
     }
 
     const url: string = tl.getEndpointUrl(endpointName, false);
-
-    if (!url) {
-
-        throw new Error(`Unable to get <${endpointName}> endpoint URL`);
-
-    }
-
-    const token: string | undefined = tl.getEndpointAuthorizationParameter(endpointName, tokenParameterName, false);
-
-    if (!token) {
-
-        throw new Error(`Unable to get <${endpointName}> endpoint token`);
-
-    }
+    const token: string = tl.getEndpointAuthorizationParameter(endpointName, tokenParameterName, false)!;
 
     const endpoint: IEndpoint = {
 
@@ -61,29 +35,9 @@ export function getEndpoint(): IEndpoint {
 
 export function getParameters(): IParameters {
 
-    const releaseStrategy: string | undefined = tl.getInput("ReleaseStrategy", true);
-
-    if (!releaseStrategy) {
-
-        throw new Error(`Unable to get <ReleaseStrategy> input`);
-
-    }
-
-    const targetProject: string | undefined = tl.getInput("TargetProject", true);
-
-    if (!targetProject) {
-
-        throw new Error(`Unable to get <TargetProject> input`);
-
-    }
-
-    const targetDefinition: string | undefined = tl.getInput("TargetDefinition", true);
-
-    if (!targetDefinition) {
-
-        throw new Error(`Unable to get <TargetDefinition> input`);
-
-    }
+    const releaseStrategy: string = tl.getInput("ReleaseStrategy", true)!;
+    const targetProject: string = tl.getInput("TargetProject", true)!;
+    const targetDefinition: string = tl.getInput("TargetDefinition", true)!;
 
     const parameters: IParameters = {
 
@@ -120,7 +74,7 @@ export function getParameters(): IParameters {
              // Get artifact tag filter
             if (artifactTagFilter) {
 
-                const artifactTagName: string[] = tl.getDelimitedInput("ArtifactTagName", ",", false);
+                const artifactTagName: string[] = tl.getDelimitedInput("ArtifactTagName", ",", true);
                 parameters.artifactTag = artifactTagName;
 
             }
@@ -128,14 +82,7 @@ export function getParameters(): IParameters {
             // Get artifacts source branch filter
             if (sourceBranchFilter) {
 
-                const sourceBranchName: string | undefined = tl.getInput("SourceBranchName", false);
-
-                if (!sourceBranchName) {
-
-                    throw new Error(`Unable to get <SourceBranchName> input`);
-
-                }
-
+                const sourceBranchName: string = tl.getInput("SourceBranchName", true)!;
                 parameters.sourceBranch = sourceBranchName;
 
             }
@@ -160,7 +107,7 @@ export function getParameters(): IParameters {
             // Get release tag filter
             if (releaseTagFilter) {
 
-                const releaseTagName: string[] = tl.getDelimitedInput("ReleaseTagName", ",", false);
+                const releaseTagName: string[] = tl.getDelimitedInput("ReleaseTagName", ",", true);
                 parameters.releaseTag = releaseTagName;
 
             }
@@ -168,7 +115,7 @@ export function getParameters(): IParameters {
             // Get artifact tag filter
             if (artifactTagFilter) {
 
-                const artifactTagName: string[] = tl.getDelimitedInput("ArtifactTagName", ",", false);
+                const artifactTagName: string[] = tl.getDelimitedInput("ArtifactTagName", ",", true);
                 parameters.artifactTag = artifactTagName;
 
             }
@@ -176,13 +123,7 @@ export function getParameters(): IParameters {
             // Get artifacts source branch filter
             if (sourceBranchFilter) {
 
-                const sourceBranchName: string | undefined = tl.getInput("SourceBranchName", false);
-
-                if (!sourceBranchName) {
-
-                    throw new Error(`Unable to get <SourceBranchName> input`);
-
-                }
+                const sourceBranchName: string = tl.getInput("SourceBranchName", true)!;
 
                 parameters.sourceBranch = sourceBranchName;
 
@@ -198,13 +139,7 @@ export function getParameters(): IParameters {
             parameters.releaseType = ReleaseType.Specific;
 
             // Get release ID
-            const targetRelease: string | undefined = tl.getInput("TargetRelease", true);
-
-            if (!targetRelease) {
-
-                throw new Error(`Unable to get <TargetRelease> input`);
-
-            }
+            const targetRelease: string = tl.getInput("TargetRelease", true)!;
 
             parameters.releaseId = targetRelease;
 
