@@ -139,7 +139,6 @@ export function getParameters(): IParameters {
 
             // Get release ID
             const targetRelease: string = tl.getInput("TargetRelease", true)!;
-
             parameters.releaseId = targetRelease;
 
             // Get release stages
