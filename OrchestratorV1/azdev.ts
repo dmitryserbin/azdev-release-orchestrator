@@ -124,7 +124,6 @@ export function getParameters(): IParameters {
             if (sourceBranchFilter) {
 
                 const sourceBranchName: string = tl.getInput("SourceBranchName", true)!;
-
                 parameters.sourceBranch = sourceBranchName;
 
             }
