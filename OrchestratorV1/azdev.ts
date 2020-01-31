@@ -4,7 +4,7 @@ import { IEndpoint, IParameters, IReleaseDetails, ReleaseType } from "./interfac
 
 export function getEndpoint(): IEndpoint {
 
-    const endpointType: string = tl.getInput("EndpointType", true);
+    const endpointType: string = tl.getInput("EndpointType", true)!;
 
     // Use upper-case default endpoint name
     // For better compartability with non-Windows systems
@@ -14,15 +14,18 @@ export function getEndpoint(): IEndpoint {
     // Get service endpoint
     if (endpointType === "service") {
 
-        endpointName = tl.getInput("ConnectedService", true);
+        endpointName = tl.getInput("ConnectedService", true)!;
         tokenParameterName = "ApiToken";
 
     }
 
+    const url: string = tl.getEndpointUrl(endpointName, false);
+    const token: string = tl.getEndpointAuthorizationParameter(endpointName, tokenParameterName, false)!;
+
     const endpoint: IEndpoint = {
 
-        url: tl.getEndpointUrl(endpointName, false),
-        token: tl.getEndpointAuthorizationParameter(endpointName, tokenParameterName, false),
+        url,
+        token,
 
     };
 
@@ -32,13 +35,15 @@ export function getEndpoint(): IEndpoint {
 
 export function getParameters(): IParameters {
 
-    const releaseStrategy: string = tl.getInput("ReleaseStrategy", true);
+    const releaseStrategy: string = tl.getInput("ReleaseStrategy", true)!;
+    const targetProject: string = tl.getInput("TargetProject", true)!;
+    const targetDefinition: string = tl.getInput("TargetDefinition", true)!;
 
     const parameters: IParameters = {
 
         releaseType: ReleaseType.Undefined,
-        projectId: tl.getInput("TargetProject", true),
-        definitionId: tl.getInput("TargetDefinition", true),
+        projectId: targetProject,
+        definitionId: targetDefinition,
         releaseId: "",
         stages: [],
         releaseTag: [],
@@ -69,7 +74,7 @@ export function getParameters(): IParameters {
              // Get artifact tag filter
             if (artifactTagFilter) {
 
-                const artifactTagName: string[] = tl.getDelimitedInput("ArtifactTagName", ",", false);
+                const artifactTagName: string[] = tl.getDelimitedInput("ArtifactTagName", ",", true);
                 parameters.artifactTag = artifactTagName;
 
             }
@@ -77,7 +82,7 @@ export function getParameters(): IParameters {
             // Get artifacts source branch filter
             if (sourceBranchFilter) {
 
-                const sourceBranchName: string = tl.getInput("SourceBranchName", false);
+                const sourceBranchName: string = tl.getInput("SourceBranchName", true)!;
                 parameters.sourceBranch = sourceBranchName;
 
             }
@@ -102,7 +107,7 @@ export function getParameters(): IParameters {
             // Get release tag filter
             if (releaseTagFilter) {
 
-                const releaseTagName: string[] = tl.getDelimitedInput("ReleaseTagName", ",", false);
+                const releaseTagName: string[] = tl.getDelimitedInput("ReleaseTagName", ",", true);
                 parameters.releaseTag = releaseTagName;
 
             }
@@ -110,7 +115,7 @@ export function getParameters(): IParameters {
             // Get artifact tag filter
             if (artifactTagFilter) {
 
-                const artifactTagName: string[] = tl.getDelimitedInput("ArtifactTagName", ",", false);
+                const artifactTagName: string[] = tl.getDelimitedInput("ArtifactTagName", ",", true);
                 parameters.artifactTag = artifactTagName;
 
             }
@@ -118,7 +123,7 @@ export function getParameters(): IParameters {
             // Get artifacts source branch filter
             if (sourceBranchFilter) {
 
-                const sourceBranchName: string = tl.getInput("SourceBranchName", false);
+                const sourceBranchName: string = tl.getInput("SourceBranchName", true)!;
                 parameters.sourceBranch = sourceBranchName;
 
             }
@@ -133,7 +138,7 @@ export function getParameters(): IParameters {
             parameters.releaseType = ReleaseType.Specific;
 
             // Get release ID
-            const targetRelease: string = tl.getInput("TargetRelease", true);
+            const targetRelease: string = tl.getInput("TargetRelease", true)!;
             parameters.releaseId = targetRelease;
 
             // Get release stages

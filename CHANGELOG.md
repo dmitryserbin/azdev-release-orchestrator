@@ -1,8 +1,12 @@
 # Changelog
 
+## 1.2.7
+
+- Minor internal improvements
+
 ## 1.2.6
 
-- Address get release status issue
+- Address get release status issue ([#31](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/31))
 
 ## 1.2.5
 
