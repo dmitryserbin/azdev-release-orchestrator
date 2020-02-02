@@ -71,18 +71,20 @@ export function getParameters(): IParameters {
 
             }
 
-             // Get artifact tag filter
+            // Get artifact tag filter
+            // Optional to support variable input
             if (artifactTagFilter) {
 
-                const artifactTagName: string[] = tl.getDelimitedInput("ArtifactTagName", ",", true);
+                const artifactTagName: string[] = tl.getDelimitedInput("ArtifactTagName", ",", false);
                 parameters.artifactTag = artifactTagName;
 
             }
 
             // Get artifacts source branch filter
+            // Optional to support variable input
             if (sourceBranchFilter) {
 
-                const sourceBranchName: string = tl.getInput("SourceBranchName", true)!;
+                const sourceBranchName: string = tl.getInput("SourceBranchName", false)!;
                 parameters.sourceBranch = sourceBranchName;
 
             }
@@ -105,25 +107,28 @@ export function getParameters(): IParameters {
             const sourceBranchFilter: boolean = tl.getBoolInput("SourceBranchFilter");
 
             // Get release tag filter
+            // Optional to support variable input
             if (releaseTagFilter) {
 
-                const releaseTagName: string[] = tl.getDelimitedInput("ReleaseTagName", ",", true);
+                const releaseTagName: string[] = tl.getDelimitedInput("ReleaseTagName", ",", false);
                 parameters.releaseTag = releaseTagName;
 
             }
 
             // Get artifact tag filter
+            // Optional to support variable input
             if (artifactTagFilter) {
 
-                const artifactTagName: string[] = tl.getDelimitedInput("ArtifactTagName", ",", true);
+                const artifactTagName: string[] = tl.getDelimitedInput("ArtifactTagName", ",", false);
                 parameters.artifactTag = artifactTagName;
 
             }
 
             // Get artifacts source branch filter
+            // Optional to support variable input
             if (sourceBranchFilter) {
 
-                const sourceBranchName: string = tl.getInput("SourceBranchName", true)!;
+                const sourceBranchName: string = tl.getInput("SourceBranchName", false)!;
                 parameters.sourceBranch = sourceBranchName;
 
             }

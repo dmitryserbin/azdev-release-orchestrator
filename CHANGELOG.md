@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.8
+
+- Address optional parameters issue
+
 ## 1.2.7
 
 - Minor internal improvements
