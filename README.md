@@ -26,6 +26,7 @@ It uses either **integrated** (SystemVssConnection) or **user-defined**  persona
 - Target specific release deployment stages
 - Apply release deployment filters
 - Track release progress and display results
+- Cancel target release when orchestrator job is canceled
 
 ## Prerequisites
 
