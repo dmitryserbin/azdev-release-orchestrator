@@ -210,9 +210,9 @@ export class Deployer implements IDeployer {
 
         for (const stage of targetStages) {
 
-            const cancelRequired: boolean = 
-                stage.status === ri.EnvironmentStatus.InProgress || 
-                stage.status === ri.EnvironmentStatus.Queued || 
+            const cancelRequired: boolean =
+                stage.status === ri.EnvironmentStatus.InProgress ||
+                stage.status === ri.EnvironmentStatus.Queued ||
                 stage.status === ri.EnvironmentStatus.Scheduled;
 
             if (!cancelRequired) {

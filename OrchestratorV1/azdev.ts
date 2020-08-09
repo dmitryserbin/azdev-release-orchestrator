@@ -167,7 +167,7 @@ export function getCancelParameters(): IReleaseParameters {
 
     const release = {
 
-        projectName: projectName,
+        projectName,
         releaseId: Number(releaseId),
         releaseStages: releaseStages ? releaseStages.split(",") : [],
 
