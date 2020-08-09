@@ -1,4 +1,4 @@
-import tl = require("azure-pipelines-task-lib/task");
+import * as tl from "azure-pipelines-task-lib/task";
 
 import * as ba from "azure-devops-node-api/BuildApi";
 import * as ca from "azure-devops-node-api/CoreApi";
@@ -15,18 +15,17 @@ async function run() {
 
     try {
 
+        // Get parameters
         const status: string = getJobStatus();
-        const release: IReleaseParameters = getCancelParameters();
+        const parameters: IReleaseParameters = getCancelParameters();
+        const details: IReleaseDetails = getReleaseDetails();
 
         // No release cancellation required
-        if (status !== "Canceled" && !release.projectName && !release.releaseId) {
+        if (status !== "Canceled" && !parameters.projectName && !parameters.releaseId) {
 
             return
 
         }
-
-        // Get details
-        const details: IReleaseDetails = getReleaseDetails();
 
         // Get endpoint
         const endpoint: IEndpoint = getEndpoint();
@@ -42,7 +41,7 @@ async function run() {
         const orchestrator: IOrchestrator = new Orchestrator(helper, deployer);
 
         // Cancel active relese
-        await orchestrator.cancelRelease(release, details);
+        await orchestrator.cancelRelease(parameters, details);
 
     } catch (err) {
 
