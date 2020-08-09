@@ -1,6 +1,6 @@
 import tl = require("azure-pipelines-task-lib/task");
 
-import { IEndpoint, IParameters, IReleaseDetails, ReleaseType } from "./interfaces";
+import { IEndpoint, IParameters, IReleaseDetails, ReleaseType, IReleaseParameters } from "./interfaces";
 
 export function getEndpoint(): IEndpoint {
 
@@ -157,6 +157,31 @@ export function getParameters(): IParameters {
     }
 
     return parameters;
+}
+
+export function getCancelParameters(): IReleaseParameters {
+
+    const projectName: string = tl.getVariable("RELEASE_ORCHESTRATOR_PROJECTNAME")!;
+    const releaseId: string = tl.getVariable("RELEASE_ORCHESTRATOR_RELEASEID")!;
+    const releaseStages: string = tl.getVariable("RELEASE_ORCHESTRATOR_RELEASESTAGES")!;
+
+    const release = {
+
+        projectName: projectName,
+        releaseId: Number(releaseId),
+        releaseStages: releaseStages ? releaseStages.split(",") : [],
+
+    } as IReleaseParameters;
+
+    return release;
+}
+
+export function getJobStatus(): string {
+
+    const status: string = tl.getVariable("AGENT_JOBSTATUS")!;
+
+    return status;
+
 }
 
 export function getReleaseDetails(): IReleaseDetails {

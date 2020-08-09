@@ -198,6 +198,50 @@ export class Deployer implements IDeployer {
 
     }
 
+    public async cancelDeploy(parameters: IReleaseParameters, releaseDetails: IReleaseDetails): Promise<void> {
+
+        const verbose = logger.extend("cancelDeploy");
+
+        const targetRelease: ri.Release = await this.helper.getReleaseStatus(parameters.projectName, parameters.releaseId);
+
+        const targetStages: ri.ReleaseEnvironment[] = targetRelease.environments!.filter(i => parameters.releaseStages.includes(i.name!));
+
+        verbose(targetStages.map(i => i.name));
+
+        for (const stage of targetStages) {
+
+            const cancelRequired: boolean = 
+                stage.status === ri.EnvironmentStatus.InProgress || 
+                stage.status === ri.EnvironmentStatus.Queued || 
+                stage.status === ri.EnvironmentStatus.Scheduled;
+
+            if (!cancelRequired) {
+
+                verbose(`Stage <${stage.name}> (${stage.id}) stage <${ri.EnvironmentStatus[stage.status!]}> not running`);
+
+                continue;
+
+            }
+
+            verbose(`Cancelling <${stage.name}> (${stage.id}) stage <${ri.EnvironmentStatus[stage.status!]}> deployment`);
+
+            const stageStatus: ri.ReleaseEnvironmentUpdateMetadata = {
+
+                status: ri.EnvironmentStatus.Canceled,
+                comment: `Cancelled via ${releaseDetails.releaseName} (${releaseDetails.projectName}) by ${releaseDetails.requesterName}`,
+
+            };
+
+            verbose(stageStatus);
+
+            const updatedStage: ri.ReleaseEnvironment = await this.helper.updateStage(stageStatus, parameters.projectName, parameters.releaseId, stage.id!);
+
+            verbose(`Stage <${stage.name}> (${stage.id}) status <${ri.EnvironmentStatus[updatedStage.status!]}> updated`);
+
+        }
+
+    }
+
     public async approveStage(stage: ri.ReleaseEnvironment, parameters: IApproveParameters, releaseDetails: IReleaseDetails): Promise<IStageApproval> {
 
         const verbose = logger.extend("approveStage");

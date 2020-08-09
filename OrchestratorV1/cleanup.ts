@@ -4,23 +4,32 @@ import * as ba from "azure-devops-node-api/BuildApi";
 import * as ca from "azure-devops-node-api/CoreApi";
 import * as ra from "azure-devops-node-api/ReleaseApi";
 
-import { getEndpoint, getParameters, getReleaseDetails } from "./azdev";
+import { getCancelParameters, getEndpoint, getReleaseDetails, getJobStatus } from "./azdev";
 import { Connection } from "./connection";
 import { Deployer } from "./deployer";
 import { Helper } from "./helper";
-import { IConnection, IDeployer, IEndpoint, IHelper, IOrchestrator, IParameters, IReleaseDetails } from "./interfaces";
+import { IConnection, IDeployer, IEndpoint, IHelper, IOrchestrator, IReleaseParameters, IReleaseDetails } from "./interfaces";
 import { Orchestrator } from "./orchestrator";
 
 async function run() {
 
     try {
 
+        const status: string = getJobStatus();
+        const release: IReleaseParameters = getCancelParameters();
+
+        // No release cancellation required
+        if (status !== "Canceled" && !release.projectName && !release.releaseId) {
+
+            return
+
+        }
+
+        // Get details
+        const details: IReleaseDetails = getReleaseDetails();
+
         // Get endpoint
         const endpoint: IEndpoint = getEndpoint();
-
-        // Get parameters
-        const parameters: IParameters = getParameters();
-        const details: IReleaseDetails = getReleaseDetails();
 
         // Create connection
         const connection: IConnection = new Connection(endpoint);
@@ -32,15 +41,12 @@ async function run() {
         const deployer: IDeployer = new Deployer(helper);
         const orchestrator: IOrchestrator = new Orchestrator(helper, deployer);
 
-        // Run orchestrator
-        await orchestrator.deployRelease(parameters, details);
+        // Cancel active relese
+        await orchestrator.cancelRelease(release, details);
 
     } catch (err) {
 
-        // Get task result status
-        const taskResult: tl.TaskResult = tl.getBoolInput("IgnoreFailure") ? tl.TaskResult.SucceededWithIssues : tl.TaskResult.Failed;
-
-        tl.setResult(taskResult, err.message);
+        tl.setResult(tl.TaskResult.Failed, err.message);
 
     }
 

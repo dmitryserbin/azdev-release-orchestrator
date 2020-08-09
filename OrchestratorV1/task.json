@@ -15,9 +15,9 @@
   },
   "groups": [
     {
-        "name": "Advanced",
-        "displayName": "Advanced",
-        "isExpanded": true
+      "name": "Advanced",
+      "displayName": "Advanced",
+      "isExpanded": true
     }
   ],
   "inputs": [
@@ -216,8 +216,13 @@
     }
   ],
   "execution": {
-      "Node": {
-          "target": "index.js"
-      }
+    "Node10": {
+      "target": "index.js"
+    }
+  },
+  "postjobexecution": {
+    "Node10": {
+      "target": "cleanup.js"
+    }
   }
 }

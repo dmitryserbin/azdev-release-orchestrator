@@ -58,6 +58,10 @@ export class Orchestrator implements IOrchestrator {
 
         verbose(parameters.releaseType);
 
+        // Set target release details required
+        // For release job cancellation cleanup
+        this.helper.setActiveRelease(releaseParameters);
+
         // Deploy new release
         if (parameters.releaseType === ReleaseType.Create) {
 
@@ -88,6 +92,18 @@ export class Orchestrator implements IOrchestrator {
             await this.deployer.deployManual(releaseParameters, details);
 
         }
+
+        this.helper.cleanActiveRelease();
+
+    }
+
+    public async cancelRelease(release: IReleaseParameters, details: IReleaseDetails) {
+
+        console.log(`Cancelling <${release.projectName}> project <${release.releaseId}> active release <${release.releaseStages}> stage(s)`);
+
+        await this.deployer.cancelDeploy(release, details);
+
+        this.helper.cleanActiveRelease();
 
     }
 

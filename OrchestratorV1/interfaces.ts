@@ -133,6 +133,8 @@ export interface IHelper {
     getReleaseStatus(projectName: string, releaseId: number): Promise<ri.Release>;
     getStageStatus(releaseStatus: ri.Release, stageName: string): Promise<ri.ReleaseEnvironment>;
     getArtifacts(projectName: string, definitionId: number, primaryId: string, versionId?: string, sourceBranch?: string): Promise<ri.ArtifactMetadata[]>;
+    setActiveRelease(release: IReleaseParameters): Promise<void>;
+    cleanActiveRelease(): Promise<void>;
     isAutomated(release: ri.Release): Promise<boolean>;
 
 }
@@ -141,12 +143,14 @@ export interface IDeployer {
 
     deployManual(parameters: IReleaseParameters, releaseDetails: IReleaseDetails): Promise<void>;
     deployAutomated(parameters: IReleaseParameters, releaseDetails: IReleaseDetails): Promise<void>;
+    cancelDeploy(parameters: IReleaseParameters, releaseDetails: IReleaseDetails): Promise<void>;
     approveStage(stage: ri.ReleaseEnvironment, parameters: IApproveParameters, releaseDetails: IReleaseDetails): Promise<IStageApproval>;
 }
 
 export interface IOrchestrator {
 
     deployRelease(parameters: IParameters, details: IReleaseDetails): Promise<void>;
+    cancelRelease(release: IReleaseParameters, details: IReleaseDetails): Promise<void>;
     getRelease(type: ReleaseType, project: ci.TeamProject, definition: ri.ReleaseDefinition, details: IReleaseDetails, parameters: IParameters): Promise<ri.Release>;
 
 }

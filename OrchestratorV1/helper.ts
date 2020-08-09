@@ -1,5 +1,7 @@
 import Debug from "debug";
 
+import * as tl from "azure-pipelines-task-lib/task";
+
 import * as ba from "azure-devops-node-api/BuildApi";
 import * as ca from "azure-devops-node-api/CoreApi";
 import * as bi from "azure-devops-node-api/interfaces/BuildInterfaces";
@@ -7,7 +9,7 @@ import * as ci from "azure-devops-node-api/interfaces/CoreInterfaces";
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import * as ra from "azure-devops-node-api/ReleaseApi";
 
-import { IHelper, IReleaseDetails, IReleaseFilter } from "./interfaces";
+import { IHelper, IReleaseDetails, IReleaseFilter, IReleaseParameters } from "./interfaces";
 import { Retry } from "./retry";
 
 const logger = Debug("release-orchestrator:Helper");
@@ -395,6 +397,22 @@ export class Helper implements IHelper {
         verbose(conditions);
 
         return conditions.length > 0 ? true : false;
+
+    }
+
+    public async setActiveRelease(release: IReleaseParameters) {
+
+        tl.setVariable("RELEASE_ORCHESTRATOR_PROJECTNAME", release.projectName);
+        tl.setVariable("RELEASE_ORCHESTRATOR_RELEASEID", release.releaseId.toString());
+        tl.setVariable("RELEASE_ORCHESTRATOR_RELEASESTAGES", release.releaseStages.toString());
+
+    }
+
+    public async cleanActiveRelease() {
+
+        tl.setVariable("RELEASE_ORCHESTRATOR_PROJECTNAME", "");
+        tl.setVariable("RELEASE_ORCHESTRATOR_RELEASEID", "");
+        tl.setVariable("RELEASE_ORCHESTRATOR_RELEASESTAGES", "");
 
     }
 

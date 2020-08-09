@@ -85,6 +85,8 @@ describe("Orchestrator", () => {
 
         orchestratorMock.setup((x) => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
         helperMock.setup((x) => x.isAutomated(TypeMoq.It.isAny())).returns(() => Promise.resolve(true));
+        helperMock.setup((x) => x.setActiveRelease(TypeMoq.It.isAny())).returns(() => Promise.resolve());
+        helperMock.setup((x) => x.cleanActiveRelease()).returns(() => Promise.resolve());
 
         // Hide console output
         console.log = () => { /**/ };
@@ -107,6 +109,8 @@ describe("Orchestrator", () => {
 
         orchestratorMock.setup((x) => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => Promise.resolve(mockRelease));
         helperMock.setup((x) => x.isAutomated(TypeMoq.It.isAny())).returns(() => Promise.resolve(false));
+        helperMock.setup((x) => x.setActiveRelease(TypeMoq.It.isAny())).returns(() => Promise.resolve());
+        helperMock.setup((x) => x.cleanActiveRelease()).returns(() => Promise.resolve());
 
         // Hide console output
         console.log = () => { /**/ };
