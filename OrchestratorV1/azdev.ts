@@ -161,9 +161,9 @@ export function getParameters(): IParameters {
 
 export function getCancelParameters(): IReleaseParameters {
 
-    const projectName: string = tl.getVariable("RELEASE_ORCHESTRATOR_PROJECTNAME")!;
-    const releaseId: string = tl.getVariable("RELEASE_ORCHESTRATOR_RELEASEID")!;
-    const releaseStages: string = tl.getVariable("RELEASE_ORCHESTRATOR_RELEASESTAGES")!;
+    const projectName: string = tl.getTaskVariable("RELEASE_ORCHESTRATOR_PROJECTNAME")!;
+    const releaseId: string = tl.getTaskVariable("RELEASE_ORCHESTRATOR_RELEASEID")!;
+    const releaseStages: string = tl.getTaskVariable("RELEASE_ORCHESTRATOR_RELEASESTAGES")!;
 
     const release = {
 

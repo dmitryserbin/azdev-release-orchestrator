@@ -402,17 +402,17 @@ export class Helper implements IHelper {
 
     public async setActiveRelease(release: IReleaseParameters) {
 
-        tl.setVariable("RELEASE_ORCHESTRATOR_PROJECTNAME", release.projectName);
-        tl.setVariable("RELEASE_ORCHESTRATOR_RELEASEID", release.releaseId.toString());
-        tl.setVariable("RELEASE_ORCHESTRATOR_RELEASESTAGES", release.releaseStages.toString());
+        tl.setTaskVariable("RELEASE_ORCHESTRATOR_PROJECTNAME", release.projectName);
+        tl.setTaskVariable("RELEASE_ORCHESTRATOR_RELEASEID", release.releaseId.toString());
+        tl.setTaskVariable("RELEASE_ORCHESTRATOR_RELEASESTAGES", release.releaseStages.toString());
 
     }
 
     public async cleanActiveRelease() {
 
-        tl.setVariable("RELEASE_ORCHESTRATOR_PROJECTNAME", "");
-        tl.setVariable("RELEASE_ORCHESTRATOR_RELEASEID", "");
-        tl.setVariable("RELEASE_ORCHESTRATOR_RELEASESTAGES", "");
+        tl.setTaskVariable("RELEASE_ORCHESTRATOR_PROJECTNAME", "");
+        tl.setTaskVariable("RELEASE_ORCHESTRATOR_RELEASEID", "");
+        tl.setTaskVariable("RELEASE_ORCHESTRATOR_RELEASESTAGES", "");
 
     }
 
