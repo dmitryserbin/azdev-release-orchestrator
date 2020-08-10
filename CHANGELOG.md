@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0
+
+- Add cancelled release cleanup support ([#38](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/38))
+
 ## 1.2.9
 
 - Add partially succeeded release support ([#40](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/40))
