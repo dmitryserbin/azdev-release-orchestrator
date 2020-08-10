@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.9
+
+- Add partially succeeded release support ([#40](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/40))
+
 ## 1.2.8
 
 - Address optional parameters issue
