@@ -1,4 +1,4 @@
-{
+﻿{
   "id": "5d38d46b-4c0a-4c14-8f0c-04df59e4dc27",
   "name": "releaseorchestrator",
   "friendlyName": "Release Orchestrator",
@@ -15,9 +15,9 @@
   },
   "groups": [
     {
-        "name": "Advanced",
-        "displayName": "Advanced",
-        "isExpanded": true
+      "name": "Advanced",
+      "displayName": "Advanced",
+      "isExpanded": true
     }
   ],
   "inputs": [
@@ -216,8 +216,8 @@
     }
   ],
   "execution": {
-      "Node": {
-          "target": "index.js"
-      }
+    "Node": {
+      "target": "index.js"
+    }
   }
 }
