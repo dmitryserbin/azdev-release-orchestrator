@@ -19,6 +19,7 @@ export enum ReleaseStatus {
     Undefined = "Undefined",
     InProgress = "InProgress",
     Succeeded = "Succeeded",
+    PartiallySucceeded = "PartiallySucceeded",
     Failed = "Failed",
 
 }

@@ -1,6 +1,8 @@
 import Table from "cli-table";
 import Debug from "debug";
 
+import * as tl from "azure-pipelines-task-lib/task";
+
 import * as ri from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IReleaseProgress, IStageApproval, IStageProgress, ReleaseStatus } from "./interfaces";
@@ -120,7 +122,19 @@ export class ReleaseProgress implements IReleaseProgress {
 
             } else {
 
-                result = ReleaseStatus.Succeeded;
+                // Get partially succeeded stages
+                const partiallySucceeded: boolean = this.progress.filter((i) =>
+                    i.status === ri.EnvironmentStatus.PartiallySucceeded).length > 0;
+
+                if (partiallySucceeded) {
+
+                    result = ReleaseStatus.PartiallySucceeded;
+
+                } else {
+
+                    result = ReleaseStatus.Succeeded;
+
+                }
 
             }
 
@@ -145,7 +159,12 @@ export class ReleaseProgress implements IReleaseProgress {
 
             console.log(`All release stages deployment completed`);
 
-        } else if (this.getStatus() === ReleaseStatus.Failed) {
+        } else if (this.getStatus() === ReleaseStatus.PartiallySucceeded) {
+
+            tl.setResult(tl.TaskResult.SucceededWithIssues, `One or more release stage(s) partially succeeded`);
+
+        }
+        else if (this.getStatus() === ReleaseStatus.Failed) {
 
             throw new Error(`One or more release stage(s) deployment failed`);
         }
