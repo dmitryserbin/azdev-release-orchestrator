@@ -4,5 +4,6 @@
 **/*.vsix
 **/*.js
 **/*.log
-**/test-*.xml
+**/*.xml
 **/node_modules
+**/.vs
