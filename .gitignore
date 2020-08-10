@@ -6,3 +6,4 @@
 **/*.log
 **/test-*.xml
 **/node_modules
+/.vs
