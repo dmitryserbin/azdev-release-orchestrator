@@ -1,6 +1,8 @@
-import * as mock from "azure-pipelines-task-lib/mock-run";
 
 import { join } from "path";
+
+import { TaskMockRunner } from "azure-pipelines-task-lib/mock-run";
+
 import { mockEndpoint, mockInput } from "./helpers";
 
 const path: string = join(__dirname, "../..", "orchestrator.js");
@@ -36,7 +38,7 @@ const inputs: string[] = [
 
 ];
 
-const taskRunner: mock.TaskMockRunner = new mock.TaskMockRunner(path);
+const taskRunner: TaskMockRunner = new TaskMockRunner(path);
 
 mockEndpoint(taskRunner, endpointType, endpointName, accountName, accountToken);
 mockInput(taskRunner, inputs);

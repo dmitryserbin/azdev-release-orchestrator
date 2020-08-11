@@ -1,9 +1,10 @@
 import "mocha";
 
-import * as chai from "chai";
-import * as mock from "azure-pipelines-task-lib/mock-test";
-
 import { join } from "path";
+import { assert } from "chai";
+
+import { MockTestRunner } from "azure-pipelines-task-lib/mock-test";
+
 import { clearMockVariables, setMockVariables } from "./helpers";
 
 describe("Orchestrator", ()  => {
@@ -15,7 +16,7 @@ describe("Orchestrator", ()  => {
         EndpointType: "service",
         EndpointName: "My-Endpoint",
         EndpointAccount: process.env.azAccount ? process.env.azAccount : "My-Account",
-        EndpointToken: process.env.azToken ? process.env.azToken : "My-Secret-Token",
+        EndpointToken: process.env.azToken ? process.env.azToken : "My-Token",
 
         TargetProject: "761623f0-c4c0-4dab-884b-a428a01c200f",
         TargetDefinition: "1",
@@ -48,14 +49,15 @@ describe("Orchestrator", ()  => {
 
         setMockVariables(variables);
 
-        const testRunner: mock.MockTestRunner = new mock.MockTestRunner(path);
+        const testRunner: MockTestRunner = new MockTestRunner(path);
+
         testRunner.run();
 
         console.log(testRunner.stdout);
 
-        chai.assert.isTrue(testRunner.succeeded, "Should have succeeded");
-        chai.assert.isEmpty(testRunner.warningIssues, "Should have succeeded");
-        chai.assert.isEmpty(testRunner.errorIssues, "Should have no errors");
+        assert.isTrue(testRunner.succeeded, "Should have succeeded");
+        assert.isEmpty(testRunner.warningIssues, "Should have succeeded");
+        assert.isEmpty(testRunner.errorIssues, "Should have no errors");
 
         clearMockVariables(variables);
 

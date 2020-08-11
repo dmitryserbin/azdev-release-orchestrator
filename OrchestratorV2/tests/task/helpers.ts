@@ -1,6 +1,6 @@
-import * as mr from "azure-pipelines-task-lib/mock-run";
+import { TaskMockRunner } from "azure-pipelines-task-lib/mock-run";
 
-export function mockInput(taskRunner: mr.TaskMockRunner, variables: string[]): void {
+export function mockInput(taskRunner: TaskMockRunner, variables: string[]): void {
 
     variables.forEach((i) => {
 
@@ -10,7 +10,7 @@ export function mockInput(taskRunner: mr.TaskMockRunner, variables: string[]): v
 
 }
 
-export function mockEndpoint(taskRunner: mr.TaskMockRunner, type: string, name: string, account: string, token: string): void {
+export function mockEndpoint(taskRunner: TaskMockRunner, type: string, name: string, account: string, token: string): void {
 
     taskRunner.setInput("EndpointType", type);
 
