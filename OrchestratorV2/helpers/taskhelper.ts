@@ -5,9 +5,10 @@ import url from "url";
 import * as tl from "azure-pipelines-task-lib/task";
 
 import { ITaskHelper } from "../interfaces/helpers/taskhelper";
-import { IEndpoint } from "../interfaces/common/endpoint";
-import { IParameters, ReleaseType } from "../interfaces/common/parameters";
+import { IEndpoint } from "../interfaces/task/endpoint";
+import { IParameters, ReleaseType } from "../interfaces/task/parameters";
 import { IDebugLogger } from "../interfaces/common/debuglogger";
+import { IDetails } from "../interfaces/task/details";
 
 export class TaskHelper implements ITaskHelper {
 
@@ -21,7 +22,7 @@ export class TaskHelper implements ITaskHelper {
 
     public async getEndpoint(): Promise<IEndpoint> {
 
-        const debug: Debug.Debugger = this.debugLogger.extend(this.getEndpoint.name);
+        const debug = this.debugLogger.extend(this.getEndpoint.name);
 
         const endpointType: string = tl.getInput("EndpointType", true)!;
 
@@ -58,7 +59,7 @@ export class TaskHelper implements ITaskHelper {
 
     public async getParameters(): Promise<IParameters> {
 
-        const debug: Debug.Debugger = this.debugLogger.extend(this.getEndpoint.name);
+        const debug = this.debugLogger.extend(this.getParameters.name);
 
         const releaseStrategy: string = tl.getInput("ReleaseStrategy", true)!;
         const targetProject: string = tl.getInput("TargetProject", true)!;
@@ -168,6 +169,26 @@ export class TaskHelper implements ITaskHelper {
         debug(parameters);
 
         return parameters;
+
+    }
+
+    public async getDetails(): Promise<IDetails> {
+
+        const debug = this.debugLogger.extend(this.getDetails.name);
+
+        const endpointName: string = tl.getInput("ConnectedService", false)!;
+
+        const details: IDetails = {
+
+            endpointName: endpointName ? endpointName : "Project Collection Build Service",
+            projectName: tl.getVariable("SYSTEM_TEAMPROJECT")!,
+            releaseName: tl.getVariable("RELEASE_RELEASENAME")!,
+            requesterName: tl.getVariable("RELEASE_DEPLOYMENT_REQUESTEDFOR")!,
+            requesterId: tl.getVariable("RELEASE_DEPLOYMENT_REQUESTEDFORID")!,
+
+        }
+
+        return details;
 
     }
 

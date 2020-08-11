@@ -1,13 +1,14 @@
 import * as tl from "azure-pipelines-task-lib/task";
 
-import { IEndpoint } from "./interfaces/common/endpoint";
-import { IParameters } from "./interfaces/common/parameters";
+import { IEndpoint } from "./interfaces/task/endpoint";
+import { IParameters } from "./interfaces/task/parameters";
 import { ITaskHelper } from "./interfaces/helpers/taskhelper";
 import { TaskHelper } from "./helpers/taskhelper";
 import { IDebugLogger } from "./interfaces/common/debuglogger";
 import { DebugLogger } from "./common/debuglogger";
 import { ConsoleLogger } from "./common/consolelogger";
 import { IConsoleLogger } from "./interfaces/common/consolelogger";
+import { IDetails } from "./interfaces/task/details";
 
 async function run() {
 
@@ -20,6 +21,7 @@ async function run() {
 
         const endpoint: IEndpoint = await taskHelper.getEndpoint();
         const parameters: IParameters = await taskHelper.getParameters();
+        const details: IDetails = await taskHelper.getDetails();
 
     } catch (err) {
 
