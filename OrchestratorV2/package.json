@@ -9,9 +9,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "mocha -r ts-node/register Tests/**/test.*.ts --no-timeouts --grep \"@task|@manual\" --invert --reporter mocha-multi-reporters --reporter-options configFile=Tests/config.json",
-    "task": "mocha -r ts-node/register Tests/**/test.*.ts --no-timeouts --grep @task",
-    "manual": "set DEBUG=release-orchestrator:* & mocha -r ts-node/register Tests/**/test.*.ts --no-timeouts --grep @manual",
+    "test": "mocha -r ts-node/register tests/**/*.test.ts --no-timeouts --grep \"@task|@manual\" --invert --reporter mocha-multi-reporters --reporter-options configFile=tests/config.json",
+    "task": "mocha -r ts-node/register tests/**/*.test.ts --no-timeouts --grep @task",
+    "manual": "set DEBUG=release-orchestrator:* & mocha -r ts-node/register tests/**/*.test.ts --no-timeouts --grep @manual",
     "clean": "npm prune --production"
   },
   "author": "Dmitry Serbin",
