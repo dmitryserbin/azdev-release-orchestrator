@@ -2,7 +2,7 @@ import Debug from "debug";
 
 import url from "url";
 
-import * as tl from "azure-pipelines-task-lib/task";
+import { getInput, getEndpointUrl, getEndpointAuthorizationParameter, getBoolInput, getDelimitedInput, getVariable } from "azure-pipelines-task-lib/task";
 
 import { ITaskHelper } from "../interfaces/helpers/taskhelper";
 import { IEndpoint } from "../interfaces/task/endpoint";
@@ -24,7 +24,7 @@ export class TaskHelper implements ITaskHelper {
 
         const debug = this.debugLogger.extend(this.getEndpoint.name);
 
-        const endpointType: string = tl.getInput("EndpointType", true)!;
+        const endpointType: string = getInput("EndpointType", true)!;
 
         // Use upper-case default endpoint name
         // For compartability with non-Windows systems
@@ -34,14 +34,14 @@ export class TaskHelper implements ITaskHelper {
         // Get service endpoint
         if (endpointType === "service") {
 
-            endpointName = tl.getInput("ConnectedService", true)!;
+            endpointName = getInput("ConnectedService", true)!;
             tokenParameterName = "ApiToken";
 
         }
 
-        const endpointUrl: string = tl.getEndpointUrl(endpointName, false);
+        const endpointUrl: string = getEndpointUrl(endpointName, false);
         const accountName: string = url.parse(endpointUrl).pathname!.replace("/", "");
-        const accountToken: string = tl.getEndpointAuthorizationParameter(endpointName, tokenParameterName, false)!;
+        const accountToken: string = getEndpointAuthorizationParameter(endpointName, tokenParameterName, false)!;
     
         const endpoint: IEndpoint = {
     
@@ -61,9 +61,9 @@ export class TaskHelper implements ITaskHelper {
 
         const debug = this.debugLogger.extend(this.getParameters.name);
 
-        const releaseStrategy: string = tl.getInput("ReleaseStrategy", true)!;
-        const targetProject: string = tl.getInput("TargetProject", true)!;
-        const targetDefinition: string = tl.getInput("TargetDefinition", true)!;
+        const releaseStrategy: string = getInput("ReleaseStrategy", true)!;
+        const targetProject: string = getInput("TargetProject", true)!;
+        const targetDefinition: string = getInput("TargetDefinition", true)!;
 
         const parameters: IParameters = {
 
@@ -84,14 +84,14 @@ export class TaskHelper implements ITaskHelper {
 
                 parameters.releaseType = ReleaseType.Create;
 
-                const definitionStagesFilter: boolean = tl.getBoolInput("DefinitionStagesFilter");
-                const artifactTagFilter: boolean = tl.getBoolInput("ArtifactTagFilter");
-                const sourceBranchFilter: boolean = tl.getBoolInput("SourceBranchFilter");
+                const definitionStagesFilter: boolean = getBoolInput("DefinitionStagesFilter");
+                const artifactTagFilter: boolean = getBoolInput("ArtifactTagFilter");
+                const sourceBranchFilter: boolean = getBoolInput("SourceBranchFilter");
 
                 // Get definition stages
                 if (definitionStagesFilter) {
 
-                    parameters.stages = tl.getDelimitedInput("TargetDefinitionStages", ",", true);
+                    parameters.stages = getDelimitedInput("TargetDefinitionStages", ",", true);
 
                 }
 
@@ -99,7 +99,7 @@ export class TaskHelper implements ITaskHelper {
                 // Optional to support variable input
                 if (artifactTagFilter) {
 
-                    parameters.artifactTag = tl.getDelimitedInput("ArtifactTagName", ",", false);
+                    parameters.artifactTag = getDelimitedInput("ArtifactTagName", ",", false);
 
                 }
 
@@ -107,7 +107,7 @@ export class TaskHelper implements ITaskHelper {
                 // Optional to support variable input
                 if (sourceBranchFilter) {
 
-                    parameters.sourceBranch = tl.getInput("SourceBranchName", false)!;
+                    parameters.sourceBranch = getInput("SourceBranchName", false)!;
 
                 }
 
@@ -118,17 +118,17 @@ export class TaskHelper implements ITaskHelper {
                 parameters.releaseType = ReleaseType.Latest;
 
                 // Get release stages
-                parameters.stages = tl.getDelimitedInput("TargetReleaseStages", ",", true);
+                parameters.stages = getDelimitedInput("TargetReleaseStages", ",", true);
 
-                const releaseTagFilter: boolean = tl.getBoolInput("ReleaseTagFilter");
-                const artifactTagFilter: boolean = tl.getBoolInput("ArtifactTagFilter");
-                const sourceBranchFilter: boolean = tl.getBoolInput("SourceBranchFilter");
+                const releaseTagFilter: boolean = getBoolInput("ReleaseTagFilter");
+                const artifactTagFilter: boolean = getBoolInput("ArtifactTagFilter");
+                const sourceBranchFilter: boolean = getBoolInput("SourceBranchFilter");
 
                 // Get release tag name filter
                 // Optional to support variable input
                 if (releaseTagFilter) {
 
-                    parameters.releaseTag = tl.getDelimitedInput("ReleaseTagName", ",", false);
+                    parameters.releaseTag = getDelimitedInput("ReleaseTagName", ",", false);
 
                 }
 
@@ -136,7 +136,7 @@ export class TaskHelper implements ITaskHelper {
                 // Optional to support variable input
                 if (artifactTagFilter) {
 
-                    parameters.artifactTag = tl.getDelimitedInput("ArtifactTagName", ",", false);
+                    parameters.artifactTag = getDelimitedInput("ArtifactTagName", ",", false);
 
                 }
 
@@ -144,7 +144,7 @@ export class TaskHelper implements ITaskHelper {
                 // Optional to support variable input
                 if (sourceBranchFilter) {
 
-                    parameters.sourceBranch = tl.getInput("SourceBranchName", false)!;
+                    parameters.sourceBranch = getInput("SourceBranchName", false)!;
 
                 }
 
@@ -155,10 +155,10 @@ export class TaskHelper implements ITaskHelper {
                 parameters.releaseType = ReleaseType.Specific;
 
                 // Get release ID
-                parameters.releaseId = tl.getInput("TargetRelease", true)!;
+                parameters.releaseId = getInput("TargetRelease", true)!;
 
                 // Get release stages
-                parameters.stages = tl.getDelimitedInput("TargetReleaseStages", ",", true);
+                parameters.stages = getDelimitedInput("TargetReleaseStages", ",", true);
 
                 break;
 
@@ -176,17 +176,19 @@ export class TaskHelper implements ITaskHelper {
 
         const debug = this.debugLogger.extend(this.getDetails.name);
 
-        const endpointName: string = tl.getInput("ConnectedService", false)!;
+        const endpointName: string = getInput("ConnectedService", false)!;
 
         const details: IDetails = {
 
             endpointName: endpointName ? endpointName : "Project Collection Build Service",
-            projectName: tl.getVariable("SYSTEM_TEAMPROJECT")!,
-            releaseName: tl.getVariable("RELEASE_RELEASENAME")!,
-            requesterName: tl.getVariable("RELEASE_DEPLOYMENT_REQUESTEDFOR")!,
-            requesterId: tl.getVariable("RELEASE_DEPLOYMENT_REQUESTEDFORID")!,
+            projectName: getVariable("SYSTEM_TEAMPROJECT")!,
+            releaseName: getVariable("RELEASE_RELEASENAME")!,
+            requesterName: getVariable("RELEASE_DEPLOYMENT_REQUESTEDFOR")!,
+            requesterId: getVariable("RELEASE_DEPLOYMENT_REQUESTEDFORID")!,
 
         }
+
+        debug(details);
 
         return details;
 

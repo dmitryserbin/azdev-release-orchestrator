@@ -1,4 +1,4 @@
-import * as tl from "azure-pipelines-task-lib/task";
+import { TaskResult, getBoolInput, setResult } from "azure-pipelines-task-lib/task";
 
 import { IEndpoint } from "./interfaces/task/endpoint";
 import { IParameters } from "./interfaces/task/parameters";
@@ -9,6 +9,13 @@ import { DebugLogger } from "./common/debuglogger";
 import { ConsoleLogger } from "./common/consolelogger";
 import { IConsoleLogger } from "./interfaces/common/consolelogger";
 import { IDetails } from "./interfaces/task/details";
+import { IApiFactory } from "./interfaces/factories/apifactory";
+import { ApiFactory } from "./factories/apifactory";
+import { IOrchestratorFactory } from "./interfaces/factories/orchestratorfactory";
+import { OrchestratorFactory } from "./factories/orchestratorfactory";
+import { IDeployer } from "./interfaces/deployer/deployer";
+import { IOrchestrator } from "./interfaces/orchestrator/orchestrator";
+import { Orchestrator } from "./orchestrator/orchestrator";
 
 async function run() {
 
@@ -23,12 +30,19 @@ async function run() {
         const parameters: IParameters = await taskHelper.getParameters();
         const details: IDetails = await taskHelper.getDetails();
 
+        const apiFactory: IApiFactory = new ApiFactory(endpoint.account, endpoint.token, debugLogger);
+        const orchestratorFactory: IOrchestratorFactory = new OrchestratorFactory(apiFactory, debugLogger, consoleLogger);
+        const deployer: IDeployer = await orchestratorFactory.createDeployer();
+        const orchestrator: IOrchestrator = new Orchestrator(deployer, debugLogger, consoleLogger);
+
+        await orchestrator.orchestrateRelease(parameters, details);
+
     } catch (err) {
 
-        const taskResult: tl.TaskResult = tl.getBoolInput("IgnoreFailure")
-            ? tl.TaskResult.SucceededWithIssues : tl.TaskResult.Failed;
+        const result: TaskResult = getBoolInput("IgnoreFailure")
+            ? TaskResult.SucceededWithIssues : TaskResult.Failed;
 
-        tl.setResult(taskResult, err.message);
+        setResult(result, err.message);
 
     }
 
