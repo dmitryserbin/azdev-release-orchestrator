@@ -6,11 +6,11 @@ import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IConsoleLogger } from "../interfaces/common/consolelogger";
 import { ICoreHelper } from "../interfaces/helpers/corehelper";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
-import { IJobCreator } from "../interfaces/workers/jobcreator";
+import { ICreator } from "../interfaces/workers/creator";
 import { IBuildHelper } from "../interfaces/helpers/buildhelper";
 import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
 
-export class JobCreator implements IJobCreator {
+export class Creator implements ICreator {
 
     private debugLogger: Debug.Debugger;
     private consoleLogger: IConsoleLogger;
