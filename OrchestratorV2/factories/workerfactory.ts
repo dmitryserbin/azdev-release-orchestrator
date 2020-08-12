@@ -8,6 +8,10 @@ import { IConsoleLogger } from "../interfaces/common/consolelogger";
 import { IDeployer } from "../interfaces/workers/deployer";
 import { Deployer } from "../workers/deployer";
 import { ICoreApi } from "azure-devops-node-api/CoreApi";
+import { ICoreHelper } from "../interfaces/helpers/corehelper";
+import { CoreHelper } from "../helpers/corehelper";
+import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
+import { ReleaseHelper } from "../helpers/releasehelper";
 
 export class WorkerFactory implements IWorkerFactory {
 
@@ -31,7 +35,10 @@ export class WorkerFactory implements IWorkerFactory {
         const releaseApi: IReleaseApi = await this.apiFactory.createReleaseApi();
         const buildApi: IBuildApi = await this.apiFactory.createBuildApi();
 
-        return new Deployer(coreApi, releaseApi, buildApi, this.debugLogger, this.consoleLogger);
+        const coreHelper: ICoreHelper = new CoreHelper(coreApi, this.debugLogger);
+        const releaseHelper: IReleaseHelper = new ReleaseHelper(releaseApi, this.debugLogger);
+
+        return new Deployer(coreHelper, releaseHelper, this.debugLogger, this.consoleLogger);
 
     }
 

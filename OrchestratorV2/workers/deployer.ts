@@ -1,32 +1,28 @@
 import Debug from "debug";
 
-import { IBuildApi } from "azure-devops-node-api/BuildApi";
-import { ICoreApi } from "azure-devops-node-api/CoreApi";
-import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
-
 import { IParameters } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
 import { IDeployer } from "../interfaces/workers/deployer";
 import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IConsoleLogger } from "../interfaces/common/consolelogger";
+import { ICoreHelper } from "../interfaces/helpers/corehelper";
+import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
 
 export class Deployer implements IDeployer {
 
     private debugLogger: Debug.Debugger;
     private consoleLogger: IConsoleLogger;
 
-    private coreApi: ICoreApi;
-    private releaseApi: IReleaseApi;
-    private buildApi: IBuildApi;
+    private coreHelper: ICoreHelper;
+    private releaseHelper: IReleaseHelper;
 
-    constructor(coreApi: ICoreApi, releaseApi: IReleaseApi, buildApi: IBuildApi, debugLogger: IDebugLogger, consoleLogger: IConsoleLogger) {
+    constructor(coreHelper: ICoreHelper, releaseHelper: IReleaseHelper, debugLogger: IDebugLogger, consoleLogger: IConsoleLogger) {
 
         this.debugLogger = debugLogger.create(this.constructor.name);
         this.consoleLogger = consoleLogger;
 
-        this.coreApi = coreApi;
-        this.releaseApi = releaseApi;
-        this.buildApi = buildApi;
+        this.coreHelper = coreHelper;
+        this.releaseHelper = releaseHelper;
 
     }
 
