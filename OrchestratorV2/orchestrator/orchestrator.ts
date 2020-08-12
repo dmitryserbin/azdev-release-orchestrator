@@ -2,7 +2,7 @@ import Debug from "debug";
 
 import { IOrchestrator } from "../interfaces/orchestrator/orchestrator";
 import { IDeployer } from "../interfaces/deployer/deployer";
-import { IParameters } from "../interfaces/task/parameters";
+import { IParameters, ReleaseType } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
 import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IConsoleLogger } from "../interfaces/common/consolelogger";
@@ -11,6 +11,7 @@ import { IApiFactory } from "../interfaces/factories/apifactory";
 import { ApiFactory } from "../factories/apifactory";
 import { IWorkerFactory } from "../interfaces/factories/workerfactory";
 import { WorkerFactory } from "../factories/workerfactory";
+import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
 
 export class Orchestrator implements IOrchestrator {
 
@@ -33,6 +34,35 @@ export class Orchestrator implements IOrchestrator {
     public async run(parameters: IParameters, details: IDetails) {
 
         const deployer: IDeployer = await this.workerFactory.createDeployer();
+
+        console.log(`Starting <${parameters.projectId}> project ${ReleaseType[parameters.releaseType].toLowerCase()} <${parameters.definitionId}> release deployment`);
+
+        // GET PROJECT & DEFINITION DETAILS
+
+        // CREATE NEW OR FIND EXISTING RELEASE
+
+        const targetRelease: IReleaseJob = {
+
+            stages: [],
+            sleep: 5000,
+
+        };
+
+        // ORCHESTRATE RELEASE DEPLOYMENT
+
+        if (parameters.releaseType === ReleaseType.Create) {
+
+            console.log(`Deploying <${targetRelease.release?.name}> (${targetRelease.release?.id}) pipeline <${targetRelease.stages}> stage(s) release`);
+
+            // TBU
+
+        } else {
+
+            console.log(`Re-deploying <${targetRelease.release?.name}> (${targetRelease.release?.id}) pipeline <${targetRelease.stages}> stage(s) release`);
+
+            // TBU
+
+        }
 
     }
 
