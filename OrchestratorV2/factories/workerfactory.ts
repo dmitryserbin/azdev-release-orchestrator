@@ -5,8 +5,8 @@ import { IWorkerFactory } from "../interfaces/factories/workerfactory";
 import { IApiFactory } from "../interfaces/factories/apifactory";
 import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IConsoleLogger } from "../interfaces/common/consolelogger";
-import { IDeployer } from "../interfaces/deployer/deployer";
-import { Deployer } from "../deployer/deployer";
+import { IDeployer } from "../interfaces/workers/deployer";
+import { Deployer } from "../workers/deployer";
 import { ICoreApi } from "azure-devops-node-api/CoreApi";
 
 export class WorkerFactory implements IWorkerFactory {

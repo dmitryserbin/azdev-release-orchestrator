@@ -1,7 +1,7 @@
 import Debug from "debug";
 
 import { IOrchestrator } from "../interfaces/orchestrator/orchestrator";
-import { IDeployer } from "../interfaces/deployer/deployer";
+import { IDeployer } from "../interfaces/workers/deployer";
 import { IParameters, ReleaseType } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
 import { IDebugLogger } from "../interfaces/common/debuglogger";

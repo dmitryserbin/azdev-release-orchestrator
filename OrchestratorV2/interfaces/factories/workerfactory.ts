@@ -1,4 +1,4 @@
-import { IDeployer } from "../deployer/deployer";
+import { IDeployer } from "../workers/deployer";
 
 export interface IWorkerFactory {
 

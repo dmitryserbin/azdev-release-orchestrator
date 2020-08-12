@@ -6,7 +6,7 @@ import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
 
 import { IParameters } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
-import { IDeployer } from "../interfaces/deployer/deployer";
+import { IDeployer } from "../interfaces/workers/deployer";
 import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IConsoleLogger } from "../interfaces/common/consolelogger";
 
