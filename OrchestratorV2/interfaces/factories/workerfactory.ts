@@ -1,6 +1,6 @@
 import { IDeployer } from "../deployer/deployer";
 
-export interface IDeployerFactory {
+export interface IWorkerFactory {
 
     createDeployer(): Promise<IDeployer>;
 
