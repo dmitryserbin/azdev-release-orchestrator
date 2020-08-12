@@ -39,7 +39,7 @@ export class Orchestrator implements IOrchestrator {
 
         // GET PROJECT & DEFINITION DETAILS
 
-        // CREATE NEW OR FIND EXISTING RELEASE
+        // CREATE TARGET RELEASE JOB
 
         const targetRelease: IReleaseJob = {
 
