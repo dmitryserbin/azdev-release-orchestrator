@@ -1,5 +1,7 @@
+import { ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+
 export interface IReleaseHelper {
 
-    // TBU
+    getDefinition(projectName: string, definitionId: number): Promise<ReleaseDefinition>;
 
 }

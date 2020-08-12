@@ -1,5 +1,7 @@
+import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
+
 export interface ICoreHelper {
 
-    // TBU
+    getProject(projectId: string): Promise<TeamProject>;
 
 }
