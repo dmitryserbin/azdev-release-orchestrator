@@ -1,8 +1,8 @@
-import { IParameters } from "../task/parameters";
 import { IDetails } from "../task/details";
+import { IReleaseJob } from "../orchestrator/releasejob";
 
 export interface IDeployer {
 
-    deployManual(parameters: IParameters, releaseDetails: IDetails): Promise<void>;
-    deployAutomated(parameters: IParameters, releaseDetails: IDetails): Promise<void>;
+    deployManual(releaseJob: IReleaseJob, details: IDetails): Promise<void>;
+    deployAutomated(releaseJob: IReleaseJob, details: IDetails): Promise<void>;
 }
