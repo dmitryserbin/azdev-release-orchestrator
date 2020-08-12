@@ -1,6 +1,8 @@
 import Debug from "debug";
 
-import { IParameters } from "../interfaces/task/parameters";
+import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
+
+import { IParameters, ReleaseType } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
 import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IConsoleLogger } from "../interfaces/common/consolelogger";
@@ -9,6 +11,7 @@ import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
 import { ICreator } from "../interfaces/workers/creator";
 import { IBuildHelper } from "../interfaces/helpers/buildhelper";
 import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
+import { ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 export class Creator implements ICreator {
 
@@ -32,7 +35,19 @@ export class Creator implements ICreator {
 
     public async createJob(parameters: IParameters, details: IDetails): Promise<IReleaseJob> {
 
-        // TBU
+        const targetProject: TeamProject = await this.coreHelper.getProject(parameters.projectId);
+        const targetDefinition: ReleaseDefinition = await this.releaseHelper.getDefinition(targetProject.name!, Number(parameters.definitionId));
+
+        console.log(`Starting <${targetProject.name}> project ${ReleaseType[parameters.releaseType].toLowerCase()} <${targetDefinition.name}> release deployment`);
+
+        const releaseJob: IReleaseJob = {
+
+            stages: [],
+            sleep: 5000,
+
+        };
+
+        return releaseJob;
 
     }
 
