@@ -9,7 +9,7 @@ import { clearMockVariables, setMockVariables } from "./helpers";
 
 describe("Orchestrator", ()  => {
 
-    const path: string = join(__dirname, "orchestrator.mock.js");
+    const path: string = join(__dirname, "task.mock.js");
 
     const defaultVariables: any = {
 

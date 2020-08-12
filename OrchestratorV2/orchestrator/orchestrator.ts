@@ -6,26 +6,33 @@ import { IParameters } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
 import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IConsoleLogger } from "../interfaces/common/consolelogger";
+import { IEndpoint } from "../interfaces/task/endpoint";
+import { IApiFactory } from "../interfaces/factories/apifactory";
+import { ApiFactory } from "../factories/apifactory";
+import { IDeployerFactory } from "../interfaces/factories/deployerfactory";
+import { DeployerFactory } from "../factories/deployerfactory";
 
 export class Orchestrator implements IOrchestrator {
 
     private debugLogger: Debug.Debugger;
     private consoleLogger: IConsoleLogger;
 
-    private deployer: IDeployer;
+    private deployerFactory: IDeployerFactory;
 
-    constructor(deployer: IDeployer, debugLogger: IDebugLogger, consoleLogger: IConsoleLogger) {
+    constructor(endpoint: IEndpoint, debugLogger: IDebugLogger, consoleLogger: IConsoleLogger) {
 
         this.debugLogger = debugLogger.create(this.constructor.name);
         this.consoleLogger = consoleLogger;
 
-        this.deployer = deployer;
+        const apiFactory: IApiFactory = new ApiFactory(endpoint.account, endpoint.token, debugLogger);
+
+        this.deployerFactory = new DeployerFactory(apiFactory, debugLogger, consoleLogger);
 
     }
 
-    public async orchestrateRelease(parameters: IParameters, details: IDetails) {
+    public async run(parameters: IParameters, details: IDetails) {
 
-        // TBU
+        const deployer: IDeployer = await this.deployerFactory.createDeployer();
 
     }
 

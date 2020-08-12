@@ -9,11 +9,6 @@ import { DebugLogger } from "./common/debuglogger";
 import { ConsoleLogger } from "./common/consolelogger";
 import { IConsoleLogger } from "./interfaces/common/consolelogger";
 import { IDetails } from "./interfaces/task/details";
-import { IApiFactory } from "./interfaces/factories/apifactory";
-import { ApiFactory } from "./factories/apifactory";
-import { IDeployerFactory } from "./interfaces/factories/deployerfactory";
-import { DeployerFactory } from "./factories/deployerfactory";
-import { IDeployer } from "./interfaces/deployer/deployer";
 import { IOrchestrator } from "./interfaces/orchestrator/orchestrator";
 import { Orchestrator } from "./orchestrator/orchestrator";
 
@@ -30,12 +25,10 @@ async function run() {
         const parameters: IParameters = await taskHelper.getParameters();
         const details: IDetails = await taskHelper.getDetails();
 
-        const apiFactory: IApiFactory = new ApiFactory(endpoint.account, endpoint.token, debugLogger);
-        const deployerFactory: IDeployerFactory = new DeployerFactory(apiFactory, debugLogger, consoleLogger);
-        const deployer: IDeployer = await deployerFactory.createDeployer();
-        const orchestrator: IOrchestrator = new Orchestrator(deployer, debugLogger, consoleLogger);
+        const orchestrator: IOrchestrator = new Orchestrator(endpoint, debugLogger, consoleLogger);
 
-        await orchestrator.orchestrateRelease(parameters, details);
+        // Run orchestrator
+        await orchestrator.run(parameters, details);
 
     } catch (err) {
 

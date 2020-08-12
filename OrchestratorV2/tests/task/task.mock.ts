@@ -5,7 +5,7 @@ import { TaskMockRunner } from "azure-pipelines-task-lib/mock-run";
 
 import { mockEndpoint, mockInput } from "./helpers";
 
-const path: string = join(__dirname, "../..", "orchestrator.js");
+const path: string = join(__dirname, "../..", "task.js");
 
 const endpointType: string = process.env.EndpointType!;
 const endpointName: string = process.env.EndpointName!;

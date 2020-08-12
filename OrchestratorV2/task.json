@@ -217,7 +217,7 @@
   ],
   "execution": {
     "Node10": {
-      "target": "orchestrator.js"
+      "target": "task.js"
     }
   }
 }
