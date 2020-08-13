@@ -286,11 +286,11 @@ export class ReleaseHelper implements IReleaseHelper {
 
         // Detect wether stage deployment conditions are met
         // In order to determine automated release status
-        const conditions: ReleaseEnvironment[] = release.environments!.filter((e) => e.conditions!.some((i) => i.result === true));
+        const conditionStages: ReleaseEnvironment[] = release.environments!.filter((e) => e.conditions!.some((i) => i.result === true));
 
-        debug(conditions);
+        debug(conditionStages);
 
-        const status: boolean = conditions.length > 0 ? true : false;
+        const status: boolean = conditionStages.length > 0 ? true : false;
 
         return status;
 

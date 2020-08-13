@@ -30,7 +30,7 @@ export class Deployer implements IDeployer {
 
         const debug = this.debugLogger.extend(this.deployManual.name);
 
-        this.consoleLogger.log(`Release automatically started as stages deployment conditions are met`);
+        this.consoleLogger.log(`Release orchestrated manually as stages deployment conditions are NOT met`);
 
     }
 
@@ -38,7 +38,7 @@ export class Deployer implements IDeployer {
 
         const debug = this.debugLogger.extend(this.deployAutomated.name);
 
-        this.consoleLogger.log(`Release orchestrated manually as stages deployment conditions are NOT met`);
+        this.consoleLogger.log(`Release automatically started as stages deployment conditions are met`);
 
     }
 
@@ -46,9 +46,11 @@ export class Deployer implements IDeployer {
 
         const debug = this.debugLogger.extend(this.isAutomated.name);
 
-        const started: boolean = await this.releaseHelper.getConditionsStatus(releaseJob.release);
+        const status: boolean = await this.releaseHelper.getConditionsStatus(releaseJob.release);
 
-        return started;
+        debug(status);
+
+        return status;
 
     }
 
