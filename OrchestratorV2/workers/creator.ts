@@ -14,6 +14,7 @@ import { ICreator } from "../interfaces/workers/creator";
 import { IBuildHelper } from "../interfaces/helpers/buildhelper";
 import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
 import { IReleaseFilter } from "../interfaces/orchestrator/releasefilter";
+import { IArtifactFilter } from "../interfaces/orchestrator/artifactfilter";
 
 export class Creator implements ICreator {
 
@@ -45,7 +46,7 @@ export class Creator implements ICreator {
         this.consoleLogger.log(`Starting <${targetProject.name}> project ${ReleaseType[parameters.releaseType].toLowerCase()} <${targetDefinition.name}> release pipeline deployment`);
 
         const targetRelease: Release = await this.createRelease(targetProject, targetDefinition, parameters, details);
-        const targetStages: string[] = await this.releaseHelper.getStages(targetRelease, parameters.stages);
+        const targetStages: string[] = await this.releaseHelper.getReleaseStages(targetRelease, parameters.stages);
 
         const releaseJob: IReleaseJob = {
 
@@ -71,13 +72,15 @@ export class Creator implements ICreator {
 
             case ReleaseType.Create: {
 
-                throw new Error(`Not implemented`);
+                const artifactFilter: IArtifactFilter[] = await this.createArtifactFilter(project, definition, parameters.artifactTag, parameters.sourceBranch);
+
+                release = await this.releaseHelper.createRelease(project.name!, definition, details, parameters.stages, artifactFilter);
 
                 break;
 
             } case ReleaseType.Latest: {
 
-                const releaseFilter: IReleaseFilter = await this.createFilter(project, definition, parameters.releaseTag, parameters.artifactTag, parameters.sourceBranch);
+                const releaseFilter: IReleaseFilter = await this.createReleaseFilter(project, definition, parameters.releaseTag, parameters.artifactTag, parameters.sourceBranch);
 
                 release = await this.releaseHelper.findRelease(project.name!, definition.id!, parameters.stages, releaseFilter);
 
@@ -101,9 +104,9 @@ export class Creator implements ICreator {
 
     }
 
-    private async createFilter(project: TeamProject, definition: ReleaseDefinition, releaseTag?: string[], artifactTag?: string[], sourceBranch?: string): Promise<IReleaseFilter> {
+    private async createReleaseFilter(project: TeamProject, definition: ReleaseDefinition, releaseTag?: string[], artifactTag?: string[], sourceBranch?: string): Promise<IReleaseFilter> {
 
-        const debug = this.debugLogger.extend(this.createFilter.name);
+        const debug = this.debugLogger.extend(this.createReleaseFilter.name);
 
         const releaseFilter: IReleaseFilter = {};
 
@@ -147,6 +150,47 @@ export class Creator implements ICreator {
         debug(releaseFilter);
 
         return releaseFilter;
+
+    }
+
+    private async createArtifactFilter(project: TeamProject, definition: ReleaseDefinition, artifactTag?: string[], sourceBranch?: string): Promise<IArtifactFilter[]> {
+
+        const debug = this.debugLogger.extend(this.createArtifactFilter.name);
+
+        let artifactFilter: IArtifactFilter[] = [];
+
+        // Get primary definition build artifact
+        const primaryBuildArtifact: Artifact = definition.artifacts!.filter((i) => i.isPrimary === true && i.type === "Build")[0];
+
+        if (primaryBuildArtifact) {
+
+            let artifactVersion;
+
+            // Get build matching artifact tag
+            if (artifactTag && artifactTag.length >= 1) {
+
+                console.log(`Using <${artifactTag}> artifact tag(s) for target release filter`);
+
+                const targetArtifactBuild: Build = await this.buildHelper.findBuild(project.name!, Number(primaryBuildArtifact.definitionReference!.definition.id), artifactTag);
+
+                artifactVersion = String(targetArtifactBuild.id);
+
+            }
+
+            // Confirm source branch filter
+            if (sourceBranch) {
+
+                console.log(`Using <${sourceBranch}> artifact branch for target release filter`);
+
+            }
+
+            artifactFilter = await this.releaseHelper.getArtifacts(project.name!, definition.id!, primaryBuildArtifact.sourceId!, artifactVersion, sourceBranch);
+
+        }
+
+        debug(artifactFilter);
+
+        return artifactFilter;
 
     }
 

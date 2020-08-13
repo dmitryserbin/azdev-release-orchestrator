@@ -1,11 +1,13 @@
 import Debug from "debug";
 
 import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
-import { ReleaseDefinition, Release, ReleaseStatus, ReleaseExpands } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ReleaseDefinition, Release, ReleaseStatus, ReleaseExpands, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ReleaseReason, ReleaseStartMetadata } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
 import { IReleaseFilter } from "../interfaces/orchestrator/releasefilter";
+import { IArtifactFilter } from "../interfaces/orchestrator/artifactfilter";
+import { IDetails } from "../interfaces/task/details";
 
 export class ReleaseHelper implements IReleaseHelper {
 
@@ -121,9 +123,151 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    public async getStages(release: Release, stages: string[]): Promise<string[]> {
+    public async createRelease(projectName: string, definition: ReleaseDefinition, details: IDetails, stages?: string[], artifacts?: IArtifactFilter[]): Promise<Release> {
 
-        const debug = this.debugLogger.extend(this.getStages.name);
+        const debug = this.debugLogger.extend(this.createRelease.name);
+
+        // Get release metadata
+        const releaseMetadata: ReleaseStartMetadata = {
+
+            definitionId: definition.id,
+            description: `Requested via ${details.releaseName} (${details.projectName}) by ${details.requesterName}`,
+            reason: ReleaseReason.ContinuousIntegration,
+            isDraft: false,
+
+        };
+
+        // Set manual stages filter
+        if (stages && stages.length > 0) {
+
+            releaseMetadata.manualEnvironments = await this.getDefinitionStages(definition, stages);
+
+        }
+
+        // Set custom artifacts filter
+        if (artifacts && artifacts.length > 0) {
+
+            releaseMetadata.artifacts = artifacts;
+
+        }
+
+        // Create release
+        const targetRelease: Release = await this.releaseApi.createRelease(releaseMetadata, projectName);
+
+        debug(targetRelease);
+
+        return targetRelease;
+
+    }
+
+    public async getArtifacts(projectName: string, definitionId: number, primaryId: string, versionId?: string, sourceBranch?: string): Promise<ArtifactMetadata[]> {
+
+        const debug = this.debugLogger.extend(this.getArtifacts.name);
+
+        const targetArtifacts: ArtifactMetadata[] = [];
+
+        // Get available versions
+        const definitionArtifacts: ArtifactVersionQueryResult = await this.releaseApi.getArtifactVersions(projectName, definitionId);
+
+        // Create artifacts metadata
+        for (const artifact of definitionArtifacts.artifactVersions!) {
+
+            debug(artifact);
+
+            if (artifact.errorMessage) {
+
+                throw new Error(`Artifact <${artifact.alias}> error. ${artifact.errorMessage}`);
+
+            }
+
+            // Use default (latest)
+            let targetVersion: BuildVersion = artifact.versions![0];
+
+            // Filter primary artifact
+            if (artifact.sourceId === primaryId) {
+
+                // Filter by version ID
+                if (versionId && !sourceBranch) {
+
+                    targetVersion = artifact.versions!.filter((i) => i.id === versionId)[0];
+
+                }
+
+                // Filter by source branch
+                if (sourceBranch && !versionId) {
+
+                    targetVersion = artifact.versions!.filter((i) => i.sourceBranch === sourceBranch)[0];
+
+                }
+
+                // Filter by version ID and source branch
+                if (versionId && sourceBranch) {
+
+                    targetVersion = artifact.versions!.filter((i) => i.id === versionId && i.sourceBranch === sourceBranch)[0];
+
+                }
+
+            }
+
+            // Validate version
+            if (!targetVersion) {
+
+                if (versionId || sourceBranch) {
+
+                    throw new Error(`No <${artifact.alias}> artifact matching filter found (version: ${versionId}, branch: ${sourceBranch})`);
+
+                } else {
+
+                    throw new Error(`No <${artifact.alias}> artifact versions found`);
+
+                }
+
+            }
+
+            const targetArtifcat: ArtifactMetadata = {
+
+                alias: artifact.alias,
+                instanceReference: {
+
+                    id: targetVersion.id,
+                    name: targetVersion.name,
+                    sourceBranch: targetVersion.sourceBranch,
+                    sourceVersion: targetVersion.sourceVersion,
+                    sourceRepositoryId: targetVersion.sourceRepositoryId,
+                    sourceRepositoryType: targetVersion.sourceRepositoryType,
+
+                },
+
+            };
+
+            targetArtifacts.push(targetArtifcat);
+        }
+
+        debug(targetArtifacts);
+
+        return targetArtifacts;
+
+    }
+
+    public async getDefinitionStages(definition: ReleaseDefinition, stages: string[]): Promise<string[]> {
+
+        const debug = this.debugLogger.extend(this.getDefinitionStages.name);
+
+        const definitionStages: string[] = definition.environments!.map((i) => i.name!);
+
+        await this.validateStages(stages, definitionStages);
+
+        const targetStages: string[] = definitionStages.filter((i) => stages.indexOf(i) === -1);
+
+        debug(targetStages);
+
+        return targetStages;
+
+    }
+
+    public async getReleaseStages(release: Release, stages: string[]): Promise<string[]> {
+
+        const debug = this.debugLogger.extend(this.getReleaseStages.name);
 
         const releaseStages: string[] = release.environments!.map((i) => i.name!);
 
