@@ -36,15 +36,26 @@ export class Deployer implements IDeployer {
 
     }
 
-    public async deployManual(releaseJob: IReleaseJob, details: IDetails): Promise<void> {
+    public async deployManual(releaseJob: IReleaseJob, details: IDetails): Promise<IReleaseProgress> {
 
         const debug = this.debugLogger.extend(this.deployManual.name);
 
         this.consoleLogger.log(`Release orchestrated manually as stages deployment conditions are NOT met`);
 
+        const releaseProgress: IReleaseProgress = {
+
+            name: "",
+            url: "",
+            stages: [],
+            status: ReleaseStatus.InProgress,
+
+        };
+
+        return releaseProgress;
+
     }
 
-    public async deployAutomated(releaseJob: IReleaseJob, details: IDetails): Promise<void> {
+    public async deployAutomated(releaseJob: IReleaseJob, details: IDetails): Promise<IReleaseProgress> {
 
         const debug = this.debugLogger.extend(this.deployAutomated.name);
 
@@ -52,45 +63,33 @@ export class Deployer implements IDeployer {
 
         const releaseProgress: IReleaseProgress = this.progressMonitor.createProgress(releaseJob.release, releaseJob.stages);
 
-        try {
+        do {
 
-            do {
+            const releaseStatus: Release = await this.releaseHelper.getReleaseStatus(releaseJob.project.name!, releaseJob.release.id!);
 
-                const releaseStatus: Release = await this.releaseHelper.getReleaseStatus(releaseJob.project.name!, releaseJob.release.id!);
+            const activeStages: IStageProgress[] = this.progressMonitor.getActiveStages(releaseProgress);
 
-                const activeStages: IStageProgress[] = this.progressMonitor.getActiveStages(releaseProgress);
+            for (const stage of activeStages) {
 
-                for (const stage of activeStages) {
+                const stageStatus: ReleaseEnvironment = await this.releaseHelper.getStageStatus(releaseStatus, stage.name);
 
-                    const stageStatus: ReleaseEnvironment = await this.releaseHelper.getStageStatus(releaseStatus, stage.name);
+                this.progressMonitor.updateStageProgress(stage, stageStatus);
 
-                    this.progressMonitor.updateStageProgress(stage, stageStatus);
+                if (this.progressMonitor.isStageCompleted(stage)) {
 
-                    if (this.progressMonitor.isStageCompleted(stage)) {
-
-                        break;
-
-                    }
+                    break;
 
                 }
 
-                this.progressMonitor.updateReleaseProgress(releaseProgress);
+            }
 
-                await this.wait(releaseJob.sleep);
+            this.progressMonitor.updateReleaseProgress(releaseProgress);
 
-            } while (releaseProgress.status === ReleaseStatus.InProgress);
+            await this.wait(releaseJob.sleep);
 
-            // TBU
+        } while (releaseProgress.status === ReleaseStatus.InProgress);
 
-        } catch (e) {
-
-            throw e;
-
-        } finally {
-
-            // TBU
-
-        }
+        return releaseProgress;
 
     }
 

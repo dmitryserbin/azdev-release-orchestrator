@@ -13,6 +13,7 @@ import { IWorkerFactory } from "../interfaces/factories/workerfactory";
 import { WorkerFactory } from "../factories/workerfactory";
 import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
 import { ICreator } from "../interfaces/workers/creator";
+import { IReleaseProgress } from "../interfaces/orchestrator/releaseprogress";
 
 export class Orchestrator implements IOrchestrator {
 
@@ -44,23 +45,23 @@ export class Orchestrator implements IOrchestrator {
 
         // ORCHESTRATE RELEASE DEPLOYMENT
 
+        let releaseProgress: IReleaseProgress;
+
         switch (parameters.releaseType) {
 
             case ReleaseType.Create: {
 
                 this.consoleLogger.log(`Deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${releaseJob.stages}> stage(s) release`);
 
-                const isAutomated: boolean = await deployer.isAutomated(releaseJob);
-
-                if (isAutomated) {
+                if (await deployer.isAutomated(releaseJob)) {
 
                     // Monitor automatically started stages deployment progess
-                    await deployer.deployAutomated(releaseJob, details);
+                    releaseProgress = await deployer.deployAutomated(releaseJob, details);
 
                 } else {
 
                     // Manually trigger stages deployment and monitor progress
-                    await deployer.deployManual(releaseJob, details);
+                    releaseProgress = await deployer.deployManual(releaseJob, details);
 
                 }
 
@@ -71,13 +72,15 @@ export class Orchestrator implements IOrchestrator {
                 console.log(`Re-deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${releaseJob.stages}> stage(s) release`);
 
                 // Manually trigger stages deployment and monitor progress
-                await deployer.deployManual(releaseJob, details);
+                releaseProgress = await deployer.deployManual(releaseJob, details);
 
                 break;
 
             }
 
         }
+
+        this.consoleLogger.log(releaseProgress);
 
     }
 
