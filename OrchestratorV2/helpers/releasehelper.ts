@@ -1,7 +1,7 @@
 import Debug from "debug";
 
 import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
-import { ReleaseDefinition, Release, ReleaseStatus, ReleaseExpands, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ReleaseReason, ReleaseStartMetadata, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ReleaseDefinition, Release, ReleaseStatus, ReleaseExpands, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ReleaseReason, ReleaseStartMetadata, ReleaseEnvironment, EnvironmentStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
@@ -60,6 +60,24 @@ export class ReleaseHelper implements IReleaseHelper {
         debug(targetRelease);
 
         return targetRelease;
+
+    }
+
+    public async getReleaseStatus(projectName: string, releaseId: number): Promise<Release> {
+
+        const debug = this.debugLogger.extend(this.getReleaseStatus.name);
+
+        const releaseStatus: Release = await this.releaseApi.getRelease(projectName, releaseId);
+
+        if (!releaseStatus) {
+
+            throw new Error(`Unable to get <${releaseId}> release status`);
+
+        }
+
+        debug(`Release <${releaseStatus.name}> status <${ReleaseStatus[releaseStatus.status!]}> retrieved`);
+
+        return releaseStatus;
 
     }
 
@@ -157,6 +175,24 @@ export class ReleaseHelper implements IReleaseHelper {
         debug(targetRelease);
 
         return targetRelease;
+
+    }
+
+    public async getStageStatus(release: Release, stageName: string): Promise<ReleaseEnvironment> {
+
+        const debug = this.debugLogger.extend(this.getStageStatus.name);
+
+        const targetStage: ReleaseEnvironment = release.environments!.find((i) => i.name === stageName)!;
+
+        if (!targetStage) {
+
+            throw new Error(`Unable to get <${stageName}> stage status`);
+
+        }
+
+        debug(`Stage <${targetStage.name}> status <${EnvironmentStatus[targetStage.status!]}> retrieved`);
+
+        return targetStage;
 
     }
 

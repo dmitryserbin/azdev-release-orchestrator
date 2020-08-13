@@ -1,5 +1,7 @@
 import Debug from "debug";
 
+import { Release, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+
 import { IDetails } from "../interfaces/task/details";
 import { IDeployer } from "../interfaces/workers/deployer";
 import { IDebugLogger } from "../interfaces/common/debuglogger";
@@ -7,6 +9,9 @@ import { IConsoleLogger } from "../interfaces/common/consolelogger";
 import { ICoreHelper } from "../interfaces/helpers/corehelper";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
 import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
+import { IMonitor } from "../interfaces/orchestrator/monitor";
+import { Monitor } from "../orchestrator/monitor";
+import { IStageProgress } from "../interfaces/orchestrator/stageprogress";
 
 export class Deployer implements IDeployer {
 
@@ -15,6 +20,7 @@ export class Deployer implements IDeployer {
 
     private coreHelper: ICoreHelper;
     private releaseHelper: IReleaseHelper;
+    private progressMonitor: IMonitor;
 
     constructor(coreHelper: ICoreHelper, releaseHelper: IReleaseHelper, debugLogger: IDebugLogger, consoleLogger: IConsoleLogger) {
 
@@ -23,6 +29,8 @@ export class Deployer implements IDeployer {
 
         this.coreHelper = coreHelper;
         this.releaseHelper = releaseHelper;
+
+        this.progressMonitor = new Monitor(debugLogger);
 
     }
 
@@ -40,6 +48,40 @@ export class Deployer implements IDeployer {
 
         this.consoleLogger.log(`Release automatically started as stages deployment conditions are met`);
 
+        const releaseProgress = this.progressMonitor.createProgress(releaseJob.release, releaseJob.stages);
+
+        try {
+
+            do {
+
+                const releaseStatus: Release = await this.releaseHelper.getReleaseStatus(releaseJob.project.name!, releaseJob.release.id!);
+
+                const activeStages: IStageProgress[] = this.progressMonitor.getActiveStages(releaseProgress);
+
+                for (const stage of activeStages) {
+
+                    const stageStatus: ReleaseEnvironment = await this.releaseHelper.getStageStatus(releaseStatus, stage.name);
+
+                }
+
+                // TBU
+
+                await this.wait(releaseJob.sleep);
+
+            } while (true /* TBU */ );
+
+            // TBU
+
+        } catch (e) {
+
+            throw e;
+
+        } finally {
+
+            // TBU
+
+        }
+
     }
 
     public async isAutomated(releaseJob: IReleaseJob): Promise<boolean> {
@@ -51,6 +93,16 @@ export class Deployer implements IDeployer {
         debug(status);
 
         return status;
+
+    }
+
+    private async wait(count: number): Promise<void> {
+
+        const debug = this.debugLogger.extend(this.wait.name);
+
+        debug(`Waiting <${count}> milliseconds`);
+
+        return new Promise((resolve) => setTimeout(resolve, count));
 
     }
 
