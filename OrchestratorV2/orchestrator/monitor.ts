@@ -1,6 +1,6 @@
 import Debug from "debug";
 
-import { ApprovalStatus, EnvironmentStatus, Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ApprovalStatus, EnvironmentStatus, Release, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IMonitor } from "../interfaces/orchestrator/monitor";
 import { IDebugLogger } from "../interfaces/common/debuglogger";
@@ -86,9 +86,17 @@ export class Monitor implements IMonitor {
 
     }
 
-    public updateStatus(releaseProgress: IReleaseProgress): void {
+    public updateStageProgress(stageProgress: IStageProgress, stageStatus: ReleaseEnvironment): void {
 
-        const debug = this.debugLogger.extend(this.updateStatus.name);
+        stageProgress.id = stageStatus.id;
+        stageProgress.release = stageStatus.release!.name;
+        stageProgress.status = stageStatus.status!;
+
+    }
+
+    public updateReleaseProgress(releaseProgress: IReleaseProgress): void {
+
+        const debug = this.debugLogger.extend(this.updateReleaseProgress.name);
 
         // Get stages completion status
         const completed: boolean = releaseProgress.stages.filter((i) =>

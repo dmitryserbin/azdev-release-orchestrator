@@ -64,9 +64,7 @@ export class Deployer implements IDeployer {
 
                     const stageStatus: ReleaseEnvironment = await this.releaseHelper.getStageStatus(releaseStatus, stage.name);
 
-                    stage.id = stageStatus.id;
-                    stage.release = stageStatus.release!.name;
-                    stage.status = stageStatus.status!;
+                    this.progressMonitor.updateStageProgress(stage, stageStatus);
 
                     if (this.progressMonitor.isStageCompleted(stage)) {
 
@@ -76,7 +74,7 @@ export class Deployer implements IDeployer {
 
                 }
 
-                this.progressMonitor.updateStatus(releaseProgress);
+                this.progressMonitor.updateReleaseProgress(releaseProgress);
 
                 await this.wait(releaseJob.sleep);
 
