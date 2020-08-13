@@ -1,10 +1,11 @@
 import Debug from "debug";
 
-import { ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
+import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
+import { ReleaseDefinition, Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
-import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
 
 export class ReleaseHelper implements IReleaseHelper {
 
@@ -35,6 +36,42 @@ export class ReleaseHelper implements IReleaseHelper {
         debug(targetDefinition);
 
         return targetDefinition;
+
+    }
+
+    public async getRelease(project: TeamProject, releaseId: number, stages: string[]): Promise<Release> {
+
+        const debug = this.debugLogger.extend(this.getRelease.name);
+
+        const targetRelease: Release = await this.releaseApi.getRelease(project.name!, releaseId);
+
+        if (!targetRelease) {
+
+            throw new Error(`Release <${releaseId}> not found`);
+
+        }
+
+        const targetStages: string[] = targetRelease.environments!.map((i) => i.name!);
+
+        await this.validateStages(stages, targetStages);
+
+        debug(targetRelease);
+
+        return targetRelease;
+
+    }
+
+    private async validateStages(required: string[], existing: string[]): Promise<void> {
+
+        for (const stage of required) {
+
+            if (existing.indexOf(stage) === -1) {
+
+                throw new Error(`Release does not contain <${stage}> stage`);
+
+            }
+
+        }
 
     }
 

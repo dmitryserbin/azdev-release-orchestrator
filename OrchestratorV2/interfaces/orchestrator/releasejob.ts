@@ -5,7 +5,7 @@ export interface IReleaseJob {
 
     project: TeamProject;
     definition: ReleaseDefinition
-    release?: Release;
+    release: Release;
     stages: string[];
     sleep: number;
 

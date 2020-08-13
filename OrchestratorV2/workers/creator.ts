@@ -1,7 +1,7 @@
 import Debug from "debug";
 
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
-import { ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ReleaseDefinition, Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IParameters, ReleaseType } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
@@ -42,16 +42,57 @@ export class Creator implements ICreator {
 
         this.consoleLogger.log(`Starting <${targetProject.name}> project ${ReleaseType[parameters.releaseType].toLowerCase()} <${targetDefinition.name}> release pipeline deployment`);
 
+        const targetRelease: Release = await this.createRelease(targetProject, targetDefinition, parameters, details);
+
         const releaseJob: IReleaseJob = {
 
             project: targetProject,
             definition: targetDefinition,
+            release: targetRelease,
             stages: [],
             sleep: 5000,
 
         };
 
         return releaseJob;
+
+    }
+
+    private async createRelease(project: TeamProject, definition: ReleaseDefinition, parameters: IParameters, details: IDetails): Promise<Release> {
+
+        const debug = this.debugLogger.extend(this.createRelease.name);
+
+        let release: Release;
+
+        switch (parameters.releaseType) {
+
+            case ReleaseType.Create: {
+
+                throw new Error(`Not implemented`);
+
+                break;
+
+            } case ReleaseType.Latest: {
+
+                throw new Error(`Not implemented`);
+
+                break;
+
+            } case ReleaseType.Specific: {
+
+                release = await this.releaseHelper.getRelease(project, Number(parameters.releaseId), parameters.stages);
+
+                break;
+
+            } default: {
+
+                throw new Error(`Release type <${parameters.releaseType}> not supported`);
+
+            }
+
+        }
+
+        return release;
 
     }
 
