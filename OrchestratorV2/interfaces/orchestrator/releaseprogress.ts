@@ -1,9 +1,11 @@
 import { IStageProgress } from "./stageprogress";
+import { ReleaseStatus } from "./releasestatus";
 
 export interface IReleaseProgress {
 
     name: string;
     url: string;
-    progress: IStageProgress[];
+    stages: IStageProgress[];
+    status: ReleaseStatus;
 
 }

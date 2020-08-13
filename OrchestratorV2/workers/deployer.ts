@@ -12,6 +12,8 @@ import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
 import { IMonitor } from "../interfaces/orchestrator/monitor";
 import { Monitor } from "../orchestrator/monitor";
 import { IStageProgress } from "../interfaces/orchestrator/stageprogress";
+import { IReleaseProgress } from "../interfaces/orchestrator/releaseprogress";
+import { ReleaseStatus } from "../interfaces/orchestrator/releasestatus";
 
 export class Deployer implements IDeployer {
 
@@ -48,7 +50,7 @@ export class Deployer implements IDeployer {
 
         this.consoleLogger.log(`Release automatically started as stages deployment conditions are met`);
 
-        const releaseProgress = this.progressMonitor.createProgress(releaseJob.release, releaseJob.stages);
+        const releaseProgress: IReleaseProgress = this.progressMonitor.createProgress(releaseJob.release, releaseJob.stages);
 
         try {
 
@@ -62,13 +64,23 @@ export class Deployer implements IDeployer {
 
                     const stageStatus: ReleaseEnvironment = await this.releaseHelper.getStageStatus(releaseStatus, stage.name);
 
+                    stage.id = stageStatus.id;
+                    stage.release = stageStatus.release!.name;
+                    stage.status = stageStatus.status!;
+
+                    if (this.progressMonitor.isStageCompleted(stage)) {
+
+                        break;
+
+                    }
+
                 }
 
-                // TBU
+                this.progressMonitor.updateStatus(releaseProgress);
 
                 await this.wait(releaseJob.sleep);
 
-            } while (true /* TBU */ );
+            } while (releaseProgress.status === ReleaseStatus.InProgress);
 
             // TBU
 

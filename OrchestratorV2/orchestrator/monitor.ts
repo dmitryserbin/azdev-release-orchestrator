@@ -7,6 +7,7 @@ import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IReleaseProgress } from "../interfaces/orchestrator/releaseprogress";
 import { IStageApproval } from "../interfaces/orchestrator/stageapproval";
 import { IStageProgress } from "../interfaces/orchestrator/stageprogress";
+import { ReleaseStatus } from "../interfaces/orchestrator/releasestatus";
 
 export class Monitor implements IMonitor {
 
@@ -26,7 +27,8 @@ export class Monitor implements IMonitor {
 
             name: release.name!,
             url: release._links.web.href,
-            progress: [],
+            stages: [],
+            status: ReleaseStatus.InProgress,
 
         };
 
@@ -46,7 +48,7 @@ export class Monitor implements IMonitor {
                 status: EnvironmentStatus.NotStarted
             }
 
-            releaseProgress.progress.push(stageProgress);
+            releaseProgress.stages.push(stageProgress);
 
         }
 
@@ -60,7 +62,7 @@ export class Monitor implements IMonitor {
 
         const debug = this.debugLogger.extend(this.getActiveStages.name);
 
-        const incompletedStages: IStageProgress[] = releaseProgress.progress.filter((stage) => !this.isStageCompleted(stage));
+        const incompletedStages: IStageProgress[] = releaseProgress.stages.filter((stage) => !this.isStageCompleted(stage));
 
         debug(incompletedStages);
 
@@ -68,7 +70,7 @@ export class Monitor implements IMonitor {
 
     }
 
-    private isStageCompleted(stageProgress: IStageProgress): boolean {
+    public isStageCompleted(stageProgress: IStageProgress): boolean {
 
         const debug = this.debugLogger.extend(this.isStageCompleted.name);
 
@@ -81,6 +83,56 @@ export class Monitor implements IMonitor {
         debug(stageProgress);
 
         return status;
+
+    }
+
+    public updateStatus(releaseProgress: IReleaseProgress): void {
+
+        const debug = this.debugLogger.extend(this.updateStatus.name);
+
+        // Get stages completion status
+        const completed: boolean = releaseProgress.stages.filter((i) =>
+            this.isStageCompleted(i)).length === releaseProgress.stages.length;
+
+        if (completed) {
+
+            debug(`All release stages completed`);
+
+            // Get rejected or canceled stages
+            const failed: boolean = releaseProgress.stages.filter((i) =>
+                i.status === EnvironmentStatus.Rejected || i.status === EnvironmentStatus.Canceled).length > 0;
+
+            if (failed) {
+
+                releaseProgress.status = ReleaseStatus.Failed;
+
+            } else {
+
+                // Get partially succeeded stages
+                const partiallySucceeded: boolean = releaseProgress.stages.filter((i) =>
+                    i.status === EnvironmentStatus.PartiallySucceeded).length > 0;
+
+                if (partiallySucceeded) {
+
+                    releaseProgress.status = ReleaseStatus.PartiallySucceeded;
+
+                } else {
+
+                    releaseProgress.status = ReleaseStatus.Succeeded;
+
+                }
+
+            }
+
+        } else {
+
+            debug(`Some release stages in progress`);
+
+            releaseProgress.status = ReleaseStatus.InProgress;
+
+        }
+
+        debug(`Release status <${ReleaseStatus[releaseProgress.status]}> updated`);
 
     }
 

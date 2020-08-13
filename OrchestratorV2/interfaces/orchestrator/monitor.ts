@@ -7,5 +7,7 @@ export interface IMonitor {
 
     createProgress(release: Release, stages: string[]): IReleaseProgress;
     getActiveStages(releaseProgress: IReleaseProgress): IStageProgress[];
+    isStageCompleted(stageProgress: IStageProgress): boolean;
+    updateStatus(releaseProgress: IReleaseProgress): void;
 
 }
