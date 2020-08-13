@@ -1,6 +1,6 @@
 import Debug from "debug";
 
-import { Release, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { Release, ReleaseEnvironment, EnvironmentStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDetails } from "../interfaces/task/details";
 import { IDeployer } from "../interfaces/workers/deployer";
@@ -70,7 +70,11 @@ export class Deployer implements IDeployer {
 
                 this.progressMonitor.updateStageProgress(stage, stageStatus);
 
-                if (this.progressMonitor.isStageCompleted(stage)) {
+                const status: boolean = this.progressMonitor.isStageCompleted(stage);
+
+                if (status) {
+
+                    debug(`Stage <${stage.name}> deployment <${EnvironmentStatus[stage.status]}> completed`);
 
                     break;
 
