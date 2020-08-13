@@ -12,6 +12,7 @@ import { ApiFactory } from "../factories/apifactory";
 import { IWorkerFactory } from "../interfaces/factories/workerfactory";
 import { WorkerFactory } from "../factories/workerfactory";
 import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
+import { ICreator } from "../interfaces/workers/creator";
 
 export class Orchestrator implements IOrchestrator {
 
@@ -33,6 +34,7 @@ export class Orchestrator implements IOrchestrator {
 
     public async run(parameters: IParameters, details: IDetails) {
 
+        const creator: ICreator = await this.workerFactory.createCreator();
         const deployer: IDeployer = await this.workerFactory.createDeployer();
 
         console.log(`Starting <${parameters.projectId}> project ${ReleaseType[parameters.releaseType].toLowerCase()} <${parameters.definitionId}> release deployment`);
