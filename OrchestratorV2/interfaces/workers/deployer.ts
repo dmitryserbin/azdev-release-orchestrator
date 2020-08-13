@@ -5,4 +5,5 @@ export interface IDeployer {
 
     deployManual(releaseJob: IReleaseJob, details: IDetails): Promise<void>;
     deployAutomated(releaseJob: IReleaseJob, details: IDetails): Promise<void>;
+    isAutomated(releaseJob: IReleaseJob): Promise<boolean>;
 }

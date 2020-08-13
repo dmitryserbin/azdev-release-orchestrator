@@ -1,7 +1,7 @@
 import Debug from "debug";
 
 import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
-import { ReleaseDefinition, Release, ReleaseStatus, ReleaseExpands, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ReleaseReason, ReleaseStartMetadata } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ReleaseDefinition, Release, ReleaseStatus, ReleaseExpands, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ReleaseReason, ReleaseStartMetadata, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
@@ -277,6 +277,22 @@ export class ReleaseHelper implements IReleaseHelper {
         debug(targetStages);
 
         return targetStages;
+
+    }
+
+    public async getConditionsStatus(release: Release): Promise<boolean> {
+
+        const debug = this.debugLogger.extend(this.getConditionsStatus.name);
+
+        // Detect wether stage deployment conditions are met
+        // In order to determine automated release status
+        const conditions: ReleaseEnvironment[] = release.environments!.filter((e) => e.conditions!.some((i) => i.result === true));
+
+        debug(conditions);
+
+        const status: boolean = conditions.length > 0 ? true : false;
+
+        return status;
 
     }
 

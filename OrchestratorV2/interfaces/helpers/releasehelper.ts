@@ -13,5 +13,6 @@ export interface IReleaseHelper {
     getArtifacts(projectName: string, definitionId: number, primaryId: string, versionId?: string, sourceBranch?: string): Promise<ArtifactMetadata[]>;
     getDefinitionStages(definition: ReleaseDefinition, stages: string[]): Promise<string[]>;
     getReleaseStages(release: Release, stages: string[]): Promise<string[]>;
+    getConditionsStatus(release: Release): Promise<boolean>;
 
 }

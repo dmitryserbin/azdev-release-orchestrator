@@ -48,9 +48,21 @@ export class Orchestrator implements IOrchestrator {
 
             case ReleaseType.Create: {
 
-                console.log(`Deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${releaseJob.stages}> stage(s) release`);
+                this.consoleLogger.log(`Deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${releaseJob.stages}> stage(s) release`);
 
-                // TBU
+                const isAutomated: boolean = await deployer.isAutomated(releaseJob);
+
+                if (isAutomated) {
+
+                    // Monitor automatically started stages deployment progess
+                    await deployer.deployAutomated(releaseJob, details);
+
+                } else {
+
+                    // Manually trigger stages deployment and monitor progress
+                    await deployer.deployManual(releaseJob, details);
+
+                }
 
                 break;
 
@@ -58,7 +70,8 @@ export class Orchestrator implements IOrchestrator {
 
                 console.log(`Re-deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${releaseJob.stages}> stage(s) release`);
 
-                // TBU
+                // Manually trigger stages deployment and monitor progress
+                await deployer.deployManual(releaseJob, details);
 
                 break;
 
