@@ -78,7 +78,7 @@ export class Orchestrator implements IOrchestrator {
 
         }
 
-        this.consoleLogger.log(releaseProgress);
+        debug(releaseProgress);
 
     }
 
