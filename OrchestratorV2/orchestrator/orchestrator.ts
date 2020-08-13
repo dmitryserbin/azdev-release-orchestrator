@@ -44,17 +44,25 @@ export class Orchestrator implements IOrchestrator {
 
         // ORCHESTRATE RELEASE DEPLOYMENT
 
-        if (parameters.releaseType === ReleaseType.Create) {
+        switch (parameters.releaseType) {
 
-            console.log(`Deploying <${releaseJob.release?.name}> (${releaseJob.release?.id}) pipeline <${releaseJob.stages}> stage(s) release`);
+            case ReleaseType.Create: {
 
-            // TBU
+                console.log(`Deploying <${releaseJob.release?.name}> (${releaseJob.release?.id}) pipeline <${releaseJob.stages}> stage(s) release`);
 
-        } else {
+                // TBU
 
-            console.log(`Re-deploying <${releaseJob.release?.name}> (${releaseJob.release?.id}) pipeline <${releaseJob.stages}> stage(s) release`);
+                break;
 
-            // TBU
+            } default: {
+
+                console.log(`Re-deploying <${releaseJob.release?.name}> (${releaseJob.release?.id}) pipeline <${releaseJob.stages}> stage(s) release`);
+
+                // TBU
+
+                break;
+
+            }
 
         }
 
