@@ -3,6 +3,6 @@ import { IDetails } from "../task/details";
 
 export interface IOrchestrator {
 
-    run(parameters: IParameters, details: IDetails): Promise<void>;
+    orchestrate(parameters: IParameters, details: IDetails): Promise<void>;
 
 }

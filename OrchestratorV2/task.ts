@@ -28,7 +28,7 @@ async function run() {
         const orchestrator: IOrchestrator = new Orchestrator(endpoint, debugLogger, consoleLogger);
 
         // Run orchestrator
-        await orchestrator.run(parameters, details);
+        await orchestrator.orchestrate(parameters, details);
 
     } catch (err) {
 

@@ -33,19 +33,17 @@ export class Orchestrator implements IOrchestrator {
 
     }
 
-    public async run(parameters: IParameters, details: IDetails) {
+    public async orchestrate(parameters: IParameters, details: IDetails) {
 
-        const debug = this.debugLogger.extend(this.run.name);
+        const debug = this.debugLogger.extend(this.orchestrate.name);
+
+        let releaseProgress: IReleaseProgress;
 
         const creator: ICreator = await this.workerFactory.createCreator();
         const deployer: IDeployer = await this.workerFactory.createDeployer();
 
         // Create release job
         const releaseJob: IReleaseJob = await creator.createJob(parameters, details);
-
-        // ORCHESTRATE RELEASE DEPLOYMENT
-
-        let releaseProgress: IReleaseProgress;
 
         switch (parameters.releaseType) {
 
