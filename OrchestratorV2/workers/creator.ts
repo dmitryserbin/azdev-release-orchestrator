@@ -1,6 +1,7 @@
 import Debug from "debug";
 
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
+import { ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IParameters, ReleaseType } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
@@ -11,7 +12,6 @@ import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
 import { ICreator } from "../interfaces/workers/creator";
 import { IBuildHelper } from "../interfaces/helpers/buildhelper";
 import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
-import { ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 export class Creator implements ICreator {
 
