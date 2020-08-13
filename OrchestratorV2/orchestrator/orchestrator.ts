@@ -51,7 +51,9 @@ export class Orchestrator implements IOrchestrator {
 
                 this.consoleLogger.log(`Deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${releaseJob.stages}> stage(s) release`);
 
-                if (await deployer.isAutomated(releaseJob)) {
+                const automated: boolean = await deployer.isAutomated(releaseJob);
+
+                if (automated) {
 
                     // Monitor automatically started stages deployment progess
                     releaseProgress = await deployer.deployAutomated(releaseJob, details);
