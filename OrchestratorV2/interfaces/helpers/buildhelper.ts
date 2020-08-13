@@ -1,5 +1,7 @@
+import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
+
 export interface IBuildHelper {
 
-    // TBU
+    findBuild(projectName: string, definitionId: number, tags?: string[]): Promise<Build>;
 
 }

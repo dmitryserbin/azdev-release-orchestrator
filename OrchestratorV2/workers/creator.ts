@@ -1,7 +1,8 @@
 import Debug from "debug";
 
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
-import { ReleaseDefinition, Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { ReleaseDefinition, Release, Artifact } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IParameters, ReleaseType } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
@@ -76,9 +77,9 @@ export class Creator implements ICreator {
 
             } case ReleaseType.Latest: {
 
-                const releaseFilters: IReleaseFilter = await this.getReleaseFilters(project, definition, parameters.releaseTag, parameters.artifactTag, parameters.sourceBranch);
+                const releaseFilter: IReleaseFilter = await this.createFilter(project, definition, parameters.releaseTag, parameters.artifactTag, parameters.sourceBranch);
 
-                release = await this.releaseHelper.findRelease(project.name!, definition.id!, parameters.stages, releaseFilters);
+                release = await this.releaseHelper.findRelease(project.name!, definition.id!, parameters.stages, releaseFilter);
 
                 break;
 
@@ -97,6 +98,55 @@ export class Creator implements ICreator {
         }
 
         return release;
+
+    }
+
+    private async createFilter(project: TeamProject, definition: ReleaseDefinition, releaseTag?: string[], artifactTag?: string[], sourceBranch?: string): Promise<IReleaseFilter> {
+
+        const debug = this.debugLogger.extend(this.createFilter.name);
+
+        const releaseFilter: IReleaseFilter = {};
+
+        // Get primary definition build artifact
+        const primaryBuildArtifact: Artifact = definition.artifacts!.filter((i) => i.isPrimary === true && i.type === "Build")[0];
+
+        // Add release tag filter
+        if (releaseTag && releaseTag.length >= 1) {
+
+            this.consoleLogger.log(`Using <${releaseTag}> tag(s) for target release filter`);
+
+            releaseFilter.tag = releaseTag;
+
+        }
+
+        if (primaryBuildArtifact) {
+
+            // Add artifact tag filter
+            if (artifactTag && artifactTag.length >= 1) {
+
+                this.consoleLogger.log(`Using <${artifactTag}> artifact tag(s) for target release filter`);
+
+                // Get build matching artifact tag
+                const targetArtifactBuild: Build = await this.buildHelper.findBuild(project.name!, Number(primaryBuildArtifact.definitionReference!.definition.id), artifactTag);
+
+                releaseFilter.artifactVersion = String(targetArtifactBuild.id);
+
+            }
+
+            // Add source branch filter
+            if (sourceBranch) {
+
+                console.log(`Using <${sourceBranch}> artifact branch for target release filter`);
+
+                releaseFilter.sourceBranch = sourceBranch;
+
+            }
+
+        }
+
+        debug(releaseFilter);
+
+        return releaseFilter;
 
     }
 
