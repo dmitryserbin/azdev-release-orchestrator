@@ -28,11 +28,15 @@ export class Deployer implements IDeployer {
 
     public async deployManual(releaseJob: IReleaseJob, details: IDetails): Promise<void> {
 
+        const debug = this.debugLogger.extend(this.deployManual.name);
+
         // TBU
 
     }
 
     public async deployAutomated(releaseJob: IReleaseJob, details: IDetails): Promise<void> {
+
+        const debug = this.debugLogger.extend(this.deployAutomated.name);
 
         // TBU
 

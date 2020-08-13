@@ -35,6 +35,8 @@ export class Creator implements ICreator {
 
     public async createJob(parameters: IParameters, details: IDetails): Promise<IReleaseJob> {
 
+        const debug = this.debugLogger.extend(this.createJob.name);
+
         const targetProject: TeamProject = await this.coreHelper.getProject(parameters.projectId);
         const targetDefinition: ReleaseDefinition = await this.releaseHelper.getDefinition(targetProject.name!, Number(parameters.definitionId));
 
@@ -42,6 +44,8 @@ export class Creator implements ICreator {
 
         const releaseJob: IReleaseJob = {
 
+            project: targetProject,
+            definition: targetDefinition,
             stages: [],
             sleep: 5000,
 

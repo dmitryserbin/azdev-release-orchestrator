@@ -3,8 +3,8 @@ import { ReleaseDefinition, Release } from "azure-devops-node-api/interfaces/Rel
 
 export interface IReleaseJob {
 
-    project?: TeamProject;
-    definition?: ReleaseDefinition
+    project: TeamProject;
+    definition: ReleaseDefinition
     release?: Release;
     stages: string[];
     sleep: number;

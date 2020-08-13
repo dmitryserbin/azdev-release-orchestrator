@@ -34,33 +34,25 @@ export class Orchestrator implements IOrchestrator {
 
     public async run(parameters: IParameters, details: IDetails) {
 
+        const debug = this.debugLogger.extend(this.run.name);
+
         const creator: ICreator = await this.workerFactory.createCreator();
         const deployer: IDeployer = await this.workerFactory.createDeployer();
 
-        console.log(`Starting <${parameters.projectId}> project ${ReleaseType[parameters.releaseType].toLowerCase()} <${parameters.definitionId}> release deployment`);
-
-        // GET PROJECT & DEFINITION DETAILS
-
-        // CREATE TARGET RELEASE JOB
-
-        const targetRelease: IReleaseJob = {
-
-            stages: [],
-            sleep: 5000,
-
-        };
+        // Create release job
+        const releaseJob: IReleaseJob = await creator.createJob(parameters, details);
 
         // ORCHESTRATE RELEASE DEPLOYMENT
 
         if (parameters.releaseType === ReleaseType.Create) {
 
-            console.log(`Deploying <${targetRelease.release?.name}> (${targetRelease.release?.id}) pipeline <${targetRelease.stages}> stage(s) release`);
+            console.log(`Deploying <${releaseJob.release?.name}> (${releaseJob.release?.id}) pipeline <${releaseJob.stages}> stage(s) release`);
 
             // TBU
 
         } else {
 
-            console.log(`Re-deploying <${targetRelease.release?.name}> (${targetRelease.release?.id}) pipeline <${targetRelease.stages}> stage(s) release`);
+            console.log(`Re-deploying <${releaseJob.release?.name}> (${releaseJob.release?.id}) pipeline <${releaseJob.stages}> stage(s) release`);
 
             // TBU
 
