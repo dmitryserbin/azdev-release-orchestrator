@@ -61,7 +61,24 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
+    public async getStages(release: Release, stages: string[]): Promise<string[]> {
+
+        const debug = this.debugLogger.extend(this.getStages.name);
+
+        const releaseStages: string[] = release.environments!.map((i) => i.name!);
+
+        const targetStages: string[] = (stages && stages.length > 0)
+            ? stages : releaseStages;
+
+        debug(targetStages);
+
+        return targetStages;
+
+    }
+
     private async validateStages(required: string[], existing: string[]): Promise<void> {
+
+        const debug = this.debugLogger.extend(this.validateStages.name);
 
         for (const stage of required) {
 

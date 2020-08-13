@@ -5,5 +5,6 @@ export interface IReleaseHelper {
 
     getDefinition(projectName: string, definitionId: number): Promise<ReleaseDefinition>;
     getRelease(project: TeamProject, releaseId: number, stages: string[]): Promise<Release>;
+    getStages(release: Release, stages: string[]): Promise<string[]>;
 
 }

@@ -43,13 +43,14 @@ export class Creator implements ICreator {
         this.consoleLogger.log(`Starting <${targetProject.name}> project ${ReleaseType[parameters.releaseType].toLowerCase()} <${targetDefinition.name}> release pipeline deployment`);
 
         const targetRelease: Release = await this.createRelease(targetProject, targetDefinition, parameters, details);
+        const targetStages: string[] = await this.releaseHelper.getStages(targetRelease, parameters.stages);
 
         const releaseJob: IReleaseJob = {
 
             project: targetProject,
             definition: targetDefinition,
             release: targetRelease,
-            stages: [],
+            stages: targetStages,
             sleep: 5000,
 
         };
