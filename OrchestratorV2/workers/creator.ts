@@ -40,7 +40,7 @@ export class Creator implements ICreator {
         const targetProject: TeamProject = await this.coreHelper.getProject(parameters.projectId);
         const targetDefinition: ReleaseDefinition = await this.releaseHelper.getDefinition(targetProject.name!, Number(parameters.definitionId));
 
-        this.consoleLogger.log(`Starting <${targetProject.name}> project ${ReleaseType[parameters.releaseType].toLowerCase()} <${targetDefinition.name}> release deployment`);
+        this.consoleLogger.log(`Starting <${targetProject.name}> project ${ReleaseType[parameters.releaseType].toLowerCase()} <${targetDefinition.name}> release pipeline deployment`);
 
         const releaseJob: IReleaseJob = {
 
