@@ -7,3 +7,4 @@
 **/*.xml
 **/node_modules
 **/.vs
+**/console.ts
