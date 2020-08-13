@@ -48,7 +48,7 @@ export class Orchestrator implements IOrchestrator {
 
             case ReleaseType.Create: {
 
-                console.log(`Deploying <${releaseJob.release?.name}> (${releaseJob.release?.id}) pipeline <${releaseJob.stages}> stage(s) release`);
+                console.log(`Deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${releaseJob.stages}> stage(s) release`);
 
                 // TBU
 
@@ -56,7 +56,7 @@ export class Orchestrator implements IOrchestrator {
 
             } default: {
 
-                console.log(`Re-deploying <${releaseJob.release?.name}> (${releaseJob.release?.id}) pipeline <${releaseJob.stages}> stage(s) release`);
+                console.log(`Re-deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${releaseJob.stages}> stage(s) release`);
 
                 // TBU
 
