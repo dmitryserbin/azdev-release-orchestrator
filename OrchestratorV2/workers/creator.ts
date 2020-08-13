@@ -12,6 +12,7 @@ import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
 import { ICreator } from "../interfaces/workers/creator";
 import { IBuildHelper } from "../interfaces/helpers/buildhelper";
 import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
+import { IReleaseFilter } from "../interfaces/orchestrator/releasefilter";
 
 export class Creator implements ICreator {
 
@@ -75,13 +76,15 @@ export class Creator implements ICreator {
 
             } case ReleaseType.Latest: {
 
-                throw new Error(`Not implemented`);
+                const releaseFilters: IReleaseFilter = await this.getReleaseFilters(project, definition, parameters.releaseTag, parameters.artifactTag, parameters.sourceBranch);
+
+                release = await this.releaseHelper.findRelease(project.name!, definition.id!, parameters.stages, releaseFilters);
 
                 break;
 
             } case ReleaseType.Specific: {
 
-                release = await this.releaseHelper.getRelease(project, Number(parameters.releaseId), parameters.stages);
+                release = await this.releaseHelper.getRelease(project.name!, Number(parameters.releaseId), parameters.stages);
 
                 break;
 
