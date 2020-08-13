@@ -42,14 +42,9 @@ export class Deployer implements IDeployer {
 
         this.consoleLogger.log(`Release orchestrated manually as stages deployment conditions are NOT met`);
 
-        const releaseProgress: IReleaseProgress = {
+        const releaseProgress: IReleaseProgress = this.progressMonitor.createProgress(releaseJob.release, releaseJob.stages);
 
-            name: "",
-            url: "",
-            stages: [],
-            status: ReleaseStatus.InProgress,
-
-        };
+        // TBU
 
         return releaseProgress;
 
