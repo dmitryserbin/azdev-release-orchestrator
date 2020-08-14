@@ -12,6 +12,7 @@ import { IMonitor } from "../interfaces/orchestrator/monitor";
 import { IStageProgress } from "../interfaces/orchestrator/stageprogress";
 import { IReleaseProgress } from "../interfaces/orchestrator/releaseprogress";
 import { ReleaseStatus } from "../interfaces/orchestrator/releasestatus";
+import { ISettings } from "../interfaces/orchestrator/settings";
 
 export class Deployer implements IDeployer {
 
@@ -72,7 +73,7 @@ export class Deployer implements IDeployer {
                     // Approve stage deployment and validate outcome
                     // Use retry mechanism to check manual approval status
                     // Cancel stage deployment when retry count exceeded
-                    await this.approveStage(stage, stageStatus, releaseJob.project.name!, details);
+                    await this.approveStage(stage, stageStatus, releaseJob.project.name!, details, releaseJob.settings);
 
                 }
 
@@ -92,7 +93,7 @@ export class Deployer implements IDeployer {
 
             this.progressMonitor.updateReleaseProgress(releaseProgress);
 
-            await this.wait(releaseJob.sleep);
+            await this.wait(releaseJob.settings.sleep);
 
         } while (releaseProgress.status === ReleaseStatus.InProgress);
 
@@ -112,7 +113,7 @@ export class Deployer implements IDeployer {
 
     }
 
-    private async approveStage(stageProgress: IStageProgress, stageStatus: ReleaseEnvironment, projectName: string, details: IDetails, retry: number = 60, sleep: number = 60000): Promise<void> {
+    private async approveStage(stageProgress: IStageProgress, stageStatus: ReleaseEnvironment, projectName: string, details: IDetails, settings: ISettings): Promise<void> {
 
         const debug = this.debugLogger.extend(this.approveStage.name);
 
@@ -178,11 +179,11 @@ export class Deployer implements IDeployer {
         // Cancel stage deployment if unable to approve
         if (stageProgress.approval.status === ApprovalStatus.Rejected) {
 
-            const retryLimit: boolean = stageProgress.approval.count >= retry;
+            const retryLimit: boolean = stageProgress.approval.count >= settings.approvalRetry;
 
             if (retryLimit) {
 
-                const timeLimitMinutes: number = Math.floor((retry * sleep) / 60000);
+                const timeLimitMinutes: number = Math.floor((settings.approvalRetry * settings.approvalSleep) / 60000);
 
                 this.consoleLogger.warn(`Stage <${stageStatus.name}> (${stageStatus.id}) approval <${timeLimitMinutes}> minute(s) time limit exceeded`);
 
@@ -205,7 +206,7 @@ export class Deployer implements IDeployer {
                 this.consoleLogger.warn(`Stage <${stageStatus.name}> (${stageStatus.id}) cannot be approved by <${details.releaseName}> (${details.endpointName})`);
 
                 // Wait for next approval retry
-                await this.wait(sleep);
+                await this.wait(settings.approvalSleep);
 
             }
 
