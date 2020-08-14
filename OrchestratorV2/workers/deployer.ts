@@ -20,19 +20,16 @@ export class Deployer implements IDeployer {
     private debugLogger: Debug.Debugger;
     private consoleLogger: IConsoleLogger;
 
-    private coreHelper: ICoreHelper;
     private releaseHelper: IReleaseHelper;
     private progressMonitor: IMonitor;
 
-    constructor(coreHelper: ICoreHelper, releaseHelper: IReleaseHelper, debugLogger: IDebugLogger, consoleLogger: IConsoleLogger) {
+    constructor(releaseHelper: IReleaseHelper, progressMonitor: IMonitor, debugLogger: IDebugLogger, consoleLogger: IConsoleLogger) {
 
         this.debugLogger = debugLogger.create(this.constructor.name);
         this.consoleLogger = consoleLogger;
 
-        this.coreHelper = coreHelper;
         this.releaseHelper = releaseHelper;
-
-        this.progressMonitor = new Monitor(debugLogger);
+        this.progressMonitor = progressMonitor;
 
     }
 

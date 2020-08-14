@@ -17,6 +17,8 @@ import { ICreator } from "../interfaces/workers/creator";
 import { IBuildHelper } from "../interfaces/helpers/buildhelper";
 import { BuildHelper } from "../helpers/buildhelper";
 import { Creator } from "../workers/creator";
+import { IMonitor } from "../interfaces/orchestrator/monitor";
+import { Monitor } from "../orchestrator/monitor";
 
 export class WorkerFactory implements IWorkerFactory {
 
@@ -50,13 +52,12 @@ export class WorkerFactory implements IWorkerFactory {
 
     public async createDeployer(): Promise<IDeployer> {
 
-        const coreApi: ICoreApi = await this.apiFactory.createCoreApi();
         const releaseApi: IReleaseApi = await this.apiFactory.createReleaseApi();
 
-        const coreHelper: ICoreHelper = new CoreHelper(coreApi, this.debugLogger);
         const releaseHelper: IReleaseHelper = new ReleaseHelper(releaseApi, this.debugLogger);
+        const progressMonitor: IMonitor = new Monitor(this.debugLogger);
 
-        return new Deployer(coreHelper, releaseHelper, this.debugLogger, this.consoleLogger);
+        return new Deployer(releaseHelper, progressMonitor, this.debugLogger, this.consoleLogger);
 
     }
 
