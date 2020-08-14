@@ -6,11 +6,9 @@ import { IDetails } from "../interfaces/task/details";
 import { IDeployer } from "../interfaces/workers/deployer";
 import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IConsoleLogger } from "../interfaces/common/consolelogger";
-import { ICoreHelper } from "../interfaces/helpers/corehelper";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
 import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
 import { IMonitor } from "../interfaces/orchestrator/monitor";
-import { Monitor } from "../orchestrator/monitor";
 import { IStageProgress } from "../interfaces/orchestrator/stageprogress";
 import { IReleaseProgress } from "../interfaces/orchestrator/releaseprogress";
 import { ReleaseStatus } from "../interfaces/orchestrator/releasestatus";
@@ -99,6 +97,18 @@ export class Deployer implements IDeployer {
         } while (releaseProgress.status === ReleaseStatus.InProgress);
 
         return releaseProgress;
+
+    }
+
+    public async isAutomated(releaseJob: IReleaseJob): Promise<boolean> {
+
+        const debug = this.debugLogger.extend(this.isAutomated.name);
+
+        const status: boolean = await this.releaseHelper.getConditionsStatus(releaseJob.release);
+
+        debug(status);
+
+        return status;
 
     }
 
@@ -200,18 +210,6 @@ export class Deployer implements IDeployer {
             }
 
         }
-
-    }
-
-    public async isAutomated(releaseJob: IReleaseJob): Promise<boolean> {
-
-        const debug = this.debugLogger.extend(this.isAutomated.name);
-
-        const status: boolean = await this.releaseHelper.getConditionsStatus(releaseJob.release);
-
-        debug(status);
-
-        return status;
 
     }
 
