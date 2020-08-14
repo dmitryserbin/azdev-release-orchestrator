@@ -93,7 +93,12 @@ export class Deployer implements IDeployer {
 
             this.progressMonitor.updateReleaseProgress(releaseProgress);
 
-            await this.wait(releaseJob.settings.sleep);
+            // Wait before next status update
+            if (releaseProgress.status === ReleaseStatus.InProgress) {
+
+                await this.wait(releaseJob.settings.sleep);
+
+            }
 
         } while (releaseProgress.status === ReleaseStatus.InProgress);
 
@@ -205,7 +210,7 @@ export class Deployer implements IDeployer {
 
                 this.consoleLogger.warn(`Stage <${stageStatus.name}> (${stageStatus.id}) cannot be approved by <${details.releaseName}> (${details.endpointName})`);
 
-                // Wait for next approval retry
+                // Wait before next approval retry
                 await this.wait(settings.approvalSleep);
 
             }
