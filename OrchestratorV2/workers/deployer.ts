@@ -68,9 +68,7 @@ export class Deployer implements IDeployer {
 
                 const stageStatus: ReleaseEnvironment = await this.releaseHelper.getStageStatus(releaseStatus, stage.name);
 
-                const approvalRequired: boolean =
-                    stage.approval.status === ApprovalStatus.Undefined ||
-                    stage.approval.status === ApprovalStatus.Pending;
+                const approvalRequired: boolean = stage.approval.status === ApprovalStatus.Pending;
 
                 if (approvalRequired) {
 
