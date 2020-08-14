@@ -1,10 +1,8 @@
-import Debug from "debug";
-
 import { IOrchestrator } from "../interfaces/orchestrator/orchestrator";
 import { IDeployer } from "../interfaces/orchestrator/deployer";
 import { IParameters, ReleaseType } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IDebugLogger, IDebugger } from "../interfaces/loggers/debuglogger";
 import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
 import { IEndpoint } from "../interfaces/task/endpoint";
 import { IApiFactory } from "../interfaces/factories/apifactory";
@@ -18,7 +16,7 @@ import { DeploymentType } from "../interfaces/common/deploymenttype";
 
 export class Orchestrator implements IOrchestrator {
 
-    private debugLogger: Debug.Debugger;
+    private debugLogger: IDebugger;
     private consoleLogger: IConsoleLogger;
 
     private orchestratorFactory: IOrchestratorFactory;

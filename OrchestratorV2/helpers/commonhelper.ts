@@ -1,11 +1,9 @@
-import Debug from "debug";
-
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IDebugLogger, IDebugger } from "../interfaces/loggers/debuglogger";
 import { ICommonHelper } from "../interfaces/helpers/commonhelper";
 
 export class CommonHelper implements ICommonHelper {
 
-    private debugLogger: Debug.Debugger;
+    private debugLogger: IDebugger;
 
     constructor(debugLogger: IDebugLogger) {
 

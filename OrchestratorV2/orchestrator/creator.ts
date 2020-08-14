@@ -1,14 +1,11 @@
-import Debug from "debug";
-
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import { ReleaseDefinition, Release, Artifact } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IParameters, ReleaseType } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IDebugLogger, IDebugger } from "../interfaces/loggers/debuglogger";
 import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
-import { ICommonHelper } from "../interfaces/helpers/commonhelper";
 import { ICoreHelper } from "../interfaces/helpers/corehelper";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
 import { ICreator } from "../interfaces/orchestrator/creator";
@@ -21,20 +18,18 @@ import { DeploymentType } from "../interfaces/common/deploymenttype";
 
 export class Creator implements ICreator {
 
-    private debugLogger: Debug.Debugger;
+    private debugLogger: IDebugger;
     private consoleLogger: IConsoleLogger;
 
-    private commonHelper: ICommonHelper;
     private coreHelper: ICoreHelper;
     private buildHelper: IBuildHelper;
     private releaseHelper: IReleaseHelper;
 
-    constructor(commonHelper: ICommonHelper, coreHelper: ICoreHelper, buildHelper: IBuildHelper, releaseHelper: IReleaseHelper, debugLogger: IDebugLogger, consoleLogger: IConsoleLogger) {
+    constructor(coreHelper: ICoreHelper, buildHelper: IBuildHelper, releaseHelper: IReleaseHelper, debugLogger: IDebugLogger, consoleLogger: IConsoleLogger) {
 
         this.debugLogger = debugLogger.create(this.constructor.name);
         this.consoleLogger = consoleLogger;
 
-        this.commonHelper = commonHelper;
         this.coreHelper = coreHelper;
         this.buildHelper = buildHelper;
         this.releaseHelper = releaseHelper;

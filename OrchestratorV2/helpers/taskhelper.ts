@@ -1,5 +1,3 @@
-import Debug from "debug";
-
 import url from "url";
 
 import { getInput, getEndpointUrl, getEndpointAuthorizationParameter, getBoolInput, getDelimitedInput, getVariable } from "azure-pipelines-task-lib/task";
@@ -7,12 +5,12 @@ import { getInput, getEndpointUrl, getEndpointAuthorizationParameter, getBoolInp
 import { ITaskHelper } from "../interfaces/helpers/taskhelper";
 import { IEndpoint } from "../interfaces/task/endpoint";
 import { IParameters, ReleaseType } from "../interfaces/task/parameters";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IDebugLogger, IDebugger } from "../interfaces/loggers/debuglogger";
 import { IDetails } from "../interfaces/task/details";
 
 export class TaskHelper implements ITaskHelper {
 
-    private debugLogger: Debug.Debugger;
+    private debugLogger: IDebugger;
 
     constructor(debugLogger: IDebugLogger) {
 

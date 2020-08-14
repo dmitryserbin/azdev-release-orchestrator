@@ -1,11 +1,11 @@
 
 import Debug from "debug";
 
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IDebugLogger, IDebugger } from "../interfaces/loggers/debuglogger";
 
 export class DebugLogger implements IDebugLogger {
 
-    private debugLogger: Debug.Debugger;
+    private debugLogger: IDebugger;
 
     constructor(name: string) {
 

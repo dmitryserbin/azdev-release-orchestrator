@@ -1,9 +1,7 @@
-import Debug from "debug";
-
 import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
 import { ReleaseDefinition, Release, ReleaseStatus, ReleaseExpands, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ReleaseReason, ReleaseStartMetadata, ReleaseEnvironment, EnvironmentStatus, ReleaseApproval, ReleaseEnvironmentUpdateMetadata, ApprovalStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IDebugLogger, IDebugger } from "../interfaces/loggers/debuglogger";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
 import { IReleaseFilter } from "../interfaces/common/releasefilter";
 import { IArtifactFilter } from "../interfaces/common/artifactfilter";
@@ -12,7 +10,7 @@ import { IDetails } from "../interfaces/task/details";
 
 export class ReleaseHelper implements IReleaseHelper {
 
-    private debugLogger: Debug.Debugger;
+    private debugLogger: IDebugger;
 
     private releaseApi: IReleaseApi;
 

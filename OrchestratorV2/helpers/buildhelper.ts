@@ -1,14 +1,12 @@
-import Debug from "debug";
-
 import { IBuildApi } from "azure-devops-node-api/BuildApi";
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IDebugLogger, IDebugger } from "../interfaces/loggers/debuglogger";
 import { IBuildHelper } from "../interfaces/helpers/buildhelper";
 
 export class BuildHelper implements IBuildHelper {
 
-    private debugLogger: Debug.Debugger;
+    private debugLogger: IDebugger;
 
     private buildApi: IBuildApi;
 

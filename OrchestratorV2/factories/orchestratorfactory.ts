@@ -43,12 +43,11 @@ export class OrchestratorFactory implements IOrchestratorFactory {
         const buildApi: IBuildApi = await this.apiFactory.createBuildApi();
         const releaseApi: IReleaseApi = await this.apiFactory.createReleaseApi();
 
-        const commonHelper: ICommonHelper = new CommonHelper(this.debugLogger);
         const coreHelper: ICoreHelper = new CoreHelper(coreApi, this.debugLogger);
         const buildHelper: IBuildHelper = new BuildHelper(buildApi, this.debugLogger);
         const releaseHelper: IReleaseHelper = new ReleaseHelper(releaseApi, this.debugLogger);
 
-        return new Creator(commonHelper, coreHelper, buildHelper, releaseHelper, this.debugLogger, this.consoleLogger);
+        return new Creator(coreHelper, buildHelper, releaseHelper, this.debugLogger, this.consoleLogger);
 
     }
 

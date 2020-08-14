@@ -1,10 +1,8 @@
-import Debug from "debug";
-
 import { Release, ReleaseEnvironment, EnvironmentStatus, ApprovalStatus, ReleaseApproval, ReleaseEnvironmentUpdateMetadata } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDetails } from "../interfaces/task/details";
 import { IDeployer } from "../interfaces/orchestrator/deployer";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IDebugLogger, IDebugger } from "../interfaces/loggers/debuglogger";
 import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
 import { ICommonHelper } from "../interfaces/helpers/commonhelper";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
@@ -17,7 +15,7 @@ import { ISettings } from "../interfaces/common/settings";
 
 export class Deployer implements IDeployer {
 
-    private debugLogger: Debug.Debugger;
+    private debugLogger: IDebugger;
     private consoleLogger: IConsoleLogger;
 
     private commonHelper: ICommonHelper;

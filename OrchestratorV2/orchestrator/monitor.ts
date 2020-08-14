@@ -1,9 +1,7 @@
-import Debug from "debug";
-
 import { ApprovalStatus, EnvironmentStatus, Release, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IMonitor } from "../interfaces/orchestrator/monitor";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IDebugLogger, IDebugger } from "../interfaces/loggers/debuglogger";
 import { IReleaseProgress } from "../interfaces/common/releaseprogress";
 import { IStageApproval } from "../interfaces/common/stageapproval";
 import { IStageProgress } from "../interfaces/common/stageprogress";
@@ -11,7 +9,7 @@ import { ReleaseStatus } from "../interfaces/common/releasestatus";
 
 export class Monitor implements IMonitor {
 
-    private debugLogger: Debug.Debugger;
+    private debugLogger: IDebugger;
 
     constructor(debugLogger: IDebugLogger) {
 

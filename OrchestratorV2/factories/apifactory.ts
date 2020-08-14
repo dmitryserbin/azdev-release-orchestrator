@@ -1,5 +1,3 @@
-import Debug from "debug";
-
 import { CoreApi } from "azure-devops-node-api/CoreApi";
 import { ReleaseApi } from "azure-devops-node-api/ReleaseApi";
 import { BuildApi } from "azure-devops-node-api/BuildApi";
@@ -7,12 +5,12 @@ import { WebApi, getPersonalAccessTokenHandler } from "azure-devops-node-api";
 import { IRequestOptions, IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
 
 import { IApiFactory } from "../interfaces/factories/apifactory";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IDebugLogger, IDebugger } from "../interfaces/loggers/debuglogger";
 
 export class ApiFactory implements IApiFactory {
 
     private webApi: WebApi;
-    private debugLogger: Debug.Debugger;
+    private debugLogger: IDebugger;
 
     constructor(accountName: string, token: string, debugLogger: IDebugLogger) {
 
