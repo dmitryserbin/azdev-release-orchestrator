@@ -68,9 +68,11 @@ export class Deployer implements IDeployer {
 
                 const stageStatus: ReleaseEnvironment = await this.releaseHelper.getStageStatus(releaseStatus, stage.name);
 
-                const approvalRequired: boolean = stage.approval.status === ApprovalStatus.Pending;
+                const approvalPending: boolean =
+                    stage.approval.status === ApprovalStatus.Pending ||
+                    stage.approval.status === ApprovalStatus.Rejected;
 
-                if (approvalRequired) {
+                if (approvalPending) {
 
                     // Approve stage deployment and validate outcome
                     // Use retry mechanism to check manual approval status
@@ -110,8 +112,7 @@ export class Deployer implements IDeployer {
         // Increment retry count
         stageProgress.approval.count++;
 
-        const pendingApprovals: ReleaseApproval[] = stageStatus.preDeployApprovals!.filter((i) =>
-            i.status === ApprovalStatus.Pending);
+        const pendingApprovals: ReleaseApproval[] = await this.releaseHelper.getStageApprovals(stageStatus, ApprovalStatus.Pending);
 
         if (pendingApprovals.length <= 0) {
 
@@ -164,6 +165,8 @@ export class Deployer implements IDeployer {
 
         }
 
+        debug(`Stage <${stageStatus.name}> approval status <${ApprovalStatus[stageProgress.approval.status!]}> retrieved`);
+
         // Validate failed approvals retry attempts
         // Cancel stage deployment if unable to approve
         if (stageProgress.approval.status === ApprovalStatus.Rejected) {
@@ -200,8 +203,6 @@ export class Deployer implements IDeployer {
             }
 
         }
-
-        debug(`Stage <${stageStatus.name}> approval status <${ApprovalStatus[stageProgress.approval.status!]}> retrieved`);
 
     }
 

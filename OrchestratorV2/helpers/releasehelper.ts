@@ -1,7 +1,7 @@
 import Debug from "debug";
 
 import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
-import { ReleaseDefinition, Release, ReleaseStatus, ReleaseExpands, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ReleaseReason, ReleaseStartMetadata, ReleaseEnvironment, EnvironmentStatus, ReleaseApproval, ReleaseEnvironmentUpdateMetadata } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ReleaseDefinition, Release, ReleaseStatus, ReleaseExpands, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ReleaseReason, ReleaseStartMetadata, ReleaseEnvironment, EnvironmentStatus, ReleaseApproval, ReleaseEnvironmentUpdateMetadata, ApprovalStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
@@ -313,6 +313,19 @@ export class ReleaseHelper implements IReleaseHelper {
         debug(targetStages);
 
         return targetStages;
+
+    }
+
+    public async getStageApprovals(stage: ReleaseEnvironment, status: ApprovalStatus): Promise<ReleaseApproval[]> {
+
+        const debug = this.debugLogger.extend(this.getStageApprovals.name);
+
+        const stageApprovals: ReleaseApproval[] = stage.preDeployApprovals!.filter((approval) =>
+            approval.status === status);
+
+        debug(stageApprovals);
+
+        return stageApprovals;
 
     }
 

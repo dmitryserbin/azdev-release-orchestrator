@@ -1,4 +1,4 @@
-import { ReleaseDefinition, Release, ArtifactMetadata, ReleaseEnvironment, ReleaseApproval, ReleaseEnvironmentUpdateMetadata } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ReleaseDefinition, Release, ArtifactMetadata, ReleaseEnvironment, ReleaseApproval, ReleaseEnvironmentUpdateMetadata, ApprovalStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IReleaseFilter } from "../orchestrator/releasefilter";
 import { IArtifactFilter } from "../orchestrator/artifactfilter";
@@ -15,6 +15,7 @@ export interface IReleaseHelper {
     getArtifacts(projectName: string, definitionId: number, primaryId: string, versionId?: string, sourceBranch?: string): Promise<ArtifactMetadata[]>;
     getDefinitionStages(definition: ReleaseDefinition, stages: string[]): Promise<string[]>;
     getReleaseStages(release: Release, stages: string[]): Promise<string[]>;
+    getStageApprovals(stage: ReleaseEnvironment, status: ApprovalStatus): Promise<ReleaseApproval[]>;
     getConditionsStatus(release: Release): Promise<boolean>;
     updateStage(status: ReleaseEnvironmentUpdateMetadata, projectName: string, releaseId: number, stageId: number): Promise<ReleaseEnvironment>;
     updateApproval(status: ReleaseApproval, projectName: string, requestId: number): Promise<ReleaseApproval>;
