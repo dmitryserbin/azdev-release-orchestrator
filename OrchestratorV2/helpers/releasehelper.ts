@@ -1,7 +1,7 @@
 import Debug from "debug";
 
 import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
-import { ReleaseDefinition, Release, ReleaseStatus, ReleaseExpands, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ReleaseReason, ReleaseStartMetadata, ReleaseEnvironment, EnvironmentStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ReleaseDefinition, Release, ReleaseStatus, ReleaseExpands, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ReleaseReason, ReleaseStartMetadata, ReleaseEnvironment, EnvironmentStatus, ReleaseApproval, ReleaseEnvironmentUpdateMetadata } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
@@ -329,6 +329,29 @@ export class ReleaseHelper implements IReleaseHelper {
         const status: boolean = conditionStages.length > 0 ? true : false;
 
         return status;
+
+    }
+
+    public async updateStage(status: ReleaseEnvironmentUpdateMetadata, projectName: string, releaseId: number, stageId: number): Promise<ReleaseEnvironment> {
+
+        const debug = this.debugLogger.extend(this.updateStage.name);
+
+        const stageStatus: ReleaseEnvironment = await this.releaseApi.updateReleaseEnvironment(status, projectName, releaseId, stageId);
+
+        debug(stageStatus);
+
+        return stageStatus;
+    }
+
+    public async updateApproval(status: ReleaseApproval, projectName: string, requestId: number): Promise<ReleaseApproval> {
+
+        const debug = this.debugLogger.extend(this.updateApproval.name);
+
+        const approvalStatus: ReleaseApproval = await this.releaseApi.updateReleaseApproval(status, projectName, requestId);
+
+        debug(approvalStatus);
+
+        return approvalStatus;
 
     }
 
