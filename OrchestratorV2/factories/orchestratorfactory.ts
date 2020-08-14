@@ -2,27 +2,26 @@ import { ICoreApi } from "azure-devops-node-api/CoreApi";
 import { IBuildApi } from "azure-devops-node-api/BuildApi";
 import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
 
-import { IWorkerFactory } from "../interfaces/factories/workerfactory";
+import { IOrchestratorFactory } from "../interfaces/factories/orchestratorfactory";
 import { IApiFactory } from "../interfaces/factories/apifactory";
 import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IConsoleLogger } from "../interfaces/common/consolelogger";
-import { IDeployer } from "../interfaces/workers/deployer";
-import { Deployer } from "../workers/deployer";
-
+import { IDeployer } from "../interfaces/orchestrator/deployer";
+import { Deployer } from "../orchestrator/deployer";
 import { ICoreHelper } from "../interfaces/helpers/corehelper";
 import { CoreHelper } from "../helpers/corehelper";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
 import { ReleaseHelper } from "../helpers/releasehelper";
-import { ICreator } from "../interfaces/workers/creator";
+import { ICreator } from "../interfaces/orchestrator/creator";
 import { IBuildHelper } from "../interfaces/helpers/buildhelper";
 import { BuildHelper } from "../helpers/buildhelper";
-import { Creator } from "../workers/creator";
+import { Creator } from "../orchestrator/creator";
 import { IMonitor } from "../interfaces/orchestrator/monitor";
 import { Monitor } from "../orchestrator/monitor";
 import { ICommonHelper } from "../interfaces/helpers/commonhelper";
 import { CommonHelper } from "../helpers/commonhelper";
 
-export class WorkerFactory implements IWorkerFactory {
+export class OrchestratorFactory implements IOrchestratorFactory {
 
     private debugLogger: IDebugLogger;
     private consoleLogger: IConsoleLogger;

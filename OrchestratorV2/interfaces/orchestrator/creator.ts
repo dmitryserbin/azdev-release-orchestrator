@@ -1,6 +1,6 @@
 import { IParameters } from "../task/parameters";
 import { IDetails } from "../task/details";
-import { IReleaseJob } from "../orchestrator/releasejob";
+import { IReleaseJob } from "./releasejob";
 
 export interface ICreator {
 

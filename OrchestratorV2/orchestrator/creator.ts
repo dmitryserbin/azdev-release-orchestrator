@@ -11,7 +11,7 @@ import { IConsoleLogger } from "../interfaces/common/consolelogger";
 import { ICommonHelper } from "../interfaces/helpers/commonhelper";
 import { ICoreHelper } from "../interfaces/helpers/corehelper";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
-import { ICreator } from "../interfaces/workers/creator";
+import { ICreator } from "../interfaces/orchestrator/creator";
 import { IBuildHelper } from "../interfaces/helpers/buildhelper";
 import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
 import { IReleaseFilter } from "../interfaces/orchestrator/releasefilter";

@@ -3,7 +3,7 @@ import Debug from "debug";
 import { Release, ReleaseEnvironment, EnvironmentStatus, ApprovalStatus, ReleaseApproval, ReleaseEnvironmentUpdateMetadata } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDetails } from "../interfaces/task/details";
-import { IDeployer } from "../interfaces/workers/deployer";
+import { IDeployer } from "../interfaces/orchestrator/deployer";
 import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IConsoleLogger } from "../interfaces/common/consolelogger";
 import { ICommonHelper } from "../interfaces/helpers/commonhelper";

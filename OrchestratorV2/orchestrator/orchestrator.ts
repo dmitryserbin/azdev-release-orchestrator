@@ -1,7 +1,7 @@
 import Debug from "debug";
 
 import { IOrchestrator } from "../interfaces/orchestrator/orchestrator";
-import { IDeployer } from "../interfaces/workers/deployer";
+import { IDeployer } from "../interfaces/orchestrator/deployer";
 import { IParameters, ReleaseType } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
 import { IDebugLogger } from "../interfaces/common/debuglogger";
@@ -9,10 +9,10 @@ import { IConsoleLogger } from "../interfaces/common/consolelogger";
 import { IEndpoint } from "../interfaces/task/endpoint";
 import { IApiFactory } from "../interfaces/factories/apifactory";
 import { ApiFactory } from "../factories/apifactory";
-import { IWorkerFactory } from "../interfaces/factories/workerfactory";
-import { WorkerFactory } from "../factories/workerfactory";
+import { IOrchestratorFactory } from "../interfaces/factories/orchestratorfactory";
+import { OrchestratorFactory } from "../factories/orchestratorfactory";
 import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
-import { ICreator } from "../interfaces/workers/creator";
+import { ICreator } from "../interfaces/orchestrator/creator";
 import { IReleaseProgress } from "../interfaces/orchestrator/releaseprogress";
 import { DeploymentType } from "../interfaces/orchestrator/deploymenttype";
 
@@ -21,7 +21,7 @@ export class Orchestrator implements IOrchestrator {
     private debugLogger: Debug.Debugger;
     private consoleLogger: IConsoleLogger;
 
-    private workerFactory: IWorkerFactory;
+    private orchestratorFactory: IOrchestratorFactory;
 
     constructor(endpoint: IEndpoint, debugLogger: IDebugLogger, consoleLogger: IConsoleLogger) {
 
@@ -30,7 +30,7 @@ export class Orchestrator implements IOrchestrator {
 
         const apiFactory: IApiFactory = new ApiFactory(endpoint.account, endpoint.token, debugLogger);
 
-        this.workerFactory = new WorkerFactory(apiFactory, debugLogger, consoleLogger);
+        this.orchestratorFactory = new OrchestratorFactory(apiFactory, debugLogger, consoleLogger);
 
     }
 
@@ -40,8 +40,8 @@ export class Orchestrator implements IOrchestrator {
 
         let releaseProgress: IReleaseProgress;
 
-        const creator: ICreator = await this.workerFactory.createCreator();
-        const deployer: IDeployer = await this.workerFactory.createDeployer();
+        const creator: ICreator = await this.orchestratorFactory.createCreator();
+        const deployer: IDeployer = await this.orchestratorFactory.createDeployer();
 
         // Create release job
         const releaseJob: IReleaseJob = await creator.createJob(parameters, details);
