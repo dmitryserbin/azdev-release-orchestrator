@@ -6,18 +6,18 @@ import { ReleaseDefinition, Release, Artifact } from "azure-devops-node-api/inte
 
 import { IParameters, ReleaseType } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
-import { IDebugLogger } from "../interfaces/common/debuglogger";
-import { IConsoleLogger } from "../interfaces/common/consolelogger";
+import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
 import { ICommonHelper } from "../interfaces/helpers/commonhelper";
 import { ICoreHelper } from "../interfaces/helpers/corehelper";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
 import { ICreator } from "../interfaces/orchestrator/creator";
 import { IBuildHelper } from "../interfaces/helpers/buildhelper";
-import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
-import { IReleaseFilter } from "../interfaces/orchestrator/releasefilter";
-import { IArtifactFilter } from "../interfaces/orchestrator/artifactfilter";
-import { ISettings } from "../interfaces/orchestrator/settings";
-import { DeploymentType } from "../interfaces/orchestrator/deploymenttype";
+import { IReleaseJob } from "../interfaces/common/releasejob";
+import { IReleaseFilter } from "../interfaces/common/releasefilter";
+import { IArtifactFilter } from "../interfaces/common/artifactfilter";
+import { ISettings } from "../interfaces/common/settings";
+import { DeploymentType } from "../interfaces/common/deploymenttype";
 
 export class Creator implements ICreator {
 

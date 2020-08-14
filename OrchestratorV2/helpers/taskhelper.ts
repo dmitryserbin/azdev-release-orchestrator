@@ -7,7 +7,7 @@ import { getInput, getEndpointUrl, getEndpointAuthorizationParameter, getBoolInp
 import { ITaskHelper } from "../interfaces/helpers/taskhelper";
 import { IEndpoint } from "../interfaces/task/endpoint";
 import { IParameters, ReleaseType } from "../interfaces/task/parameters";
-import { IDebugLogger } from "../interfaces/common/debuglogger";
+import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IDetails } from "../interfaces/task/details";
 
 export class TaskHelper implements ITaskHelper {

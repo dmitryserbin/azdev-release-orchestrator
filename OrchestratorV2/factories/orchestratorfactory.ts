@@ -4,8 +4,8 @@ import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
 
 import { IOrchestratorFactory } from "../interfaces/factories/orchestratorfactory";
 import { IApiFactory } from "../interfaces/factories/apifactory";
-import { IDebugLogger } from "../interfaces/common/debuglogger";
-import { IConsoleLogger } from "../interfaces/common/consolelogger";
+import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
 import { IDeployer } from "../interfaces/orchestrator/deployer";
 import { Deployer } from "../orchestrator/deployer";
 import { ICoreHelper } from "../interfaces/helpers/corehelper";

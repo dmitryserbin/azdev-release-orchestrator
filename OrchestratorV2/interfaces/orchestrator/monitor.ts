@@ -1,7 +1,7 @@
 import { Release, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { IReleaseProgress } from "./releaseprogress";
-import { IStageProgress } from "./stageprogress";
+import { IReleaseProgress } from "../common/releaseprogress";
+import { IStageProgress } from "../common/stageprogress";
 
 export interface IMonitor {
 

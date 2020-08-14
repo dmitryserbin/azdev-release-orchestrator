@@ -4,17 +4,17 @@ import { IOrchestrator } from "../interfaces/orchestrator/orchestrator";
 import { IDeployer } from "../interfaces/orchestrator/deployer";
 import { IParameters, ReleaseType } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
-import { IDebugLogger } from "../interfaces/common/debuglogger";
-import { IConsoleLogger } from "../interfaces/common/consolelogger";
+import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
 import { IEndpoint } from "../interfaces/task/endpoint";
 import { IApiFactory } from "../interfaces/factories/apifactory";
 import { ApiFactory } from "../factories/apifactory";
 import { IOrchestratorFactory } from "../interfaces/factories/orchestratorfactory";
 import { OrchestratorFactory } from "../factories/orchestratorfactory";
-import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
+import { IReleaseJob } from "../interfaces/common/releasejob";
 import { ICreator } from "../interfaces/orchestrator/creator";
-import { IReleaseProgress } from "../interfaces/orchestrator/releaseprogress";
-import { DeploymentType } from "../interfaces/orchestrator/deploymenttype";
+import { IReleaseProgress } from "../interfaces/common/releaseprogress";
+import { DeploymentType } from "../interfaces/common/deploymenttype";
 
 export class Orchestrator implements IOrchestrator {
 

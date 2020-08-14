@@ -4,16 +4,16 @@ import { Release, ReleaseEnvironment, EnvironmentStatus, ApprovalStatus, Release
 
 import { IDetails } from "../interfaces/task/details";
 import { IDeployer } from "../interfaces/orchestrator/deployer";
-import { IDebugLogger } from "../interfaces/common/debuglogger";
-import { IConsoleLogger } from "../interfaces/common/consolelogger";
+import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
 import { ICommonHelper } from "../interfaces/helpers/commonhelper";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
-import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
+import { IReleaseJob } from "../interfaces/common/releasejob";
 import { IMonitor } from "../interfaces/orchestrator/monitor";
-import { IStageProgress } from "../interfaces/orchestrator/stageprogress";
-import { IReleaseProgress } from "../interfaces/orchestrator/releaseprogress";
-import { ReleaseStatus } from "../interfaces/orchestrator/releasestatus";
-import { ISettings } from "../interfaces/orchestrator/settings";
+import { IStageProgress } from "../interfaces/common/stageprogress";
+import { IReleaseProgress } from "../interfaces/common/releaseprogress";
+import { ReleaseStatus } from "../interfaces/common/releasestatus";
+import { ISettings } from "../interfaces/common/settings";
 
 export class Deployer implements IDeployer {
 

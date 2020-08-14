@@ -3,7 +3,7 @@ import Debug from "debug";
 import { ICoreApi } from "azure-devops-node-api/CoreApi";
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 
-import { IDebugLogger } from "../interfaces/common/debuglogger";
+import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { ICoreHelper } from "../interfaces/helpers/corehelper";
 
 export class CoreHelper implements ICoreHelper {

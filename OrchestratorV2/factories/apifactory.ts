@@ -7,7 +7,7 @@ import { WebApi, getPersonalAccessTokenHandler } from "azure-devops-node-api";
 import { IRequestOptions, IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
 
 import { IApiFactory } from "../interfaces/factories/apifactory";
-import { IDebugLogger } from "../interfaces/common/debuglogger";
+import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 
 export class ApiFactory implements IApiFactory {
 

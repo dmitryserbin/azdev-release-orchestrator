@@ -1,6 +1,6 @@
 import { IDetails } from "../task/details";
-import { IReleaseJob } from "./releasejob";
-import { IReleaseProgress } from "./releaseprogress";
+import { IReleaseJob } from "../common/releasejob";
+import { IReleaseProgress } from "../common/releaseprogress";
 
 export interface IDeployer {
 
