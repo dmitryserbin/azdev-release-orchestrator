@@ -13,7 +13,7 @@ export class DebugLogger implements IDebugLogger {
 
     }
 
-    public create(name: string): Debug.Debugger {
+    public create(name: string): IDebugger {
 
         return this.debugLogger.extend(name);
 
