@@ -4,7 +4,7 @@ import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
 
 import { IOrchestratorFactory } from "../interfaces/factories/orchestratorfactory";
 import { IApiFactory } from "../interfaces/factories/apifactory";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IDebugCreator } from "../interfaces/loggers/debugcreator";
 import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
 import { IDeployer } from "../interfaces/orchestrator/deployer";
 import { Deployer } from "../orchestrator/deployer";
@@ -23,14 +23,14 @@ import { CommonHelper } from "../helpers/commonhelper";
 
 export class OrchestratorFactory implements IOrchestratorFactory {
 
-    private debugLogger: IDebugLogger;
+    private debugCreator: IDebugCreator;
     private consoleLogger: IConsoleLogger;
 
     private apiFactory: IApiFactory;
 
-    constructor(apiFactory: IApiFactory, debugLogger: IDebugLogger, consoleLogger: IConsoleLogger) {
+    constructor(apiFactory: IApiFactory, debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
 
-        this.debugLogger = debugLogger;
+        this.debugCreator = debugCreator;
         this.consoleLogger = consoleLogger;
 
         this.apiFactory = apiFactory;
@@ -43,11 +43,11 @@ export class OrchestratorFactory implements IOrchestratorFactory {
         const buildApi: IBuildApi = await this.apiFactory.createBuildApi();
         const releaseApi: IReleaseApi = await this.apiFactory.createReleaseApi();
 
-        const coreHelper: ICoreHelper = new CoreHelper(coreApi, this.debugLogger);
-        const buildHelper: IBuildHelper = new BuildHelper(buildApi, this.debugLogger);
-        const releaseHelper: IReleaseHelper = new ReleaseHelper(releaseApi, this.debugLogger);
+        const coreHelper: ICoreHelper = new CoreHelper(coreApi, this.debugCreator);
+        const buildHelper: IBuildHelper = new BuildHelper(buildApi, this.debugCreator);
+        const releaseHelper: IReleaseHelper = new ReleaseHelper(releaseApi, this.debugCreator);
 
-        return new Creator(coreHelper, buildHelper, releaseHelper, this.debugLogger, this.consoleLogger);
+        return new Creator(coreHelper, buildHelper, releaseHelper, this.debugCreator, this.consoleLogger);
 
     }
 
@@ -55,11 +55,11 @@ export class OrchestratorFactory implements IOrchestratorFactory {
 
         const releaseApi: IReleaseApi = await this.apiFactory.createReleaseApi();
 
-        const commonHelper: ICommonHelper = new CommonHelper(this.debugLogger);
-        const releaseHelper: IReleaseHelper = new ReleaseHelper(releaseApi, this.debugLogger);
-        const progressMonitor: IMonitor = new Monitor(this.debugLogger);
+        const commonHelper: ICommonHelper = new CommonHelper(this.debugCreator);
+        const releaseHelper: IReleaseHelper = new ReleaseHelper(releaseApi, this.debugCreator);
+        const progressMonitor: IMonitor = new Monitor(this.debugCreator);
 
-        return new Deployer(commonHelper, releaseHelper, progressMonitor, this.debugLogger, this.consoleLogger);
+        return new Deployer(commonHelper, releaseHelper, progressMonitor, this.debugCreator, this.consoleLogger);
 
     }
 

@@ -2,7 +2,8 @@ import { Release, ReleaseEnvironment, EnvironmentStatus, ApprovalStatus, Release
 
 import { IDetails } from "../interfaces/task/details";
 import { IDeployer } from "../interfaces/orchestrator/deployer";
-import { IDebugLogger, IDebugger } from "../interfaces/loggers/debuglogger";
+import { IDebugCreator } from "../interfaces/loggers/debugcreator";
+import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
 import { ICommonHelper } from "../interfaces/helpers/commonhelper";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
@@ -15,16 +16,16 @@ import { ISettings } from "../interfaces/common/settings";
 
 export class Deployer implements IDeployer {
 
-    private debugLogger: IDebugger;
+    private debugLogger: IDebugLogger;
     private consoleLogger: IConsoleLogger;
 
     private commonHelper: ICommonHelper;
     private releaseHelper: IReleaseHelper;
     private progressMonitor: IMonitor;
 
-    constructor(commonHelper: ICommonHelper, releaseHelper: IReleaseHelper, progressMonitor: IMonitor, debugLogger: IDebugLogger, consoleLogger: IConsoleLogger) {
+    constructor(commonHelper: ICommonHelper, releaseHelper: IReleaseHelper, progressMonitor: IMonitor, debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
 
-        this.debugLogger = debugLogger.create(this.constructor.name);
+        this.debugLogger = debugCreator.extend(this.constructor.name);
         this.consoleLogger = consoleLogger;
 
         this.commonHelper = commonHelper;

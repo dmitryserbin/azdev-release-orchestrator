@@ -4,7 +4,8 @@ import { ReleaseDefinition, Release, Artifact } from "azure-devops-node-api/inte
 
 import { IParameters, ReleaseType } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
-import { IDebugLogger, IDebugger } from "../interfaces/loggers/debuglogger";
+import { IDebugCreator } from "../interfaces/loggers/debugcreator";
+import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
 import { ICoreHelper } from "../interfaces/helpers/corehelper";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
@@ -18,16 +19,16 @@ import { DeploymentType } from "../interfaces/common/deploymenttype";
 
 export class Creator implements ICreator {
 
-    private debugLogger: IDebugger;
+    private debugLogger: IDebugLogger;
     private consoleLogger: IConsoleLogger;
 
     private coreHelper: ICoreHelper;
     private buildHelper: IBuildHelper;
     private releaseHelper: IReleaseHelper;
 
-    constructor(coreHelper: ICoreHelper, buildHelper: IBuildHelper, releaseHelper: IReleaseHelper, debugLogger: IDebugLogger, consoleLogger: IConsoleLogger) {
+    constructor(coreHelper: ICoreHelper, buildHelper: IBuildHelper, releaseHelper: IReleaseHelper, debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
 
-        this.debugLogger = debugLogger.create(this.constructor.name);
+        this.debugLogger = debugCreator.extend(this.constructor.name);
         this.consoleLogger = consoleLogger;
 
         this.coreHelper = coreHelper;

@@ -5,16 +5,17 @@ import { WebApi, getPersonalAccessTokenHandler } from "azure-devops-node-api";
 import { IRequestOptions, IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
 
 import { IApiFactory } from "../interfaces/factories/apifactory";
-import { IDebugLogger, IDebugger } from "../interfaces/loggers/debuglogger";
+import { IDebugCreator } from "../interfaces/loggers/debugcreator";
+import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 
 export class ApiFactory implements IApiFactory {
 
     private webApi: WebApi;
-    private debugLogger: IDebugger;
+    private debugLogger: IDebugLogger;
 
-    constructor(accountName: string, token: string, debugLogger: IDebugLogger) {
+    constructor(accountName: string, token: string, debugCreator: IDebugCreator) {
 
-        this.debugLogger = debugLogger.create(this.constructor.name);
+        this.debugLogger = debugCreator.extend(this.constructor.name);
 
         const auth: IRequestHandler = getPersonalAccessTokenHandler(token);
 

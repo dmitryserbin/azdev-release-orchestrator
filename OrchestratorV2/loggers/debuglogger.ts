@@ -1,11 +1,12 @@
 
 import Debug from "debug";
 
-import { IDebugLogger, IDebugger } from "../interfaces/loggers/debuglogger";
+import { IDebugCreator } from "../interfaces/loggers/debugcreator";
+import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 
-export class DebugLogger implements IDebugLogger {
+export class DebugCreator implements IDebugCreator {
 
-    private debugLogger: IDebugger;
+    private debugLogger: IDebugLogger;
 
     constructor(name: string) {
 
@@ -13,7 +14,7 @@ export class DebugLogger implements IDebugLogger {
 
     }
 
-    public create(name: string): IDebugger {
+    public extend(name: string): IDebugLogger {
 
         return this.debugLogger.extend(name);
 

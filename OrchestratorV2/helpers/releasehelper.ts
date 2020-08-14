@@ -1,7 +1,8 @@
 import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
 import { ReleaseDefinition, Release, ReleaseStatus, ReleaseExpands, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ReleaseReason, ReleaseStartMetadata, ReleaseEnvironment, EnvironmentStatus, ReleaseApproval, ReleaseEnvironmentUpdateMetadata, ApprovalStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { IDebugLogger, IDebugger } from "../interfaces/loggers/debuglogger";
+import { IDebugCreator } from "../interfaces/loggers/debugcreator";
+import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
 import { IReleaseFilter } from "../interfaces/common/releasefilter";
 import { IArtifactFilter } from "../interfaces/common/artifactfilter";
@@ -10,13 +11,13 @@ import { IDetails } from "../interfaces/task/details";
 
 export class ReleaseHelper implements IReleaseHelper {
 
-    private debugLogger: IDebugger;
+    private debugLogger: IDebugLogger;
 
     private releaseApi: IReleaseApi;
 
-    constructor(releaseApi: IReleaseApi, debugLogger: IDebugLogger) {
+    constructor(releaseApi: IReleaseApi, debugCreator: IDebugCreator) {
 
-        this.debugLogger = debugLogger.create(this.constructor.name);
+        this.debugLogger = debugCreator.extend(this.constructor.name);
 
         this.releaseApi = releaseApi;
 

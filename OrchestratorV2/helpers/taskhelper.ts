@@ -5,16 +5,17 @@ import { getInput, getEndpointUrl, getEndpointAuthorizationParameter, getBoolInp
 import { ITaskHelper } from "../interfaces/helpers/taskhelper";
 import { IEndpoint } from "../interfaces/task/endpoint";
 import { IParameters, ReleaseType } from "../interfaces/task/parameters";
-import { IDebugLogger, IDebugger } from "../interfaces/loggers/debuglogger";
+import { IDebugCreator } from "../interfaces/loggers/debugcreator";
+import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IDetails } from "../interfaces/task/details";
 
 export class TaskHelper implements ITaskHelper {
 
-    private debugLogger: IDebugger;
+    private debugLogger: IDebugLogger;
 
-    constructor(debugLogger: IDebugLogger) {
+    constructor(debugCreator: IDebugCreator) {
 
-        this.debugLogger = debugLogger.create(this.constructor.name);
+        this.debugLogger = debugCreator.extend(this.constructor.name);
 
     }
 

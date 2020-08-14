@@ -4,8 +4,8 @@ import { IEndpoint } from "./interfaces/task/endpoint";
 import { IParameters } from "./interfaces/task/parameters";
 import { ITaskHelper } from "./interfaces/helpers/taskhelper";
 import { TaskHelper } from "./helpers/taskhelper";
-import { IDebugLogger } from "./interfaces/loggers/debuglogger";
-import { DebugLogger } from "./loggers/debuglogger";
+import { IDebugCreator } from "./interfaces/loggers/debugcreator";
+import { DebugCreator } from "./loggers/debuglogger";
 import { ConsoleLogger } from "./loggers/consolelogger";
 import { IConsoleLogger } from "./interfaces/loggers/consolelogger";
 import { IDetails } from "./interfaces/task/details";
@@ -14,10 +14,10 @@ import { Orchestrator } from "./orchestrator/orchestrator";
 
 async function run() {
 
-    const debugLogger: IDebugLogger = new DebugLogger("release-orchestrator");
+    const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator");
     const consoleLogger: IConsoleLogger = new ConsoleLogger();
 
-    const taskHelper: ITaskHelper = new TaskHelper(debugLogger);
+    const taskHelper: ITaskHelper = new TaskHelper(debugCreator);
 
     try {
 
@@ -25,7 +25,7 @@ async function run() {
         const parameters: IParameters = await taskHelper.getParameters();
         const details: IDetails = await taskHelper.getDetails();
 
-        const orchestrator: IOrchestrator = new Orchestrator(endpoint, debugLogger, consoleLogger);
+        const orchestrator: IOrchestrator = new Orchestrator(endpoint, debugCreator, consoleLogger);
 
         // Run orchestrator
         await orchestrator.orchestrate(parameters, details);

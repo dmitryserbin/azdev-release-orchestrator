@@ -2,7 +2,8 @@ import { IOrchestrator } from "../interfaces/orchestrator/orchestrator";
 import { IDeployer } from "../interfaces/orchestrator/deployer";
 import { IParameters, ReleaseType } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
-import { IDebugLogger, IDebugger } from "../interfaces/loggers/debuglogger";
+import { IDebugCreator } from "../interfaces/loggers/debugcreator";
+import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
 import { IEndpoint } from "../interfaces/task/endpoint";
 import { IApiFactory } from "../interfaces/factories/apifactory";
@@ -16,19 +17,19 @@ import { DeploymentType } from "../interfaces/common/deploymenttype";
 
 export class Orchestrator implements IOrchestrator {
 
-    private debugLogger: IDebugger;
+    private debugLogger: IDebugLogger;
     private consoleLogger: IConsoleLogger;
 
     private orchestratorFactory: IOrchestratorFactory;
 
-    constructor(endpoint: IEndpoint, debugLogger: IDebugLogger, consoleLogger: IConsoleLogger) {
+    constructor(endpoint: IEndpoint, debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
 
-        this.debugLogger = debugLogger.create(this.constructor.name);
+        this.debugLogger = debugCreator.extend(this.constructor.name);
         this.consoleLogger = consoleLogger;
 
-        const apiFactory: IApiFactory = new ApiFactory(endpoint.account, endpoint.token, debugLogger);
+        const apiFactory: IApiFactory = new ApiFactory(endpoint.account, endpoint.token, debugCreator);
 
-        this.orchestratorFactory = new OrchestratorFactory(apiFactory, debugLogger, consoleLogger);
+        this.orchestratorFactory = new OrchestratorFactory(apiFactory, debugCreator, consoleLogger);
 
     }
 

@@ -1,18 +1,19 @@
 import { IBuildApi } from "azure-devops-node-api/BuildApi";
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
-import { IDebugLogger, IDebugger } from "../interfaces/loggers/debuglogger";
+import { IDebugCreator } from "../interfaces/loggers/debugcreator";
+import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IBuildHelper } from "../interfaces/helpers/buildhelper";
 
 export class BuildHelper implements IBuildHelper {
 
-    private debugLogger: IDebugger;
+    private debugLogger: IDebugLogger;
 
     private buildApi: IBuildApi;
 
-    constructor(buildApi: IBuildApi, debugLogger: IDebugLogger) {
+    constructor(buildApi: IBuildApi, debugCreator: IDebugCreator) {
 
-        this.debugLogger = debugLogger.create(this.constructor.name);
+        this.debugLogger = debugCreator.extend(this.constructor.name);
 
         this.buildApi = buildApi;
 
