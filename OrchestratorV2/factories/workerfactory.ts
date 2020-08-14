@@ -19,6 +19,8 @@ import { BuildHelper } from "../helpers/buildhelper";
 import { Creator } from "../workers/creator";
 import { IMonitor } from "../interfaces/orchestrator/monitor";
 import { Monitor } from "../orchestrator/monitor";
+import { ICommonHelper } from "../interfaces/helpers/commonhelper";
+import { CommonHelper } from "../helpers/commonhelper";
 
 export class WorkerFactory implements IWorkerFactory {
 
@@ -42,11 +44,12 @@ export class WorkerFactory implements IWorkerFactory {
         const buildApi: IBuildApi = await this.apiFactory.createBuildApi();
         const releaseApi: IReleaseApi = await this.apiFactory.createReleaseApi();
 
+        const commonHelper: ICommonHelper = new CommonHelper(this.debugLogger);
         const coreHelper: ICoreHelper = new CoreHelper(coreApi, this.debugLogger);
         const buildHelper: IBuildHelper = new BuildHelper(buildApi, this.debugLogger);
         const releaseHelper: IReleaseHelper = new ReleaseHelper(releaseApi, this.debugLogger);
 
-        return new Creator(coreHelper, buildHelper, releaseHelper, this.debugLogger, this.consoleLogger);
+        return new Creator(commonHelper, coreHelper, buildHelper, releaseHelper, this.debugLogger, this.consoleLogger);
 
     }
 
@@ -54,10 +57,11 @@ export class WorkerFactory implements IWorkerFactory {
 
         const releaseApi: IReleaseApi = await this.apiFactory.createReleaseApi();
 
+        const commonHelper: ICommonHelper = new CommonHelper(this.debugLogger);
         const releaseHelper: IReleaseHelper = new ReleaseHelper(releaseApi, this.debugLogger);
         const progressMonitor: IMonitor = new Monitor(this.debugLogger);
 
-        return new Deployer(releaseHelper, progressMonitor, this.debugLogger, this.consoleLogger);
+        return new Deployer(commonHelper, releaseHelper, progressMonitor, this.debugLogger, this.consoleLogger);
 
     }
 

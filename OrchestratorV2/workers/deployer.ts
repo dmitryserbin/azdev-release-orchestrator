@@ -6,6 +6,7 @@ import { IDetails } from "../interfaces/task/details";
 import { IDeployer } from "../interfaces/workers/deployer";
 import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IConsoleLogger } from "../interfaces/common/consolelogger";
+import { ICommonHelper } from "../interfaces/helpers/commonhelper";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
 import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
 import { IMonitor } from "../interfaces/orchestrator/monitor";
@@ -19,14 +20,16 @@ export class Deployer implements IDeployer {
     private debugLogger: Debug.Debugger;
     private consoleLogger: IConsoleLogger;
 
+    private commonHelper: ICommonHelper;
     private releaseHelper: IReleaseHelper;
     private progressMonitor: IMonitor;
 
-    constructor(releaseHelper: IReleaseHelper, progressMonitor: IMonitor, debugLogger: IDebugLogger, consoleLogger: IConsoleLogger) {
+    constructor(commonHelper: ICommonHelper, releaseHelper: IReleaseHelper, progressMonitor: IMonitor, debugLogger: IDebugLogger, consoleLogger: IConsoleLogger) {
 
         this.debugLogger = debugLogger.create(this.constructor.name);
         this.consoleLogger = consoleLogger;
 
+        this.commonHelper = commonHelper;
         this.releaseHelper = releaseHelper;
         this.progressMonitor = progressMonitor;
 
@@ -96,7 +99,7 @@ export class Deployer implements IDeployer {
             // Wait before next status update
             if (releaseProgress.status === ReleaseStatus.InProgress) {
 
-                await this.wait(releaseJob.settings.sleep);
+                await this.commonHelper.wait(releaseJob.settings.sleep);
 
             }
 
@@ -199,21 +202,11 @@ export class Deployer implements IDeployer {
                 this.consoleLogger.warn(`Stage <${stageStatus.name}> (${stageStatus.id}) cannot be approved by <${details.releaseName}> (${details.endpointName})`);
 
                 // Wait before next approval retry
-                await this.wait(settings.approvalSleep);
+                await this.commonHelper.wait(settings.approvalSleep);
 
             }
 
         }
-
-    }
-
-    private async wait(count: number): Promise<void> {
-
-        const debug = this.debugLogger.extend(this.wait.name);
-
-        debug(`Waiting <${count}> milliseconds`);
-
-        return new Promise((resolve) => setTimeout(resolve, count));
 
     }
 

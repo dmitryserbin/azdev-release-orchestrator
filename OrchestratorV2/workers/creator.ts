@@ -8,6 +8,7 @@ import { IParameters, ReleaseType } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
 import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IConsoleLogger } from "../interfaces/common/consolelogger";
+import { ICommonHelper } from "../interfaces/helpers/commonhelper";
 import { ICoreHelper } from "../interfaces/helpers/corehelper";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
 import { ICreator } from "../interfaces/workers/creator";
@@ -23,15 +24,17 @@ export class Creator implements ICreator {
     private debugLogger: Debug.Debugger;
     private consoleLogger: IConsoleLogger;
 
+    private commonHelper: ICommonHelper;
     private coreHelper: ICoreHelper;
     private buildHelper: IBuildHelper;
     private releaseHelper: IReleaseHelper;
 
-    constructor(coreHelper: ICoreHelper, buildHelper: IBuildHelper, releaseHelper: IReleaseHelper, debugLogger: IDebugLogger, consoleLogger: IConsoleLogger) {
+    constructor(commonHelper: ICommonHelper, coreHelper: ICoreHelper, buildHelper: IBuildHelper, releaseHelper: IReleaseHelper, debugLogger: IDebugLogger, consoleLogger: IConsoleLogger) {
 
         this.debugLogger = debugLogger.create(this.constructor.name);
         this.consoleLogger = consoleLogger;
 
+        this.commonHelper = commonHelper;
         this.coreHelper = coreHelper;
         this.buildHelper = buildHelper;
         this.releaseHelper = releaseHelper;
