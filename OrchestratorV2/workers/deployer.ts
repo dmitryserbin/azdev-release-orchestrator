@@ -106,18 +106,6 @@ export class Deployer implements IDeployer {
 
     }
 
-    public async isAutomated(releaseJob: IReleaseJob): Promise<boolean> {
-
-        const debug = this.debugLogger.extend(this.isAutomated.name);
-
-        const status: boolean = await this.releaseHelper.getConditionsStatus(releaseJob.release);
-
-        debug(status);
-
-        return status;
-
-    }
-
     private async approveStage(stageProgress: IStageProgress, stageStatus: ReleaseEnvironment, projectName: string, details: IDetails, settings: ISettings): Promise<void> {
 
         const debug = this.debugLogger.extend(this.approveStage.name);

@@ -16,6 +16,7 @@ import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
 import { IReleaseFilter } from "../interfaces/orchestrator/releasefilter";
 import { IArtifactFilter } from "../interfaces/orchestrator/artifactfilter";
 import { ISettings } from "../interfaces/orchestrator/settings";
+import { DeploymentType } from "../interfaces/orchestrator/deploymenttype";
 
 export class Creator implements ICreator {
 
@@ -49,6 +50,8 @@ export class Creator implements ICreator {
         const targetRelease: Release = await this.createRelease(targetProject, targetDefinition, parameters, details);
         const targetStages: string[] = await this.releaseHelper.getReleaseStages(targetRelease, parameters.stages);
 
+        const releaseType: DeploymentType = await this.releaseHelper.getReleaseType(targetRelease);
+
         const settings: ISettings = {
 
             sleep: 5000,
@@ -63,6 +66,7 @@ export class Creator implements ICreator {
             definition: targetDefinition,
             release: targetRelease,
             stages: targetStages,
+            type: releaseType,
             settings: settings,
 
         };

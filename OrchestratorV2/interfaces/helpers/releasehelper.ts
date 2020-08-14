@@ -2,6 +2,7 @@ import { ReleaseDefinition, Release, ArtifactMetadata, ReleaseEnvironment, Relea
 
 import { IReleaseFilter } from "../orchestrator/releasefilter";
 import { IArtifactFilter } from "../orchestrator/artifactfilter";
+import { DeploymentType } from "../orchestrator/deploymenttype";
 import { IDetails } from "../task/details";
 
 export interface IReleaseHelper {
@@ -16,7 +17,7 @@ export interface IReleaseHelper {
     getDefinitionStages(definition: ReleaseDefinition, stages: string[]): Promise<string[]>;
     getReleaseStages(release: Release, stages: string[]): Promise<string[]>;
     getStageApprovals(stage: ReleaseEnvironment, status: ApprovalStatus): Promise<ReleaseApproval[]>;
-    getConditionsStatus(release: Release): Promise<boolean>;
+    getReleaseType(release: Release): Promise<DeploymentType>;
     updateStage(status: ReleaseEnvironmentUpdateMetadata, projectName: string, releaseId: number, stageId: number): Promise<ReleaseEnvironment>;
     updateApproval(status: ReleaseApproval, projectName: string, requestId: number): Promise<ReleaseApproval>;
 

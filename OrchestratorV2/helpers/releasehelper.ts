@@ -7,6 +7,7 @@ import { IDebugLogger } from "../interfaces/common/debuglogger";
 import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
 import { IReleaseFilter } from "../interfaces/orchestrator/releasefilter";
 import { IArtifactFilter } from "../interfaces/orchestrator/artifactfilter";
+import { DeploymentType } from "../interfaces/orchestrator/deploymenttype";
 import { IDetails } from "../interfaces/task/details";
 
 export class ReleaseHelper implements IReleaseHelper {
@@ -329,9 +330,11 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    public async getConditionsStatus(release: Release): Promise<boolean> {
+    public async getReleaseType(release: Release): Promise<DeploymentType> {
 
-        const debug = this.debugLogger.extend(this.getConditionsStatus.name);
+        const debug = this.debugLogger.extend(this.getReleaseType.name);
+
+        let releaseType: DeploymentType;
 
         // Detect wether stage deployment conditions are met
         // In order to determine automated release status
@@ -339,9 +342,21 @@ export class ReleaseHelper implements IReleaseHelper {
 
         debug(conditionStages);
 
-        const status: boolean = conditionStages.length > 0 ? true : false;
+        const conditionsMet: boolean = conditionStages.length > 0 ? true : false;
 
-        return status;
+        if (conditionsMet) {
+
+            releaseType = DeploymentType.Automated;
+
+        } else {
+
+            releaseType = DeploymentType.Manual;
+
+        }
+
+        debug(releaseType);
+
+        return releaseType;
 
     }
 

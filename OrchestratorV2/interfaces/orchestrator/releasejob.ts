@@ -2,6 +2,7 @@ import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { ReleaseDefinition, Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { ISettings } from "./settings";
+import { DeploymentType } from "./deploymenttype";
 
 export interface IReleaseJob {
 
@@ -9,6 +10,7 @@ export interface IReleaseJob {
     definition: ReleaseDefinition
     release: Release;
     stages: string[];
+    type: DeploymentType,
     settings: ISettings;
 
 }

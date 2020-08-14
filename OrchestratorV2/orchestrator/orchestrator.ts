@@ -14,6 +14,7 @@ import { WorkerFactory } from "../factories/workerfactory";
 import { IReleaseJob } from "../interfaces/orchestrator/releasejob";
 import { ICreator } from "../interfaces/workers/creator";
 import { IReleaseProgress } from "../interfaces/orchestrator/releaseprogress";
+import { DeploymentType } from "../interfaces/orchestrator/deploymenttype";
 
 export class Orchestrator implements IOrchestrator {
 
@@ -51,17 +52,19 @@ export class Orchestrator implements IOrchestrator {
 
                 this.consoleLogger.log(`Deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${releaseJob.stages}> stage(s) release`);
 
-                const automated: boolean = await deployer.isAutomated(releaseJob);
+                switch (releaseJob.type) {
 
-                if (automated) {
+                    case DeploymentType.Automated: {
 
-                    // Monitor automatically started stages deployment progess
-                    releaseProgress = await deployer.deployAutomated(releaseJob, details);
+                        // Monitor automatically started stages deployment progess
+                        releaseProgress = await deployer.deployAutomated(releaseJob, details);
 
-                } else {
+                    } case DeploymentType.Manual: {
 
-                    // Manually trigger stages deployment and monitor progress
-                    releaseProgress = await deployer.deployManual(releaseJob, details);
+                        // Manually trigger stages deployment and monitor progress
+                        releaseProgress = await deployer.deployManual(releaseJob, details);
+
+                    }
 
                 }
 
