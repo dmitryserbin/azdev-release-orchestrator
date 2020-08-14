@@ -188,6 +188,10 @@ export class Deployer implements IDeployer {
 
             }
 
+        } else {
+
+            progress.approval.status = ApprovalStatus.Skipped;
+
         }
 
         debug(`Stage <${stage.name}> approval status <${ApprovalStatus[progress.approval.status!]}> retrieved`);
