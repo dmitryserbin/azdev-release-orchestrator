@@ -5,7 +5,7 @@ import { IParameters } from "./interfaces/task/parameters";
 import { ITaskHelper } from "./interfaces/helpers/taskhelper";
 import { TaskHelper } from "./helpers/taskhelper";
 import { IDebugCreator } from "./interfaces/loggers/debugcreator";
-import { DebugCreator } from "./loggers/debuglogger";
+import { DebugCreator } from "./loggers/debugcreator";
 import { ConsoleLogger } from "./loggers/consolelogger";
 import { IConsoleLogger } from "./interfaces/loggers/consolelogger";
 import { IDetails } from "./interfaces/task/details";
