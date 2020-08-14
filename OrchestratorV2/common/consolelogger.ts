@@ -10,4 +10,10 @@ export class ConsoleLogger implements IConsoleLogger {
 
     }
 
+    public warn(message: any): void {
+
+        console.warn(message);
+
+    }
+
 }
