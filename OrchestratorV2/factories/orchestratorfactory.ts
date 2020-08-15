@@ -20,6 +20,8 @@ import { IMonitor } from "../interfaces/orchestrator/monitor";
 import { Monitor } from "../orchestrator/monitor";
 import { ICommonHelper } from "../interfaces/helpers/commonhelper";
 import { CommonHelper } from "../helpers/commonhelper";
+import { IApprover } from "../interfaces/orchestrator/approver";
+import { Approver } from "../orchestrator/approver";
 
 export class OrchestratorFactory implements IOrchestratorFactory {
 
@@ -57,9 +59,10 @@ export class OrchestratorFactory implements IOrchestratorFactory {
 
         const commonHelper: ICommonHelper = new CommonHelper(this.debugCreator);
         const releaseHelper: IReleaseHelper = new ReleaseHelper(releaseApi, this.debugCreator);
+        const releaseApprover: IApprover = new Approver(commonHelper, releaseHelper, this.debugCreator, this.consoleLogger);
         const progressMonitor: IMonitor = new Monitor(this.debugCreator);
 
-        return new Deployer(commonHelper, releaseHelper, progressMonitor, this.debugCreator, this.consoleLogger);
+        return new Deployer(commonHelper, releaseHelper, releaseApprover, progressMonitor, this.debugCreator, this.consoleLogger);
 
     }
 
