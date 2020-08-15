@@ -359,41 +359,37 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    public async updateStage(status: ReleaseEnvironmentUpdateMetadata, projectName: string, releaseId: number, stageId: number): Promise<ReleaseEnvironment> {
-
-        const debug = this.debugLogger.extend(this.updateStage.name);
-
-        const stageStatus: ReleaseEnvironment = await this.releaseApi.updateReleaseEnvironment(status, projectName, releaseId, stageId);
-
-        debug(stageStatus);
-
-        return stageStatus;
-    }
-
     public async cancelStage(stage: ReleaseEnvironment, projectName: string, message: string): Promise<ReleaseEnvironment> {
 
         const debug = this.debugLogger.extend(this.cancelStage.name);
 
-        const stageSatus: ReleaseEnvironmentUpdateMetadata = {
+        const cancelRequest: ReleaseEnvironmentUpdateMetadata = {
 
             status: EnvironmentStatus.Canceled,
             comment: message,
 
         };
 
-        const releaseStage: ReleaseEnvironment = await this.updateStage(stageSatus, projectName, stage.release!.id!, stage.id!);
+        const stageStatus: ReleaseEnvironment = await this.releaseApi.updateReleaseEnvironment(cancelRequest, projectName, stage.release!.id!, stage.id!);
 
-        debug(releaseStage);
+        debug(stageStatus);
 
-        return releaseStage;
+        return stageStatus;
 
     }
 
-    public async updateApproval(status: ReleaseApproval, projectName: string, requestId: number): Promise<ReleaseApproval> {
+    public async approveStage(releaseApproval: ReleaseApproval, projectName: string, message: string): Promise<ReleaseApproval> {
 
-        const debug = this.debugLogger.extend(this.updateApproval.name);
+        const debug = this.debugLogger.extend(this.approveStage.name);
 
-        const approvalStatus: ReleaseApproval = await this.releaseApi.updateReleaseApproval(status, projectName, requestId);
+        const approvalRequest: ReleaseApproval = {
+
+            status: ApprovalStatus.Approved,
+            comments: message,
+
+        };
+
+        const approvalStatus: ReleaseApproval = await this.releaseApi.updateReleaseApproval(approvalRequest, projectName, releaseApproval.id!);
 
         debug(approvalStatus);
 

@@ -1,4 +1,4 @@
-import { ReleaseEnvironment, ReleaseApproval, ApprovalStatus, ReleaseEnvironmentUpdateMetadata, EnvironmentStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ReleaseEnvironment, ReleaseApproval, ApprovalStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IApprover } from "../interfaces/orchestrator/approver";
 import { IStageProgress } from "../interfaces/common/stageprogress";
@@ -57,15 +57,10 @@ export class Approver implements IApprover {
 
                 debug(pendingApproval);
 
-                const approvalRequest: ReleaseApproval = {
+                const approvalMessage: string = `Approved by <${details.releaseName}> (${details.endpointName}) release orchestrator`;
 
-                    status: ApprovalStatus.Approved,
-                    comments: `Approved by <${details.releaseName}> (${details.endpointName}) release orchestrator`,
-
-                };
-
-                // Approve stage
-                const approvalStatus: ReleaseApproval = await this.releaseHelper.updateApproval(approvalRequest, projectName, pendingApproval.id!);
+                // Approve stage deployment
+                const approvalStatus: ReleaseApproval = await this.releaseHelper.approveStage(pendingApproval, projectName, approvalMessage);
 
                 // Update stage approval status
                 stageProgress.approval.status = approvalStatus.status!;
