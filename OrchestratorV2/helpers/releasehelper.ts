@@ -370,6 +370,25 @@ export class ReleaseHelper implements IReleaseHelper {
         return stageStatus;
     }
 
+    public async cancelStage(stage: ReleaseEnvironment, projectName: string, message: string): Promise<ReleaseEnvironment> {
+
+        const debug = this.debugLogger.extend(this.cancelStage.name);
+
+        const stageSatus: ReleaseEnvironmentUpdateMetadata = {
+
+            status: EnvironmentStatus.Canceled,
+            comment: message,
+
+        };
+
+        const releaseStage: ReleaseEnvironment = await this.updateStage(stageSatus, projectName, stage.release!.id!, stage.id!);
+
+        debug(releaseStage);
+
+        return releaseStage;
+
+    }
+
     public async updateApproval(status: ReleaseApproval, projectName: string, requestId: number): Promise<ReleaseApproval> {
 
         const debug = this.debugLogger.extend(this.updateApproval.name);

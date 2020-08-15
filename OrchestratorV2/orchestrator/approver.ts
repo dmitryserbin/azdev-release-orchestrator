@@ -98,23 +98,15 @@ export class Approver implements IApprover {
 
             if (retryLimit) {
 
-                const timeLimitMinutes: number = Math.floor((settings.approvalRetry * settings.approvalSleep) / 60000);
+                const limitMinutes: number = Math.floor((settings.approvalRetry * settings.approvalSleep) / 60000);
+                const cancelMessage: string = "Approval waiting time limit exceeded";
 
-                this.consoleLogger.warn(`Stage <${stageStatus.name}> (${stageStatus.id}) approval <${timeLimitMinutes}> minute(s) time limit exceeded`);
-
-                const stageSatus: ReleaseEnvironmentUpdateMetadata = {
-
-                    status: EnvironmentStatus.Canceled,
-                    comment: "Approval waiting time limit exceeded",
-
-                };
+                this.consoleLogger.warn(`Stage <${stageStatus.name}> (${stageStatus.id}) approval <${limitMinutes}> minute(s) time limit exceeded`);
 
                 debug(`Cancelling <${stageStatus.name}> (${stageStatus.id}) stage deployment`);
 
                 // Cancel stage deployment
-                const releaseStage: ReleaseEnvironment = await this.releaseHelper.updateStage(stageSatus, projectName, stageStatus.release!.id!, stageStatus.id!);
-
-                debug(releaseStage);
+                const releaseStage: ReleaseEnvironment = await this.releaseHelper.cancelStage(stageStatus, projectName, cancelMessage);
 
             } else {
 

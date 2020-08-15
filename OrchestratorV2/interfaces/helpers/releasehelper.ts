@@ -19,6 +19,7 @@ export interface IReleaseHelper {
     getStageApprovals(stage: ReleaseEnvironment, status: ApprovalStatus): Promise<ReleaseApproval[]>;
     getReleaseType(release: Release): Promise<DeploymentType>;
     updateStage(status: ReleaseEnvironmentUpdateMetadata, projectName: string, releaseId: number, stageId: number): Promise<ReleaseEnvironment>;
+    cancelStage(stage: ReleaseEnvironment, projectName: string, message: string): Promise<ReleaseEnvironment>;
     updateApproval(status: ReleaseApproval, projectName: string, requestId: number): Promise<ReleaseApproval>;
 
 }
