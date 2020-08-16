@@ -14,6 +14,7 @@ import { IReleaseJob } from "../interfaces/common/releasejob";
 import { ICreator } from "../interfaces/orchestrator/creator";
 import { IReleaseProgress } from "../interfaces/common/releaseprogress";
 import { DeploymentType } from "../interfaces/common/deploymenttype";
+import { IReporter } from "../interfaces/orchestrator/reporter";
 
 export class Orchestrator implements IOrchestrator {
 
@@ -41,6 +42,7 @@ export class Orchestrator implements IOrchestrator {
 
         const creator: ICreator = await this.orchestratorFactory.createCreator();
         const deployer: IDeployer = await this.orchestratorFactory.createDeployer();
+        const reporter: IReporter = await this.orchestratorFactory.createReporter();
 
         // Create release job
         const releaseJob: IReleaseJob = await creator.createJob(parameters, details);
@@ -86,7 +88,7 @@ export class Orchestrator implements IOrchestrator {
 
         }
 
-        debug(releaseProgress);
+        await reporter.display(releaseProgress);
 
     }
 

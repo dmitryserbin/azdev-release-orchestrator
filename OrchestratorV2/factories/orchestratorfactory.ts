@@ -22,6 +22,8 @@ import { ICommonHelper } from "../interfaces/helpers/commonhelper";
 import { CommonHelper } from "../helpers/commonhelper";
 import { IApprover } from "../interfaces/orchestrator/approver";
 import { Approver } from "../orchestrator/approver";
+import { IReporter } from "../interfaces/orchestrator/reporter";
+import { Reporter } from "../orchestrator/reporter";
 
 export class OrchestratorFactory implements IOrchestratorFactory {
 
@@ -63,6 +65,12 @@ export class OrchestratorFactory implements IOrchestratorFactory {
         const progressMonitor: IMonitor = new Monitor(this.debugCreator);
 
         return new Deployer(commonHelper, releaseHelper, releaseApprover, progressMonitor, this.debugCreator, this.consoleLogger);
+
+    }
+
+    public async createReporter(): Promise<IReporter> {
+
+        return new Reporter(this.debugCreator, this.consoleLogger);
 
     }
 
