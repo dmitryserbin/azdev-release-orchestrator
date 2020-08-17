@@ -44,7 +44,7 @@ export class Creator implements ICreator {
         const targetProject: TeamProject = await this.coreHelper.getProject(parameters.projectId);
         const targetDefinition: ReleaseDefinition = await this.releaseHelper.getDefinition(targetProject.name!, Number(parameters.definitionId));
 
-        this.consoleLogger.log(`Starting <${targetProject.name}> project ${ReleaseType[parameters.releaseType].toLowerCase()} <${targetDefinition.name}> release pipeline deployment`);
+        this.consoleLogger.log(`Starting <${targetProject.name}> project <${targetDefinition.name}> release pipeline deployment`);
 
         const targetRelease: Release = await this.createRelease(targetProject, targetDefinition, parameters, details);
         const targetStages: string[] = await this.releaseHelper.getReleaseStages(targetRelease, parameters.stages);
@@ -84,6 +84,8 @@ export class Creator implements ICreator {
 
             case ReleaseType.Create: {
 
+                this.consoleLogger.log(`Creating new <${definition.name}> (${definition.id}) release pipeline release`);
+
                 const artifactFilter: IArtifactFilter[] = await this.createArtifactFilter(project, definition, parameters.artifactTag, parameters.sourceBranch);
 
                 release = await this.releaseHelper.createRelease(project.name!, definition, details, parameters.stages, artifactFilter);
@@ -92,6 +94,8 @@ export class Creator implements ICreator {
 
             } case ReleaseType.Latest: {
 
+                this.consoleLogger.log(`Targeting latest <${definition.name}> (${definition.id}) release pipeline release`);
+
                 const releaseFilter: IReleaseFilter = await this.createReleaseFilter(project, definition, parameters.releaseTag, parameters.artifactTag, parameters.sourceBranch);
 
                 release = await this.releaseHelper.findRelease(project.name!, definition.id!, parameters.stages, releaseFilter);
@@ -99,6 +103,8 @@ export class Creator implements ICreator {
                 break;
 
             } case ReleaseType.Specific: {
+
+                this.consoleLogger.log(`Targeting specific <${definition.name}> (${definition.id}) release pipeline release`);
 
                 release = await this.releaseHelper.getRelease(project.name!, Number(parameters.releaseId), parameters.stages);
 
