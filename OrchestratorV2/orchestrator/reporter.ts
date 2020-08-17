@@ -9,6 +9,7 @@ import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
 import { IReporter } from "../interfaces/orchestrator/reporter";
 import { IReleaseProgress } from "../interfaces/common/releaseprogress";
 import { IStageProgress } from "../interfaces/common/stageprogress";
+import { ReleaseStatus } from "../interfaces/common/releasestatus";
 
 export class Reporter implements IReporter {
 
@@ -28,17 +29,39 @@ export class Reporter implements IReporter {
 
         const table: Table = this.newTable([
 
-            "Project",
-            "Release",
-            "Stage",
-            "Approval",
+            "ID",
+            "Name",
             "Status",
+            "Summary",
 
         ]);
 
-        for (const stage of releaseProgress.stages) {
+        const releaseResult: any[] = this.newReleaseResult(releaseProgress);
 
-            const stageResult: any[] = this.newStageResult(stage, releaseProgress);
+        table.push(releaseResult);
+
+        this.consoleLogger.log(table.toString());
+
+    }
+
+    public async displayStagesProgress(stagesProgress: IStageProgress[]): Promise<void> {
+
+        const debug = this.debugLogger.extend(this.displayStagesProgress.name);
+
+        const table: Table = this.newTable([
+
+            "ID",
+            "Release",
+            "Name",
+            "Approval",
+            "Status",
+            "Duration",
+
+        ]);
+
+        for (const stage of stagesProgress) {
+
+            const stageResult: any[] = this.newStageResult(stage);
 
             table.push(stageResult);
 
@@ -46,17 +69,11 @@ export class Reporter implements IReporter {
 
         this.consoleLogger.log(table.toString());
 
-        if (releaseProgress.url) {
-
-            this.consoleLogger.log(`Summary: ${releaseProgress.url}`);
-
-        }
-
     }
 
-    public async displayStageProgress(stage: ReleaseEnvironment): Promise<void> {
+    public async displayPhaseProgress(stage: ReleaseEnvironment): Promise<void> {
 
-        const debug = this.debugLogger.extend(this.displayStageProgress.name);
+        const debug = this.debugLogger.extend(this.displayPhaseProgress.name);
 
         this.consoleLogger.log(`Stage <${stage.name}> (${stage.id}) deployment <${EnvironmentStatus[stage.status!]}> completed`);
 
@@ -97,15 +114,31 @@ export class Reporter implements IReporter {
 
     }
 
-    private newStageResult(stage: IStageProgress, releaseProgress: IReleaseProgress): any[] {
+    public newReleaseResult(releaseProgress: IReleaseProgress): any[] {
+
+        const releaseResult: any[] = [
+
+            releaseProgress.id ? releaseProgress.id : "-",
+            releaseProgress.name ? releaseProgress.name : "-",
+            releaseProgress.status ? ReleaseStatus[releaseProgress.status] : "-",
+            releaseProgress.url ? releaseProgress.url : "-",
+
+        ];
+
+        return releaseResult;
+
+    }
+
+    private newStageResult(stage: IStageProgress): any[] {
 
         const stageResult: any[] = [
 
-            releaseProgress.project ? releaseProgress.project : "-",
-            releaseProgress.name ? `${releaseProgress.name} (${releaseProgress.id})` : "-",
+            stage.id ? stage.id : "-",
+            stage.release ?  stage.release : "-",
             stage.name ? stage.name : "-",
             stage.approval.status ? ApprovalStatus[stage.approval.status] : "-",
             stage.status ? EnvironmentStatus[stage.status] : "-",
+            stage.duration ? Moment.duration(stage.duration).humanize() : "-",
 
         ];
 

@@ -84,7 +84,7 @@ export class Deployer implements IDeployer {
 
                 if (completed) {
 
-                    await this.progressReporter.displayStageProgress(stageStatus);
+                    await this.progressReporter.displayPhaseProgress(stageStatus);
 
                     break;
 

@@ -4,10 +4,11 @@ import { IStageApproval } from "./stageapproval";
 
 export interface IStageProgress {
 
+    id?: number;
     name: string;
+    release?: string;
     approval: IStageApproval;
     status: EnvironmentStatus;
-    id?: number;
-    release?: string;
+    duration?: string;
 
 }

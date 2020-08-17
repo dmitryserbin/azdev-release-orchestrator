@@ -95,6 +95,7 @@ export class Monitor implements IMonitor {
         stageProgress.id = stageStatus.id;
         stageProgress.release = stageStatus.release!.name;
         stageProgress.status = stageStatus.status!;
+        stageProgress.duration = stageStatus.timeToDeploy?.toLocaleString();
 
     }
 

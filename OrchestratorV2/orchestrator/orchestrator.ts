@@ -92,6 +92,7 @@ export class Orchestrator implements IOrchestrator {
 
         }
 
+        await reporter.displayStagesProgress(releaseProgress.stages);
         await reporter.displayReleaseProgress(releaseProgress);
 
         return releaseProgress;
