@@ -91,6 +91,7 @@ export class Reporter implements IReporter {
 
                 const table: Table = this.newTable([
 
+                    "Agent",
                     "Task",
                     "Status",
                     "Duration",
@@ -149,6 +150,7 @@ export class Reporter implements IReporter {
 
         const taskResult: any[] = [
 
+            task.agentName ? task.agentName : "-",
             task.name ? task.name : "-",
             task.status ? TaskStatus[task.status] : "-",
             task.startTime && task.finishTime
