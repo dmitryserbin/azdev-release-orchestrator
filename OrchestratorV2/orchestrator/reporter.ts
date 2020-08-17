@@ -30,7 +30,7 @@ export class Reporter implements IReporter {
         const table: Table = this.newTable([
 
             "ID",
-            "Name",
+            "Release",
             "Status",
             "Summary",
 
