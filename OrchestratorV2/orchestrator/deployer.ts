@@ -103,6 +103,8 @@ export class Deployer implements IDeployer {
 
         } while (releaseProgress.status === ReleaseStatus.InProgress);
 
+        await this.progressReporter.displayStageProgress(releaseProgress.stages);
+
         return releaseProgress;
 
     }

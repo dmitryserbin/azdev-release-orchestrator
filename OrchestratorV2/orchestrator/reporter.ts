@@ -77,17 +77,17 @@ export class Reporter implements IReporter {
 
         this.consoleLogger.log(`Stage <${stage.name}> (${stage.id}) deployment <${EnvironmentStatus[stage.status!]}> completed`);
 
-        // Get latest deployment attempt
-        const deploymentAttempt: DeploymentAttempt = stage.deploySteps!.sort((left, right) =>
+        // Get last deployment attempt
+        const lastDeploymentAttempt: DeploymentAttempt = stage.deploySteps!.sort((left, right) =>
             left.deploymentId! - right.deploymentId!).reverse()[0];
 
-        debug(deploymentAttempt);
+        debug(lastDeploymentAttempt);
 
-        for (const phase of deploymentAttempt.releaseDeployPhases!) {
+        for (const phase of lastDeploymentAttempt.releaseDeployPhases!) {
 
             this.consoleLogger.log(`Phase <${phase.name}> deployment <${DeployPhaseStatus[phase.status!]}> completed`);
 
-            for (const job of phase.deploymentJobs!) {
+            for (const deploymentJob of phase.deploymentJobs!) {
 
                 const table: Table = this.newTable([
 
@@ -97,7 +97,7 @@ export class Reporter implements IReporter {
 
                 ]);
 
-                for (const task of job.tasks!) {
+                for (const task of deploymentJob.tasks!) {
 
                     const taskResult: any[] = this.newTaskResult(task);
 
