@@ -57,12 +57,16 @@ export class Orchestrator implements IOrchestrator {
 
                     case DeploymentType.Automated: {
 
+                        debug(`Release orchestrated automatically as stages deployment conditions are met`);
+
                         // Monitor automatically started stages deployment progess
                         releaseProgress = await deployer.deployAutomated(releaseJob, details);
 
                         break;
 
                     } case DeploymentType.Manual: {
+
+                        debug(`Release orchestrated manually as stages deployment conditions are not met`);
 
                         // Manually trigger stages deployment and monitor progress
                         releaseProgress = await deployer.deployManual(releaseJob, details);
