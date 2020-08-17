@@ -51,8 +51,8 @@ export class Reporter implements IReporter {
         const table: Table = this.newTable([
 
             "ID",
-            "Release",
             "Stage",
+            "Release",
             "Approval",
             "Status",
             "Duration",
@@ -133,8 +133,8 @@ export class Reporter implements IReporter {
         const stageResult: any[] = [
 
             stage.id ? stage.id : "-",
-            stage.release ?  stage.release : "-",
             stage.name ? stage.name : "-",
+            stage.release ?  stage.release : "-",
             stage.approval.status ? ApprovalStatus[stage.approval.status] : "-",
             stage.status ? EnvironmentStatus[stage.status] : "-",
             stage.duration ? Moment.duration(stage.duration, "minute").humanize() : "-",
