@@ -35,19 +35,9 @@ export class Approver implements IApprover {
         // Increment retry count
         stageProgress.approval.count++;
 
-        const pendingApprovals: ReleaseApproval[] = await this.releaseHelper.getStageApprovals(stageStatus, ApprovalStatus.Pending);
-
-        if (pendingApprovals.length <= 0) {
-
-            stageProgress.approval.status = ApprovalStatus.Skipped;
-
-            debug(`Stage <${stageProgress.name}> approval <${ApprovalStatus[stageProgress.approval.status!]}> not required`);
-
-            return;
-
-        }
-
         this.consoleLogger.log(`Approving <${stageProgress.name}> (${stageStatus.id}) stage deployment (retry ${stageProgress.approval.count})`);
+
+        const pendingApprovals: ReleaseApproval[] = await this.releaseHelper.getStageApprovals(stageStatus, ApprovalStatus.Pending);
 
         // Approve pending requests in sequence
         // To support multiple approvals scenarios
@@ -113,6 +103,24 @@ export class Approver implements IApprover {
             }
 
         }
+
+    }
+
+    public async isStageApproved(stageProgress: IStageProgress, stageStatus: ReleaseEnvironment): Promise<boolean> {
+
+        const debug = this.debugLogger.extend(this.isStageApproved.name);
+
+        const pendingApprovals: ReleaseApproval[] = await this.releaseHelper.getStageApprovals(stageStatus, ApprovalStatus.Pending);
+
+        // Confirming both pending approvals and current approval status
+        // To avoid false negative results when deploying new release
+        const approvalStatus: boolean = pendingApprovals.length <= 0 &&
+            stageProgress.approval.status !== ApprovalStatus.Pending &&
+            stageProgress.approval.status !== ApprovalStatus.Rejected;
+
+        debug(`Stage <${stageProgress.name}> (${ApprovalStatus[stageProgress.approval.status]}) approval <${approvalStatus}> status`);
+
+        return approvalStatus;
 
     }
 

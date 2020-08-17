@@ -58,9 +58,6 @@ export class Deployer implements IDeployer {
 
         const releaseProgress: IReleaseProgress = this.progressMonitor.createProgress(releaseJob);
 
-        // Wait for target release initialization
-        await this.commonHelper.wait(releaseJob.settings.sleep);
-
         do {
 
             const releaseStatus: Release = await this.releaseHelper.getReleaseStatus(releaseJob.project.name!, releaseJob.release.id!);
@@ -71,11 +68,9 @@ export class Deployer implements IDeployer {
 
                 const stageStatus: ReleaseEnvironment = await this.releaseHelper.getStageStatus(releaseStatus, stage.name);
 
-                const approvalPending: boolean =
-                    stage.approval.status === ApprovalStatus.Pending ||
-                    stage.approval.status === ApprovalStatus.Rejected;
+                const approved: boolean = await this.releaseApprover.isStageApproved(stage, stageStatus);
 
-                if (approvalPending) {
+                if (!approved) {
 
                     // Approve stage deployment and validate outcome
                     // Use retry mechanism to check manual approval status

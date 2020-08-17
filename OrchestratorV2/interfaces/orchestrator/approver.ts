@@ -6,6 +6,7 @@ import { ISettings } from "../common/settings";
 
 export interface IApprover {
 
-    approveStage(stageProgress: IStageProgress, stageStatus: ReleaseEnvironment, projectName: string, details: IDetails, settings: ISettings): Promise<void>
+    approveStage(stageProgress: IStageProgress, stageStatus: ReleaseEnvironment, projectName: string, details: IDetails, settings: ISettings): Promise<void>;
+    isStageApproved(stageProgress: IStageProgress, stageStatus: ReleaseEnvironment): Promise<boolean>;
 
 }
