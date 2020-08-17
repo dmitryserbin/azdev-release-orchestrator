@@ -92,9 +92,9 @@ export class Monitor implements IMonitor {
 
     public updateStageProgress(stageProgress: IStageProgress, stageStatus: ReleaseEnvironment): void {
 
+        stageProgress.status = stageStatus.status!;
         stageProgress.id = stageStatus.id;
         stageProgress.release = stageStatus.release!.name;
-        stageProgress.status = stageStatus.status!;
         stageProgress.duration = stageStatus.timeToDeploy?.toLocaleString();
 
     }
