@@ -84,7 +84,7 @@ export class Creator implements ICreator {
 
             case ReleaseType.Create: {
 
-                this.consoleLogger.log(`Creating new <${definition.name}> (${definition.id}) release pipeline release`);
+                this.consoleLogger.log(`Creating new <${definition.name}> (${definition.id}) release definition release`);
 
                 const artifactFilter: IArtifactFilter[] = await this.createArtifactFilter(project, definition, parameters.artifactTag, parameters.sourceBranch);
 
@@ -94,7 +94,7 @@ export class Creator implements ICreator {
 
             } case ReleaseType.Latest: {
 
-                this.consoleLogger.log(`Targeting latest <${definition.name}> (${definition.id}) release pipeline release`);
+                this.consoleLogger.log(`Targeting latest <${definition.name}> (${definition.id}) release definition release`);
 
                 const releaseFilter: IReleaseFilter = await this.createReleaseFilter(project, definition, parameters.releaseTag, parameters.artifactTag, parameters.sourceBranch);
 
@@ -104,7 +104,7 @@ export class Creator implements ICreator {
 
             } case ReleaseType.Specific: {
 
-                this.consoleLogger.log(`Targeting specific <${definition.name}> (${definition.id}) release pipeline release`);
+                this.consoleLogger.log(`Targeting specific <${definition.name}> (${definition.id}) release definition release`);
 
                 release = await this.releaseHelper.getRelease(project.name!, Number(parameters.releaseId), parameters.stages);
 
