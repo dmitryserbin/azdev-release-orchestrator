@@ -42,7 +42,7 @@ export class Deployer implements IDeployer {
 
         this.consoleLogger.log(`Release orchestrated manually as stages deployment conditions are NOT met`);
 
-        const releaseProgress: IReleaseProgress = this.progressMonitor.createProgress(releaseJob.release, releaseJob.stages);
+        const releaseProgress: IReleaseProgress = this.progressMonitor.createProgress(releaseJob);
 
         // TBU
 
@@ -56,7 +56,10 @@ export class Deployer implements IDeployer {
 
         this.consoleLogger.log(`Release automatically started as stages deployment conditions are met`);
 
-        const releaseProgress: IReleaseProgress = this.progressMonitor.createProgress(releaseJob.release, releaseJob.stages);
+        const releaseProgress: IReleaseProgress = this.progressMonitor.createProgress(releaseJob);
+
+        // Wait for target release initialization
+        await this.commonHelper.wait(releaseJob.settings.sleep);
 
         do {
 
@@ -87,7 +90,7 @@ export class Deployer implements IDeployer {
 
                 if (completed) {
 
-                    debug(`Stage <${stage.name}> deployment <${EnvironmentStatus[stage.status]}> completed`);
+                    this.consoleLogger.log(`Stage <${stage.name}> (${stage.id}) deployment <${EnvironmentStatus[stage.status]}> completed`);
 
                     break;
 

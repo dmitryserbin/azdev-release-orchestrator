@@ -64,6 +64,7 @@ export class Reporter implements IReporter {
 
             head: [
 
+                "Project",
                 "Release",
                 "Stage",
                 "Approval",
@@ -77,7 +78,8 @@ export class Reporter implements IReporter {
 
             const stageResult: any[] = [
 
-                stage.release ? stage.release : "-",
+                releaseProgress.project ?? "-",
+                releaseProgress.name ? `${releaseProgress.name} (${releaseProgress.id})` : "-",
                 stage.name ? stage.name : "-",
                 stage.approval.status ? ApprovalStatus[stage.approval.status] : "-",
                 stage.status ? EnvironmentStatus[stage.status] : "-",
@@ -92,7 +94,7 @@ export class Reporter implements IReporter {
 
         if (releaseProgress.url) {
 
-            this.consoleLogger.log(`Release <${releaseProgress.url}> summary`);
+            this.consoleLogger.log(`Summary: ${releaseProgress.url}`);
 
         }
 

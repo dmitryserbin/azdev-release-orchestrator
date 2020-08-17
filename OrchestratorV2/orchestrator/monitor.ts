@@ -1,4 +1,4 @@
-import { ApprovalStatus, EnvironmentStatus, Release, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ApprovalStatus, EnvironmentStatus, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IMonitor } from "../interfaces/orchestrator/monitor";
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
@@ -7,6 +7,7 @@ import { IReleaseProgress } from "../interfaces/common/releaseprogress";
 import { IStageApproval } from "../interfaces/common/stageapproval";
 import { IStageProgress } from "../interfaces/common/stageprogress";
 import { ReleaseStatus } from "../interfaces/common/releasestatus";
+import { IReleaseJob } from "../interfaces/common/releasejob";
 
 export class Monitor implements IMonitor {
 
@@ -18,20 +19,24 @@ export class Monitor implements IMonitor {
 
     }
 
-    public createProgress(release: Release, stages: string[]): IReleaseProgress {
+    public createProgress(releaseJob: IReleaseJob): IReleaseProgress {
 
         const debug = this.debugLogger.extend(this.createProgress.name);
 
+        const releaseUrl: string = `${releaseJob.project._links.web.href}/_release?releaseId=${releaseJob.release.id}`;
+
         const releaseProgress: IReleaseProgress = {
 
-            name: release.name!,
-            url: release._links.web.href,
+            id: releaseJob.release.id ? releaseJob.release.id : 0,
+            name: releaseJob.release.name ? releaseJob.release.name : "-",
+            project: releaseJob.project.name ? releaseJob.project.name : "-",
+            url: releaseJob.project._links.web.href ? releaseUrl : "-",
             stages: [],
             status: ReleaseStatus.InProgress,
 
         };
 
-        for (const stage of stages) {
+        for (const stage of releaseJob.stages) {
 
             const approvalStatus: IStageApproval = {
 
