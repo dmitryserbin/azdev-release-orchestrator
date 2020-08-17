@@ -6,7 +6,7 @@ import { IStageProgress } from "../common/stageprogress";
 export interface IReporter {
 
     displayReleaseProgress(releaseProgress: IReleaseProgress): Promise<void>;
-    displayStagesProgress(stageProgress: IStageProgress[]): Promise<void>;
+    displayStageProgress(stageProgress: IStageProgress[]): Promise<void>;
     displayPhaseProgress(stage: ReleaseEnvironment): Promise<void>;
 
 }

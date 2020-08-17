@@ -44,22 +44,22 @@ export class Reporter implements IReporter {
 
     }
 
-    public async displayStagesProgress(stagesProgress: IStageProgress[]): Promise<void> {
+    public async displayStageProgress(stageProgress: IStageProgress[]): Promise<void> {
 
-        const debug = this.debugLogger.extend(this.displayStagesProgress.name);
+        const debug = this.debugLogger.extend(this.displayStageProgress.name);
 
         const table: Table = this.newTable([
 
             "ID",
             "Release",
-            "Name",
+            "Stage",
             "Approval",
             "Status",
             "Duration",
 
         ]);
 
-        for (const stage of stagesProgress) {
+        for (const stage of stageProgress) {
 
             const stageResult: any[] = this.newStageResult(stage);
 
