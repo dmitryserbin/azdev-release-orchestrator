@@ -134,7 +134,7 @@ export class Creator implements ICreator {
         // Add release tag filter
         if (releaseTag && releaseTag.length >= 1) {
 
-            this.consoleLogger.log(`Using <${releaseTag}> tag(s) for target release filter`);
+            this.consoleLogger.log(`Using <${releaseTag}> release tag(s) filter`);
 
             releaseFilter.tag = releaseTag;
 
@@ -145,7 +145,7 @@ export class Creator implements ICreator {
             // Add artifact tag filter
             if (artifactTag && artifactTag.length >= 1) {
 
-                this.consoleLogger.log(`Using <${artifactTag}> artifact tag(s) for target release filter`);
+                this.consoleLogger.log(`Using <${artifactTag}> artifact tag(s) filter`);
 
                 // Get build matching artifact tag
                 const targetArtifactBuild: Build = await this.buildHelper.findBuild(project.name!, Number(primaryBuildArtifact.definitionReference!.definition.id), artifactTag);
@@ -157,7 +157,7 @@ export class Creator implements ICreator {
             // Add source branch filter
             if (sourceBranch) {
 
-                console.log(`Using <${sourceBranch}> artifact branch for target release filter`);
+                this.consoleLogger.log(`Using <${sourceBranch}> artifact branch filter`);
 
                 releaseFilter.sourceBranch = sourceBranch;
 
@@ -187,7 +187,7 @@ export class Creator implements ICreator {
             // Get build matching artifact tag
             if (artifactTag && artifactTag.length >= 1) {
 
-                console.log(`Using <${artifactTag}> artifact tag(s) for target release filter`);
+                this.consoleLogger.log(`Using <${artifactTag}> artifact tag(s) filter`);
 
                 const targetArtifactBuild: Build = await this.buildHelper.findBuild(project.name!, Number(primaryBuildArtifact.definitionReference!.definition.id), artifactTag);
 
@@ -198,7 +198,7 @@ export class Creator implements ICreator {
             // Confirm source branch filter
             if (sourceBranch) {
 
-                console.log(`Using <${sourceBranch}> artifact branch for target release filter`);
+                this.consoleLogger.log(`Using <${sourceBranch}> artifact branch filter`);
 
             }
 

@@ -59,7 +59,7 @@ export class Approver implements IApprover {
                 // When at least one approval succeeded
                 if (approvalStatus.status === ApprovalStatus.Approved) {
 
-                    console.log(`Stage <${stageStatus.name}> (${stageStatus.id}) deployment successfully approved`);
+                    this.consoleLogger.log(`Stage <${stageStatus.name}> (${stageStatus.id}) deployment successfully approved`);
 
                     break;
 

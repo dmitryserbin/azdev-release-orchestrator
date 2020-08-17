@@ -81,7 +81,7 @@ export class Orchestrator implements IOrchestrator {
 
             } default: {
 
-                console.log(`Re-deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${releaseJob.stages}> stage(s) release`);
+                this.consoleLogger.log(`Re-deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${releaseJob.stages}> stage(s) release`);
 
                 // Manually trigger stages deployment and monitor progress
                 releaseProgress = await deployer.deployManual(releaseJob, details);
