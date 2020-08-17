@@ -1,6 +1,6 @@
 import url from "url";
 
-import { getInput, getEndpointUrl, getEndpointAuthorizationParameter, getBoolInput, getDelimitedInput, getVariable } from "azure-pipelines-task-lib/task";
+import { getInput, getEndpointUrl, getEndpointAuthorizationParameter, getBoolInput, getDelimitedInput, getVariable, setResult, TaskResult } from "azure-pipelines-task-lib/task";
 
 import { ITaskHelper } from "../interfaces/helpers/taskhelper";
 import { IEndpoint } from "../interfaces/task/endpoint";
@@ -8,14 +8,18 @@ import { IParameters, ReleaseType } from "../interfaces/task/parameters";
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IDetails } from "../interfaces/task/details";
+import { ReleaseStatus } from "../interfaces/common/releasestatus";
+import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
 
 export class TaskHelper implements ITaskHelper {
 
     private debugLogger: IDebugLogger;
+    private consoleLogger: IConsoleLogger;
 
-    constructor(debugCreator: IDebugCreator) {
+    constructor(debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
 
         this.debugLogger = debugCreator.extend(this.constructor.name);
+        this.consoleLogger = consoleLogger;
 
     }
 
@@ -190,6 +194,51 @@ export class TaskHelper implements ITaskHelper {
         debug(details);
 
         return details;
+
+    }
+
+    public async validate(status: ReleaseStatus): Promise<void> {
+
+        const debug = this.debugLogger.extend(this.validate.name);
+
+        const succeededMessage: string = `All release stages deployment completed`;
+        const partialMessage: string = `One or more release stages partially succeeded`;
+        const failedMessage: string = `One or more release stages deployment failed`;
+
+        debug(status);
+
+        switch (status) {
+
+            case ReleaseStatus.Succeeded: {
+
+                this.consoleLogger.log(succeededMessage);
+
+                break;
+
+            } case ReleaseStatus.PartiallySucceeded: {
+
+                setResult(TaskResult.SucceededWithIssues, partialMessage);
+
+                break;
+
+            } case ReleaseStatus.Failed: {
+
+                throw new Error(failedMessage);
+
+            }
+
+        }
+
+    }
+
+    public async fail(message: string): Promise<void> {
+
+        const debug = this.debugLogger.extend(this.fail.name);
+
+        const result: TaskResult = getBoolInput("IgnoreFailure")
+            ? TaskResult.SucceededWithIssues : TaskResult.Failed;
+
+        setResult(result, message);
 
     }
 

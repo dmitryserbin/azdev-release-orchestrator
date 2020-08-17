@@ -1,5 +1,3 @@
-import { TaskResult, getBoolInput, setResult } from "azure-pipelines-task-lib/task";
-
 import { IEndpoint } from "./interfaces/task/endpoint";
 import { IParameters } from "./interfaces/task/parameters";
 import { ITaskHelper } from "./interfaces/helpers/taskhelper";
@@ -11,13 +9,14 @@ import { IConsoleLogger } from "./interfaces/loggers/consolelogger";
 import { IDetails } from "./interfaces/task/details";
 import { IOrchestrator } from "./interfaces/orchestrator/orchestrator";
 import { Orchestrator } from "./orchestrator/orchestrator";
+import { IReleaseProgress } from "./interfaces/common/releaseprogress";
 
 async function run() {
 
     const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator");
     const consoleLogger: IConsoleLogger = new ConsoleLogger();
 
-    const taskHelper: ITaskHelper = new TaskHelper(debugCreator);
+    const taskHelper: ITaskHelper = new TaskHelper(debugCreator, consoleLogger);
 
     try {
 
@@ -28,14 +27,13 @@ async function run() {
         const orchestrator: IOrchestrator = new Orchestrator(endpoint, debugCreator, consoleLogger);
 
         // Run orchestrator
-        await orchestrator.orchestrate(parameters, details);
+        const releaseProgress: IReleaseProgress = await orchestrator.orchestrate(parameters, details);
 
-    } catch (err) {
+        await taskHelper.validate(releaseProgress.status);
 
-        const result: TaskResult = getBoolInput("IgnoreFailure")
-            ? TaskResult.SucceededWithIssues : TaskResult.Failed;
+    } catch (error) {
 
-        setResult(result, err.message);
+        await taskHelper.fail(error.message);
 
     }
 

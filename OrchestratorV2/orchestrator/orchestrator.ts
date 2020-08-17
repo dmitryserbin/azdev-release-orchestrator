@@ -34,7 +34,7 @@ export class Orchestrator implements IOrchestrator {
 
     }
 
-    public async orchestrate(parameters: IParameters, details: IDetails) {
+    public async orchestrate(parameters: IParameters, details: IDetails): Promise<IReleaseProgress> {
 
         const debug = this.debugLogger.extend(this.orchestrate.name);
 
@@ -93,6 +93,8 @@ export class Orchestrator implements IOrchestrator {
         }
 
         await reporter.displayReleaseProgress(releaseProgress);
+
+        return releaseProgress;
 
     }
 

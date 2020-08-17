@@ -1,15 +1,14 @@
 import Table from "cli-table";
 import Moment from "moment";
 
-import { setResult, TaskResult } from "azure-pipelines-task-lib";
-import { ApprovalStatus, EnvironmentStatus, ReleaseEnvironment, DeploymentAttempt, DeployPhaseStatus, TaskStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ApprovalStatus, EnvironmentStatus, ReleaseEnvironment, DeploymentAttempt, DeployPhaseStatus, TaskStatus, ReleaseTask } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
 import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
 import { IReporter } from "../interfaces/orchestrator/reporter";
 import { IReleaseProgress } from "../interfaces/common/releaseprogress";
-import { ReleaseStatus } from "../interfaces/common/releasestatus";
+import { IStageProgress } from "../interfaces/common/stageprogress";
 
 export class Reporter implements IReporter {
 
@@ -23,69 +22,23 @@ export class Reporter implements IReporter {
 
     }
 
-    public async validateRelease(releaseProgress: IReleaseProgress): Promise<void> {
-
-        const debug = this.debugLogger.extend(this.validateRelease.name);
-
-        const succeededMessage: string = `All release stages deployment completed`;
-        const partialMessage: string = `One or more release stage(s) partially succeeded`;
-        const failedMessage: string = `One or more release stage(s) deployment failed`;
-
-        debug(releaseProgress);
-
-        switch (releaseProgress.status) {
-
-            case ReleaseStatus.Succeeded: {
-
-                this.consoleLogger.log(succeededMessage);
-
-                break;
-
-            } case ReleaseStatus.PartiallySucceeded: {
-
-                setResult(TaskResult.SucceededWithIssues, partialMessage);
-
-                break;
-
-            } case ReleaseStatus.Failed: {
-
-                throw new Error(failedMessage);
-
-            }
-
-        }
-
-    }
-
     public async displayReleaseProgress(releaseProgress: IReleaseProgress): Promise<void> {
 
         const debug = this.debugLogger.extend(this.displayReleaseProgress.name);
 
-        const table: Table = new Table({
+        const table: Table = this.newTable([
 
-            head: [
+            "Project",
+            "Release",
+            "Stage",
+            "Approval",
+            "Status",
 
-                "Project",
-                "Release",
-                "Stage",
-                "Approval",
-                "Status",
-    
-            ],
-
-        });
+        ]);
 
         for (const stage of releaseProgress.stages) {
 
-            const stageResult: any[] = [
-
-                releaseProgress.project ?? "-",
-                releaseProgress.name ? `${releaseProgress.name} (${releaseProgress.id})` : "-",
-                stage.name ? stage.name : "-",
-                stage.approval.status ? ApprovalStatus[stage.approval.status] : "-",
-                stage.status ? EnvironmentStatus[stage.status] : "-",
-
-            ];
+            const stageResult: any[] = this.newStageResult(stage, releaseProgress);
 
             table.push(stageResult);
 
@@ -119,30 +72,20 @@ export class Reporter implements IReporter {
 
             for (const job of phase.deploymentJobs!) {
 
-                const table: Table = new Table({
+                const table: Table = this.newTable([
 
-                    head: [
+                    "Agent",
+                    "Task",
+                    "Status",
+                    "Duration",
 
-                        "Agent",
-                        "Task",
-                        "Status",
-                        "Duration",
-
-                    ],
-
-                });
+                ]);
 
                 for (const task of job.tasks!) {
 
-                    table.push([
+                    const taskResult: any[] = this.newTaskResult(task);
 
-                        task.agentName ? task.agentName : "-",
-                        task.name ? task.name : "-",
-                        task.status ? TaskStatus[task.status] : "-",
-                        task.startTime && task.finishTime
-                            ? Moment.duration(new Date(task.startTime).getTime() - new Date (task.finishTime).getTime()).humanize() : "-",
-
-                    ]);
+                    table.push(taskResult);
 
                 }
 
@@ -151,6 +94,50 @@ export class Reporter implements IReporter {
             }
 
         }
+
+    }
+
+    private newStageResult(stage: IStageProgress, releaseProgress: IReleaseProgress): any[] {
+
+        const stageResult: any[] = [
+
+            releaseProgress.project ? releaseProgress.project : "-",
+            releaseProgress.name ? `${releaseProgress.name} (${releaseProgress.id})` : "-",
+            stage.name ? stage.name : "-",
+            stage.approval.status ? ApprovalStatus[stage.approval.status] : "-",
+            stage.status ? EnvironmentStatus[stage.status] : "-",
+
+        ];
+
+        return stageResult;
+
+    }
+
+    private newTaskResult(task: ReleaseTask): any[] {
+
+        const taskResult: any[] = [
+
+            task.agentName ? task.agentName : "-",
+            task.name ? task.name : "-",
+            task.status ? TaskStatus[task.status] : "-",
+            task.startTime && task.finishTime
+                ? Moment.duration(new Date(task.startTime).getTime() - new Date (task.finishTime).getTime()).humanize() : "-",
+
+        ];
+
+        return taskResult;
+
+    }
+
+    private newTable(headers: string[]): Table {
+
+        const table: Table = new Table({
+
+            head: headers,
+
+        });
+
+        return table;
 
     }
 
