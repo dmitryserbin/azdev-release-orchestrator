@@ -63,8 +63,9 @@ export class OrchestratorFactory implements IOrchestratorFactory {
         const releaseHelper: IReleaseHelper = new ReleaseHelper(releaseApi, this.debugCreator);
         const releaseApprover: IApprover = new Approver(commonHelper, releaseHelper, this.debugCreator, this.consoleLogger);
         const progressMonitor: IMonitor = new Monitor(this.debugCreator);
+        const progressReporter: IReporter = new Reporter(this.debugCreator, this.consoleLogger);
 
-        return new Deployer(commonHelper, releaseHelper, releaseApprover, progressMonitor, this.debugCreator, this.consoleLogger);
+        return new Deployer(commonHelper, releaseHelper, releaseApprover, progressMonitor, progressReporter, this.debugCreator, this.consoleLogger);
 
     }
 

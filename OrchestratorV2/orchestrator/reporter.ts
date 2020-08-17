@@ -1,7 +1,8 @@
 import Table from "cli-table";
+import Moment from "moment";
 
 import { setResult, TaskResult } from "azure-pipelines-task-lib";
-import { ApprovalStatus, EnvironmentStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ApprovalStatus, EnvironmentStatus, ReleaseEnvironment, DeploymentAttempt, DeployPhaseStatus, TaskStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
@@ -22,9 +23,9 @@ export class Reporter implements IReporter {
 
     }
 
-    public async validate(releaseProgress: IReleaseProgress): Promise<void> {
+    public async validateRelease(releaseProgress: IReleaseProgress): Promise<void> {
 
-        const debug = this.debugLogger.extend(this.validate.name);
+        const debug = this.debugLogger.extend(this.validateRelease.name);
 
         const succeededMessage: string = `All release stages deployment completed`;
         const partialMessage: string = `One or more release stage(s) partially succeeded`;
@@ -56,9 +57,9 @@ export class Reporter implements IReporter {
 
     }
 
-    public async display(releaseProgress: IReleaseProgress): Promise<void> {
+    public async displayReleaseProgress(releaseProgress: IReleaseProgress): Promise<void> {
 
-        const debug = this.debugLogger.extend(this.display.name);
+        const debug = this.debugLogger.extend(this.displayReleaseProgress.name);
 
         const table: Table = new Table({
 
@@ -95,6 +96,59 @@ export class Reporter implements IReporter {
         if (releaseProgress.url) {
 
             this.consoleLogger.log(`Summary: ${releaseProgress.url}`);
+
+        }
+
+    }
+
+    public async displayStageProgress(stage: ReleaseEnvironment): Promise<void> {
+
+        const debug = this.debugLogger.extend(this.displayStageProgress.name);
+
+        this.consoleLogger.log(`Stage <${stage.name}> (${stage.id}) deployment <${EnvironmentStatus[stage.status!]}> completed`);
+
+        // Get latest deployment attempt
+        const deploymentAttempt: DeploymentAttempt = stage.deploySteps!.sort((left, right) =>
+            left.deploymentId! - right.deploymentId!).reverse()[0];
+
+        debug(deploymentAttempt);
+
+        for (const phase of deploymentAttempt.releaseDeployPhases!) {
+
+            this.consoleLogger.log(`Phase <${phase.name}> deployment <${DeployPhaseStatus[phase.status!]}> completed`);
+
+            for (const job of phase.deploymentJobs!) {
+
+                const table: Table = new Table({
+
+                    head: [
+
+                        "Agent",
+                        "Task",
+                        "Status",
+                        "Duration",
+
+                    ],
+
+                });
+
+                for (const task of job.tasks!) {
+
+                    table.push([
+
+                        task.agentName ? task.agentName : "-",
+                        task.name ? task.name : "-",
+                        task.status ? TaskStatus[task.status] : "-",
+                        task.startTime && task.finishTime
+                            ? Moment.duration(new Date(task.startTime).getTime() - new Date (task.finishTime).getTime()).humanize() : "-",
+
+                    ]);
+
+                }
+
+                this.consoleLogger.log(table.toString());
+
+            }
 
         }
 

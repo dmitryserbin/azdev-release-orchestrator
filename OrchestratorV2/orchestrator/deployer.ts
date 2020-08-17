@@ -1,4 +1,4 @@
-import { Release, ReleaseEnvironment, EnvironmentStatus, ApprovalStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { Release, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDetails } from "../interfaces/task/details";
 import { IDeployer } from "../interfaces/orchestrator/deployer";
@@ -13,6 +13,7 @@ import { IStageProgress } from "../interfaces/common/stageprogress";
 import { IReleaseProgress } from "../interfaces/common/releaseprogress";
 import { ReleaseStatus } from "../interfaces/common/releasestatus";
 import { IApprover } from "../interfaces/orchestrator/approver";
+import { IReporter } from "../interfaces/orchestrator/reporter";
 
 export class Deployer implements IDeployer {
 
@@ -23,8 +24,9 @@ export class Deployer implements IDeployer {
     private releaseHelper: IReleaseHelper;
     private releaseApprover: IApprover;
     private progressMonitor: IMonitor;
+    private progressReporter: IReporter;
 
-    constructor(commonHelper: ICommonHelper, releaseHelper: IReleaseHelper, releaseApprover: IApprover, progressMonitor: IMonitor, debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
+    constructor(commonHelper: ICommonHelper, releaseHelper: IReleaseHelper, releaseApprover: IApprover, progressMonitor: IMonitor, progressReporter: IReporter, debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
 
         this.debugLogger = debugCreator.extend(this.constructor.name);
         this.consoleLogger = consoleLogger;
@@ -33,6 +35,7 @@ export class Deployer implements IDeployer {
         this.releaseHelper = releaseHelper;
         this.releaseApprover = releaseApprover;
         this.progressMonitor = progressMonitor;
+        this.progressReporter = progressReporter;
 
     }
 
@@ -81,7 +84,7 @@ export class Deployer implements IDeployer {
 
                 if (completed) {
 
-                    this.consoleLogger.log(`Stage <${stage.name}> (${stage.id}) deployment <${EnvironmentStatus[stage.status]}> completed`);
+                    await this.progressReporter.displayStageProgress(stageStatus);
 
                     break;
 
