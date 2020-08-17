@@ -52,9 +52,9 @@ export class Reporter implements IReporter {
 
             "ID",
             "Stage",
-            "Release",
             "Approval",
             "Status",
+            "Release",
             "Duration",
 
         ]);
@@ -134,9 +134,9 @@ export class Reporter implements IReporter {
 
             stage.id ? stage.id : "-",
             stage.name ? stage.name : "-",
-            stage.release ?  stage.release : "-",
             stage.approval.status ? ApprovalStatus[stage.approval.status] : "-",
             stage.status ? EnvironmentStatus[stage.status] : "-",
+            stage.release ?  stage.release : "-",
             stage.duration ? Moment.duration(stage.duration, "minute").humanize() : "-",
 
         ];
