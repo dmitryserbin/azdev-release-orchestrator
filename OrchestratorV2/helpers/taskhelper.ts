@@ -66,7 +66,7 @@ export class TaskHelper implements ITaskHelper {
 
         const parameters: IParameters = {
 
-            releaseType: ReleaseType.Create,
+            releaseType: ReleaseType.New,
             projectId: targetProject,
             definitionId: targetDefinition,
             releaseId: "",
@@ -81,7 +81,7 @@ export class TaskHelper implements ITaskHelper {
 
             case "create": {
 
-                parameters.releaseType = ReleaseType.Create;
+                parameters.releaseType = ReleaseType.New;
 
                 const definitionStagesFilter: boolean = getBoolInput("DefinitionStagesFilter");
                 const artifactTagFilter: boolean = getBoolInput("ArtifactTagFilter");

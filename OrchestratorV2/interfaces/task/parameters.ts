@@ -13,7 +13,7 @@ export interface IParameters {
 
 export enum ReleaseType {
 
-    Create = "Create",
+    New = "New",
     Specific = "Specific",
     Latest = "Latest",
 

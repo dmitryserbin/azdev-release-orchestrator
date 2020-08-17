@@ -49,7 +49,7 @@ export class Orchestrator implements IOrchestrator {
 
         switch (parameters.releaseType) {
 
-            case ReleaseType.Create: {
+            case ReleaseType.New: {
 
                 this.consoleLogger.log(`Deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${releaseJob.stages}> stage(s) release`);
 
