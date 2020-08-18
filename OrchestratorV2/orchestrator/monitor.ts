@@ -1,4 +1,4 @@
-import { ApprovalStatus, EnvironmentStatus, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ApprovalStatus, EnvironmentStatus, ReleaseEnvironment, DeploymentAttempt } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IMonitor } from "../interfaces/orchestrator/monitor";
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
@@ -92,9 +92,14 @@ export class Monitor implements IMonitor {
 
     public updateStageProgress(stageProgress: IStageProgress, stageStatus: ReleaseEnvironment): void {
 
+        // Get current deployment attempt
+        const currentAttempt: DeploymentAttempt = stageStatus.deploySteps!.sort((left, right) =>
+            left.deploymentId! - right.deploymentId!).reverse()[0];
+
         stageProgress.status = stageStatus.status!;
         stageProgress.id = stageStatus.id;
         stageProgress.release = stageStatus.release!.name;
+        stageProgress.deployment = currentAttempt;
         stageProgress.duration = stageStatus.timeToDeploy?.toLocaleString();
 
     }

@@ -1,11 +1,10 @@
 import Table from "cli-table";
 import Moment from "moment";
 
-import { ApprovalStatus, EnvironmentStatus, ReleaseEnvironment, DeploymentAttempt, DeployPhaseStatus, TaskStatus, ReleaseTask } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ApprovalStatus, EnvironmentStatus, TaskStatus, ReleaseTask } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
 import { IReporter } from "../interfaces/orchestrator/reporter";
 import { IReleaseProgress } from "../interfaces/common/releaseprogress";
 import { IStageProgress } from "../interfaces/common/stageprogress";
@@ -14,18 +13,16 @@ import { ReleaseStatus } from "../interfaces/common/releasestatus";
 export class Reporter implements IReporter {
 
     private debugLogger: IDebugLogger;
-    private consoleLogger: IConsoleLogger;
 
-    constructor(debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
+    constructor(debugCreator: IDebugCreator) {
 
         this.debugLogger = debugCreator.extend(this.constructor.name);
-        this.consoleLogger = consoleLogger;
 
     }
 
-    public async displayReleaseProgress(releaseProgress: IReleaseProgress): Promise<void> {
+    public getReleaseProgress(releaseProgress: IReleaseProgress): string {
 
-        const debug = this.debugLogger.extend(this.displayReleaseProgress.name);
+        const debug = this.debugLogger.extend(this.getReleaseProgress.name);
 
         const table: Table = this.newTable([
 
@@ -40,13 +37,13 @@ export class Reporter implements IReporter {
 
         table.push(releaseResult);
 
-        this.consoleLogger.log(table.toString());
+        return table.toString();
 
     }
 
-    public async displayStageProgress(stageProgress: IStageProgress[]): Promise<void> {
+    public getStagesProgress(stagesProgress: IStageProgress[]): string {
 
-        const debug = this.debugLogger.extend(this.displayStageProgress.name);
+        const debug = this.debugLogger.extend(this.getStagesProgress.name);
 
         const table: Table = this.newTable([
 
@@ -59,7 +56,7 @@ export class Reporter implements IReporter {
 
         ]);
 
-        for (const stage of stageProgress) {
+        for (const stage of stagesProgress) {
 
             const stageResult: any[] = this.newStageResult(stage);
 
@@ -67,56 +64,47 @@ export class Reporter implements IReporter {
 
         }
 
-        this.consoleLogger.log(table.toString());
+        return table.toString();
 
     }
 
-    public async displayPhaseProgress(stage: ReleaseEnvironment): Promise<void> {
+    public getStageProgress(stageProgress: IStageProgress): string {
 
-        const debug = this.debugLogger.extend(this.displayPhaseProgress.name);
+        const debug = this.debugLogger.extend(this.getStageProgress.name);
 
-        this.consoleLogger.log(`Stage <${stage.name}> (${stage.id}) deployment <${EnvironmentStatus[stage.status!]}> completed`);
+        const table: Table = this.newTable([
 
-        // Get last deployment attempt
-        const lastDeploymentAttempt: DeploymentAttempt = stage.deploySteps!.sort((left, right) =>
-            left.deploymentId! - right.deploymentId!).reverse()[0];
+            "Agent",
+            "Phase",
+            "Task",
+            "Status",
+            "Duration",
 
-        debug(lastDeploymentAttempt);
+        ]);
 
-        for (const phase of lastDeploymentAttempt.releaseDeployPhases!) {
+        for (const phase of stageProgress.deployment?.releaseDeployPhases!) {
 
-            this.consoleLogger.log(`Phase <${phase.name}> deployment <${DeployPhaseStatus[phase.status!]}> completed`);
+            for (const job of phase.deploymentJobs!) {
 
-            for (const deploymentJob of phase.deploymentJobs!) {
+                for (const task of job.tasks!) {
 
-                const table: Table = this.newTable([
-
-                    "Agent",
-                    "Task",
-                    "Status",
-                    "Duration",
-
-                ]);
-
-                for (const task of deploymentJob.tasks!) {
-
-                    const taskResult: any[] = this.newTaskResult(task);
+                    const taskResult: any[] = this.newTaskResult(phase.name!, task);
 
                     table.push(taskResult);
 
                 }
 
-                this.consoleLogger.log(table.toString());
-
             }
 
         }
 
+        return table.toString();
+
     }
 
-    public newReleaseResult(releaseProgress: IReleaseProgress): any[] {
+    private newReleaseResult(releaseProgress: IReleaseProgress): any[] {
 
-        const releaseResult: any[] = [
+        const result: any[] = [
 
             releaseProgress.id ? releaseProgress.id : "-",
             releaseProgress.name ? releaseProgress.name : "-",
@@ -125,13 +113,13 @@ export class Reporter implements IReporter {
 
         ];
 
-        return releaseResult;
+        return result;
 
     }
 
     private newStageResult(stage: IStageProgress): any[] {
 
-        const stageResult: any[] = [
+        const result: any[] = [
 
             stage.id ? stage.id : "-",
             stage.name ? stage.name : "-",
@@ -142,15 +130,16 @@ export class Reporter implements IReporter {
 
         ];
 
-        return stageResult;
+        return result;
 
     }
 
-    private newTaskResult(task: ReleaseTask): any[] {
+    private newTaskResult(phaseName: string, task: ReleaseTask): any[] {
 
-        const taskResult: any[] = [
+        const result: any[] = [
 
             task.agentName ? task.agentName : "-",
+            phaseName,
             task.name ? task.name : "-",
             task.status ? TaskStatus[task.status] : "-",
             task.startTime && task.finishTime
@@ -158,7 +147,7 @@ export class Reporter implements IReporter {
 
         ];
 
-        return taskResult;
+        return result;
 
     }
 

@@ -1,4 +1,4 @@
-import { Release, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { Release, ReleaseEnvironment, EnvironmentStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDetails } from "../interfaces/task/details";
 import { IDeployer } from "../interfaces/orchestrator/deployer";
@@ -84,7 +84,10 @@ export class Deployer implements IDeployer {
 
                 if (completed) {
 
-                    await this.progressReporter.displayPhaseProgress(stageStatus);
+                    this.consoleLogger.log(`Stage <${stage.name}> (${stage.id}) deployment <${EnvironmentStatus[stage.status]}> completed`);
+
+                    this.consoleLogger.log(
+                        this.progressReporter.getStageProgress(stage));
 
                     break;
 
@@ -103,7 +106,10 @@ export class Deployer implements IDeployer {
 
         } while (releaseProgress.status === ReleaseStatus.InProgress);
 
-        await this.progressReporter.displayStageProgress(releaseProgress.stages);
+        this.consoleLogger.log(`All release stages <${releaseJob.stages}> deployment completed`);
+
+        this.consoleLogger.log(
+            this.progressReporter.getStagesProgress(releaseProgress.stages));
 
         return releaseProgress;
 

@@ -201,7 +201,6 @@ export class TaskHelper implements ITaskHelper {
 
         const debug = this.debugLogger.extend(this.validate.name);
 
-        const succeededMessage: string = `All release stages deployment completed`;
         const partialMessage: string = `One or more release stages partially succeeded`;
         const failedMessage: string = `One or more release stages deployment failed`;
 
@@ -209,13 +208,7 @@ export class TaskHelper implements ITaskHelper {
 
         switch (status) {
 
-            case ReleaseStatus.Succeeded: {
-
-                this.consoleLogger.log(succeededMessage);
-
-                break;
-
-            } case ReleaseStatus.PartiallySucceeded: {
+            case ReleaseStatus.PartiallySucceeded: {
 
                 setResult(TaskResult.SucceededWithIssues, partialMessage);
 

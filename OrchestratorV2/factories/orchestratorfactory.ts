@@ -63,7 +63,7 @@ export class OrchestratorFactory implements IOrchestratorFactory {
         const releaseHelper: IReleaseHelper = new ReleaseHelper(releaseApi, this.debugCreator);
         const releaseApprover: IApprover = new Approver(commonHelper, releaseHelper, this.debugCreator, this.consoleLogger);
         const progressMonitor: IMonitor = new Monitor(this.debugCreator);
-        const progressReporter: IReporter = new Reporter(this.debugCreator, this.consoleLogger);
+        const progressReporter: IReporter = new Reporter(this.debugCreator);
 
         return new Deployer(commonHelper, releaseHelper, releaseApprover, progressMonitor, progressReporter, this.debugCreator, this.consoleLogger);
 
@@ -71,7 +71,7 @@ export class OrchestratorFactory implements IOrchestratorFactory {
 
     public async createReporter(): Promise<IReporter> {
 
-        return new Reporter(this.debugCreator, this.consoleLogger);
+        return new Reporter(this.debugCreator);
 
     }
 
