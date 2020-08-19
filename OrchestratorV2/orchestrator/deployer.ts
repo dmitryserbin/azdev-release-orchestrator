@@ -106,7 +106,7 @@ export class Deployer implements IDeployer {
                 // Wait before next stage status update
                 await this.commonHelper.wait(releaseJob.settings.sleep);
 
-            } while (true)
+            } while (true);
 
         }
 
