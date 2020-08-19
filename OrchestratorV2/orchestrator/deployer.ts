@@ -62,7 +62,7 @@ export class Deployer implements IDeployer {
 
                 this.consoleLogger.log(`Manually starting <${stage.name}> (${stage.id}) stage deployment`);
 
-                const startMessage: string = `Requested via <${details.releaseName}> (${details.projectName}) by ${details.requesterName}`
+                const startMessage: string = `Requested via <${details.releaseName}> (${details.projectName}) by ${details.requesterName}`;
 
                 // Start stage deployment
                 stageStatus = await this.releaseHelper.startStage(stageStatus, releaseJob.project.name!, startMessage);
@@ -106,7 +106,7 @@ export class Deployer implements IDeployer {
                 // Wait before next stage status update
                 await this.commonHelper.wait(releaseJob.settings.sleep);
 
-            } while (releaseProgress.status === ReleaseStatus.InProgress)
+            } while (true)
 
         }
 
