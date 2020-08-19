@@ -359,6 +359,25 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
+    public async startStage(stage: ReleaseEnvironment, projectName: string, message: string): Promise<ReleaseEnvironment> {
+
+        const debug = this.debugLogger.extend(this.startStage.name);
+
+        const startRequest: ReleaseEnvironmentUpdateMetadata = {
+
+            status: EnvironmentStatus.InProgress,
+            comment: message,
+
+        };
+
+        const stageStatus: ReleaseEnvironment = await this.releaseApi.updateReleaseEnvironment(startRequest, projectName, stage.release!.id!, stage.id!);
+
+        debug(stageStatus);
+
+        return stageStatus;
+
+    }
+
     public async cancelStage(stage: ReleaseEnvironment, projectName: string, message: string): Promise<ReleaseEnvironment> {
 
         const debug = this.debugLogger.extend(this.cancelStage.name);

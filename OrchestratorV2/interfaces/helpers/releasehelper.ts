@@ -18,6 +18,7 @@ export interface IReleaseHelper {
     getReleaseStages(release: Release, stages: string[]): Promise<string[]>;
     getStageApprovals(stage: ReleaseEnvironment, status: ApprovalStatus): Promise<ReleaseApproval[]>;
     getReleaseType(release: Release): Promise<DeploymentType>;
+    startStage(stage: ReleaseEnvironment, projectName: string, message: string): Promise<ReleaseEnvironment>;
     cancelStage(stage: ReleaseEnvironment, projectName: string, message: string): Promise<ReleaseEnvironment>;
     approveStage(releaseApproval: ReleaseApproval, projectName: string, message: string): Promise<ReleaseApproval>;
 

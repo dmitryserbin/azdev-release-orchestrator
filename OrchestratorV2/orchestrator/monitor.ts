@@ -66,11 +66,25 @@ export class Monitor implements IMonitor {
 
         const debug = this.debugLogger.extend(this.getActiveStages.name);
 
-        const incompletedStages: IStageProgress[] = releaseProgress.stages.filter((stage) => !this.isStageCompleted(stage));
+        const incompletedStages: IStageProgress[] = releaseProgress.stages.filter(
+            (stage) => !this.isStageCompleted(stage));
 
         debug(incompletedStages);
 
         return incompletedStages;
+
+    }
+
+    public getPendingStages(releaseProgress: IReleaseProgress): IStageProgress[] {
+
+        const debug = this.debugLogger.extend(this.getPendingStages.name);
+
+        const pendingStages: IStageProgress[] = releaseProgress.stages.filter(
+            (stage) => this.isStagePending(stage));
+
+        debug(pendingStages);
+
+        return pendingStages;
 
     }
 
@@ -84,7 +98,21 @@ export class Monitor implements IMonitor {
             stageProgress.status === EnvironmentStatus.Rejected ||
             stageProgress.status === EnvironmentStatus.Canceled;
 
-        debug(stageProgress);
+        debug(status);
+
+        return status;
+
+    }
+
+    public isStagePending(stageProgress: IStageProgress): boolean {
+
+        const debug = this.debugLogger.extend(this.isStagePending.name);
+
+        const status: boolean =
+            stageProgress.status !== EnvironmentStatus.Queued &&
+            stageProgress.status !== EnvironmentStatus.InProgress;
+
+        debug(status);
 
         return status;
 
