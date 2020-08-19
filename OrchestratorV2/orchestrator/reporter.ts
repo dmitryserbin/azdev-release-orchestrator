@@ -170,13 +170,16 @@ export class Reporter implements IReporter {
 
     }
 
-    private newTable(headers: string[]): Table {
+    private newTable(headers: string[], widths: number[] = []): Table {
 
-        const table: Table = new Table({
+        const options: any = {
 
             head: headers,
+            widths: widths,
 
-        });
+        };
+
+        const table: Table = new Table(options);
 
         return table;
 
