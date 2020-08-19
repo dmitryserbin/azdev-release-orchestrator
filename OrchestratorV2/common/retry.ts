@@ -1,7 +1,7 @@
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { DebugCreator } from "../loggers/debugcreator";
-import { IRetryOptions } from "./retryoptions";
+import { IRetryOptions } from "../interfaces/common/retryoptions";
 
 const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator");
 const debugLogger: IDebugLogger = debugCreator.extend("Retry");
