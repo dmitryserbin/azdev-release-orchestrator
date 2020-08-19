@@ -50,10 +50,10 @@ export class Reporter implements IReporter {
 
             "ID",
             "Stage",
+            "Trigger",
             "Release",
             "Tasks",
             "Attempt",
-            "Trigger",
             "Approval",
             "Status",
             "Duration",
@@ -149,10 +149,10 @@ export class Reporter implements IReporter {
 
             stage.id ? stage.id : "-",
             stage.name ? stage.name : "-",
+            stage.deployment!.reason ? DeploymentReason[stage.deployment!.reason] : "-",
             stage.release ?  stage.release : "-",
             tasksCount > 0 ? tasksCount : "-",
             stage.deployment!.attempt ? stage.deployment!.attempt : "-",
-            stage.deployment!.reason ? DeploymentReason[stage.deployment!.reason] : "-",
             stage.approval.status ? ApprovalStatus[stage.approval.status] : "-",
             stage.status ? EnvironmentStatus[stage.status] : "-",
             stage.duration ? Moment.duration(stage.duration, "minute").humanize() : "-",
