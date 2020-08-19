@@ -98,7 +98,23 @@ export class Monitor implements IMonitor {
             stageProgress.status === EnvironmentStatus.Rejected ||
             stageProgress.status === EnvironmentStatus.Canceled;
 
-        debug(status);
+        debug(`Stage <${stageProgress.name}> (${EnvironmentStatus[stageProgress.status]}) status <${status}>`);
+
+        return status;
+
+    }
+
+    public isStageActive(stageProgress: IStageProgress): boolean {
+
+        const debug = this.debugLogger.extend(this.isStageActive.name);
+
+        const status: boolean =
+            stageProgress.status !== EnvironmentStatus.Succeeded &&
+            stageProgress.status !== EnvironmentStatus.PartiallySucceeded &&
+            stageProgress.status !== EnvironmentStatus.Rejected &&
+            stageProgress.status !== EnvironmentStatus.Canceled;
+
+        debug(`Stage <${stageProgress.name}> (${EnvironmentStatus[stageProgress.status]}) status <${status}>`);
 
         return status;
 
@@ -112,7 +128,7 @@ export class Monitor implements IMonitor {
             stageProgress.status !== EnvironmentStatus.Queued &&
             stageProgress.status !== EnvironmentStatus.InProgress;
 
-        debug(status);
+        debug(`Stage <${stageProgress.name}> (${EnvironmentStatus[stageProgress.status]}) status <${status}>`);
 
         return status;
 
@@ -141,7 +157,7 @@ export class Monitor implements IMonitor {
                 (stage) => stage.name);
 
         const activeStages: string[] = releaseProgress.stages.filter(
-            (stage) => !this.isStageCompleted(stage)).map(
+            (stage) => this.isStageActive(stage)).map(
                 (stage) => stage.name);
 
         // Get stages completion status
