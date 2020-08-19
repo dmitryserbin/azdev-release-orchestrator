@@ -49,6 +49,7 @@ export class Reporter implements IReporter {
 
             "ID",
             "Stage",
+            "Tasks",
             "Approval",
             "Status",
             "Release",
@@ -120,10 +121,13 @@ export class Reporter implements IReporter {
 
     private newStageResult(stage: IStageProgress): any[] {
 
+        const tasksCount: number = this.getTasksCount(stage);
+
         const result: any[] = [
 
             stage.id ? stage.id : "-",
             stage.name ? stage.name : "-",
+            tasksCount > 0 ? tasksCount : "-",
             stage.approval.status ? ApprovalStatus[stage.approval.status] : "-",
             stage.status ? EnvironmentStatus[stage.status] : "-",
             stage.release ?  stage.release : "-",
@@ -150,6 +154,19 @@ export class Reporter implements IReporter {
         ];
 
         return result;
+
+    }
+
+    private getTasksCount(stage: IStageProgress): number {
+
+        const tasks: ReleaseTask[] = [];
+
+        stage.deployment!.releaseDeployPhases!.forEach(
+            (phase) => phase.deploymentJobs!.forEach(
+                (job) => job.tasks?.forEach(
+                    (task) => tasks.push(task))));
+
+        return tasks.length;
 
     }
 
