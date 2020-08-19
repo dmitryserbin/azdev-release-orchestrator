@@ -63,6 +63,51 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
+    public async getReleases(projectName: string, definitionId: number, status: ReleaseStatus, filter: IReleaseFilter): Promise<Release[]> {
+
+        const debug = this.debugLogger.extend(this.getReleases.name);
+
+        const releases: Release[] = await this.releaseApi.getReleases(
+            projectName,
+            definitionId,
+            undefined,
+            undefined,
+            undefined,
+            status,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            ReleaseExpands.Artifacts,
+            undefined,
+            undefined,
+            filter.artifactVersion ? filter.artifactVersion : undefined,
+            filter.sourceBranch ? filter.sourceBranch : undefined,
+            undefined,
+            (filter.tag && filter.tag.length) ? filter.tag : undefined);
+
+        if (releases.length <= 0) {
+
+            if (filter.tag || filter.artifactVersion || filter.sourceBranch) {
+
+                throw new Error(`No <${definitionId}> definition releases matching filter (tags: ${filter.tag}, artifact: ${filter.artifactVersion}, branch: ${filter.sourceBranch}) criteria found`);
+
+            } else {
+
+                throw new Error(`No <${definitionId}> definition releases found`);
+
+            }
+
+        }
+
+        debug(`Found <${releases.length}> (${ReleaseStatus[status]}) release(s) matching filter (tags: ${filter.tag}, artifact: ${filter.artifactVersion}, branch: ${filter.sourceBranch})`);
+
+        return releases;
+
+    }
+
     public async getReleaseStatus(projectName: string, releaseId: number): Promise<Release> {
 
         const debug = this.debugLogger.extend(this.getReleaseStatus.name);
@@ -85,49 +130,11 @@ export class ReleaseHelper implements IReleaseHelper {
 
         const debug = this.debugLogger.extend(this.findRelease.name);
 
-        const availableReleases: Release[] = await this.releaseApi.getReleases(
-            projectName,
-            definitionId,
-            undefined,
-            undefined,
-            undefined,
-            ReleaseStatus.Active,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            ReleaseExpands.Artifacts,
-            undefined,
-            undefined,
-            filter.artifactVersion ? filter.artifactVersion : undefined,
-            filter.sourceBranch ? filter.sourceBranch : undefined,
-            undefined,
-            (filter.tag && filter.tag.length) ? filter.tag : undefined);
-
-        if (!availableReleases) {
-
-            throw new Error(`No ${projectName} project ${definitionId} definition releases found`);
-
-        }
-
-        if (availableReleases.length <= 0) {
-
-            if (filter.tag || filter.artifactVersion || filter.sourceBranch) {
-
-                throw new Error(`No active releases matching filter (tags: ${filter.tag}, artifact: ${filter.artifactVersion}, branch: ${filter.sourceBranch}) criteria found`);
-
-            } else {
-
-                throw new Error(`No active releases found`);
-
-            }
-
-        }
+        const availableReleases: Release[] = await this.getReleases(projectName, definitionId, ReleaseStatus.Active, filter);
 
         // Find latest release by ID
-        const filteredRelease: Release = availableReleases.sort((left, right) => left.id! - right.id!).reverse()[0];
+        const filteredRelease: Release = availableReleases.sort(
+            (left, right) => left.id! - right.id!).reverse()[0];
 
         const targetRelease: Release = await this.releaseApi.getRelease(projectName, filteredRelease.id!);
 
