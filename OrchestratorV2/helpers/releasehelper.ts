@@ -53,9 +53,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
         }
 
-        const targetStages: string[] = targetRelease.environments!.map((i) => i.name!);
-
-        await this.validateStages(stages, targetStages);
+        await this.validateReleaseStages(targetRelease, stages);
 
         debug(targetRelease);
 
@@ -108,27 +106,9 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    public async getReleaseStatus(projectName: string, releaseId: number): Promise<Release> {
+    public async getLastRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter): Promise<Release> {
 
-        const debug = this.debugLogger.extend(this.getReleaseStatus.name);
-
-        const releaseStatus: Release = await this.releaseApi.getRelease(projectName, releaseId);
-
-        if (!releaseStatus) {
-
-            throw new Error(`Unable to get <${releaseId}> release status`);
-
-        }
-
-        debug(`Release <${releaseStatus.name}> status <${ReleaseStatus[releaseStatus.status!]}> retrieved`);
-
-        return releaseStatus;
-
-    }
-
-    public async findLastRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter): Promise<Release> {
-
-        const debug = this.debugLogger.extend(this.findLastRelease.name);
+        const debug = this.debugLogger.extend(this.getLastRelease.name);
 
         const availableReleases: Release[] = await this.getReleases(projectName, definitionId, ReleaseStatus.Active, filter);
 
@@ -138,9 +118,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
         const targetRelease: Release = await this.releaseApi.getRelease(projectName, filteredRelease.id!);
 
-        const targetStages: string[] = targetRelease.environments!.map((i) => i.name!);
-
-        await this.validateStages(stages, targetStages);
+        await this.validateReleaseStages(targetRelease, stages);
 
         debug(targetRelease);
 
@@ -182,6 +160,24 @@ export class ReleaseHelper implements IReleaseHelper {
         debug(targetRelease);
 
         return targetRelease;
+
+    }
+
+    public async getReleaseStatus(projectName: string, releaseId: number): Promise<Release> {
+
+        const debug = this.debugLogger.extend(this.getReleaseStatus.name);
+
+        const releaseStatus: Release = await this.releaseApi.getRelease(projectName, releaseId);
+
+        if (!releaseStatus) {
+
+            throw new Error(`Unable to get <${releaseId}> release status`);
+
+        }
+
+        debug(`Release <${releaseStatus.name}> status <${ReleaseStatus[releaseStatus.status!]}> retrieved`);
+
+        return releaseStatus;
 
     }
 
@@ -296,11 +292,11 @@ export class ReleaseHelper implements IReleaseHelper {
 
         const debug = this.debugLogger.extend(this.getDefinitionStages.name);
 
-        const definitionStages: string[] = definition.environments!.map((i) => i.name!);
+        await this.validateDefinitionStages(definition, stages);
 
-        await this.validateStages(stages, definitionStages);
-
-        const targetStages: string[] = definitionStages.filter((i) => stages.indexOf(i) === -1);
+        const targetStages: string[] = definition.environments!.map(
+            (stage) => stage.name!).filter(
+                (stage) => stages.indexOf(stage) === -1);
 
         debug(targetStages);
 
@@ -423,15 +419,37 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    private async validateStages(required: string[], existing: string[]): Promise<void> {
+    private async validateReleaseStages(release: Release, required: string[]): Promise<void> {
 
-        const debug = this.debugLogger.extend(this.validateStages.name);
+        const debug = this.debugLogger.extend(this.validateReleaseStages.name);
+
+        const releaseStages: string[] = release.environments!.map(
+            (stage) => stage.name!);
 
         for (const stage of required) {
 
-            if (existing.indexOf(stage) === -1) {
+            if (releaseStages.indexOf(stage) === -1) {
 
-                throw new Error(`Release does not contain <${stage}> stage`);
+                throw new Error(`Release <${release.name}> does not contain <${stage}> stage`);
+
+            }
+
+        }
+
+    }
+
+    private async validateDefinitionStages(definition: ReleaseDefinition, required: string[]): Promise<void> {
+
+        const debug = this.debugLogger.extend(this.validateDefinitionStages.name);
+
+        const definitionStages: string[] = definition.environments!.map(
+            (stage) => stage.name!);
+
+        for (const stage of required) {
+
+            if (definitionStages.indexOf(stage) === -1) {
+
+                throw new Error(`Definition <${definition.name}> does not contain <${stage}> stage`);
 
             }
 
