@@ -117,13 +117,7 @@ export class Reporter implements IReporter {
 
         ]);
 
-        const result: any[] = [
-
-            filters.releaseTags.length ? filters.releaseTags : "-",
-            filters.artifactTags.length ? filters.artifactTags : "-",
-            filters.artifactBranch ? filters.artifactBranch : "-",
-
-        ];
+        const result: any[] = this.newFiltersResult(filters);
 
         table.push(result);
 
@@ -177,6 +171,20 @@ export class Reporter implements IReporter {
             task.status ? TaskStatus[task.status] : "-",
             task.startTime && task.finishTime
                 ? Moment.duration(new Date(task.startTime).getTime() - new Date (task.finishTime).getTime()).humanize() : "-",
+
+        ];
+
+        return result;
+
+    }
+
+    private newFiltersResult(filters: IFilters): any[] {
+
+        const result: any[] = [
+
+            filters.releaseTags.length ? filters.releaseTags : "-",
+            filters.artifactTags.length ? filters.artifactTags : "-",
+            filters.artifactBranch ? filters.artifactBranch : "-",
 
         ];
 
