@@ -105,9 +105,9 @@ export class Reporter implements IReporter {
 
     }
 
-    public getFilter(filters: IFilters): string {
+    public getFilters(filters: IFilters): string {
 
-        const debug = this.debugLogger.extend(this.getFilter.name);
+        const debug = this.debugLogger.extend(this.getFilters.name);
 
         const table: Table = this.newTable([
 

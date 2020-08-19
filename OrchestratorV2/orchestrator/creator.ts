@@ -90,7 +90,7 @@ export class Creator implements ICreator {
                 this.consoleLogger.log(`Creating new <${definition.name}> (${definition.id}) release pipeline release`);
 
                 this.consoleLogger.log(
-                    this.progressReporter.getFilter(parameters.filters)
+                    this.progressReporter.getFilters(parameters.filters)
                 );
 
                 const artifactFilter: IArtifactFilter[] = await this.createArtifactFilter(project, definition, parameters.filters.artifactTags, parameters.filters.artifactBranch);
@@ -104,7 +104,7 @@ export class Creator implements ICreator {
                 this.consoleLogger.log(`Targeting latest <${definition.name}> (${definition.id}) release pipeline release`);
 
                 this.consoleLogger.log(
-                    this.progressReporter.getFilter(parameters.filters)
+                    this.progressReporter.getFilters(parameters.filters)
                 );
 
                 const releaseFilter: IReleaseFilter = await this.createReleaseFilter(project, definition, parameters.filters.releaseTags, parameters.filters.artifactTags, parameters.filters.artifactBranch);
