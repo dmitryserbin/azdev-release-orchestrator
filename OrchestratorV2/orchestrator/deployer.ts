@@ -71,7 +71,6 @@ export class Deployer implements IDeployer {
 
             }
 
-            // Monitor stage progress
             do {
 
                 releaseStatus = await this.releaseHelper.getReleaseStatus(releaseJob.project.name!, releaseJob.release.id!);
@@ -107,7 +106,7 @@ export class Deployer implements IDeployer {
                 // Wait before next stage status update
                 await this.commonHelper.wait(releaseJob.settings.sleep);
 
-            } while (true)
+            } while (releaseProgress.status === ReleaseStatus.InProgress)
 
         }
 
