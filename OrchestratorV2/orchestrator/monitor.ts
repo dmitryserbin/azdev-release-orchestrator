@@ -136,13 +136,20 @@ export class Monitor implements IMonitor {
 
         const debug = this.debugLogger.extend(this.updateReleaseProgress.name);
 
+        const completedStages: string[] = releaseProgress.stages.filter(
+            (stage) => this.isStageCompleted(stage)).map(
+                (stage) => stage.name);
+
+        const activeStages: string[] = releaseProgress.stages.filter(
+            (stage) => !this.isStageCompleted(stage)).map(
+                (stage) => stage.name);
+
         // Get stages completion status
-        const completed: boolean = releaseProgress.stages.filter((i) =>
-            this.isStageCompleted(i)).length === releaseProgress.stages.length;
+        const completed: boolean = completedStages.length === releaseProgress.stages.length;
 
         if (completed) {
 
-            debug(`All release stages completed`);
+            debug(`All release stages <${completedStages}> completed`);
 
             // Get rejected or canceled stages
             const failed: boolean = releaseProgress.stages.filter((i) =>
@@ -172,7 +179,7 @@ export class Monitor implements IMonitor {
 
         } else {
 
-            debug(`Some release stages in progress`);
+            debug(`Release stages <${activeStages}> in progress`);
 
             releaseProgress.status = ReleaseStatus.InProgress;
 
