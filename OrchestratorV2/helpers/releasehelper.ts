@@ -126,9 +126,9 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    public async findRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter): Promise<Release> {
+    public async findLastRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter): Promise<Release> {
 
-        const debug = this.debugLogger.extend(this.findRelease.name);
+        const debug = this.debugLogger.extend(this.findLastRelease.name);
 
         const availableReleases: Release[] = await this.getReleases(projectName, definitionId, ReleaseStatus.Active, filter);
 
