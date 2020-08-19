@@ -50,8 +50,8 @@ export class Reporter implements IReporter {
 
             "ID",
             "Stage",
-            "Trigger",
             "Release",
+            "Trigger",
             "Tasks",
             "Attempt",
             "Approval",
@@ -149,8 +149,8 @@ export class Reporter implements IReporter {
 
             stage.id ? stage.id : "-",
             stage.name ? stage.name : "-",
-            stage.deployment!.reason ? DeploymentReason[stage.deployment!.reason] : "-",
             stage.release ?  stage.release : "-",
+            stage.deployment!.reason ? DeploymentReason[stage.deployment!.reason] : "-",
             tasksCount > 0 ? tasksCount : "-",
             stage.deployment!.attempt ? stage.deployment!.attempt : "-",
             stage.approval.status ? ApprovalStatus[stage.approval.status] : "-",
