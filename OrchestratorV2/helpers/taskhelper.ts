@@ -10,6 +10,7 @@ import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IDetails } from "../interfaces/task/details";
 import { ReleaseStatus } from "../interfaces/common/releasestatus";
 import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
+import { IFilters } from "../interfaces/task/filters";
 
 export class TaskHelper implements ITaskHelper {
 
@@ -68,6 +69,14 @@ export class TaskHelper implements ITaskHelper {
         const targetProject: string = getInput("TargetProject", true)!;
         const targetDefinition: string = getInput("TargetDefinition", true)!;
 
+        const filters: IFilters = {
+
+            releaseTags: [],
+            artifactTags: [],
+            artifactBranch: "",
+
+        };
+
         const parameters: IParameters = {
 
             releaseType: ReleaseType.New,
@@ -75,9 +84,7 @@ export class TaskHelper implements ITaskHelper {
             definitionId: targetDefinition,
             releaseId: "",
             stages: [],
-            releaseTag: [],
-            artifactTag: [],
-            sourceBranch: "",
+            filters,
 
         };
 
@@ -102,7 +109,7 @@ export class TaskHelper implements ITaskHelper {
                 // Optional to support variable input
                 if (artifactTagFilter) {
 
-                    parameters.artifactTag = getDelimitedInput("ArtifactTagName", ",", false);
+                    filters.artifactTags = getDelimitedInput("ArtifactTagName", ",", false);
 
                 }
 
@@ -110,7 +117,7 @@ export class TaskHelper implements ITaskHelper {
                 // Optional to support variable input
                 if (sourceBranchFilter) {
 
-                    parameters.sourceBranch = getInput("SourceBranchName", false)!;
+                    filters.artifactBranch = getInput("SourceBranchName", false)!;
 
                 }
 
@@ -131,7 +138,7 @@ export class TaskHelper implements ITaskHelper {
                 // Optional to support variable input
                 if (releaseTagFilter) {
 
-                    parameters.releaseTag = getDelimitedInput("ReleaseTagName", ",", false);
+                    filters.releaseTags = getDelimitedInput("ReleaseTagName", ",", false);
 
                 }
 
@@ -139,7 +146,7 @@ export class TaskHelper implements ITaskHelper {
                 // Optional to support variable input
                 if (artifactTagFilter) {
 
-                    parameters.artifactTag = getDelimitedInput("ArtifactTagName", ",", false);
+                    filters.artifactTags = getDelimitedInput("ArtifactTagName", ",", false);
 
                 }
 
@@ -147,7 +154,7 @@ export class TaskHelper implements ITaskHelper {
                 // Optional to support variable input
                 if (sourceBranchFilter) {
 
-                    parameters.sourceBranch = getInput("SourceBranchName", false)!;
+                    filters.artifactBranch = getInput("SourceBranchName", false)!;
 
                 }
 

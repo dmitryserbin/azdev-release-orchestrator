@@ -1,3 +1,5 @@
+import { IFilters } from "./filters";
+
 export interface IParameters {
 
     releaseType: ReleaseType;
@@ -5,9 +7,7 @@ export interface IParameters {
     definitionId: string;
     releaseId: string;
     stages: string[];
-    releaseTag: string[];
-    artifactTag: string[];
-    sourceBranch: string;
+    filters: IFilters;
 
 }
 

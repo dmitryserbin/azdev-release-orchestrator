@@ -50,8 +50,9 @@ export class OrchestratorFactory implements IOrchestratorFactory {
         const coreHelper: ICoreHelper = new CoreHelper(coreApi, this.debugCreator);
         const buildHelper: IBuildHelper = new BuildHelper(buildApi, this.debugCreator);
         const releaseHelper: IReleaseHelper = new ReleaseHelper(releaseApi, this.debugCreator);
+        const progressReporter: IReporter = new Reporter(this.debugCreator);
 
-        return new Creator(coreHelper, buildHelper, releaseHelper, this.debugCreator, this.consoleLogger);
+        return new Creator(coreHelper, buildHelper, releaseHelper, progressReporter, this.debugCreator, this.consoleLogger);
 
     }
 

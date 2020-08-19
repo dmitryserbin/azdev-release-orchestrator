@@ -16,6 +16,7 @@ import { IReleaseFilter } from "../interfaces/common/releasefilter";
 import { IArtifactFilter } from "../interfaces/common/artifactfilter";
 import { ISettings } from "../interfaces/common/settings";
 import { DeploymentType } from "../interfaces/common/deploymenttype";
+import { IReporter } from "../interfaces/orchestrator/reporter";
 
 export class Creator implements ICreator {
 
@@ -25,8 +26,9 @@ export class Creator implements ICreator {
     private coreHelper: ICoreHelper;
     private buildHelper: IBuildHelper;
     private releaseHelper: IReleaseHelper;
+    private progressReporter: IReporter;
 
-    constructor(coreHelper: ICoreHelper, buildHelper: IBuildHelper, releaseHelper: IReleaseHelper, debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
+    constructor(coreHelper: ICoreHelper, buildHelper: IBuildHelper, releaseHelper: IReleaseHelper, progressReporter: IReporter, debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
 
         this.debugLogger = debugCreator.extend(this.constructor.name);
         this.consoleLogger = consoleLogger;
@@ -34,6 +36,7 @@ export class Creator implements ICreator {
         this.coreHelper = coreHelper;
         this.buildHelper = buildHelper;
         this.releaseHelper = releaseHelper;
+        this.progressReporter = progressReporter;
 
     }
 
@@ -86,7 +89,11 @@ export class Creator implements ICreator {
 
                 this.consoleLogger.log(`Creating new <${definition.name}> (${definition.id}) release pipeline release`);
 
-                const artifactFilter: IArtifactFilter[] = await this.createArtifactFilter(project, definition, parameters.artifactTag, parameters.sourceBranch);
+                this.consoleLogger.log(
+                    this.progressReporter.getFilter(parameters.filters)
+                );
+
+                const artifactFilter: IArtifactFilter[] = await this.createArtifactFilter(project, definition, parameters.filters.artifactTags, parameters.filters.artifactBranch);
 
                 release = await this.releaseHelper.createRelease(project.name!, definition, details, parameters.stages, artifactFilter);
 
@@ -96,7 +103,11 @@ export class Creator implements ICreator {
 
                 this.consoleLogger.log(`Targeting latest <${definition.name}> (${definition.id}) release pipeline release`);
 
-                const releaseFilter: IReleaseFilter = await this.createReleaseFilter(project, definition, parameters.releaseTag, parameters.artifactTag, parameters.sourceBranch);
+                this.consoleLogger.log(
+                    this.progressReporter.getFilter(parameters.filters)
+                );
+
+                const releaseFilter: IReleaseFilter = await this.createReleaseFilter(project, definition, parameters.filters.releaseTags, parameters.filters.artifactTags, parameters.filters.artifactBranch);
 
                 release = await this.releaseHelper.findRelease(project.name!, definition.id!, parameters.stages, releaseFilter);
 

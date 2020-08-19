@@ -9,6 +9,7 @@ import { IReporter } from "../interfaces/orchestrator/reporter";
 import { IReleaseProgress } from "../interfaces/common/releaseprogress";
 import { IStageProgress } from "../interfaces/common/stageprogress";
 import { ReleaseStatus } from "../interfaces/common/releasestatus";
+import { IFilters } from "../interfaces/task/filters";
 
 export class Reporter implements IReporter {
 
@@ -99,6 +100,32 @@ export class Reporter implements IReporter {
             }
 
         }
+
+        return table.toString();
+
+    }
+
+    public getFilter(filters: IFilters): string {
+
+        const debug = this.debugLogger.extend(this.getFilter.name);
+
+        const table: Table = this.newTable([
+
+            "Release tag(s)",
+            "Artifact tag(s)",
+            "Artifact branch",
+
+        ]);
+
+        const result: any[] = [
+
+            filters.releaseTags.length ? filters.releaseTags : "-",
+            filters.artifactTags.length ? filters.artifactTags : "-",
+            filters.artifactBranch ? filters.artifactBranch : "-",
+
+        ];
+
+        table.push(result);
 
         return table.toString();
 
