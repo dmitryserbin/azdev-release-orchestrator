@@ -90,11 +90,11 @@ export class ReleaseHelper implements IReleaseHelper {
 
             if (filter.tag || filter.artifactVersion || filter.sourceBranch) {
 
-                throw new Error(`No <${definitionId}> definition releases matching filter (tags: ${filter.tag}, artifact: ${filter.artifactVersion}, branch: ${filter.sourceBranch}) criteria found`);
+                throw new Error(`No definition <${definitionId}> releases matching filter (tags: ${filter.tag}, artifact: ${filter.artifactVersion}, branch: ${filter.sourceBranch}) criteria found`);
 
             } else {
 
-                throw new Error(`No <${definitionId}> definition releases found`);
+                throw new Error(`No definition <${definitionId}> releases found`);
 
             }
 
@@ -253,11 +253,11 @@ export class ReleaseHelper implements IReleaseHelper {
 
                 if (versionId || sourceBranch) {
 
-                    throw new Error(`No <${artifact.alias}> artifact matching filter found (version: ${versionId}, branch: ${sourceBranch})`);
+                    throw new Error(`No artifact <${artifact.alias}> matching filter found (version: ${versionId}, branch: ${sourceBranch})`);
 
                 } else {
 
-                    throw new Error(`No <${artifact.alias}> artifact versions found`);
+                    throw new Error(`No artifact <${artifact.alias}> versions found`);
 
                 }
 
