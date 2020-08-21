@@ -1,5 +1,5 @@
 import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
-import { ReleaseDefinition, Release, ReleaseStatus, ReleaseExpands, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ReleaseReason, ReleaseStartMetadata, ReleaseEnvironment, EnvironmentStatus, ReleaseApproval, ReleaseEnvironmentUpdateMetadata, ApprovalStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ReleaseDefinition, Release, ReleaseStatus, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ReleaseReason, ReleaseStartMetadata, ReleaseEnvironment, EnvironmentStatus, ReleaseApproval, ReleaseEnvironmentUpdateMetadata, ApprovalStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
@@ -8,18 +8,22 @@ import { IReleaseFilter } from "../interfaces/common/releasefilter";
 import { IArtifactFilter } from "../interfaces/common/artifactfilter";
 import { DeploymentType } from "../interfaces/common/deploymenttype";
 import { IDetails } from "../interfaces/task/details";
+import { IReleaseApiRetry } from "../interfaces/extensions/releaseapiretry";
+import { ReleaseApiRetry } from "../extensions/releaseapiretry";
 
 export class ReleaseHelper implements IReleaseHelper {
 
     private debugLogger: IDebugLogger;
 
     private releaseApi: IReleaseApi;
+    private releaseApiRetry: IReleaseApiRetry;
 
     constructor(releaseApi: IReleaseApi, debugCreator: IDebugCreator) {
 
         this.debugLogger = debugCreator.extend(this.constructor.name);
 
         this.releaseApi = releaseApi;
+        this.releaseApiRetry = new ReleaseApiRetry(this.releaseApi);
 
     }
 
@@ -27,7 +31,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
         const debug = this.debugLogger.extend(this.getDefinition.name);
 
-        const targetDefinition: ReleaseDefinition = await this.releaseApi.getReleaseDefinition(projectName, definitionId);
+        const targetDefinition: ReleaseDefinition = await this.releaseApiRetry.getReleaseDefinitionRetry(projectName, definitionId);
 
         if (!targetDefinition) {
 
@@ -45,7 +49,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
         const debug = this.debugLogger.extend(this.getRelease.name);
 
-        const targetRelease: Release = await this.releaseApi.getRelease(projectName, releaseId);
+        const targetRelease: Release = await this.releaseApiRetry.getReleaseRetry(projectName, releaseId);
 
         if (!targetRelease) {
 
@@ -65,26 +69,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
         const debug = this.debugLogger.extend(this.getReleases.name);
 
-        const releases: Release[] = await this.releaseApi.getReleases(
-            projectName,
-            definitionId,
-            undefined,
-            undefined,
-            undefined,
-            status,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            ReleaseExpands.Artifacts,
-            undefined,
-            undefined,
-            filter.artifactVersion ? filter.artifactVersion : undefined,
-            filter.sourceBranch ? filter.sourceBranch : undefined,
-            undefined,
-            (filter.tag && filter.tag.length) ? filter.tag : undefined);
+        const releases: Release[] = await this.releaseApiRetry.getReleasesRetry(projectName, definitionId, status, filter.artifactVersion, filter.sourceBranch, filter.tag);
 
         if (releases.length <= 0) {
 
@@ -116,7 +101,7 @@ export class ReleaseHelper implements IReleaseHelper {
         const filteredRelease: Release = availableReleases.sort(
             (left, right) => left.id! - right.id!).reverse()[0];
 
-        const targetRelease: Release = await this.releaseApi.getRelease(projectName, filteredRelease.id!);
+        const targetRelease: Release = await this.releaseApiRetry.getReleaseRetry(projectName, filteredRelease.id!);
 
         await this.validateReleaseStages(targetRelease, stages);
 
@@ -155,7 +140,7 @@ export class ReleaseHelper implements IReleaseHelper {
         }
 
         // Create release
-        const targetRelease: Release = await this.releaseApi.createRelease(releaseMetadata, projectName);
+        const targetRelease: Release = await this.releaseApiRetry.createReleaseRetry(releaseMetadata, projectName);
 
         debug(targetRelease);
 
@@ -167,7 +152,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
         const debug = this.debugLogger.extend(this.getReleaseStatus.name);
 
-        const releaseStatus: Release = await this.releaseApi.getRelease(projectName, releaseId);
+        const releaseStatus: Release = await this.releaseApiRetry.getReleaseRetry(projectName, releaseId);
 
         if (!releaseStatus) {
 
@@ -206,7 +191,7 @@ export class ReleaseHelper implements IReleaseHelper {
         const targetArtifacts: ArtifactMetadata[] = [];
 
         // Get available versions
-        const definitionArtifacts: ArtifactVersionQueryResult = await this.releaseApi.getArtifactVersions(projectName, definitionId);
+        const definitionArtifacts: ArtifactVersionQueryResult = await this.releaseApiRetry.getArtifactVersionsRetry(projectName, definitionId);
 
         // Create artifacts metadata
         for (const artifact of definitionArtifacts.artifactVersions!) {
@@ -373,7 +358,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
         };
 
-        const stageStatus: ReleaseEnvironment = await this.releaseApi.updateReleaseEnvironment(startRequest, projectName, stage.release!.id!, stage.id!);
+        const stageStatus: ReleaseEnvironment = await this.releaseApiRetry.updateReleaseEnvironmentRetry(startRequest, projectName, stage.release!.id!, stage.id!);
 
         debug(stageStatus);
 
@@ -392,7 +377,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
         };
 
-        const stageStatus: ReleaseEnvironment = await this.releaseApi.updateReleaseEnvironment(cancelRequest, projectName, stage.release!.id!, stage.id!);
+        const stageStatus: ReleaseEnvironment = await this.releaseApiRetry.updateReleaseEnvironmentRetry(cancelRequest, projectName, stage.release!.id!, stage.id!);
 
         debug(stageStatus);
 
@@ -411,7 +396,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
         };
 
-        const approvalStatus: ReleaseApproval = await this.releaseApi.updateReleaseApproval(approvalRequest, projectName, releaseApproval.id!);
+        const approvalStatus: ReleaseApproval = await this.releaseApiRetry.updateReleaseApprovalRetry(approvalRequest, projectName, releaseApproval.id!);
 
         debug(approvalStatus);
 
