@@ -1,3 +1,5 @@
+import { String } from "typescript-string-operations";
+
 import { IOrchestrator } from "../interfaces/orchestrator/orchestrator";
 import { IDeployer } from "../interfaces/orchestrator/deployer";
 import { IParameters, ReleaseType } from "../interfaces/task/parameters";
@@ -51,7 +53,7 @@ export class Orchestrator implements IOrchestrator {
 
             case ReleaseType.New: {
 
-                this.consoleLogger.log(`Deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${releaseJob.stages}> stage(s) release`);
+                this.consoleLogger.log(`Deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${String.Join("|", releaseJob.stages)}> stage(s) release`);
 
                 switch (releaseJob.type) {
 
@@ -81,7 +83,7 @@ export class Orchestrator implements IOrchestrator {
 
             } default: {
 
-                this.consoleLogger.log(`Re-deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${releaseJob.stages}> stage(s) release`);
+                this.consoleLogger.log(`Re-deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${String.Join("|", releaseJob.stages)}> stage(s) release`);
 
                 // Manually trigger stages deployment and monitor progress
                 releaseProgress = await deployer.deployManual(releaseJob, details);
@@ -92,7 +94,7 @@ export class Orchestrator implements IOrchestrator {
 
         }
 
-        this.consoleLogger.log(
+        this.consoleLogger
             reporter.getReleaseProgress(releaseProgress));
 
         return releaseProgress;

@@ -1,4 +1,5 @@
 import { ApprovalStatus, EnvironmentStatus, ReleaseEnvironment, DeploymentAttempt } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { String } from "typescript-string-operations";
 
 import { IMonitor } from "../interfaces/orchestrator/monitor";
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
@@ -165,7 +166,7 @@ export class Monitor implements IMonitor {
 
         if (completed) {
 
-            debug(`All release stages <${completedStages}> completed`);
+            debug(`All release stages <${String.Join("|", completedStages)}> completed`);
 
             // Get rejected or canceled stages
             const failed: boolean = releaseProgress.stages.filter((i) =>
@@ -195,7 +196,7 @@ export class Monitor implements IMonitor {
 
         } else {
 
-            debug(`Release stages <${activeStages}> in progress`);
+            debug(`Release stages <${String.Join("|", activeStages)}> in progress`);
 
             releaseProgress.status = ReleaseStatus.InProgress;
 

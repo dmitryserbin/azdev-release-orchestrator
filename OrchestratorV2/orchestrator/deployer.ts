@@ -1,4 +1,5 @@
 import { Release, ReleaseEnvironment, EnvironmentStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { String } from "typescript-string-operations";
 
 import { IDetails } from "../interfaces/task/details";
 import { IDeployer } from "../interfaces/orchestrator/deployer";
@@ -116,7 +117,7 @@ export class Deployer implements IDeployer {
 
         }
 
-        this.consoleLogger.log(`All release stages <${releaseJob.stages}> deployment completed`);
+        this.consoleLogger.log(`All release stages <${String.Join("|", releaseJob.stages)}> deployment completed`);
 
         this.consoleLogger.log(
             this.progressReporter.getStagesProgress(releaseProgress.stages));
@@ -135,7 +136,7 @@ export class Deployer implements IDeployer {
 
         do {
 
-            debug(`Monitoring <${releaseProgress.stages.map((stage) => stage.name)}> stage(s) deployment progress`);
+            debug(`Monitoring <${String.Join("|", releaseProgress.stages.map((stage) => stage.name))}> stage(s) deployment progress`);
 
             const releaseStatus: Release = await this.releaseHelper.getReleaseStatus(releaseJob.project.name!, releaseJob.release.id!);
 
@@ -186,7 +187,7 @@ export class Deployer implements IDeployer {
 
         } while (releaseProgress.status === ReleaseStatus.InProgress);
 
-        this.consoleLogger.log(`All release stages <${releaseJob.stages}> deployment completed`);
+        this.consoleLogger.log(`All release stages <${String.Join("|", releaseJob.stages)}> deployment completed`);
 
         this.consoleLogger.log(
             this.progressReporter.getStagesProgress(releaseProgress.stages));

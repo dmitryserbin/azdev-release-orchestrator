@@ -1,6 +1,7 @@
+import { ReleaseDefinition, Release, Artifact } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
-import { ReleaseDefinition, Release, Artifact } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { String } from "typescript-string-operations";
 
 import { IParameters, ReleaseType } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
@@ -145,7 +146,7 @@ export class Creator implements ICreator {
         // Add release tag filter
         if (releaseTag && releaseTag.length >= 1) {
 
-            debug(`Using <${releaseTag}> release tag(s) filter`);
+            debug(`Using <${String.Join("|", releaseTag)}> release tag(s) filter`);
 
             releaseFilter.tag = releaseTag;
 
@@ -156,12 +157,12 @@ export class Creator implements ICreator {
             // Add artifact tag filter
             if (artifactTag && artifactTag.length >= 1) {
 
-                debug(`Using <${artifactTag}> artifact tag(s) filter`);
+                debug(`Using <${String.Join("|", artifactTag)}> artifact tag(s) filter`);
 
                 // Get build matching artifact tag
                 const targetArtifactBuild: Build = await this.buildHelper.findBuild(project.name!, Number(primaryBuildArtifact.definitionReference!.definition.id), artifactTag);
 
-                releaseFilter.artifactVersion = String(targetArtifactBuild.id);
+                releaseFilter.artifactVersion = targetArtifactBuild.id!.toString();
 
             }
 
@@ -198,11 +199,11 @@ export class Creator implements ICreator {
             // Get build matching artifact tag
             if (artifactTag && artifactTag.length >= 1) {
 
-                debug(`Using <${artifactTag}> artifact tag(s) filter`);
+                debug(`Using <${String.Join("|", artifactTag)}> artifact tag(s) filter`);
 
                 const targetArtifactBuild: Build = await this.buildHelper.findBuild(project.name!, Number(primaryBuildArtifact.definitionReference!.definition.id), artifactTag);
 
-                artifactVersion = String(targetArtifactBuild.id);
+                artifactVersion = targetArtifactBuild.id!.toString();
 
             }
 
