@@ -50,7 +50,7 @@ export class Reporter implements IReporter {
 
             "ID",
             "Stage",
-            "Trigger",
+            "Type",
             "Release",
             "Tasks",
             "Attempt",
