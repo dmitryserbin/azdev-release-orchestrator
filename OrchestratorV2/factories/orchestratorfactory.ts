@@ -1,7 +1,3 @@
-import { ICoreApi } from "azure-devops-node-api/CoreApi";
-import { IBuildApi } from "azure-devops-node-api/BuildApi";
-import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
-
 import { IOrchestratorFactory } from "../interfaces/factories/orchestratorfactory";
 import { IApiFactory } from "../interfaces/factories/apifactory";
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
@@ -24,6 +20,9 @@ import { IApprover } from "../interfaces/orchestrator/approver";
 import { Approver } from "../orchestrator/approver";
 import { IReporter } from "../interfaces/orchestrator/reporter";
 import { Reporter } from "../orchestrator/reporter";
+import { ICoreApiRetry } from "../interfaces/extensions/coreapiretry";
+import { IBuildApiRetry } from "../interfaces/extensions/buildapiretry";
+import { IReleaseApiRetry } from "../interfaces/extensions/releaseapiretry";
 
 export class OrchestratorFactory implements IOrchestratorFactory {
 
@@ -43,9 +42,9 @@ export class OrchestratorFactory implements IOrchestratorFactory {
 
     public async createCreator(): Promise<ICreator> {
 
-        const coreApi: ICoreApi = await this.apiFactory.createCoreApi();
-        const buildApi: IBuildApi = await this.apiFactory.createBuildApi();
-        const releaseApi: IReleaseApi = await this.apiFactory.createReleaseApi();
+        const coreApi: ICoreApiRetry = await this.apiFactory.createCoreApi();
+        const buildApi: IBuildApiRetry = await this.apiFactory.createBuildApi();
+        const releaseApi: IReleaseApiRetry = await this.apiFactory.createReleaseApi();
 
         const coreHelper: ICoreHelper = new CoreHelper(coreApi, this.debugCreator);
         const buildHelper: IBuildHelper = new BuildHelper(buildApi, this.debugCreator);
@@ -58,7 +57,7 @@ export class OrchestratorFactory implements IOrchestratorFactory {
 
     public async createDeployer(): Promise<IDeployer> {
 
-        const releaseApi: IReleaseApi = await this.apiFactory.createReleaseApi();
+        const releaseApi: IReleaseApiRetry = await this.apiFactory.createReleaseApi();
 
         const commonHelper: ICommonHelper = new CommonHelper(this.debugCreator);
         const releaseHelper: IReleaseHelper = new ReleaseHelper(releaseApi, this.debugCreator);

@@ -7,6 +7,12 @@ import { IRequestOptions, IRequestHandler } from "azure-devops-node-api/interfac
 import { IApiFactory } from "../interfaces/factories/apifactory";
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { ICoreApiRetry } from "../interfaces/extensions/coreapiretry";
+import { CoreApiRetry } from "../extensions/coreapiretry";
+import { IReleaseApiRetry } from "../interfaces/extensions/releaseapiretry";
+import { ReleaseApiRetry } from "../extensions/releaseapiretry";
+import { IBuildApiRetry } from "../interfaces/extensions/buildapiretry";
+import { BuildApiRetry } from "../extensions/buildapiretry";
 
 export class ApiFactory implements IApiFactory {
 
@@ -33,39 +39,42 @@ export class ApiFactory implements IApiFactory {
 
     }
 
-    public async createCoreApi(): Promise<CoreApi> {
+    public async createCoreApi(): Promise<ICoreApiRetry> {
 
         const debug = this.debugLogger.extend(this.createCoreApi.name);
 
         const coreApi: CoreApi = await this.webApi.getCoreApi();
+        const coreApiRetry: ICoreApiRetry = new CoreApiRetry(coreApi);
 
         debug(`Azure DevOps Core API initialized`);
 
-        return coreApi;
+        return coreApiRetry;
 
     }
 
-    public async createReleaseApi(): Promise<ReleaseApi> {
+    public async createReleaseApi(): Promise<IReleaseApiRetry> {
 
         const debug = this.debugLogger.extend(this.createReleaseApi.name);
 
         const releaseApi: ReleaseApi = await this.webApi.getReleaseApi();
+        const releaseApiRetry: IReleaseApiRetry = new ReleaseApiRetry(releaseApi);
 
         debug(`Azure DevOps Release API initialized`);
 
-        return releaseApi;
+        return releaseApiRetry;
 
     }
 
-    public async createBuildApi(): Promise<BuildApi> {
+    public async createBuildApi(): Promise<IBuildApiRetry> {
 
         const debug = this.debugLogger.extend(this.createBuildApi.name);
 
         const buildApi: BuildApi = await this.webApi.getBuildApi();
+        const buildApiRetry: IBuildApiRetry = new BuildApiRetry(buildApi);
 
         debug(`Azure DevOps Build API initialized`);
 
-        return buildApi;
+        return buildApiRetry;
 
     }
 

@@ -1,25 +1,21 @@
-import { IBuildApi } from "azure-devops-node-api/BuildApi";
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IBuildHelper } from "../interfaces/helpers/buildhelper";
 import { IBuildApiRetry } from "../interfaces/extensions/buildapiretry";
-import { BuildApiRetry } from "../extensions/buildapiretry";
 
 export class BuildHelper implements IBuildHelper {
 
     private debugLogger: IDebugLogger;
 
-    private buildApi: IBuildApi;
-    private buildApiRetry: IBuildApiRetry;
+    private buildApi: IBuildApiRetry;
 
-    constructor(buildApi: IBuildApi, debugCreator: IDebugCreator) {
+    constructor(buildApi: IBuildApiRetry, debugCreator: IDebugCreator) {
 
         this.debugLogger = debugCreator.extend(this.constructor.name);
 
         this.buildApi = buildApi;
-        this.buildApiRetry = new BuildApiRetry(this.buildApi);
 
     }
 
@@ -27,7 +23,7 @@ export class BuildHelper implements IBuildHelper {
 
         const debug = this.debugLogger.extend(this.findBuild.name);
 
-        const availableBuilds: Build[] = await this.buildApiRetry.getBuilds(
+        const availableBuilds: Build[] = await this.buildApi.getBuilds(
             projectName,
             [ definitionId ],
             undefined,

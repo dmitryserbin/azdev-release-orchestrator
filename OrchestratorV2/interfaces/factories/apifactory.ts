@@ -1,11 +1,11 @@
-import { BuildApi } from "azure-devops-node-api/BuildApi";
-import { ReleaseApi } from "azure-devops-node-api/ReleaseApi";
-import { CoreApi } from "azure-devops-node-api/CoreApi";
+import { ICoreApiRetry } from "../extensions/coreapiretry";
+import { IReleaseApiRetry } from "../extensions/releaseapiretry";
+import { IBuildApiRetry } from "../extensions/buildapiretry";
 
 export interface IApiFactory {
 
-    createCoreApi(): Promise<CoreApi>;
-    createReleaseApi(): Promise<ReleaseApi>;
-    createBuildApi(): Promise<BuildApi>;
+    createCoreApi(): Promise<ICoreApiRetry>;
+    createReleaseApi(): Promise<IReleaseApiRetry>;
+    createBuildApi(): Promise<IBuildApiRetry>;
 
 }
