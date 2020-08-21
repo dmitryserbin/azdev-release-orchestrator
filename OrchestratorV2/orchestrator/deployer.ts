@@ -47,7 +47,11 @@ export class Deployer implements IDeployer {
 
         const pendingStages: IStageProgress[] = this.progressMonitor.getPendingStages(releaseProgress);
 
+        debug(`Starting <${releaseProgress.name}> (${releaseProgress.id}) release <${ReleaseStatus[releaseProgress.status]}> progress tracking`);
+
         for (const stage of pendingStages) {
+
+            debug(`Monitoring <${stage.name}> (${stage.id}) stage deployment <${EnvironmentStatus[stage.status]}> progress`);
 
             let releaseStatus: Release = await this.releaseHelper.getReleaseStatus(releaseJob.project.name!, releaseJob.release.id!);
             let stageStatus: ReleaseEnvironment = await this.releaseHelper.getStageStatus(releaseStatus, stage.name);
@@ -72,6 +76,8 @@ export class Deployer implements IDeployer {
             }
 
             do {
+
+                debug(`Updating <${stage.name}> (${stage.id}) stage <${EnvironmentStatus[stage.status]}> status`);
 
                 releaseStatus = await this.releaseHelper.getReleaseStatus(releaseJob.project.name!, releaseJob.release.id!);
                 stageStatus = await this.releaseHelper.getStageStatus(releaseStatus, stage.name);
@@ -125,13 +131,19 @@ export class Deployer implements IDeployer {
 
         const releaseProgress: IReleaseProgress = this.progressMonitor.createProgress(releaseJob);
 
+        debug(`Starting <${releaseProgress.name}> (${releaseProgress.id}) release <${ReleaseStatus[releaseProgress.status]}> progress tracking`);
+
         do {
+
+            debug(`Monitoring <${releaseProgress.stages.map((stage) => stage.name)}> stage(s) deployment progress`);
 
             const releaseStatus: Release = await this.releaseHelper.getReleaseStatus(releaseJob.project.name!, releaseJob.release.id!);
 
             const activeStages: IStageProgress[] = this.progressMonitor.getActiveStages(releaseProgress);
 
             for (const stage of activeStages) {
+
+                debug(`Updating <${stage.name}> (${stage.id}) stage <${EnvironmentStatus[stage.status]}> status`);
 
                 const stageStatus: ReleaseEnvironment = await this.releaseHelper.getStageStatus(releaseStatus, stage.name);
 
