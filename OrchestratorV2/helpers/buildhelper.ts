@@ -27,7 +27,18 @@ export class BuildHelper implements IBuildHelper {
 
         const debug = this.debugLogger.extend(this.findBuild.name);
 
-        const availableBuilds: Build[] = await this.buildApiRetry.getBuildsRetry(projectName, definitionId, tags);
+        const availableBuilds: Build[] = await this.buildApiRetry.getBuilds(
+            projectName,
+            [ definitionId ],
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            tags);
 
         if (availableBuilds.length <= 0) {
 

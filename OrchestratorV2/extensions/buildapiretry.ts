@@ -1,5 +1,5 @@
 import { IBuildApi } from "azure-devops-node-api/BuildApi";
-import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, BuildReason, BuildStatus, BuildResult, QueryDeletedOption, BuildQueryOrder } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IBuildApiRetry } from "../interfaces/extensions/buildapiretry";
 import { Retryable } from "../common/retry";
@@ -15,20 +15,30 @@ export class BuildApiRetry implements IBuildApiRetry {
     }
 
     @Retryable()
-    public async getBuildsRetry(projectName: string, definitionId: number, tags?: string[]): Promise<Build[]> {
+    public async getBuilds(project: string, definitions?: number[], queues?: number[], buildNumber?: string, minTime?: Date, maxTime?: Date, requestedFor?: string, reasonFilter?: BuildReason, statusFilter?: BuildStatus, resultFilter?: BuildResult, tagFilters?: string[], properties?: string[], top?: number, continuationToken?: string, maxBuildsPerDefinition?: number, deletedFilter?: QueryDeletedOption, queryOrder?: BuildQueryOrder, branchName?: string, buildIds?: number[], repositoryId?: string, repositoryType?: string): Promise<Build[]> {
 
         return await this.buildApi.getBuilds(
-            projectName,
-            [ definitionId ],
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            tags);
+            project,
+            definitions,
+            queues,
+            buildNumber,
+            minTime,
+            maxTime,
+            requestedFor,
+            reasonFilter,
+            statusFilter,
+            resultFilter,
+            tagFilters,
+            properties,
+            top,
+            continuationToken,
+            maxBuildsPerDefinition,
+            deletedFilter,
+            queryOrder,
+            branchName,
+            buildIds,
+            repositoryId,
+            repositoryType);
 
     }
 

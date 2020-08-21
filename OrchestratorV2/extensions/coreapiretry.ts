@@ -15,9 +15,12 @@ export class CoreApiRetry implements ICoreApiRetry {
     }
 
     @Retryable()
-    public async getProjectRetry(projectId: string): Promise<TeamProject> {
+    public async getProject(projectId: string, includeCapabilities?: boolean, includeHistory?: boolean): Promise<TeamProject> {
 
-        return await this.coreApi.getProject(projectId);
+        return await this.coreApi.getProject(
+            projectId,
+            includeCapabilities,
+            includeHistory);
 
     }
 

@@ -27,7 +27,7 @@ export class CoreHelper implements ICoreHelper {
 
         const debug = this.debugLogger.extend(this.getProject.name);
 
-        const targetProject: TeamProject = await this.coreApiRetry.getProjectRetry(projectId);
+        const targetProject: TeamProject = await this.coreApiRetry.getProject(projectId);
 
         if (!targetProject) {
 
