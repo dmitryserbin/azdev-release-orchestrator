@@ -30,7 +30,7 @@ export class RetryThis implements IRetryThis {
 
         debug(`Executing <retry> method <${this.count}> time`);
 
-        if (this.count <= failTimes) {
+        if (this.count < failTimes) {
 
             throw new Error("Ooops!");
 
