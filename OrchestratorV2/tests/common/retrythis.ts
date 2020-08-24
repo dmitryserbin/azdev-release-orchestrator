@@ -21,7 +21,7 @@ export class RetryThis implements IRetryThis {
 
     }
 
-    @Retryable({ attempts: 5, timeout: 100 })
+    @Retryable(5, 100)
     public async retry(failTimes: number): Promise<number> {
 
         const debug = this.debugLogger.extend("retry");
@@ -41,4 +41,3 @@ export class RetryThis implements IRetryThis {
     }
 
 }
-

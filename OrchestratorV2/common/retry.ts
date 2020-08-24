@@ -1,13 +1,12 @@
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { DebugCreator } from "../loggers/debugcreator";
-import { IRetryOptions } from "../interfaces/common/retryoptions";
 
 const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator");
 const debugLogger: IDebugLogger = debugCreator.extend("Retry");
 
 // tslint:disable-next-line:ban-types
-export function Retryable(options: IRetryOptions = { attempts: 10, timeout: 5000 }): Function {
+export function Retryable(attempts: number = 10, timeout: number = 5000): Function {
 
     const debug = debugLogger.extend("retryable");
 
@@ -21,13 +20,13 @@ export function Retryable(options: IRetryOptions = { attempts: 10, timeout: 5000
 
             try {
 
-                debug(`Executing <${propertyKey}> with <${options.attempts}> retries`);
+                debug(`Executing <${propertyKey}> with <${attempts}> retries`);
 
-                return await retryAsync.apply(this, [originalMethod, args, options.attempts, options.timeout]);
+                return await retryAsync.apply(this, [originalMethod, args, attempts, timeout]);
 
             } catch (e) {
 
-                e.message = `Failed retrying <${name}> for <${options.attempts}> times. ${e.message}`;
+                e.message = `Failed retrying <${name}> for <${attempts}> times. ${e.message}`;
 
                 throw e;
 
