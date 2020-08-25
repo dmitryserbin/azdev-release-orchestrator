@@ -4,6 +4,7 @@ import { IReleaseFilter } from "../common/releasefilter";
 import { IArtifactFilter } from "../common/artifactfilter";
 import { DeploymentType } from "../common/deploymenttype";
 import { IDetails } from "../task/details";
+import { IReleaseVariable } from "../common/releasevariable";
 
 export interface IReleaseHelper {
 
@@ -11,7 +12,7 @@ export interface IReleaseHelper {
     getRelease(projectName: string, releaseId: number, stages: string[]): Promise<Release>;
     getReleases(projectName: string, definitionId: number, status: ReleaseStatus, filter: IReleaseFilter): Promise<Release[]>;
     getLastRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter): Promise<Release>;
-    createRelease(projectName: string, definition: ReleaseDefinition, details: IDetails, stages?: string[], artifacts?: IArtifactFilter[]): Promise<Release>;
+    createRelease(projectName: string, definition: ReleaseDefinition, details: IDetails, stages?: string[], variables?: IReleaseVariable[], artifacts?: IArtifactFilter[]): Promise<Release>;
     getReleaseStatus(projectName: string, releaseId: number): Promise<Release>;
     getStageStatus(releaseStatus: Release, stageName: string): Promise<ReleaseEnvironment>;
     getArtifacts(projectName: string, definitionId: number, primaryId: string, versionId?: string, sourceBranch?: string): Promise<ArtifactMetadata[]>;

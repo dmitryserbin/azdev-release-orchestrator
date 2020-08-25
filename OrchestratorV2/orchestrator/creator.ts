@@ -3,7 +3,8 @@ import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import { String } from "typescript-string-operations";
 
-import { IParameters, ReleaseType } from "../interfaces/task/parameters";
+import { IParameters } from "../interfaces/task/parameters";
+import { ReleaseType } from "../interfaces/common/releasetype";
 import { IDetails } from "../interfaces/task/details";
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
@@ -96,7 +97,7 @@ export class Creator implements ICreator {
 
                 const artifactFilter: IArtifactFilter[] = await this.createArtifactFilter(project, definition, parameters.filters.artifactTags, parameters.filters.artifactBranch);
 
-                release = await this.releaseHelper.createRelease(project.name!, definition, details, parameters.stages, artifactFilter);
+                release = await this.releaseHelper.createRelease(project.name!, definition, details, parameters.stages, parameters.variables, artifactFilter);
 
                 break;
 

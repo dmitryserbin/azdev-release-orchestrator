@@ -1,4 +1,6 @@
 import { IFilters } from "./filters";
+import { IReleaseVariable } from "../common/releasevariable";
+import { ReleaseType } from "../common/releasetype";
 
 export interface IParameters {
 
@@ -7,14 +9,7 @@ export interface IParameters {
     definitionId: string;
     releaseId: string;
     stages: string[];
+    variables: IReleaseVariable[];
     filters: IFilters;
-
-}
-
-export enum ReleaseType {
-
-    New = "New",
-    Specific = "Specific",
-    Latest = "Latest",
 
 }

@@ -1,16 +1,19 @@
 import url from "url";
+import parseKeyValue from "parse-key-value-pair";
 
 import { getInput, getEndpointUrl, getEndpointAuthorizationParameter, getBoolInput, getDelimitedInput, getVariable, setResult, TaskResult } from "azure-pipelines-task-lib/task";
 
 import { ITaskHelper } from "../interfaces/helpers/taskhelper";
 import { IEndpoint } from "../interfaces/task/endpoint";
-import { IParameters, ReleaseType } from "../interfaces/task/parameters";
+import { IParameters } from "../interfaces/task/parameters";
+import { ReleaseType } from "../interfaces/common/releasetype";
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IDetails } from "../interfaces/task/details";
 import { ReleaseStatus } from "../interfaces/common/releasestatus";
 import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
 import { IFilters } from "../interfaces/task/filters";
+import { IReleaseVariable } from "../interfaces/common/releasevariable";
 
 export class TaskHelper implements ITaskHelper {
 
@@ -84,6 +87,7 @@ export class TaskHelper implements ITaskHelper {
             definitionId: targetDefinition,
             releaseId: "",
             stages: [],
+            variables: [],
             filters,
 
         };
@@ -118,6 +122,32 @@ export class TaskHelper implements ITaskHelper {
                 if (sourceBranchFilter) {
 
                     filters.artifactBranch = getInput("SourceBranchName", false)!;
+
+                }
+
+                // Get release variables
+                const releaseVariables: string[] = getDelimitedInput("ReleaseVariables", "\n", false);
+
+                if (releaseVariables.length > 0) {
+
+                    for (const variable of releaseVariables) {
+
+                        const value: [string, string] | null = parseKeyValue(variable);
+
+                        if (value) {
+
+                            const releaseVariable: IReleaseVariable = {
+
+                                name: value[0],
+                                value: value[1],
+
+                            };
+
+                            parameters.variables.push(releaseVariable);
+
+                        }
+
+                    }
 
                 }
 

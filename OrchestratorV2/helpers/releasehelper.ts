@@ -1,4 +1,4 @@
-import { ReleaseDefinition, Release, ReleaseStatus, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ReleaseReason, ReleaseStartMetadata, ReleaseEnvironment, EnvironmentStatus, ReleaseApproval, ReleaseEnvironmentUpdateMetadata, ApprovalStatus, ReleaseExpands } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ReleaseDefinition, Release, ReleaseStatus, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ReleaseReason, ReleaseStartMetadata, ReleaseEnvironment, EnvironmentStatus, ReleaseApproval, ReleaseEnvironmentUpdateMetadata, ApprovalStatus, ReleaseExpands, ConfigurationVariableValue } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
@@ -8,6 +8,7 @@ import { IArtifactFilter } from "../interfaces/common/artifactfilter";
 import { DeploymentType } from "../interfaces/common/deploymenttype";
 import { IDetails } from "../interfaces/task/details";
 import { IReleaseApiRetry } from "../interfaces/extensions/releaseapiretry";
+import { IReleaseVariable } from "../interfaces/common/releasevariable";
 
 export class ReleaseHelper implements IReleaseHelper {
 
@@ -126,7 +127,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    public async createRelease(projectName: string, definition: ReleaseDefinition, details: IDetails, stages?: string[], artifacts?: IArtifactFilter[]): Promise<Release> {
+    public async createRelease(projectName: string, definition: ReleaseDefinition, details: IDetails, stages?: string[], variables?: IReleaseVariable[], artifacts?: IArtifactFilter[]): Promise<Release> {
 
         const debug = this.debugLogger.extend(this.createRelease.name);
 
@@ -134,7 +135,7 @@ export class ReleaseHelper implements IReleaseHelper {
         const releaseMetadata: ReleaseStartMetadata = {
 
             definitionId: definition.id,
-            description: `Requested via ${details.releaseName} (${details.projectName}) by ${details.requesterName}`,
+            description: `Requested via <${details.releaseName}> (${details.projectName}) by ${details.requesterName}`,
             reason: ReleaseReason.ContinuousIntegration,
             isDraft: false,
 
@@ -153,6 +154,19 @@ export class ReleaseHelper implements IReleaseHelper {
             releaseMetadata.artifacts = artifacts;
 
         }
+
+        // Set release variables
+        if (variables && variables.length > 0) {
+
+            releaseMetadata.variables = await this.formatReleaseVariables(variables);
+
+            const requiredVariables: string[] = variables.map((variable) => variable.name);
+
+            await this.validateDefinitionVariables(definition, requiredVariables);
+
+        }
+
+        debug(releaseMetadata);
 
         // Create release
         const targetRelease: Release = await this.releaseApi.createRelease(releaseMetadata, projectName);
@@ -426,6 +440,8 @@ export class ReleaseHelper implements IReleaseHelper {
         const releaseStages: string[] = release.environments!.map(
             (stage) => stage.name!);
 
+        debug(releaseStages);
+
         for (const stage of required) {
 
             if (releaseStages.indexOf(stage) === -1) {
@@ -445,6 +461,8 @@ export class ReleaseHelper implements IReleaseHelper {
         const definitionStages: string[] = definition.environments!.map(
             (stage) => stage.name!);
 
+        debug(definitionStages);
+
         for (const stage of required) {
 
             if (definitionStages.indexOf(stage) === -1) {
@@ -454,6 +472,56 @@ export class ReleaseHelper implements IReleaseHelper {
             }
 
         }
+
+    }
+
+    private async validateDefinitionVariables(definition: ReleaseDefinition, required: string[]): Promise<void> {
+
+        const debug = this.debugLogger.extend(this.validateDefinitionVariables.name);
+
+        debug(definition.variables);
+
+        for (const variable of required) {
+
+            const definitionVariable: ConfigurationVariableValue = definition.variables![variable];
+
+            if (!definitionVariable) {
+
+                throw new Error(`Release variable <${variable}> does not exist`);
+
+            }
+
+            if (!definitionVariable.allowOverride) {
+
+                throw new Error(`Release variable <${variable}> is not settable at release time`);
+
+            }
+
+            debug(`Release variable <${variable}> (overridable) found`);
+
+        }
+
+    }
+
+    private async formatReleaseVariables(variables: IReleaseVariable[]): Promise<{ [key: string]: ConfigurationVariableValue }> {
+
+        const debug = this.debugLogger.extend(this.formatReleaseVariables.name);
+
+        let releaseVariables: { [key: string]: ConfigurationVariableValue } = {};
+
+        for (const variable of variables) {
+
+            const value: ConfigurationVariableValue = {
+
+                value: variable.value,
+
+            }
+
+            releaseVariables[variable.name] = value;
+
+        }
+
+        return releaseVariables;
 
     }
 

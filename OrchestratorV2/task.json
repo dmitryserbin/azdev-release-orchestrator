@@ -1,4 +1,4 @@
-{
+﻿{
   "id": "5d38d46b-4c0a-4c14-8f0c-04df59e4dc27",
   "name": "releaseorchestrator",
   "friendlyName": "Release Orchestrator",
@@ -167,6 +167,19 @@
       "defaultValue": "refs/heads/master",
       "required": true,
       "visibleRule": "SourceBranchFilter = true"
+    },
+    {
+      "name": "ReleaseVariables",
+      "type": "multiLine",
+      "label": "Release Variables",
+      "helpMarkDown": "Bypass release variables to the target release pipeline when creating a release. Specified release variables must be configured to be 'settable at release time'. In 'Name=Value' format, special characters supported, new line separated",
+      "properties": {
+        "rows": 8,
+        "maxLength": 10000,
+        "resizable": true
+      },
+      "required": false,
+      "visibleRule": "ReleaseStrategy = create"
     },
     {
       "name": "IgnoreFailure",

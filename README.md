@@ -1,10 +1,10 @@
 # Release Orchestrator
 
-- [Overview](#Overview)
-- [Features](#Features)
-- [Prerequisites](#Prerequisites)
-- [How To Use](#How-To-Use)
-- [Support](#Support)
+- [Overview](##overview)
+- [Features](##features)
+- [Prerequisites](##prerequisites)
+- [How To Use](##how-to-use)
+- [Support](##support)
 
 ## Overview
 
@@ -18,7 +18,7 @@ Extension | Build | Code
 
 The **Release Orchestrator** task performing Azure DevOps release pipeline execution and provides various customization settings.
 
-![](Images/ro-01.png)
+![Image](Images/ro-01.png)
 
 It uses either **integrated** (SystemVssConnection) or **user-defined**  personal access token (PAT) Azure DevOps service endpoint to connect to projects' pipelines.
 
@@ -43,7 +43,7 @@ You may need to check and update the following settings in Azure DevOps to utili
 - Service endpoint pipelines permissions
 - Deployment appoval gates configuration
 
-#### Service endpoint permissions
+### Service endpoint permissions
 
 In release pipelines security section of Azure DevOps project allow the following access to user account of the service endpoint:
 
@@ -53,18 +53,18 @@ In release pipelines security section of Azure DevOps project allow the followin
 - View release pipeline
 - View releases
 
-![](Images/ro-02.png)
+![Image](Images/ro-02.png)
 
 Please refer to Azure DevOps [permissions and security roles documentation](https://docs.microsoft.com/en-us/azure/devops/pipelines/policies/permissions) for more details.
 
-#### Approval gates configuration
+### Approval gates configuration
 
 The task can automate release stage pre-deployment approval, in order to configure it you need:
 
 - Add Azure DevOps service endpoint user account to stage approvers
 - Uncheck 'The user requesting a release or deployment should not approve it' checkbox.
 
-![](Images/ro-03.png)
+![Image](Images/ro-03.png)
 
 In case service endpoint user is not in the approval list or is not allowed to approve the release, manual approval is required and a warning is displayed in the release pipeline progress.
 
@@ -76,7 +76,7 @@ Please refer to Azure DevOps [approvals and gates documentation](https://docs.mi
 2. Select 'Integrated Endpoint' or 'Service Endpoint' endpoint type
 3. Select target project and release definition
 
-![](Images/ro-04.png)
+![Image](Images/ro-04.png)
 
 > You may need to create a new Azure Pipelines [service connection](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) using [PAT](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate) token.
 
@@ -95,6 +95,7 @@ By default, new release deployment uses default stage [triggers](https://docs.mi
 - Filter Definition Stages: target specific deployment stage(s) (comma separated) (optional)
 - Filter Artifact Tag: enable new release filtering by primary build artifact tag (optional)
 - Filter Source Branch: enable new release filtering by primary artifact source branch name (optional)
+- Release Variables: bypass release variables to the target release pipeline when creating a release (optional). Specified release variables must be configured to be `settable at release time` in the release. Values in `Name=Value` format, special characters supported, new line separated.
 
 ### Latest Release
 

@@ -2,7 +2,8 @@ import { String } from "typescript-string-operations";
 
 import { IOrchestrator } from "../interfaces/orchestrator/orchestrator";
 import { IDeployer } from "../interfaces/orchestrator/deployer";
-import { IParameters, ReleaseType } from "../interfaces/task/parameters";
+import { IParameters } from "../interfaces/task/parameters";
+import { ReleaseType } from "../interfaces/common/releasetype";
 import { IDetails } from "../interfaces/task/details";
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
