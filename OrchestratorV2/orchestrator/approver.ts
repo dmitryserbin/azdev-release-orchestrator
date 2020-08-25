@@ -45,6 +45,10 @@ export class Approver implements IApprover {
 
             stageProgress.approval.status = ApprovalStatus.Skipped;
 
+            debug(`Stage <${stageStatus.name}> approval <${ApprovalStatus[stageProgress.approval.status]}> not required`);
+
+            return;
+
         }
 
         // Approve pending requests in sequence
@@ -81,7 +85,7 @@ export class Approver implements IApprover {
 
         }
 
-        debug(`Stage <${stageStatus.name}> approval status <${ApprovalStatus[stageProgress.approval.status!]}> retrieved`);
+        debug(`Stage <${stageStatus.name}> approval status <${ApprovalStatus[stageProgress.approval.status]}> retrieved`);
 
         // Validate failed approvals retry attempts
         // Cancel stage deployment if unable to approve
