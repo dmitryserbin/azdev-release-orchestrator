@@ -39,6 +39,9 @@ export class Monitor implements IMonitor {
 
         for (const stage of releaseJob.stages) {
 
+            const releaseStage: ReleaseEnvironment = releaseJob.release.environments!.find(
+                (i) => i.name === stage)!;
+
             const approvalStatus: IStageApproval = {
 
                 status: ApprovalStatus.Pending,
@@ -49,6 +52,7 @@ export class Monitor implements IMonitor {
             const stageProgress: IStageProgress = {
 
                 name: stage,
+                id: releaseStage.id,
                 approval: approvalStatus,
                 status: EnvironmentStatus.NotStarted
             }
@@ -67,12 +71,12 @@ export class Monitor implements IMonitor {
 
         const debug = this.debugLogger.extend(this.getActiveStages.name);
 
-        const incompletedStages: IStageProgress[] = releaseProgress.stages.filter(
+        const activeStages: IStageProgress[] = releaseProgress.stages.filter(
             (stage) => !this.isStageCompleted(stage));
 
-        debug(incompletedStages);
+        debug(activeStages);
 
-        return incompletedStages;
+        return activeStages;
 
     }
 

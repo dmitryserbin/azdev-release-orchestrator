@@ -340,7 +340,11 @@ export class ReleaseHelper implements IReleaseHelper {
         const stageApprovals: ReleaseApproval[] = stage.preDeployApprovals!.filter((approval) =>
             approval.status === status);
 
-        debug(stageApprovals);
+        for (const approval of stageApprovals) {
+
+            debug(`Stage <${stage.name}> approval <${approval.id}> (${ApprovalStatus[approval.status!]}) status <${approval.attempt}> attempt`);
+
+        }
 
         return stageApprovals;
 

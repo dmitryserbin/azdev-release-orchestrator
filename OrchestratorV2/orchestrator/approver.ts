@@ -39,6 +39,14 @@ export class Approver implements IApprover {
 
         const pendingApprovals: ReleaseApproval[] = await this.releaseHelper.getStageApprovals(stageStatus, ApprovalStatus.Pending);
 
+        // Update approval status to skipped
+        // When stage approval is not required
+        if (pendingApprovals.length <= 0) {
+
+            stageProgress.approval.status = ApprovalStatus.Skipped;
+
+        }
+
         // Approve pending requests in sequence
         // To support multiple approvals scenarios
         for (const pendingApproval of pendingApprovals) {
@@ -114,13 +122,13 @@ export class Approver implements IApprover {
 
         // Confirming both pending approvals and current approval status
         // To avoid false negative results when deploying new release
-        const approvalStatus: boolean = pendingApprovals.length <= 0 &&
+        const approved: boolean = pendingApprovals.length <= 0 &&
             stageProgress.approval.status !== ApprovalStatus.Pending &&
             stageProgress.approval.status !== ApprovalStatus.Rejected;
 
-        debug(`Stage <${stageProgress.name}> (${ApprovalStatus[stageProgress.approval.status]}) approval <${approvalStatus}> status`);
+        debug(`Stage <${stageProgress.name}> (${ApprovalStatus[stageProgress.approval.status]}) approval <${approved}> status`);
 
-        return approvalStatus;
+        return approved;
 
     }
 
