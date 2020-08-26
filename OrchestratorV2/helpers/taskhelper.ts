@@ -11,19 +11,16 @@ import { IDebugCreator } from "../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IDetails } from "../interfaces/task/details";
 import { ReleaseStatus } from "../interfaces/common/releasestatus";
-import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
 import { IFilters } from "../interfaces/task/filters";
 import { IReleaseVariable } from "../interfaces/common/releasevariable";
 
 export class TaskHelper implements ITaskHelper {
 
     private debugLogger: IDebugLogger;
-    private consoleLogger: IConsoleLogger;
 
-    constructor(debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
+    constructor(debugCreator: IDebugCreator) {
 
         this.debugLogger = debugCreator.extend(this.constructor.name);
-        this.consoleLogger = consoleLogger;
 
     }
 

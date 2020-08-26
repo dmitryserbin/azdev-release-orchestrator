@@ -16,7 +16,7 @@ async function run() {
     const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator");
     const consoleLogger: IConsoleLogger = new ConsoleLogger();
 
-    const taskHelper: ITaskHelper = new TaskHelper(debugCreator, consoleLogger);
+    const taskHelper: ITaskHelper = new TaskHelper(debugCreator);
 
     try {
 
