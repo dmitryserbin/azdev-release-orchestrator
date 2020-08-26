@@ -62,11 +62,13 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    public async getReleases(projectName: string, definitionId: number, status: ReleaseStatus, filter: IReleaseFilter): Promise<Release[]> {
+    public async getReleases(projectName: string, definitionId: number, status: ReleaseStatus, filter: IReleaseFilter, stagesFilter: string[]): Promise<Release[]> {
 
         const debug = this.debugLogger.extend(this.getReleases.name);
 
-        const releases: Release[] = await this.releaseApi.getReleases(
+        debug(filter);
+
+        let releases: Release[] = await this.releaseApi.getReleases(
             projectName,
             definitionId,
             undefined,
@@ -79,7 +81,7 @@ export class ReleaseHelper implements IReleaseHelper {
             undefined,
             undefined,
             undefined,
-            ReleaseExpands.Artifacts,
+            ReleaseExpands.Environments,
             undefined,
             undefined,
             filter.artifactVersion,
@@ -87,11 +89,31 @@ export class ReleaseHelper implements IReleaseHelper {
             undefined,
             filter.tag);
 
+        if (filter.stageStatus) {
+
+            let filtered: Release[] = [];
+
+            for (const release of releases) {
+
+                const stagesStatusMatch: boolean = await this.validateReleaseStagesStatus(release, stagesFilter, filter.stageStatus);
+
+                if (stagesStatusMatch) {
+
+                    filtered.push(release);
+
+                }
+
+            }
+
+            releases = filtered;
+
+        }
+
         if (releases.length <= 0) {
 
-            if (filter.tag || filter.artifactVersion || filter.sourceBranch) {
+            if (filter.tag || filter.artifactVersion || filter.sourceBranch || filter.stageStatus) {
 
-                throw new Error(`No definition <${definitionId}> releases matching filter (tags: ${filter.tag}, artifact: ${filter.artifactVersion}, branch: ${filter.sourceBranch}) criteria found`);
+                throw new Error(`No definition <${definitionId}> releases matching filter (tags: ${filter.tag}, artifact: ${filter.artifactVersion}, branch: ${filter.sourceBranch}, stage(s) status: ${filter.stageStatus}) criteria found`);
 
             } else {
 
@@ -101,7 +123,10 @@ export class ReleaseHelper implements IReleaseHelper {
 
         }
 
-        debug(`Found <${releases.length}> (${ReleaseStatus[status]}) release(s) matching filter (tags: ${filter.tag}, artifact: ${filter.artifactVersion}, branch: ${filter.sourceBranch})`);
+        debug(`Found <${releases.length}> (${ReleaseStatus[status]}) release(s) matching filter`);
+
+        debug(releases.map(
+            (release) => `${release.name} (${release.id})`));
 
         return releases;
 
@@ -111,7 +136,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
         const debug = this.debugLogger.extend(this.getLastRelease.name);
 
-        const availableReleases: Release[] = await this.getReleases(projectName, definitionId, ReleaseStatus.Active, filter);
+        const availableReleases: Release[] = await this.getReleases(projectName, definitionId, ReleaseStatus.Active, filter, stages);
 
         // Find latest release by ID
         const filteredRelease: Release = availableReleases.sort(
@@ -455,6 +480,33 @@ export class ReleaseHelper implements IReleaseHelper {
             }
 
         }
+
+    }
+
+    private async validateReleaseStagesStatus(release: Release, required: string[], statuses: EnvironmentStatus[]): Promise<boolean> {
+
+        const debug = this.debugLogger.extend(this.validateReleaseStagesStatus.name);
+
+        const match: boolean = required.every((requiredStage) => {
+
+            const releaseStage = release.environments!.find(
+                (i) => i.name === requiredStage);
+
+            if (releaseStage) {
+
+                const statusMatch: boolean = statuses.includes(releaseStage.status!);
+
+                return statusMatch;
+
+            } else {
+
+                return false;
+
+            }
+
+        });
+
+        return match;
 
     }
 

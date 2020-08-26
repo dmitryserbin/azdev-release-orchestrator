@@ -76,6 +76,7 @@ export class TaskHelper implements ITaskHelper {
             releaseTags: [],
             artifactTags: [],
             artifactBranch: "",
+            stageStatuses: [],
 
         };
 
@@ -171,6 +172,7 @@ export class TaskHelper implements ITaskHelper {
                 const releaseTagFilter: boolean = getBoolInput("ReleaseTagFilter");
                 const artifactTagFilter: boolean = getBoolInput("ArtifactTagFilter");
                 const sourceBranchFilter: boolean = getBoolInput("SourceBranchFilter");
+                const stageStatusFilter: boolean = getBoolInput("StageStatusFilter");
 
                 // Get release tag name filter
                 // Optional to support variable input
@@ -193,6 +195,14 @@ export class TaskHelper implements ITaskHelper {
                 if (sourceBranchFilter) {
 
                     filters.artifactBranch = getInput("SourceBranchName", false)!;
+
+                }
+
+                // Get release stage(s) status filter
+                // Optional to support variable input
+                if (stageStatusFilter) {
+
+                    filters.stageStatuses = getDelimitedInput("StageStatus", ",", true);
 
                 }
 

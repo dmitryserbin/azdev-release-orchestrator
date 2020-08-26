@@ -2,8 +2,9 @@
 
 ## 1.3.0
 
-- Make approval retries configurable ([23](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/23))
+- Add latest release stage status filter support ([26](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/26))
 - Add release variables support ([24](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/24))
+- Make approval retries configurable ([23](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/23))
 - Major internal refactoring (TBU)
 
 ## 1.2.9

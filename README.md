@@ -105,6 +105,7 @@ Deploying latest release requires you to provide target stages for deployment. T
 - Filter Release Tag: enable filtering target release by release pipeline tag (optional)
 - Filter Artifact Tag: enable filtering target release by primary build artifact tag (optional)
 - Filter Source Branch: enable filtering target release by primary artifact source branch name (optional)
+- Filter Stage(s) Status: enable filtering target release by stage(s) deployment status (optional)
 
 ### Specific Release
 

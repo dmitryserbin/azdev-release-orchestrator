@@ -1,4 +1,4 @@
-import { ReleaseDefinition, Release, Artifact } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ReleaseDefinition, Release, Artifact, EnvironmentStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import { String } from "typescript-string-operations";
@@ -110,7 +110,7 @@ export class Creator implements ICreator {
                     this.progressReporter.getFilters(parameters.filters)
                 );
 
-                const releaseFilter: IReleaseFilter = await this.createReleaseFilter(project, definition, parameters.filters.releaseTags, parameters.filters.artifactTags, parameters.filters.artifactBranch);
+                const releaseFilter: IReleaseFilter = await this.createReleaseFilter(project, definition, parameters.filters.releaseTags, parameters.filters.artifactTags, parameters.filters.artifactBranch, parameters.filters.stageStatuses);
 
                 release = await this.releaseHelper.getLastRelease(project.name!, definition.id!, parameters.stages, releaseFilter);
 
@@ -136,14 +136,15 @@ export class Creator implements ICreator {
 
     }
 
-    private async createReleaseFilter(project: TeamProject, definition: ReleaseDefinition, releaseTag?: string[], artifactTag?: string[], sourceBranch?: string): Promise<IReleaseFilter> {
+    private async createReleaseFilter(project: TeamProject, definition: ReleaseDefinition, releaseTag?: string[], artifactTag?: string[], sourceBranch?: string, stageStatus?: string[]): Promise<IReleaseFilter> {
 
         const debug = this.debugLogger.extend(this.createReleaseFilter.name);
 
         const releaseFilter: IReleaseFilter = {};
 
         // Get primary definition build artifact
-        const primaryBuildArtifact: Artifact = definition.artifacts!.filter((i) => i.isPrimary === true && i.type === "Build")[0];
+        const primaryBuildArtifact: Artifact = definition.artifacts!.filter(
+            (i) => i.isPrimary === true && i.type === "Build")[0];
 
         // Add release tag filter
         if (releaseTag && releaseTag.length >= 1) {
@@ -154,6 +155,7 @@ export class Creator implements ICreator {
 
         }
 
+        // Add release artifact filter
         if (primaryBuildArtifact) {
 
             // Add artifact tag filter
@@ -174,6 +176,59 @@ export class Creator implements ICreator {
                 debug(`Using <${sourceBranch}> artifact branch filter`);
 
                 releaseFilter.sourceBranch = sourceBranch;
+
+            }
+
+        }
+
+        // Add stage(s) status filter
+        if (stageStatus && stageStatus.length > 0) {
+
+            debug(`Using <${String.Join("|", stageStatus)}> release stage(s) status filter`);
+
+            releaseFilter.stageStatus = [];
+
+            for (const status of stageStatus) {
+
+                switch (status) {
+
+                    case "Succeeded": {
+
+                        releaseFilter.stageStatus.push(EnvironmentStatus.Succeeded);
+
+                        break;
+
+                    } case "PartiallySucceeded": {
+
+                        releaseFilter.stageStatus.push(EnvironmentStatus.PartiallySucceeded);
+
+                        break;
+
+                    } case "NotStarted": {
+
+                        releaseFilter.stageStatus.push(EnvironmentStatus.NotStarted);
+
+                        break;
+
+                    } case "Rejected": {
+
+                        releaseFilter.stageStatus.push(EnvironmentStatus.Rejected);
+
+                        break;
+
+                    } case "Canceled": {
+
+                        releaseFilter.stageStatus.push(EnvironmentStatus.Canceled);
+
+                        break;
+
+                    } default: {
+
+                        throw new Error(`Stage status filter <${status}> not supported`);
+
+                    }
+
+                }
 
             }
 

@@ -116,6 +116,7 @@ export class Reporter implements IReporter {
             "Release tag(s)",
             "Artifact tag(s)",
             "Artifact branch",
+            "Stage(s) status",
 
         ]);
 
@@ -211,6 +212,7 @@ export class Reporter implements IReporter {
             filters.releaseTags.length ? filters.releaseTags : "-",
             filters.artifactTags.length ? filters.artifactTags : "-",
             filters.artifactBranch ? filters.artifactBranch : "-",
+            filters.stageStatuses.length > 0 ? filters.stageStatuses : "-",
 
         ];
 

@@ -163,10 +163,39 @@
       "name": "SourceBranchName",
       "type": "string",
       "label": "Source Branch Name",
-      "helpMarkDown": "Specify branch name of primary release artifact source. Default 'refs/heads/master' (build artifacts) or 'master' (Git artifacts)",
+      "helpMarkDown": "Specify branch name of primary release artifact source. Default = 'refs/heads/master' (build artifacts) or 'master' (Git artifacts)",
       "defaultValue": "refs/heads/master",
       "required": true,
       "visibleRule": "SourceBranchFilter = true"
+    },
+    {
+      "name": "StageStatusFilter",
+      "type": "boolean",
+      "label": "Filter Stage Status",
+      "helpMarkDown": "Enable target release filtering by stage(s) deployment status",
+      "defaultValue": false,
+      "required": false,
+      "visibleRule": "ReleaseStrategy = latest"
+    },
+    {
+      "name": "StageStatus",
+      "type": "pickList",
+      "label": "Target Stage(s) Status",
+      "helpMarkDown": "Specify target release stage(s) status filter. Default = Succeeded",
+      "defaultValue": "Succeeded",
+      "properties": {
+        "MultiSelectFlatList": true,
+        "EditableOptions": false
+      },
+      "options": {
+        "Succeeded": "Succeeded",
+        "PartiallySucceeded": "Partially Succeeded",
+        "NotStarted": "Not Started",
+        "Rejected": "Rejected",
+        "Canceled": "Canceled"
+      },
+      "required": true,
+      "visibleRule": "StageStatusFilter = true"
     },
     {
       "name": "ReleaseVariables",
@@ -185,7 +214,7 @@
       "name": "IgnoreFailure",
       "type": "boolean",
       "label": "Ignore Failures",
-      "helpMarkDown": "Suppress errors and set task result to partially succeeded in case of failure. Default = false",
+      "helpMarkDown": "Suppress errors and set task result to partially succeeded in case of failure+ = false",
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"
