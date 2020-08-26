@@ -1,6 +1,8 @@
 import Table from "cli-table";
 import Moment from "moment";
 
+import { String } from "typescript-string-operations";
+
 import { ApprovalStatus, EnvironmentStatus, TaskStatus, ReleaseTask, DeploymentReason } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
@@ -209,10 +211,10 @@ export class Reporter implements IReporter {
 
         const result: any[] = [
 
-            filters.releaseTags.length ? filters.releaseTags : "-",
-            filters.artifactTags.length ? filters.artifactTags : "-",
+            filters.releaseTags.length ? String.Join("|", filters.releaseTags) : "-",
+            filters.artifactTags.length ? String.Join("|", filters.artifactTags) : "-",
             filters.artifactBranch ? filters.artifactBranch : "-",
-            filters.stageStatuses.length ? filters.stageStatuses : "-",
+            filters.stageStatuses.length ? String.Join("|", filters.stageStatuses) : "-",
 
         ];
 
