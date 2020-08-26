@@ -10,6 +10,7 @@ import { IReleaseProgress } from "../interfaces/common/releaseprogress";
 import { IStageProgress } from "../interfaces/common/stageprogress";
 import { ReleaseStatus } from "../interfaces/common/releasestatus";
 import { IFilters } from "../interfaces/task/filters";
+import { IReleaseVariable } from "../interfaces/common/releasevariable";
 
 export class Reporter implements IReporter {
 
@@ -126,6 +127,29 @@ export class Reporter implements IReporter {
 
     }
 
+    public getVariables(variables: IReleaseVariable[]): string {
+
+        const debug = this.debugLogger.extend(this.getVariables.name);
+
+        const table: Table = this.newTable([
+
+            "Variable",
+            "Value",
+
+        ]);
+
+        for (const variable of variables) {
+
+            const result: any[] = this.newVariableResult(variable);
+
+            table.push(result);
+
+        }
+
+        return table.toString();
+
+    }
+
     private newReleaseResult(releaseProgress: IReleaseProgress): any[] {
 
         const result: any[] = [
@@ -194,6 +218,21 @@ export class Reporter implements IReporter {
 
     }
 
+    private newVariableResult(variable: IReleaseVariable): any[] {
+
+        const maskedValue = this.maskString(variable.value);
+
+        const result: any[] = [
+
+            variable.name,
+            maskedValue,
+
+        ];
+
+        return result;
+
+    }
+
     private getTasksCount(stage: IStageProgress): number {
 
         const tasks: ReleaseTask[] = [];
@@ -219,6 +258,38 @@ export class Reporter implements IReporter {
         const table: Table = new Table(options);
 
         return table;
+
+    }
+
+    private maskString(input: string, character: string = "*", leading: number = 1, trailing: number = 1): string {
+
+        let totalLenght: number = input.length;
+        let maskedLength: number;
+        let maskedBuffer: string = "";
+
+        maskedBuffer = maskedBuffer.concat(input.substring(0, leading));
+
+        if (totalLenght > trailing + leading) {
+
+            maskedLength = totalLenght - (trailing + leading);
+
+            for (let i = 0; i < maskedLength; i++) {
+
+                maskedBuffer += character;
+
+            }
+
+        } else {
+
+            maskedLength = 0;
+
+            totalLenght = trailing + leading;
+
+        }
+
+        maskedBuffer = maskedBuffer.concat(input.substring(leading + maskedLength, totalLenght));
+
+        return maskedBuffer.toString();
 
     }
 

@@ -97,6 +97,16 @@ export class Creator implements ICreator {
 
                 const artifactFilter: IArtifactFilter[] = await this.createArtifactFilter(project, definition, parameters.filters.artifactTags, parameters.filters.artifactBranch);
 
+                if (parameters.variables.length > 0) {
+
+                    this.consoleLogger.log(`Overridding <${parameters.variables.length}> release pipeline <${definition.name}> variable(s)`);
+
+                    this.consoleLogger.log(
+                        this.progressReporter.getVariables(parameters.variables)
+                    );
+
+                }
+
                 release = await this.releaseHelper.createRelease(project.name!, definition, details, parameters.stages, parameters.variables, artifactFilter);
 
                 break;
