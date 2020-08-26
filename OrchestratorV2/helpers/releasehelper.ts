@@ -1,4 +1,4 @@
-import { ReleaseDefinition, Release, ReleaseStatus, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ReleaseReason, ReleaseStartMetadata, ReleaseEnvironment, EnvironmentStatus, ReleaseApproval, ReleaseEnvironmentUpdateMetadata, ApprovalStatus, ReleaseExpands, ConfigurationVariableValue } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ReleaseDefinition, Release, ReleaseStatus, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ReleaseReason, ReleaseStartMetadata, ReleaseEnvironment, EnvironmentStatus, ReleaseApproval, ReleaseEnvironmentUpdateMetadata, ApprovalStatus, ReleaseExpands, ConfigurationVariableValue, Artifact } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
@@ -9,6 +9,7 @@ import { DeploymentType } from "../interfaces/common/deploymenttype";
 import { IDetails } from "../interfaces/task/details";
 import { IReleaseApiRetry } from "../interfaces/extensions/releaseapiretry";
 import { IReleaseVariable } from "../interfaces/common/releasevariable";
+import { IStageStatusFilter } from "../interfaces/common/stagestatusfilter";
 
 export class ReleaseHelper implements IReleaseHelper {
 
@@ -62,7 +63,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    public async getReleases(projectName: string, definitionId: number, status: ReleaseStatus, filter: IReleaseFilter, stagesFilter: string[]): Promise<Release[]> {
+    public async getReleases(projectName: string, definitionId: number, status: ReleaseStatus, filter: IReleaseFilter): Promise<Release[]> {
 
         const debug = this.debugLogger.extend(this.getReleases.name);
 
@@ -95,7 +96,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
             for (const release of releases) {
 
-                const stagesStatusMatch: boolean = await this.validateReleaseStagesStatus(release, stagesFilter, filter.stageStatus);
+                const stagesStatusMatch: boolean = await this.validateReleaseStagesStatus(release, filter.stageStatus);
 
                 if (stagesStatusMatch) {
 
@@ -136,7 +137,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
         const debug = this.debugLogger.extend(this.getLastRelease.name);
 
-        const availableReleases: Release[] = await this.getReleases(projectName, definitionId, ReleaseStatus.Active, filter, stages);
+        const availableReleases: Release[] = await this.getReleases(projectName, definitionId, ReleaseStatus.Active, filter);
 
         // Find latest release by ID
         const filteredRelease: Release = availableReleases.sort(
@@ -343,6 +344,19 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
+    public async getDefinitionPrimaryArtifact(definition: ReleaseDefinition, type: string): Promise<Artifact> {
+
+        const debug = this.debugLogger.extend(this.getDefinitionPrimaryArtifact.name);
+
+        const artifact: Artifact = definition.artifacts!.filter(
+            (i) => i.isPrimary === true && i.type === type)[0];
+
+        debug(debug);
+
+        return artifact;
+
+    }
+
     public async getReleaseStages(release: Release, stages: string[]): Promise<string[]> {
 
         const debug = this.debugLogger.extend(this.getReleaseStages.name);
@@ -483,18 +497,18 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    private async validateReleaseStagesStatus(release: Release, required: string[], statuses: EnvironmentStatus[]): Promise<boolean> {
+    private async validateReleaseStagesStatus(release: Release, filter: IStageStatusFilter): Promise<boolean> {
 
         const debug = this.debugLogger.extend(this.validateReleaseStagesStatus.name);
 
-        const match: boolean = required.every((requiredStage) => {
+        const match: boolean = filter.stages.every((requiredStage) => {
 
             const releaseStage = release.environments!.find(
                 (i) => i.name === requiredStage);
 
             if (releaseStage) {
 
-                const statusMatch: boolean = statuses.includes(releaseStage.status!);
+                const statusMatch: boolean = filter.statuses.includes(releaseStage.status!);
 
                 return statusMatch;
 
