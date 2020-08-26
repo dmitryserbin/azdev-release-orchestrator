@@ -3,6 +3,7 @@
 ## 1.3.0
 
 - Add release variables support (TBU)
+- Major internal refactoring (TBU)
 
 ## 1.2.9
 
