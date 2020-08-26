@@ -172,7 +172,7 @@
       "name": "ReleaseVariables",
       "type": "multiLine",
       "label": "Release Variables",
-      "helpMarkDown": "Bypass release variables to the target release pipeline when creating a release. Specified release variables must be configured to be 'settable at release time'. In 'Name=Value' format, special characters supported, new line separated",
+      "helpMarkDown": "Override release variables of the target release pipeline when creating a new release. Specified release variables must be configured to be 'settable at release time'. In 'Name=Value' format, special characters supported, new line separated",
       "properties": {
         "rows": 8,
         "maxLength": 10000,

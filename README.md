@@ -95,7 +95,7 @@ By default, new release deployment uses default stage [triggers](https://docs.mi
 - Filter Definition Stages: target specific deployment stage(s) (comma separated) (optional)
 - Filter Artifact Tag: enable new release filtering by primary build artifact tag (optional)
 - Filter Source Branch: enable new release filtering by primary artifact source branch name (optional)
-- Release Variables: bypass release variables to the target release pipeline when creating a release (optional). Specified release variables must be configured to be `settable at release time` in the release. Values in `Name=Value` format, special characters supported, new line separated.
+- Release Variables: override release variables of the target release pipeline when creating a new release (optional). Specified release variables must be configured to be `settable at release time` in the release. Values in `Name=Value` format, special characters supported, new line separated.
 
 ### Latest Release
 
