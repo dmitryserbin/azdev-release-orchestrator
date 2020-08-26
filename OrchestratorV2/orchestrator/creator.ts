@@ -147,7 +147,7 @@ export class Creator implements ICreator {
         // Add release tag filter
         if (filters.releaseTags && filters.releaseTags.length > 0) {
 
-            debug(`Using <${String.Join("|", filters.releaseTags)}> release tag(s) filter`);
+            debug(`Using <${String.Join("|", filters.releaseTags)}> release tag filter`);
 
             releaseFilter.tag = filters.releaseTags;
 
@@ -162,7 +162,7 @@ export class Creator implements ICreator {
             // Add artifact tag filter
             if (filters.artifactTags && filters.artifactTags.length > 0) {
 
-                debug(`Using <${String.Join("|", filters.artifactTags)}> artifact tag(s) filter`);
+                debug(`Using <${String.Join("|", filters.artifactTags)}> artifact tag filter`);
 
                 // Get build matching artifact tag
                 const targetArtifactBuild: Build = await this.buildHelper.findBuild(project.name!, Number(primaryBuildArtifact.definitionReference!.definition.id), filters.artifactTags);
@@ -182,10 +182,10 @@ export class Creator implements ICreator {
 
         }
 
-        // Add stage(s) status filter
+        // Add stage status filter
         if (filters.stageStatuses && filters.stageStatuses.length > 0) {
 
-            debug(`Using <${String.Join("|", filters.stageStatuses)}> release stage(s) status filter`);
+            debug(`Using <${String.Join("|", filters.stageStatuses)}> release stage status filter`);
 
             const stageStatusFilter: IStageStatusFilter = {
 

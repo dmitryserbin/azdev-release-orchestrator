@@ -180,8 +180,8 @@
     {
       "name": "StageStatus",
       "type": "pickList",
-      "label": "Target Stage(s) Status",
-      "helpMarkDown": "Specify target release stage(s) status filter. Default = Succeeded",
+      "label": "Target Stage Status",
+      "helpMarkDown": "Specify target release stage status filter. Default = Succeeded",
       "defaultValue": "Succeeded",
       "properties": {
         "MultiSelectFlatList": true,

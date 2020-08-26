@@ -114,7 +114,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
             if (filter.tag || filter.artifactVersion || filter.sourceBranch || filter.stageStatus) {
 
-                throw new Error(`No definition <${definitionId}> releases matching filter (tags: ${filter.tag}, artifact: ${filter.artifactVersion}, branch: ${filter.sourceBranch}, stage(s) status: ${filter.stageStatus}) criteria found`);
+                throw new Error(`No definition <${definitionId}> releases matching filter (tags: ${filter.tag}, artifact: ${filter.artifactVersion}, branch: ${filter.sourceBranch}, stage status: ${filter.stageStatus?.statuses}) criteria found`);
 
             } else {
 

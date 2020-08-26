@@ -198,7 +198,7 @@ export class TaskHelper implements ITaskHelper {
 
                 }
 
-                // Get release stage(s) status filter
+                // Get release stage status filter
                 // Optional to support variable input
                 if (stageStatusFilter) {
 

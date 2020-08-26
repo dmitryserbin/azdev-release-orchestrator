@@ -113,10 +113,10 @@ export class Reporter implements IReporter {
 
         const table: Table = this.newTable([
 
-            "Release tag(s)",
-            "Artifact tag(s)",
+            "Release tag",
+            "Artifact tag",
             "Artifact branch",
-            "Stage(s) status",
+            "Stage status",
 
         ]);
 
@@ -212,7 +212,7 @@ export class Reporter implements IReporter {
             filters.releaseTags.length ? filters.releaseTags : "-",
             filters.artifactTags.length ? filters.artifactTags : "-",
             filters.artifactBranch ? filters.artifactBranch : "-",
-            filters.stageStatuses.length > 0 ? filters.stageStatuses : "-",
+            filters.stageStatuses.length ? filters.stageStatuses : "-",
 
         ];
 
