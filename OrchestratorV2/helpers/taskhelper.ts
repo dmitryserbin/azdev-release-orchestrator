@@ -13,6 +13,7 @@ import { IDetails } from "../interfaces/task/details";
 import { ReleaseStatus } from "../interfaces/common/releasestatus";
 import { IFilters } from "../interfaces/task/filters";
 import { IReleaseVariable } from "../interfaces/common/releasevariable";
+import { ISettings } from "../interfaces/common/settings";
 
 export class TaskHelper implements ITaskHelper {
 
@@ -68,12 +69,21 @@ export class TaskHelper implements ITaskHelper {
         const releaseStrategy: string = getInput("ReleaseStrategy", true)!;
         const targetProject: string = getInput("TargetProject", true)!;
         const targetDefinition: string = getInput("TargetDefinition", true)!;
+        const approvalRetry: string = getInput("ApprovalRetry", true)!;
 
         const filters: IFilters = {
 
             releaseTags: [],
             artifactTags: [],
             artifactBranch: "",
+
+        };
+
+        const settings: ISettings = {
+
+            sleep: 5000,
+            approvalRetry: approvalRetry ? Number(approvalRetry) : 60,
+            approvalSleep: 60000
 
         };
 
@@ -86,6 +96,7 @@ export class TaskHelper implements ITaskHelper {
             stages: [],
             variables: [],
             filters,
+            settings,
 
         };
 

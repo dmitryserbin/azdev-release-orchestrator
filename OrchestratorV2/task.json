@@ -189,6 +189,15 @@
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"
+    },
+    {
+      "name": "ApprovalRetry",
+      "type": "string",
+      "label": "Approval Retries",
+      "helpMarkDown": "Specify number of attempts to retry (with 1 minute delay) approving target release stage deployment (if unsuccessful) before failing. Default = 60",
+      "defaultValue": 60,
+      "required": true,
+      "groupName": "Advanced"
     }
   ],
   "dataSourceBindings": [

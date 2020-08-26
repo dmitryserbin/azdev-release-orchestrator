@@ -16,7 +16,6 @@ import { IBuildHelper } from "../interfaces/helpers/buildhelper";
 import { IReleaseJob } from "../interfaces/common/releasejob";
 import { IReleaseFilter } from "../interfaces/common/releasefilter";
 import { IArtifactFilter } from "../interfaces/common/artifactfilter";
-import { ISettings } from "../interfaces/common/settings";
 import { DeploymentType } from "../interfaces/common/deploymenttype";
 import { IReporter } from "../interfaces/orchestrator/reporter";
 
@@ -56,14 +55,6 @@ export class Creator implements ICreator {
 
         const releaseType: DeploymentType = await this.releaseHelper.getReleaseType(targetRelease);
 
-        const settings: ISettings = {
-
-            sleep: 5000,
-            approvalRetry: 60,
-            approvalSleep: 60000
-
-        }
-
         const releaseJob: IReleaseJob = {
 
             project: targetProject,
@@ -71,7 +62,7 @@ export class Creator implements ICreator {
             release: targetRelease,
             stages: targetStages,
             type: releaseType,
-            settings: settings,
+            settings: parameters.settings,
 
         };
 

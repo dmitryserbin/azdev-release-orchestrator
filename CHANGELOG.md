@@ -2,7 +2,8 @@
 
 ## 1.3.0
 
-- Add release variables support (TBU)
+- Make approval retries configurable ([23](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/23))
+- Add release variables support ([24](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/24))
 - Major internal refactoring (TBU)
 
 ## 1.2.9

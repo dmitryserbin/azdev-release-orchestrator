@@ -62,7 +62,7 @@ Please refer to Azure DevOps [permissions and security roles documentation](http
 The task can automate release stage pre-deployment approval, in order to configure it you need:
 
 - Add Azure DevOps service endpoint user account to stage approvers
-- Uncheck 'The user requesting a release or deployment should not approve it' checkbox.
+- Uncheck 'The user requesting a release or deployment should not approve it' checkbox
 
 ![Image](Images/ro-03.png)
 
@@ -95,7 +95,7 @@ By default, new release deployment uses default stage [triggers](https://docs.mi
 - Filter Definition Stages: target specific deployment stage(s) (comma separated) (optional)
 - Filter Artifact Tag: enable new release filtering by primary build artifact tag (optional)
 - Filter Source Branch: enable new release filtering by primary artifact source branch name (optional)
-- Release Variables: override release variables of the target release pipeline when creating a new release (optional). Specified release variables must be configured to be `settable at release time` in the release. Values in `Name=Value` format, special characters supported, new line separated.
+- Release Variables: override release variables of the target release pipeline when creating a new release (optional). Specified release variables must be configured to be `settable at release time` in the release. Values in `Name=Value` format, special characters supported, new line separated
 
 ### Latest Release
 
@@ -116,6 +116,7 @@ Deploying specific release requires you to provide target stages for deployment.
 ## Advanced
 
 - Ignore Failures: suppress errors and set task result to partially succeeded in case of failure
+- Approval Retries: number of attempts to retry (with 1 minute delay) approving target release stage deployment (if unsuccessful) before failing
 
 ## Support
 
