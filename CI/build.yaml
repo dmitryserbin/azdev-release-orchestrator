@@ -9,6 +9,13 @@ steps:
     workingDir: OrchestratorV1
 
 - task: Npm@1
+  displayName: Run lint
+  inputs:
+    command: custom
+    workingDir: OrchestratorV1
+    customCommand: run lint
+
+- task: Npm@1
   displayName: Run build
   inputs:
     command: custom
@@ -32,9 +39,9 @@ steps:
 - task: PublishTestResults@2
   displayName: Publish test results
   inputs:
-    testResultsFiles: '**/test-*.xml'
+    testResultsFiles: "**/results.xml"
 
-- powershell: '@(".git", ".vscode", "*.yaml", "OrchestratorV1\Tests", "OrchestratorV1\test-*.xml") | ForEach-Object { Remove-Item -Path $_ -Force -Recurse -ErrorAction SilentlyContinue }'
+- powershell: '@(".git", ".vscode", "*.yaml", "OrchestratorV1\tests") | ForEach-Object { Remove-Item -Path $_ -Force -Recurse -ErrorAction SilentlyContinue }'
   displayName: Clean artifact
 
 - task: PublishBuildArtifacts@1

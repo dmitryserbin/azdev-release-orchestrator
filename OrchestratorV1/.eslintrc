@@ -3,10 +3,11 @@
   "env": {
     "commonjs": true,
     "es6": true,
+    "es2020": true,
     "node": true
   },
   "parserOptions": {
-    "ecmaVersion": 6
+    "ecmaVersion": 2019
   },
   "plugins": [
     "@typescript-eslint"

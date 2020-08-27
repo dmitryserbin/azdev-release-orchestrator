@@ -9,6 +9,13 @@ steps:
     workingDir: OrchestratorV1
 
 - task: Npm@1
+  displayName: Run lint
+  inputs:
+    command: custom
+    workingDir: OrchestratorV1
+    customCommand: run lint
+
+- task: Npm@1
   displayName: Run build
   inputs:
     command: custom
@@ -25,4 +32,4 @@ steps:
 - task: PublishTestResults@2
   displayName: Publish test results
   inputs:
-    testResultsFiles: '**/test-*.xml'
+    testResultsFiles: "**/results.xml"
