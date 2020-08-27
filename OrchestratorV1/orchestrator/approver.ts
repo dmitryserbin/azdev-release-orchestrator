@@ -59,7 +59,7 @@ export class Approver implements IApprover {
 
                 debug(pendingApproval);
 
-                const approvalMessage: string = `Approved by <${details.releaseName}> (${details.endpointName}) release orchestrator`;
+                const approvalMessage: string = `Approved by <${details.releaseName}> (${details.endpointName}) via release orchestrator`;
 
                 // Approve stage deployment
                 const approvalStatus: ReleaseApproval = await this.releaseHelper.approveStage(pendingApproval, projectName, approvalMessage);
@@ -71,7 +71,7 @@ export class Approver implements IApprover {
                 // When at least one approval succeeded
                 if (approvalStatus.status === ApprovalStatus.Approved) {
 
-                    this.consoleLogger.log(`Stage <${stageStatus.name}> (${stageStatus.id}) deployment successfully approved`);
+                    this.consoleLogger.log(`Stage <${stageStatus.name}> (${stageStatus.id}) deployment <${ApprovalStatus[approvalStatus.status]}> successfully`);
 
                     break;
 
