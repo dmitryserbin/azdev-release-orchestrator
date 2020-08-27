@@ -1,4 +1,4 @@
-{
+﻿{
   "id": "5d38d46b-4c0a-4c14-8f0c-04df59e4dc27",
   "name": "releaseorchestrator",
   "friendlyName": "Release Orchestrator",
@@ -163,18 +163,78 @@
       "name": "SourceBranchName",
       "type": "string",
       "label": "Source Branch Name",
-      "helpMarkDown": "Specify branch name of primary release artifact source. Default 'refs/heads/master' (build artifacts) or 'master' (Git artifacts)",
+      "helpMarkDown": "Specify branch name of primary release artifact source. Default = 'refs/heads/master' (build artifacts) or 'master' (Git artifacts)",
       "defaultValue": "refs/heads/master",
       "required": true,
       "visibleRule": "SourceBranchFilter = true"
     },
     {
+      "name": "StageStatusFilter",
+      "type": "boolean",
+      "label": "Filter Stage Status",
+      "helpMarkDown": "Enable target release filtering by stage(s) deployment status",
+      "defaultValue": false,
+      "required": false,
+      "visibleRule": "ReleaseStrategy = latest"
+    },
+    {
+      "name": "StageStatus",
+      "type": "pickList",
+      "label": "Target Stage Status",
+      "helpMarkDown": "Specify target release stage status filter. Default = Succeeded",
+      "defaultValue": "Succeeded",
+      "properties": {
+        "MultiSelectFlatList": true,
+        "EditableOptions": false
+      },
+      "options": {
+        "Succeeded": "Succeeded",
+        "PartiallySucceeded": "Partially Succeeded",
+        "NotStarted": "Not Started",
+        "Rejected": "Rejected",
+        "Canceled": "Canceled"
+      },
+      "required": true,
+      "visibleRule": "StageStatusFilter = true"
+    },
+    {
+      "name": "ReleaseVariables",
+      "type": "multiLine",
+      "label": "Release Variables",
+      "helpMarkDown": "Override release variables of the target release pipeline when creating a new release. Specified release variables must be configured to be 'settable at release time'. In 'Name=Value' format, special characters supported, new line separated",
+      "properties": {
+        "rows": 8,
+        "maxLength": 10000,
+        "resizable": true
+      },
+      "required": false,
+      "visibleRule": "ReleaseStrategy = create"
+    },
+    {
       "name": "IgnoreFailure",
       "type": "boolean",
       "label": "Ignore Failures",
-      "helpMarkDown": "Suppress errors and set task result to partially succeeded in case of failure. Default = false",
+      "helpMarkDown": "Suppress errors and set task result to partially succeeded in case of failure+ = false",
       "defaultValue": false,
       "required": false,
+      "groupName": "Advanced"
+    },
+    {
+      "name": "ApprovalRetry",
+      "type": "string",
+      "label": "Approval Retries",
+      "helpMarkDown": "Specify number of attempts to retry (with 1 minute delay) approving target release stage deployment (if unsuccessful) before failing. Default = 60",
+      "defaultValue": 60,
+      "required": true,
+      "groupName": "Advanced"
+    },
+    {
+      "name": "UpdateInterval",
+      "type": "string",
+      "label": "Status Update Interval",
+      "helpMarkDown": "Specify number seconds to wait before next release deployment status update. Default = 5 (i.e. every 'X' seconds)",
+      "defaultValue": 5,
+      "required": true,
       "groupName": "Advanced"
     }
   ],
@@ -216,8 +276,8 @@
     }
   ],
   "execution": {
-    "Node": {
-      "target": "index.js"
+    "Node10": {
+      "target": "task.js"
     }
   }
 }
