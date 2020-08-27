@@ -227,6 +227,15 @@
       "defaultValue": 60,
       "required": true,
       "groupName": "Advanced"
+    },
+    {
+      "name": "UpdateInterval",
+      "type": "string",
+      "label": "Update Interval",
+      "helpMarkDown": "Specify number seconds to wait before next release deployment status update. Default = 5 (i.e. every 5 seconds)",
+      "defaultValue": 5,
+      "required": true,
+      "groupName": "Advanced"
     }
   ],
   "dataSourceBindings": [

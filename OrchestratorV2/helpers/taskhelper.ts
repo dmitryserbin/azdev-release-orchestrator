@@ -69,6 +69,8 @@ export class TaskHelper implements ITaskHelper {
         const releaseStrategy: string = getInput("ReleaseStrategy", true)!;
         const targetProject: string = getInput("TargetProject", true)!;
         const targetDefinition: string = getInput("TargetDefinition", true)!;
+
+        const updateInterval: string = getInput("UpdateInterval", true)!;
         const approvalRetry: string = getInput("ApprovalRetry", true)!;
 
         const filters: IFilters = {
@@ -82,7 +84,8 @@ export class TaskHelper implements ITaskHelper {
 
         const settings: ISettings = {
 
-            sleep: 5000,
+            sleep: Number.isFinite(updateInterval)
+                ? Number(updateInterval) * 1000 : 5000,
             approvalRetry: Number.isFinite(approvalRetry)
                 ? Number(approvalRetry) : 60,
             approvalSleep: 60000
