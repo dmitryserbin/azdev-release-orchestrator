@@ -7,9 +7,9 @@
   "helpMarkDown": "For aditional information and support please refer to <https://github.com/dmitryserbin/azdev-release-orchestrator> project repository.",
   "category": "Release",
   "author": "Dmitry Serbin",
-  "preview": true,
+  "preview": false,
   "version": {
-    "Major": 0,
+    "Major": 1,
     "Minor": 0,
     "Patch": 0
   },
