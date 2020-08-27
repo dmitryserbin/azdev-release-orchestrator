@@ -231,8 +231,8 @@
     {
       "name": "UpdateInterval",
       "type": "string",
-      "label": "Update Interval",
-      "helpMarkDown": "Specify number seconds to wait before next release deployment status update. Default = 5 (i.e. every 5 seconds)",
+      "label": "Status Update Interval",
+      "helpMarkDown": "Specify number seconds to wait before next release deployment status update. Default = 5 (i.e. every 'X' seconds)",
       "defaultValue": 5,
       "required": true,
       "groupName": "Advanced"

@@ -118,7 +118,7 @@ Deploying specific release requires you to provide target stages for deployment.
 
 - Ignore Failures: suppress errors and set task result to partially succeeded in case of failure
 - Approval Retries: number of attempts to retry (with 1 minute delay) approving target release stage deployment (if unsuccessful) before failing
-- Update Interval: number seconds to wait before next release deployment status update (i.e. every `X` seconds)
+- Status Update Interval: number seconds to wait before next release deployment status update (i.e. every `X` seconds)
 
 ## Support
 
