@@ -1,4 +1,4 @@
-import { ReleaseDefinition, Release, Artifact, EnvironmentStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ReleaseDefinition, Release, Artifact, EnvironmentStatus, ReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import { String } from "typescript-string-operations";
@@ -147,7 +147,8 @@ export class Creator implements ICreator {
             sourceBranch: "",
             tags: [],
             stages,
-            statuses: [],
+            stageStatuses: [],
+            releaseStatus: ReleaseStatus.Active,
 
         };
 
@@ -200,31 +201,31 @@ export class Creator implements ICreator {
 
                     case "Succeeded": {
 
-                        releaseFilter.statuses.push(EnvironmentStatus.Succeeded);
+                        releaseFilter.stageStatuses.push(EnvironmentStatus.Succeeded);
 
                         break;
 
                     } case "PartiallySucceeded": {
 
-                        releaseFilter.statuses.push(EnvironmentStatus.PartiallySucceeded);
+                        releaseFilter.stageStatuses.push(EnvironmentStatus.PartiallySucceeded);
 
                         break;
 
                     } case "NotStarted": {
 
-                        releaseFilter.statuses.push(EnvironmentStatus.NotStarted);
+                        releaseFilter.stageStatuses.push(EnvironmentStatus.NotStarted);
 
                         break;
 
                     } case "Rejected": {
 
-                        releaseFilter.statuses.push(EnvironmentStatus.Rejected);
+                        releaseFilter.stageStatuses.push(EnvironmentStatus.Rejected);
 
                         break;
 
                     } case "Canceled": {
 
-                        releaseFilter.statuses.push(EnvironmentStatus.Canceled);
+                        releaseFilter.stageStatuses.push(EnvironmentStatus.Canceled);
 
                         break;
 

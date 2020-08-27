@@ -62,9 +62,9 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    public async getReleases(projectName: string, definitionId: number, status: ReleaseStatus, filter: IReleaseFilter): Promise<Release[]> {
+    public async findReleases(projectName: string, definitionId: number, filter: IReleaseFilter): Promise<Release[]> {
 
-        const debug = this.debugLogger.extend(this.getReleases.name);
+        const debug = this.debugLogger.extend(this.findReleases.name);
 
         debug(filter);
 
@@ -74,7 +74,7 @@ export class ReleaseHelper implements IReleaseHelper {
             undefined,
             undefined,
             undefined,
-            status,
+            filter.releaseStatus,
             undefined,
             undefined,
             undefined,
@@ -89,13 +89,13 @@ export class ReleaseHelper implements IReleaseHelper {
             undefined,
             filter.tags);
 
-        if (filter.statuses.length > 0) {
+        if (filter.stageStatuses.length > 0) {
 
             let filtered: Release[] = [];
 
             for (const release of releases) {
 
-                const stagesStatusMatch: boolean = await this.validateReleaseStagesStatus(release, filter.stages, filter.statuses);
+                const stagesStatusMatch: boolean = await this.validateReleaseStagesStatus(release, filter.stages, filter.stageStatuses);
 
                 if (stagesStatusMatch) {
 
@@ -111,11 +111,11 @@ export class ReleaseHelper implements IReleaseHelper {
 
         if (releases.length <= 0) {
 
-            throw new Error(`No definition <${definitionId}> releases matching filter (tags: ${filter.tags}, artifact: ${filter.artifactVersion}, branch: ${filter.sourceBranch}, stage status: ${filter.statuses}) criteria found`);
+            throw new Error(`No definition <${definitionId}> releases matching filter (tags: ${filter.tags}, artifact: ${filter.artifactVersion}, branch: ${filter.sourceBranch}, stage status: ${filter.stageStatuses}) criteria found`);
 
         }
 
-        debug(`Found <${releases.length}> (${ReleaseStatus[status]}) release(s) matching filter`);
+        debug(`Found <${releases.length}> (${ReleaseStatus[filter.releaseStatus]}) release(s) matching filter`);
 
         debug(releases.map(
             (release) => `${release.name} (${release.id})`));
@@ -128,10 +128,10 @@ export class ReleaseHelper implements IReleaseHelper {
 
         const debug = this.debugLogger.extend(this.getLastRelease.name);
 
-        const availableReleases: Release[] = await this.getReleases(projectName, definitionId, ReleaseStatus.Active, filter);
+        const filteredReleases: Release[] = await this.findReleases(projectName, definitionId, filter);
 
-        // Find latest release by ID
-        const filteredRelease: Release = availableReleases.sort(
+        // Get latest release by ID
+        const filteredRelease: Release = filteredReleases.sort(
             (left, right) => left.id! - right.id!).reverse()[0];
 
         const targetRelease: Release = await this.releaseApi.getRelease(projectName, filteredRelease.id!);

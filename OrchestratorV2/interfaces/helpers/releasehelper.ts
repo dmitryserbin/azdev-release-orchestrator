@@ -10,7 +10,7 @@ export interface IReleaseHelper {
 
     getDefinition(projectName: string, definitionId: number): Promise<ReleaseDefinition>;
     getRelease(projectName: string, releaseId: number, stages: string[]): Promise<Release>;
-    getReleases(projectName: string, definitionId: number, status: ReleaseStatus, filter: IReleaseFilter): Promise<Release[]>;
+    findReleases(projectName: string, definitionId: number, filter: IReleaseFilter): Promise<Release[]>;
     getLastRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter): Promise<Release>;
     createRelease(projectName: string, definition: ReleaseDefinition, details: IDetails, stages?: string[], variables?: IReleaseVariable[], artifacts?: IArtifactFilter[]): Promise<Release>;
     getReleaseStatus(projectName: string, releaseId: number): Promise<Release>;

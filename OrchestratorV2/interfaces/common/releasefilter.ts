@@ -1,4 +1,4 @@
-import { EnvironmentStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { EnvironmentStatus, ReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 export interface IReleaseFilter {
 
@@ -6,6 +6,7 @@ export interface IReleaseFilter {
     sourceBranch: string;
     tags: string[];
     stages: string[];
-    statuses: EnvironmentStatus[],
+    stageStatuses: EnvironmentStatus[],
+    releaseStatus: ReleaseStatus,
 
 }
