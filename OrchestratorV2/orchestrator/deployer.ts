@@ -101,7 +101,7 @@ export class Deployer implements IDeployer {
 
                 if (completed) {
 
-                    this.consoleLogger.log(`Stage <${stage.name}> (${stage.id}) deployment <${EnvironmentStatus[stage.status]}> completed`);
+                    this.consoleLogger.log(`Stage <${stage.name}> (${stage.id}) reported <${EnvironmentStatus[stage.status]}> status`);
 
                     this.consoleLogger.log(
                         this.progressReporter.getStageProgress(stage));
@@ -165,7 +165,7 @@ export class Deployer implements IDeployer {
 
                 if (completed) {
 
-                    this.consoleLogger.log(`Stage <${stage.name}> (${stage.id}) deployment <${EnvironmentStatus[stage.status]}> completed`);
+                    this.consoleLogger.log(`Stage <${stage.name}> (${stage.id}) reported <${EnvironmentStatus[stage.status]}> status`);
 
                     this.consoleLogger.log(
                         this.progressReporter.getStageProgress(stage));
