@@ -255,7 +255,7 @@ export class Reporter implements IReporter {
         const options: any = {
 
             head: headers,
-            widths: widths,
+            widths,
 
         };
 
