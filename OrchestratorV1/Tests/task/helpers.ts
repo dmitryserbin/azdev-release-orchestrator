@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+
 import { TaskMockRunner } from "azure-pipelines-task-lib/mock-run";
 
 export function mockInput(taskRunner: TaskMockRunner, variables: string[]): void {

@@ -76,6 +76,8 @@ export class Deployer implements IDeployer {
 
             }
 
+            let completed: boolean = this.progressMonitor.isStageCompleted(stage);
+
             do {
 
                 debug(`Updating <${stage.name}> (${stage.id}) stage <${EnvironmentStatus[stage.status]}> status`);
@@ -97,7 +99,7 @@ export class Deployer implements IDeployer {
                 this.progressMonitor.updateStageProgress(stage, stageStatus);
                 this.progressMonitor.updateReleaseProgress(releaseProgress);
 
-                const completed: boolean = this.progressMonitor.isStageCompleted(stage);
+                completed = this.progressMonitor.isStageCompleted(stage);
 
                 if (completed) {
 
@@ -113,7 +115,7 @@ export class Deployer implements IDeployer {
                 // Wait before next stage status update
                 await this.commonHelper.wait(releaseJob.settings.sleep);
 
-            } while (true);
+            } while (!completed);
 
         }
 

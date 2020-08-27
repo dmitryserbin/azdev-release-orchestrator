@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import Table from "cli-table";
 import Moment from "moment";
 
@@ -26,8 +28,6 @@ export class Reporter implements IReporter {
 
     public getReleaseProgress(releaseProgress: IReleaseProgress): string {
 
-        const debug = this.debugLogger.extend(this.getReleaseProgress.name);
-
         const table: Table = this.newTable([
 
             "ID",
@@ -46,8 +46,6 @@ export class Reporter implements IReporter {
     }
 
     public getStagesProgress(stagesProgress: IStageProgress[]): string {
-
-        const debug = this.debugLogger.extend(this.getStagesProgress.name);
 
         const table: Table = this.newTable([
 
@@ -77,8 +75,6 @@ export class Reporter implements IReporter {
 
     public getStageProgress(stageProgress: IStageProgress): string {
 
-        const debug = this.debugLogger.extend(this.getStageProgress.name);
-
         const table: Table = this.newTable([
 
             "Agent",
@@ -89,7 +85,7 @@ export class Reporter implements IReporter {
 
         ]);
 
-        for (const phase of stageProgress.deployment?.releaseDeployPhases!) {
+        for (const phase of stageProgress.deployment!.releaseDeployPhases!) {
 
             for (const job of phase.deploymentJobs!) {
 
@@ -111,8 +107,6 @@ export class Reporter implements IReporter {
 
     public getFilters(filters: IFilters): string {
 
-        const debug = this.debugLogger.extend(this.getFilters.name);
-
         const table: Table = this.newTable([
 
             "Release tag",
@@ -131,8 +125,6 @@ export class Reporter implements IReporter {
     }
 
     public getVariables(variables: IReleaseVariable[]): string {
-
-        const debug = this.debugLogger.extend(this.getVariables.name);
 
         const table: Table = this.newTable([
 

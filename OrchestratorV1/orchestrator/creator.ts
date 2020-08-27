@@ -67,6 +67,8 @@ export class Creator implements ICreator {
 
         };
 
+        debug(`Release <${targetRelease.name}> (<${String.Join("|", targetStages)}>) job cleated`);
+
         return releaseJob;
 
     }
@@ -132,6 +134,8 @@ export class Creator implements ICreator {
             }
 
         }
+
+        debug(`Release <${release.name}> type <${ReleaseType[parameters.releaseType]}> created`);
 
         return release;
 

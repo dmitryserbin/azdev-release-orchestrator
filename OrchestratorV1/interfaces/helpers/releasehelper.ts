@@ -1,4 +1,4 @@
-import { ReleaseDefinition, Release, ArtifactMetadata, ReleaseEnvironment, ReleaseApproval, ApprovalStatus, ReleaseStatus, Artifact } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ReleaseDefinition, Release, ArtifactMetadata, ReleaseEnvironment, ReleaseApproval, ApprovalStatus, Artifact } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IReleaseFilter } from "../common/releasefilter";
 import { IArtifactFilter } from "../common/artifactfilter";

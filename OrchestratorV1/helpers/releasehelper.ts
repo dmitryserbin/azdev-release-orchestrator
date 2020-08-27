@@ -91,7 +91,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
         if (filter.stageStatuses.length > 0) {
 
-            let filtered: Release[] = [];
+            const filtered: Release[] = [];
 
             for (const release of releases) {
 
@@ -503,6 +503,8 @@ export class ReleaseHelper implements IReleaseHelper {
 
         });
 
+        debug(match);
+
         return match;
 
     }
@@ -558,9 +560,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
     private async formatReleaseVariables(variables: IReleaseVariable[]): Promise<{ [key: string]: ConfigurationVariableValue }> {
 
-        const debug = this.debugLogger.extend(this.formatReleaseVariables.name);
-
-        let releaseVariables: { [key: string]: ConfigurationVariableValue } = {};
+        const releaseVariables: { [key: string]: ConfigurationVariableValue } = {};
 
         for (const variable of variables) {
 

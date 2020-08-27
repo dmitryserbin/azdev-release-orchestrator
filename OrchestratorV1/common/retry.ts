@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-types */
+
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { DebugCreator } from "../loggers/debugcreator";
@@ -5,15 +9,12 @@ import { DebugCreator } from "../loggers/debugcreator";
 const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator");
 const debugLogger: IDebugLogger = debugCreator.extend("Retry");
 
-// tslint:disable-next-line:ban-types
 export function Retryable(attempts: number = 10, timeout: number = 5000): Function {
 
     const debug = debugLogger.extend("retryable");
 
-    // tslint:disable-next-line:only-arrow-functions ban-types
     return function(target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
 
-        // tslint:disable-next-line:ban-types
         const originalMethod: Function = descriptor.value;
 
         descriptor.value = async function(...args: any[]) {
@@ -39,7 +40,6 @@ export function Retryable(attempts: number = 10, timeout: number = 5000): Functi
 
 }
 
-// tslint:disable-next-line:ban-types
 async function retryAsync(target: Function, args: any[], attempts: number, timeout: number): Promise<any> {
 
     const debug = debugLogger.extend("retryAsync");

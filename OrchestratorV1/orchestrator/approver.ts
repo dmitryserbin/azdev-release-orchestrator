@@ -102,7 +102,7 @@ export class Approver implements IApprover {
 
                 debug(`Cancelling <${stageStatus.name}> (${stageStatus.id}) stage deployment`);
 
-                // Cancel stage deployment
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const releaseStage: ReleaseEnvironment = await this.releaseHelper.cancelStage(stageStatus, projectName, cancelMessage);
 
             } else {
