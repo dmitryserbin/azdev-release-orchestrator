@@ -9,7 +9,6 @@ import { DeploymentType } from "../interfaces/common/deploymenttype";
 import { IDetails } from "../interfaces/task/details";
 import { IReleaseApiRetry } from "../interfaces/extensions/releaseapiretry";
 import { IReleaseVariable } from "../interfaces/common/releasevariable";
-import { IStageStatusFilter } from "../interfaces/common/stagestatusfilter";
 
 export class ReleaseHelper implements IReleaseHelper {
 
@@ -88,15 +87,15 @@ export class ReleaseHelper implements IReleaseHelper {
             filter.artifactVersion,
             filter.sourceBranch,
             undefined,
-            filter.tag);
+            filter.tags);
 
-        if (filter.stageStatus) {
+        if (filter.statuses.length > 0) {
 
             let filtered: Release[] = [];
 
             for (const release of releases) {
 
-                const stagesStatusMatch: boolean = await this.validateReleaseStagesStatus(release, filter.stageStatus);
+                const stagesStatusMatch: boolean = await this.validateReleaseStagesStatus(release, filter.stages, filter.statuses);
 
                 if (stagesStatusMatch) {
 
@@ -112,15 +111,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
         if (releases.length <= 0) {
 
-            if (filter.tag || filter.artifactVersion || filter.sourceBranch || filter.stageStatus) {
-
-                throw new Error(`No definition <${definitionId}> releases matching filter (tags: ${filter.tag}, artifact: ${filter.artifactVersion}, branch: ${filter.sourceBranch}, stage status: ${filter.stageStatus?.statuses}) criteria found`);
-
-            } else {
-
-                throw new Error(`No definition <${definitionId}> releases found`);
-
-            }
+            throw new Error(`No definition <${definitionId}> releases matching filter (tags: ${filter.tags}, artifact: ${filter.artifactVersion}, branch: ${filter.sourceBranch}, stage status: ${filter.statuses}) criteria found`);
 
         }
 
@@ -291,15 +282,7 @@ export class ReleaseHelper implements IReleaseHelper {
             // Validate version
             if (!targetVersion) {
 
-                if (versionId || sourceBranch) {
-
-                    throw new Error(`No artifact <${artifact.alias}> matching filter found (version: ${versionId}, branch: ${sourceBranch})`);
-
-                } else {
-
-                    throw new Error(`No artifact <${artifact.alias}> versions found`);
-
-                }
+                throw new Error(`No artifact <${artifact.alias}> matching filter found (version: ${versionId}, branch: ${sourceBranch})`);
 
             }
 
@@ -497,18 +480,18 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    private async validateReleaseStagesStatus(release: Release, filter: IStageStatusFilter): Promise<boolean> {
+    private async validateReleaseStagesStatus(release: Release, stages: string[], statuses: EnvironmentStatus[]): Promise<boolean> {
 
         const debug = this.debugLogger.extend(this.validateReleaseStagesStatus.name);
 
-        const match: boolean = filter.stages.every((requiredStage) => {
+        const match: boolean = stages.every((requiredStage) => {
 
             const releaseStage = release.environments!.find(
                 (i) => i.name === requiredStage);
 
             if (releaseStage) {
 
-                const statusMatch: boolean = filter.statuses.includes(releaseStage.status!);
+                const statusMatch: boolean = statuses.includes(releaseStage.status!);
 
                 return statusMatch;
 

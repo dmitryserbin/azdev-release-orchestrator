@@ -18,7 +18,6 @@ import { IReleaseFilter } from "../interfaces/common/releasefilter";
 import { IArtifactFilter } from "../interfaces/common/artifactfilter";
 import { DeploymentType } from "../interfaces/common/deploymenttype";
 import { IReporter } from "../interfaces/orchestrator/reporter";
-import { IStageStatusFilter } from "../interfaces/common/stagestatusfilter";
 import { IFilters } from "../interfaces/task/filters";
 
 export class Creator implements ICreator {
@@ -142,14 +141,22 @@ export class Creator implements ICreator {
 
         const debug = this.debugLogger.extend(this.createReleaseFilter.name);
 
-        const releaseFilter: IReleaseFilter = {};
+        const releaseFilter: IReleaseFilter = {
+
+            artifactVersion: "",
+            sourceBranch: "",
+            tags: [],
+            stages,
+            statuses: [],
+
+        };
 
         // Add release tag filter
         if (filters.releaseTags && filters.releaseTags.length > 0) {
 
             debug(`Using <${String.Join("|", filters.releaseTags)}> release tag filter`);
 
-            releaseFilter.tag = filters.releaseTags;
+            releaseFilter.tags = filters.releaseTags;
 
         }
 
@@ -187,44 +194,37 @@ export class Creator implements ICreator {
 
             debug(`Using <${String.Join("|", filters.stageStatuses)}> release stage status filter`);
 
-            const stageStatusFilter: IStageStatusFilter = {
-
-                stages,
-                statuses: [],
-
-            }
-
             for (const status of filters.stageStatuses) {
 
                 switch (status) {
 
                     case "Succeeded": {
 
-                        stageStatusFilter.statuses.push(EnvironmentStatus.Succeeded);
+                        releaseFilter.statuses.push(EnvironmentStatus.Succeeded);
 
                         break;
 
                     } case "PartiallySucceeded": {
 
-                        stageStatusFilter.statuses.push(EnvironmentStatus.PartiallySucceeded);
+                        releaseFilter.statuses.push(EnvironmentStatus.PartiallySucceeded);
 
                         break;
 
                     } case "NotStarted": {
 
-                        stageStatusFilter.statuses.push(EnvironmentStatus.NotStarted);
+                        releaseFilter.statuses.push(EnvironmentStatus.NotStarted);
 
                         break;
 
                     } case "Rejected": {
 
-                        stageStatusFilter.statuses.push(EnvironmentStatus.Rejected);
+                        releaseFilter.statuses.push(EnvironmentStatus.Rejected);
 
                         break;
 
                     } case "Canceled": {
 
-                        stageStatusFilter.statuses.push(EnvironmentStatus.Canceled);
+                        releaseFilter.statuses.push(EnvironmentStatus.Canceled);
 
                         break;
 
@@ -237,8 +237,6 @@ export class Creator implements ICreator {
                 }
 
             }
-
-            releaseFilter.stageStatus = stageStatusFilter;
 
         }
 
