@@ -36,11 +36,11 @@ jobs:
     inputs:
       testResultsFiles: "**/results.xml"
 
-  - task: PublishBuildArtifacts@1
+  - task: CopyFiles@2
     displayName: Publish task
     inputs:
-      pathToPublish: OrchestratorV1
-      artifactName: OrchestratorV1
+      contents: OrchestratorV1
+      targetFolder: $(Build.ArtifactStagingDirectory)
 
 - job: OrchestratorV2
   pool:
@@ -84,11 +84,11 @@ jobs:
     inputs:
       testResultsFiles: "**/results.xml"
 
-  - task: PublishBuildArtifacts@1
+  - task: CopyFiles@2
     displayName: Publish task
     inputs:
-      pathToPublish: OrchestratorV2
-      artifactName: OrchestratorV2
+      contents: OrchestratorV2
+      targetFolder: $(Build.ArtifactStagingDirectory)
 
 - job: Publish
   pool:
@@ -97,5 +97,9 @@ jobs:
   - OrchestratorV1
   - OrchestratorV2
   steps:
+  - publish: $(Build.ArtifactStagingDirectory)
+    artifact: ReleaseOrchestrator
+
   - powershell: tree /F
+  - powershell: tree /F $(Build.ArtifactStagingDirectory)
   - powershell: tree /F $(System.ArtifactsDirectory)
