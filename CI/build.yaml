@@ -32,10 +32,10 @@ jobs:
       workingDir: OrchestratorV1
       customCommand: run clean
 
-    - task: PublishTestResults@2
-      displayName: Publish test results
-      inputs:
-        testResultsFiles: "**/results.xml"
+  - task: PublishTestResults@2
+    displayName: Publish test results
+    inputs:
+      testResultsFiles: "**/results.xml"
 
   - publish: OrchestratorV1
     displayName: Publish task
@@ -100,6 +100,10 @@ jobs:
         *.md
         *.json
       targetFolder: '$(Build.ArtifactStagingDirectory)'
+
+  - download: current
+    displayName: Download OrchestratorV1
+    artifact: OrchestratorV1
 
   - publish: $(Build.ArtifactStagingDirectory)
     displayName: Publish extension
