@@ -16,7 +16,7 @@ jobs:
   pool:
     vmImage: windows-latest
   steps:
-=
+
   - task: CopyFiles@2
     displayName: Copy task
     inputs:
