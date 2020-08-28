@@ -37,7 +37,7 @@ jobs:
       testResultsFiles: "**/results.xml"
 
   - task: CopyFiles@2
-    displayName: Publish task
+    displayName: Copy task
     inputs:
       contents: OrchestratorV1
       targetFolder: $(Build.ArtifactStagingDirectory)
@@ -85,7 +85,7 @@ jobs:
       testResultsFiles: "**/results.xml"
 
   - task: CopyFiles@2
-    displayName: Publish task
+    displayName: Copy task
     inputs:
       contents: OrchestratorV2
       targetFolder: $(Build.ArtifactStagingDirectory)
@@ -97,6 +97,16 @@ jobs:
   - OrchestratorV1
   - OrchestratorV2
   steps:
+  - task: CopyFiles@2
+    displayName: Copy extension
+    inputs:
+      contents: |
+        LICENSE
+        **\Images
+        *.md
+        *.json
+      targetFolder: $(Build.ArtifactStagingDirectory)
+
   - publish: $(Build.ArtifactStagingDirectory)
     artifact: ReleaseOrchestrator
 
