@@ -73,23 +73,19 @@ steps:
   displayName: Copy extension
   inputs:
     contents: |
-      Images/*
+      Images/**
       LICENSE
       *.md
       *.json
-    targetFolder: "$(Build.ArtifactStagingDirectory)"
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: CopyFiles@2
-  displayName: Copy OrchestratorV1
+  displayName: Copy tasks
   inputs:
-    contents: OrchestratorV1/*
-    targetFolder: "$(Build.ArtifactStagingDirectory)"
-
-- task: CopyFiles@2
-  displayName: Copy OrchestratorV2
-  inputs:
-    contents: OrchestratorV2/*
-    targetFolder: "$(Build.ArtifactStagingDirectory)"
+    contents: |
+      OrchestratorV1/**
+      OrchestratorV2/**
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - publish: $(Build.ArtifactStagingDirectory)
   displayName: Publish extension
