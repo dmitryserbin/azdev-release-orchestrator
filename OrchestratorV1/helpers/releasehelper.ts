@@ -24,17 +24,32 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    public async getDefinition(projectName: string, definitionId: number): Promise<ReleaseDefinition> {
+    public async getDefinition(projectName: string, definitionName: string): Promise<ReleaseDefinition> {
 
         const debug = this.debugLogger.extend(this.getDefinition.name);
 
-        const targetDefinition: ReleaseDefinition = await this.releaseApi.getReleaseDefinition(projectName, definitionId);
+        const matchingDefinitions: ReleaseDefinition[] = await this.releaseApi.getReleaseDefinitions(
+            projectName,
+            definitionName,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            true);
 
-        if (!targetDefinition) {
+        debug(matchingDefinitions.map(
+            (definition) => `${definition.name} (${definition.id})`));
 
-            throw new Error(`Definition <${definitionId}> not found`);
+        if (matchingDefinitions.length <= 0) {
+
+            throw new Error(`Definition <${definitionName}> not found`);
 
         }
+
+        const targetDefinition: ReleaseDefinition = await this.releaseApi.getReleaseDefinition(projectName, matchingDefinitions[0].id!);
 
         debug(targetDefinition);
 
@@ -42,17 +57,27 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    public async getRelease(projectName: string, releaseId: number, stages: string[]): Promise<Release> {
+    public async getRelease(projectName: string, definitionId: number, releaseName: string, stages: string[]): Promise<Release> {
 
         const debug = this.debugLogger.extend(this.getRelease.name);
 
-        const targetRelease: Release = await this.releaseApi.getRelease(projectName, releaseId);
+        const matchingReleases: Release[] = await this.releaseApi.getReleases(
+            projectName,
+            definitionId,
+            undefined,
+            releaseName
+        )
 
-        if (!targetRelease) {
+        debug(matchingReleases.map(
+            (release) => `${release.name} (${release.id})`));
 
-            throw new Error(`Release <${releaseId}> not found`);
+        if (matchingReleases.length <= 0) {
+
+            throw new Error(`Release <${releaseName}> not found`);
 
         }
+
+        const targetRelease: Release = await this.releaseApi.getRelease(projectName, matchingReleases[0].id!);
 
         await this.validateReleaseStages(targetRelease, stages);
 

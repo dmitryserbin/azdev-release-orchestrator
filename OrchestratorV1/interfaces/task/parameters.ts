@@ -6,9 +6,9 @@ import { ISettings } from "../common/settings";
 export interface IParameters {
 
     releaseType: ReleaseType;
-    projectId: string;
-    definitionId: string;
-    releaseId: string;
+    projectName: string;
+    definitionName: string;
+    releaseName: string;
     stages: string[];
     variables: IReleaseVariable[];
     filters: IFilters;

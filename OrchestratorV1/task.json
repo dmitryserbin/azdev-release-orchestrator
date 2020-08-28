@@ -9,9 +9,9 @@
   "author": "Dmitry Serbin",
   "preview": false,
   "version": {
-    "Major": 1,
+    "Major": 2,
     "Minor": 0,
-    "Patch": 1
+    "Patch": 0
   },
   "groups": [
     {
@@ -42,20 +42,20 @@
       "visibleRule": "EndpointType = service"
     },
     {
-      "name": "TargetProject",
+      "name": "ProjectName",
       "type": "pickList",
       "label": "Project Name",
-      "helpMarkDown": "Select target project name from the list or specify project ID",
+      "helpMarkDown": "Select target project from the list or specify project name",
       "required": true,
       "properties": {
         "EditableOptions": true
       }
     },
     {
-      "name": "TargetDefinition",
+      "name": "DefinitionName",
       "type": "pickList",
       "label": "Release Definition",
-      "helpMarkDown": "Select target release definition name or specify definition ID",
+      "helpMarkDown": "Select target release definition or specify definition name",
       "required": true,
       "properties": {
         "EditableOptions": true
@@ -75,10 +75,10 @@
       }
     },
     {
-      "name": "TargetRelease",
+      "name": "ReleaseName",
       "type": "pickList",
       "label": "Release Name",
-      "helpMarkDown": "Select target release name (shows last 25 releases) or specify release ID",
+      "helpMarkDown": "Select target release (shows last 25 releases) or specify release name or ID",
       "required": true,
       "properties": {
         "EditableOptions": true
@@ -86,7 +86,7 @@
       "visibleRule": "ReleaseStrategy = specific"
     },
     {
-      "name": "TargetReleaseStages",
+      "name": "ReleaseStages",
       "type": "pickList",
       "label": "Release Stages",
       "helpMarkDown": "Target specific release stages (comma separated)",
@@ -106,7 +106,7 @@
       "visibleRule": "ReleaseStrategy = create"
     },
     {
-      "name": "TargetDefinitionStages",
+      "name": "DefinitionStages",
       "type": "pickList",
       "label": "Definition Stages",
       "helpMarkDown": "Target specific release definition stages (comma separated)",
@@ -214,7 +214,7 @@
       "name": "IgnoreFailure",
       "type": "boolean",
       "label": "Ignore Failures",
-      "helpMarkDown": "Suppress errors and set task result to partially succeeded in case of failure+ = false",
+      "helpMarkDown": "Suppress errors and set task result to partially succeeded in case of failure. Default = false",
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"
@@ -240,38 +240,38 @@
   ],
   "dataSourceBindings": [
     {
-      "target": "TargetProject",
+      "target": "ProjectName",
       "endpointId": "tfs:teamfoundation",
       "endpointUrl": "{{endpoint.url}}/_apis/projects",
       "resultSelector": "jsonpath:$.value[?(@.state == 'wellFormed')]",
-      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+      "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
     },
     {
-      "target": "TargetDefinition",
+      "target": "DefinitionName",
       "endpointId": "tfs:rm",
-      "endpointUrl": "{{endpoint.url}}/$(TargetProject)/_apis/release/definitions",
+      "endpointUrl": "{{endpoint.url}}/$(ProjectName)/_apis/release/definitions",
       "resultSelector": "jsonpath:$.value[?(@.isDeleted == false)]",
-      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+      "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
     },
     {
-      "target": "TargetDefinitionStages",
+      "target": "DefinitionStages",
       "endpointId": "tfs:rm",
-      "endpointUrl": "{{endpoint.url}}/$(TargetProject)/_apis/release/definitions/$(TargetDefinition)",
+      "endpointUrl": "{{endpoint.url}}/$(ProjectName)/_apis/release/definitions/?searchText=$(DefinitionName)&isExactNameMatch=true&$expand=Environments",
       "resultSelector": "jsonpath:$.environments[*]",
       "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
     },
     {
-      "target": "TargetRelease",
+      "target": "ReleaseName",
       "endpointId": "tfs:rm",
-      "endpointUrl": "{{endpoint.url}}/$(TargetProject)/_apis/release/releases?definitionId=$(TargetDefinition)&$top=25",
+      "endpointUrl": "{{endpoint.url}}/$(ProjectName)/_apis/release/releases?definitionId=$(DefinitionName)&$top=25",
       "resultSelector": "jsonpath:$.value[*]",
-      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}} (by {{{createdBy.displayName}}} at {{{createdOn}}})\" }"
+      "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}} (by {{{createdBy.displayName}}} at {{{createdOn}}})\" }"
     },
     {
-      "target": "TargetReleaseStages",
+      "target": "ReleaseStages",
       "endpointId": "tfs:rm",
-      "endpointUrl": "{{endpoint.url}}/$(TargetProject)/_apis/release/releases/$(TargetRelease)",
-      "resultSelector": "jsonpath:$.environments[*]",
+      "endpointUrl": "{{endpoint.url}}/$(ProjectName)/_apis/release/releases?definitionId=$(DefinitionName)&searchText=$(ReleaseName)&$expand=Environments",
+      "resultSelector": "jsonpath:$.value[*].environments[*]",
       "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
     }
   ],

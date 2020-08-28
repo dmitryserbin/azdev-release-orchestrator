@@ -46,8 +46,8 @@ export class Creator implements ICreator {
 
         const debug = this.debugLogger.extend(this.createJob.name);
 
-        const targetProject: TeamProject = await this.coreHelper.getProject(parameters.projectId);
-        const targetDefinition: ReleaseDefinition = await this.releaseHelper.getDefinition(targetProject.name!, Number(parameters.definitionId));
+        const targetProject: TeamProject = await this.coreHelper.getProject(parameters.projectName);
+        const targetDefinition: ReleaseDefinition = await this.releaseHelper.getDefinition(targetProject.name!, parameters.definitionName);
 
         this.consoleLogger.log(`Starting <${targetProject.name}> project <${targetDefinition.name}> release pipeline deployment`);
 
@@ -123,7 +123,7 @@ export class Creator implements ICreator {
 
                 this.consoleLogger.log(`Targeting specific <${definition.name}> (${definition.id}) release pipeline release`);
 
-                release = await this.releaseHelper.getRelease(project.name!, Number(parameters.releaseId), parameters.stages);
+                release = await this.releaseHelper.getRelease(project.name!, definition.id!, parameters.releaseName, parameters.stages);
 
                 break;
 

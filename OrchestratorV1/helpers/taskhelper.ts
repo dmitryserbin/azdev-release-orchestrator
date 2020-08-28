@@ -67,8 +67,8 @@ export class TaskHelper implements ITaskHelper {
         const debug = this.debugLogger.extend(this.getParameters.name);
 
         const releaseStrategy: string = getInput("ReleaseStrategy", true)!;
-        const targetProject: string = getInput("TargetProject", true)!;
-        const targetDefinition: string = getInput("TargetDefinition", true)!;
+        const projectName: string = getInput("ProjectName", true)!;
+        const definitionName: string = getInput("DefinitionName", true)!;
 
         const updateInterval: string = getInput("UpdateInterval", true)!;
         const approvalRetry: string = getInput("ApprovalRetry", true)!;
@@ -95,9 +95,9 @@ export class TaskHelper implements ITaskHelper {
         const parameters: IParameters = {
 
             releaseType: ReleaseType.New,
-            projectId: targetProject,
-            definitionId: targetDefinition,
-            releaseId: "",
+            projectName: projectName,
+            definitionName: definitionName,
+            releaseName: "",
             stages: [],
             variables: [],
             filters,
@@ -118,7 +118,7 @@ export class TaskHelper implements ITaskHelper {
                 // Get definition stages
                 if (definitionStagesFilter) {
 
-                    parameters.stages = getDelimitedInput("TargetDefinitionStages", ",", true);
+                    parameters.stages = getDelimitedInput("DefinitionStages", ",", true);
 
                 }
 
@@ -171,7 +171,7 @@ export class TaskHelper implements ITaskHelper {
                 parameters.releaseType = ReleaseType.Latest;
 
                 // Get release stages
-                parameters.stages = getDelimitedInput("TargetReleaseStages", ",", true);
+                parameters.stages = getDelimitedInput("ReleaseStages", ",", true);
 
                 const releaseTagFilter: boolean = getBoolInput("ReleaseTagFilter");
                 const artifactTagFilter: boolean = getBoolInput("ArtifactTagFilter");
@@ -217,10 +217,10 @@ export class TaskHelper implements ITaskHelper {
                 parameters.releaseType = ReleaseType.Specific;
 
                 // Get release ID
-                parameters.releaseId = getInput("TargetRelease", true)!;
+                parameters.releaseName = getInput("ReleaseName", true)!;
 
                 // Get release stages
-                parameters.stages = getDelimitedInput("TargetReleaseStages", ",", true);
+                parameters.stages = getDelimitedInput("ReleaseStages", ",", true);
 
                 break;
 

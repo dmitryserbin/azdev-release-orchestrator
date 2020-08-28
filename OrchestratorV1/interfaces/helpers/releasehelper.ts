@@ -8,8 +8,8 @@ import { IReleaseVariable } from "../common/releasevariable";
 
 export interface IReleaseHelper {
 
-    getDefinition(projectName: string, definitionId: number): Promise<ReleaseDefinition>;
-    getRelease(projectName: string, releaseId: number, stages: string[]): Promise<Release>;
+    getDefinition(projectName: string, definitionName: string): Promise<ReleaseDefinition>;
+    getRelease(projectName: string, definitionId: number, releaseName: string, stages: string[]): Promise<Release>;
     findReleases(projectName: string, definitionId: number, filter: IReleaseFilter): Promise<Release[]>;
     getLastRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter): Promise<Release>;
     createRelease(projectName: string, definition: ReleaseDefinition, details: IDetails, stages?: string[], variables?: IReleaseVariable[], artifacts?: IArtifactFilter[]): Promise<Release>;

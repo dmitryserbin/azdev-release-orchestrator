@@ -1,5 +1,5 @@
 import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
-import { ReleaseDefinition, Release, ReleaseExpands, ReleaseStatus, ReleaseStartMetadata, ArtifactVersionQueryResult, ReleaseEnvironmentUpdateMetadata, ReleaseEnvironment, ReleaseApproval, ApprovalFilters, SingleReleaseExpands, ReleaseQueryOrder } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ReleaseDefinition, Release, ReleaseExpands, ReleaseStatus, ReleaseStartMetadata, ArtifactVersionQueryResult, ReleaseEnvironmentUpdateMetadata, ReleaseEnvironment, ReleaseApproval, ApprovalFilters, SingleReleaseExpands, ReleaseQueryOrder, ReleaseDefinitionExpands, ReleaseDefinitionQueryOrder } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { Retryable } from "../common/retry";
 import { IReleaseApiRetry } from "../interfaces/extensions/releaseapiretry";
@@ -21,6 +21,28 @@ export class ReleaseApiRetry implements IReleaseApiRetry {
             project,
             definitionId,
             propertyFilters);
+
+    }
+
+    @Retryable()
+    public async getReleaseDefinitions(project: string, searchText?: string, expand?: ReleaseDefinitionExpands, artifactType?: string, artifactSourceId?: string, top?: number, continuationToken?: string, queryOrder?: ReleaseDefinitionQueryOrder, path?: string, isExactNameMatch?: boolean, tagFilter?: string[], propertyFilters?: string[], definitionIdFilter?: string[], isDeleted?: boolean, searchTextContainsFolderName?: boolean): Promise<ReleaseDefinition[]> {
+
+        return await this.releaseApi.getReleaseDefinitions(
+            project,
+            searchText,
+            expand,
+            artifactType,
+            artifactSourceId,
+            top,
+            continuationToken,
+            queryOrder,
+            path,
+            isExactNameMatch,
+            tagFilter,
+            propertyFilters,
+            definitionIdFilter,
+            isDeleted,
+            searchTextContainsFolderName);
 
     }
 
