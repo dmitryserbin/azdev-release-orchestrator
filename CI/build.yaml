@@ -36,9 +36,11 @@ jobs:
     inputs:
       testResultsFiles: "**/results.xml"
 
-  - publish: $(System.DefaultWorkingDirectory)/OrchestratorV1
+  - task: PublishBuildArtifacts@1
     displayName: Publish task
-    artifact: OrchestratorV1
+    inputs:
+      pathToPublish: OrchestratorV1
+      artifactName: OrchestratorV1
 
 - job: OrchestratorV2
   pool:
@@ -82,9 +84,11 @@ jobs:
     inputs:
       testResultsFiles: "**/results.xml"
 
-  - publish: $(System.DefaultWorkingDirectory)/OrchestratorV2
+  - task: PublishBuildArtifacts@1
     displayName: Publish task
-    artifact: OrchestratorV2
+    inputs:
+      pathToPublish: OrchestratorV2
+      artifactName: OrchestratorV2
 
 - job: Publish
   pool:
