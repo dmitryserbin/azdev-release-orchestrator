@@ -1,92 +1,106 @@
 trigger: none
 
-pool:
-  vmImage: windows-latest
 
-steps:
+jobs:
+- job: OrchestratorV1
+  pool:
+    vmImage: windows-latest
+  steps:
+  - task: Npm@1
+    displayName: Restore packages
+    inputs:
+      workingDir: OrchestratorV1
 
-- task: Npm@1
-  displayName: Restore packages (V1)
-  inputs:
-    workingDir: OrchestratorV1
+  - task: Npm@1
+    displayName: Run build
+    inputs:
+      command: custom
+      workingDir: OrchestratorV1
+      customCommand: run build
 
-- task: Npm@1
-  displayName: Run build (V1)
-  inputs:
-    command: custom
-    workingDir: OrchestratorV1
-    customCommand: run build
+  - task: Npm@1
+    displayName: Run tests
+    inputs:
+      command: custom
+      workingDir: OrchestratorV1
+      customCommand: run test
 
-- task: Npm@1
-  displayName: Run tests (V1)
-  inputs:
-    command: custom
-    workingDir: OrchestratorV1
-    customCommand: run test
+  - task: Npm@1
+    displayName: Run clean
+    inputs:
+      command: custom
+      workingDir: OrchestratorV1
+      customCommand: run clean
 
-- task: Npm@1
-  displayName: Run clean (V1)
-  inputs:
-    command: custom
-    workingDir: OrchestratorV1
-    customCommand: run clean
+    - task: PublishTestResults@2
+      displayName: Publish test results
+      inputs:
+        testResultsFiles: "**/results.xml"
 
-- task: Npm@1
-  displayName: Restore packages (V2)
-  inputs:
-    workingDir: OrchestratorV2
+  - publish: OrchestratorV1
+    displayName: Publish task
+    artifact: OrchestratorV1
 
-- task: Npm@1
-  displayName: Run lint (V2)
-  inputs:
-    command: custom
-    workingDir: OrchestratorV2
-    customCommand: run lint
+- job: OrchestratorV2
+  pool:
+    vmImage: windows-latest
+  steps:
+  - task: Npm@1
+    displayName: Restore packages
+    inputs:
+      workingDir: OrchestratorV2
 
-- task: Npm@1
-  displayName: Run build (V2)
-  inputs:
-    command: custom
-    workingDir: OrchestratorV2
-    customCommand: run build
+  - task: Npm@1
+    displayName: Run lint
+    inputs:
+      command: custom
+      workingDir: OrchestratorV2
+      customCommand: run lint
 
-- task: Npm@1
-  displayName: Run tests (V2)
-  inputs:
-    command: custom
-    workingDir: OrchestratorV2
-    customCommand: run test
+  - task: Npm@1
+    displayName: Run build
+    inputs:
+      command: custom
+      workingDir: OrchestratorV2
+      customCommand: run build
 
-- task: Npm@1
-  displayName: Run clean (V2)
-  inputs:
-    command: custom
-    workingDir: OrchestratorV2
-    customCommand: run clean
+  - task: Npm@1
+    displayName: Run tests
+    inputs:
+      command: custom
+      workingDir: OrchestratorV2
+      customCommand: run test
 
-- task: PublishTestResults@2
-  displayName: Publish test results
-  inputs:
-    testResultsFiles: "**/results.xml"
+  - task: Npm@1
+    displayName: Run clean
+    inputs:
+      command: custom
+      workingDir: OrchestratorV2
+      customCommand: run clean
 
-- task: CopyFiles@2
-  displayName: Copy extension
-  inputs:
-    contents: |
-      Images/**
-      LICENSE
-      *.md
-      *.json
-    targetFolder: '$(Build.ArtifactStagingDirectory)'
+  - task: PublishTestResults@2
+    displayName: Publish test results
+    inputs:
+      testResultsFiles: "**/results.xml"
 
-- task: CopyFiles@2
-  displayName: Copy tasks
-  inputs:
-    contents: |
-      OrchestratorV1/**
-      OrchestratorV2/**
-    targetFolder: '$(Build.ArtifactStagingDirectory)'
+  - publish: OrchestratorV2
+    displayName: Publish task
+    artifact: OrchestratorV2
 
-- publish: $(Build.ArtifactStagingDirectory)
-  displayName: Publish extension
-  artifact: ReleaseOrchestrator
+- job: Extension
+  pool:
+    vmImage: windows-latest
+  steps:
+  - task: CopyFiles@2
+    displayName: Copy extension
+    inputs:
+      contents: |
+        Images/**
+        LICENSE
+        *.md
+        *.json
+      targetFolder: '$(Build.ArtifactStagingDirectory)'
+
+  - publish: $(Build.ArtifactStagingDirectory)
+    displayName: Publish extension
+    artifact: ReleaseOrchestrator
