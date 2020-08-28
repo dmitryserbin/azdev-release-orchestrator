@@ -380,9 +380,17 @@ export class ReleaseHelper implements IReleaseHelper {
 
         // Detect wether stage deployment conditions are met
         // In order to determine automated release status
-        const conditionStages: ReleaseEnvironment[] = release.environments!.filter((e) => e.conditions!.some((i) => i.result === true));
+        const conditionStages: ReleaseEnvironment[] = release.environments!.filter(
+            (stage) => stage.conditions!.some(
+                (condition) => condition.result === true));
 
-        debug(conditionStages);
+        for (const stage of conditionStages) {
+
+            debug(`Stage ${stage.name} (${stage.id}) has <${stage.conditions!.length}> condition(s)`);
+            debug(stage.conditions);
+
+        }
+
 
         const conditionsMet: boolean = conditionStages.length > 0 ? true : false;
 
@@ -503,7 +511,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
         });
 
-        debug(match);
+        debug(`Release <${release.name}> (${release.id}) match <${match}>`);
 
         return match;
 
