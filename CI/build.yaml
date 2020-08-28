@@ -5,23 +5,21 @@ jobs:
   pool:
     vmImage: windows-latest
   steps:
-
-  - task: CopyFiles@2
-    displayName: Copy task
+  - task: PublishBuildArtifacts@1
+    displayName: Publish task
     inputs:
-      contents: "OrchestratorV1/**"
-      targetFolder: $(Build.ArtifactsDirectory)/OrchestratorV1
+      pathToPublish: OrchestratorV1
+      artifactName: OrchestratorV1
 
 - job: OrchestratorV2
   pool:
     vmImage: windows-latest
   steps:
-
-  - task: CopyFiles@2
-    displayName: Copy task
+  - task: PublishBuildArtifacts@1
+    displayName: Publish task
     inputs:
-      contents: "OrchestratorV2/**"
-      targetFolder: $(Build.ArtifactsDirectory)/OrchestratorV2
+      pathToPublish: OrchestratorV2
+      artifactName: OrchestratorV2
 
 - job: Extension
   pool:
@@ -35,10 +33,23 @@ jobs:
     inputs:
       contents: |
         LICENSE
-        Images
+        Images/*
         *.md
         *.json
       targetFolder: $(Build.ArtifactsDirectory)
-
-  - powershell: tree /F
+  - task: DownloadBuildArtifacts@0
+    displayName: Copy OrchestratorV1
+    inputs:
+      downloadType: single
+      artifactName: OrchestratorV1
+      downloadPath: $(System.ArtifactsDirectory)
+  - task: DownloadBuildArtifacts@0
+    displayName: Copy OrchestratorV2
+    inputs:
+      downloadType: single
+      artifactName: OrchestratorV2
+      downloadPath: $(System.ArtifactsDirectory)
   - powershell: tree /F $(System.ArtifactsDirectory)
+  - publish: $(System.ArtifactsDirectory)
+    displayName: Publish extension
+    artifact: Release Orchestrator
