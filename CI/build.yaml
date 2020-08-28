@@ -36,20 +36,24 @@ jobs:
         Images/*
         *.md
         *.json
-      targetFolder: $(Build.ArtifactsDirectory)
+      targetFolder: $(Build.ArtifactStagingDirectory)
+
   - task: DownloadBuildArtifacts@0
     displayName: Copy OrchestratorV1
     inputs:
       downloadType: single
       artifactName: OrchestratorV1
-      downloadPath: $(System.ArtifactsDirectory)
+      downloadPath: $(System.ArtifactStagingDirectory)
+
   - task: DownloadBuildArtifacts@0
     displayName: Copy OrchestratorV2
     inputs:
       downloadType: single
       artifactName: OrchestratorV2
-      downloadPath: $(System.ArtifactsDirectory)
-  - powershell: tree /F $(System.ArtifactsDirectory)
-  - publish: $(System.ArtifactsDirectory)
+      downloadPath: $(System.ArtifactStagingDirectory)
+
+  - powershell: tree /F $(System.ArtifactStagingDirectory)
+
+  - publish: $(System.ArtifactStagingDirectory)
     displayName: Publish extension
-    artifact: Release Orchestrator
+    artifact: ReleaseOrchestrator
