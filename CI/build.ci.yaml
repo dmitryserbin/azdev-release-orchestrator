@@ -3,8 +3,7 @@ trigger: none
 jobs:
 - job: OrchestratorV1
   pool:
-    name: Hosted VS2017
-    demands: npm
+    vmImage: windows-latest
   steps:
   - task: Npm@1
     displayName: Restore packages
@@ -31,6 +30,8 @@ jobs:
       testResultsFiles: "**/results.xml"
 
 - job: OrchestratorV2
+  pool:
+    vmImage: windows-latest
   steps:
   - task: Npm@1
     displayName: Restore packages
