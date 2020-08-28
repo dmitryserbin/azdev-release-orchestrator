@@ -74,5 +74,5 @@ jobs:
   pool:
     vmImage: windows-latest
   steps:
-    - powershell: tree /F
+  - powershell: tree /F
     displayName: Clean artifact
