@@ -1,51 +1,78 @@
-queue:
-  name: Hosted VS2017
-  demands: npm
+trigger: none
 
-steps:
-- task: Npm@1
-  displayName: Restore packages
-  inputs:
-    workingDir: OrchestratorV1
+jobs:
+- job: OrchestratorV1
+  pool:
+    vmImage: windows-latest
+  steps:
+  - task: Npm@1
+    displayName: Restore packages
+    inputs:
+      workingDir: OrchestratorV1
 
-- task: Npm@1
-  displayName: Run lint
-  inputs:
-    command: custom
-    workingDir: OrchestratorV1
-    customCommand: run lint
+  - task: Npm@1
+    displayName: Run build
+    inputs:
+      command: custom
+      workingDir: OrchestratorV1
+      customCommand: run build
 
-- task: Npm@1
-  displayName: Run build
-  inputs:
-    command: custom
-    workingDir: OrchestratorV1
-    customCommand: run build
+  - task: Npm@1
+    displayName: Run tests
+    inputs:
+      command: custom
+      workingDir: OrchestratorV1
+      customCommand: run test
 
-- task: Npm@1
-  displayName: Run tests
-  inputs:
-    command: custom
-    workingDir: OrchestratorV1
-    customCommand: run test
+  - task: PublishTestResults@2
+    displayName: Publish test results
+    inputs:
+      testResultsFiles: "**/results.xml"
 
-- task: Npm@1
-  displayName: Run clean
-  inputs:
-    command: custom
-    workingDir: OrchestratorV1
-    customCommand: run clean
+  - publish: $(System.DefaultWorkingDirectory)/OrchestratorV1
+    artifact: OrchestratorV1
 
-- task: PublishTestResults@2
-  displayName: Publish test results
-  inputs:
-    testResultsFiles: "**/results.xml"
+- job: OrchestratorV2
+  pool:
+    vmImage: windows-latest
+  steps:
+  - task: Npm@1
+    displayName: Restore packages
+    inputs:
+      workingDir: OrchestratorV2
 
-- powershell: '@(".git", ".vscode", "*.yaml", "OrchestratorV1\tests") | ForEach-Object { Remove-Item -Path $_ -Force -Recurse -ErrorAction SilentlyContinue }'
-  displayName: Clean artifact
+  - task: Npm@1
+    displayName: Run lint
+    inputs:
+      command: custom
+      workingDir: OrchestratorV2
+      customCommand: run lint
 
-- task: PublishBuildArtifacts@1
-  displayName: Publish artifact
-  inputs:
-    PathtoPublish: $(Build.SourcesDirectory)
-    ArtifactName: ReleaseOrchestrator
+  - task: Npm@1
+    displayName: Run build
+    inputs:
+      command: custom
+      workingDir: OrchestratorV2
+      customCommand: run build
+
+  - task: Npm@1
+    displayName: Run tests
+    inputs:
+      command: custom
+      workingDir: OrchestratorV2
+      customCommand: run test
+
+  - task: PublishTestResults@2
+    displayName: Publish test results
+    inputs:
+      testResultsFiles: "**/results.xml"
+
+  - publish: $(System.DefaultWorkingDirectory)/OrchestratorV2
+    artifact: OrchestratorV2
+
+- job: OrchestratorV2
+  pool:
+    vmImage: windows-latest
+  steps:
+    - powershell: tree /F
+    displayName: Clean artifact
