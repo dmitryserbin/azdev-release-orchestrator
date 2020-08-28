@@ -30,7 +30,8 @@ jobs:
       testResultsFiles: "**/results.xml"
 
   - publish: $(System.DefaultWorkingDirectory)/OrchestratorV1
-    artifact: OrchestratorV1
+    displayName: Publish task
+    artifact: ReleaseOrchestrator/OrchestratorV1
 
 - job: OrchestratorV2
   pool:
@@ -68,11 +69,12 @@ jobs:
       testResultsFiles: "**/results.xml"
 
   - publish: $(System.DefaultWorkingDirectory)/OrchestratorV2
-    artifact: OrchestratorV2
+    displayName: Publish task
+    artifact: ReleaseOrchestrator/OrchestratorV2
 
 - job: Publish
   pool:
     vmImage: windows-latest
   steps:
   - powershell: tree /F
-    displayName: Clean artifact
+  - powershell: tree /F $(System.ArtifactsDirectory)
