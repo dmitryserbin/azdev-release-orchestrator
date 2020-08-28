@@ -1,9 +1,10 @@
-queue:
-  name: Hosted VS2017
-  demands: npm
+trigger: none
 
 jobs:
 - job: OrchestratorV1
+  pool:
+    name: Hosted VS2017
+    demands: npm
   steps:
   - task: Npm@1
     displayName: Restore packages (V1)
