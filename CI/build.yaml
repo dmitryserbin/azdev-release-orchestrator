@@ -5,89 +5,22 @@ jobs:
   pool:
     vmImage: windows-latest
   steps:
-  - task: Npm@1
-    displayName: Restore packages
-    inputs:
-      workingDir: OrchestratorV1
-
-  - task: Npm@1
-    displayName: Run build
-    inputs:
-      command: custom
-      workingDir: OrchestratorV1
-      customCommand: run build
-
-  - task: Npm@1
-    displayName: Run tests
-    inputs:
-      command: custom
-      workingDir: OrchestratorV1
-      customCommand: run test
-
-  - task: Npm@1
-    displayName: Run clean
-    inputs:
-      command: custom
-      workingDir: OrchestratorV1
-      customCommand: run clean
-
-  - task: PublishTestResults@2
-    displayName: Publish test results
-    inputs:
-      testResultsFiles: "**/results.xml"
 
   - task: CopyFiles@2
     displayName: Copy task
     inputs:
-      contents: OrchestratorV1
+      contents: "**/OrchestratorV1"
       targetFolder: $(Build.ArtifactStagingDirectory)
 
 - job: OrchestratorV2
   pool:
     vmImage: windows-latest
   steps:
-  - task: Npm@1
-    displayName: Restore packages
-    inputs:
-      workingDir: OrchestratorV2
-
-  - task: Npm@1
-    displayName: Run lint
-    inputs:
-      command: custom
-      workingDir: OrchestratorV2
-      customCommand: run lint
-
-  - task: Npm@1
-    displayName: Run build
-    inputs:
-      command: custom
-      workingDir: OrchestratorV2
-      customCommand: run build
-
-  - task: Npm@1
-    displayName: Run tests
-    inputs:
-      command: custom
-      workingDir: OrchestratorV2
-      customCommand: run test
-
-  - task: Npm@1
-    displayName: Run clean
-    inputs:
-      command: custom
-      workingDir: OrchestratorV2
-      customCommand: run clean
-
-  - task: PublishTestResults@2
-    displayName: Publish test results
-    inputs:
-      testResultsFiles: "**/results.xml"
 
   - task: CopyFiles@2
     displayName: Copy task
     inputs:
-      contents: OrchestratorV2
+      contents: "**/OrchestratorV2"
       targetFolder: $(Build.ArtifactStagingDirectory)
 
 - job: Publish
@@ -102,7 +35,7 @@ jobs:
     inputs:
       contents: |
         LICENSE
-        **\Images
+        **/Images
         *.md
         *.json
       targetFolder: $(Build.ArtifactStagingDirectory)
