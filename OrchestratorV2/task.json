@@ -8,7 +8,7 @@
   "category": "Release",
   "author": "Dmitry Serbin",
   "deprecated": false,
-  "preview": false,
+  "preview": true,
   "version": {
     "Major": 2,
     "Minor": 0,
