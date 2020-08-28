@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "release-orchestrator",
   "name": "Release Orchestrator",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "publisher": "dmitryserbin",
   "public": true,
   "targets": [
@@ -54,6 +54,9 @@
       "path": "OrchestratorV1"
     },
     {
+      "path": "OrchestratorV2"
+    },
+    {
       "path": "Images",
       "addressable": true
     }
@@ -67,6 +70,16 @@
       ],
       "properties": {
         "name": "OrchestratorV1"
+      }
+    },
+    {
+      "id": "release-orchestrator-v2",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "OrchestratorV2"
       }
     }
   ]
