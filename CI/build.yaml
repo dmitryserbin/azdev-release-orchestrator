@@ -9,8 +9,8 @@ jobs:
   - task: CopyFiles@2
     displayName: Copy task
     inputs:
-      contents: "**/OrchestratorV1"
-      targetFolder: $(Build.ArtifactStagingDirectory)
+      contents: "OrchestratorV1/**"
+      targetFolder: $(Build.ArtifactStagingDirectory)/OrchestratorV1
 
 - job: OrchestratorV2
   pool:
@@ -20,8 +20,8 @@ jobs:
   - task: CopyFiles@2
     displayName: Copy task
     inputs:
-      contents: "**/OrchestratorV2"
-      targetFolder: $(Build.ArtifactStagingDirectory)
+      contents: "OrchestratorV2/**"
+      targetFolder: $(Build.ArtifactStagingDirectory)/OrchestratorV2
 
 - job: Publish
   pool:
@@ -35,7 +35,7 @@ jobs:
     inputs:
       contents: |
         LICENSE
-        **/Images
+        Images
         *.md
         *.json
       targetFolder: $(Build.ArtifactStagingDirectory)
