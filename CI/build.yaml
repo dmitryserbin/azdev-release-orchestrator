@@ -37,9 +37,11 @@ jobs:
     inputs:
       testResultsFiles: "**/results.xml"
 
-  - publish: OrchestratorV1
+  - task: PublishBuildArtifacts@1
     displayName: Publish task
-    artifact: OrchestratorV1
+    inputs:
+      pathToPublish: OrchestratorV1
+      artifactName: OrchestratorV1
 
 - job: OrchestratorV2
   pool:
@@ -83,9 +85,11 @@ jobs:
     inputs:
       testResultsFiles: "**/results.xml"
 
-  - publish: OrchestratorV2
+  - task: PublishBuildArtifacts@1
     displayName: Publish task
-    artifact: OrchestratorV2
+    inputs:
+      pathToPublish: OrchestratorV2
+      artifactName: OrchestratorV2
 
 - job: Extension
   pool:
@@ -101,9 +105,11 @@ jobs:
         *.json
       targetFolder: '$(Build.ArtifactStagingDirectory)'
 
-  - download: current
-    displayName: Download OrchestratorV1
-    artifact: OrchestratorV1
+  - task: DownloadBuildArtifacts@0
+    displayName: Download tasks
+    inputs:
+      buildType: current
+      downloadPath: '$(Build.ArtifactStagingDirectory)'
 
   - publish: $(Build.ArtifactStagingDirectory)
     displayName: Publish extension
