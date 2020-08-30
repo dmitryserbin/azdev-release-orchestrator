@@ -1,7 +1,7 @@
 trigger: none
 
 variables:
-  artifactsDirectory: $(Pipeline.Workspace)
+  extensionDirectory: $(Build.ArtifactStagingDirectory)
 
 jobs:
 - job: OrchestratorV1
@@ -94,10 +94,16 @@ jobs:
 - job: Extension
   pool:
     vmImage: windows-latest
+  dependsOn:
+  - OrchestratorV1
+  - OrchestratorV2
   steps:
 
-  - download: current
+  - task: DownloadPipelineArtifact@2
     displayName: Download tasks
+    inputs:
+      source: current
+      path: ${{ variables.extensionDirectory }}
 
   - task: CopyFiles@2
     displayName: Copy extension
@@ -107,10 +113,8 @@ jobs:
         LICENSE
         *.md
         *.json
-      targetFolder: ${{ variables.artifactsDirectory }}
+      targetFolder: ${{ variables.extensionDirectory }}
 
-  - powershell: tree /F ${{ variables.artifactsDirectory }}
-
-  #- publish: ${{ variables.artifactsDirectory }}
-  #  displayName: Publish extension
-  #  artifact: ReleaseOrchestrator
+  - publish: ${{ variables.extensionDirectory }}
+    displayName: Publish extension
+    artifact: ReleaseOrchestrator
