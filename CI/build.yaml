@@ -1,7 +1,7 @@
 trigger: none
 
 variables:
-  artifactsDirectory: $(Build.ArtifactStagingDirectory)
+  artifactsDirectory: $(Pipeline.Workspace)
 
 jobs:
 - job: OrchestratorV1
@@ -98,7 +98,6 @@ jobs:
 
   - download: current
     displayName: Download tasks
-    path: ${{ variables.artifactsDirectory }}
 
   - task: CopyFiles@2
     displayName: Copy extension
@@ -110,6 +109,8 @@ jobs:
         *.json
       targetFolder: ${{ variables.artifactsDirectory }}
 
-  - publish: ${{ variables.artifactsDirectory }}
-    displayName: Publish extension
-    artifact: ReleaseOrchestrator
+  - powershell: tree /F ${{ variables.artifactsDirectory }}
+
+  #- publish: ${{ variables.artifactsDirectory }}
+  #  displayName: Publish extension
+  #  artifact: ReleaseOrchestrator
