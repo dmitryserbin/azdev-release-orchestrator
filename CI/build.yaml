@@ -8,41 +8,9 @@ jobs:
   pool:
     vmImage: windows-latest
   steps:
-
-  - task: Npm@1
-    displayName: Restore packages
-    inputs:
-      workingDir: OrchestratorV1
-
-  - task: Npm@1
-    displayName: Run build
-    inputs:
-      command: custom
-      workingDir: OrchestratorV1
-      customCommand: run build
-
-  - task: Npm@1
-    displayName: Run tests
-    inputs:
-      command: custom
-      workingDir: OrchestratorV1
-      customCommand: run test
-
-  - task: Npm@1
-    displayName: Run clean
-    inputs:
-      command: custom
-      workingDir: OrchestratorV1
-      customCommand: run clean
-
-  - task: PublishTestResults@2
-    displayName: Publish test results
-    inputs:
-      testResultsFiles: "**/results.xml"
-
-  - publish: OrchestratorV1
-    displayName: Publish task
-    artifact: OrchestratorV1
+  - template: template.yml
+    parameters:
+      name: OrchestratorV1
 
 - job: OrchestratorV2
   pool:
