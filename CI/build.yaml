@@ -40,11 +40,9 @@ jobs:
     inputs:
       testResultsFiles: "**/results.xml"
 
-  - task: PublishBuildArtifacts@1
+  - publish: OrchestratorV1
     displayName: Publish task
-    inputs:
-      pathToPublish: OrchestratorV1
-      artifactName: OrchestratorV1
+    artifact: OrchestratorV1
 
 - job: OrchestratorV2
   pool:
@@ -89,22 +87,18 @@ jobs:
     inputs:
       testResultsFiles: "**/results.xml"
 
-  - task: PublishBuildArtifacts@1
+  - publish: OrchestratorV2
     displayName: Publish task
-    inputs:
-      pathToPublish: OrchestratorV2
-      artifactName: OrchestratorV2
+    artifact: OrchestratorV2
 
 - job: Extension
   pool:
     vmImage: windows-latest
   steps:
 
-  - task: DownloadPipelineArtifact@2
+  - download: current
     displayName: Download tasks
-    inputs:
-      source: current
-      path: ${{ variables.artifactsDirectory }}
+    path: ${{ variables.artifactsDirectory }}
 
   - task: CopyFiles@2
     displayName: Copy extension
