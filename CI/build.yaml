@@ -1,6 +1,5 @@
 trigger: none
 
-
 jobs:
 - job: OrchestratorV1
   pool:
@@ -95,6 +94,12 @@ jobs:
   pool:
     vmImage: windows-latest
   steps:
+  - task: DownloadBuildArtifacts@0
+    displayName: Download tasks
+    inputs:
+      buildType: current
+      downloadPath: '$(Build.ArtifactStagingDirectory)'
+
   - task: CopyFiles@2
     displayName: Copy extension
     inputs:
@@ -104,12 +109,6 @@ jobs:
         *.md
         *.json
       targetFolder: '$(Build.ArtifactStagingDirectory)'
-
-  - task: DownloadBuildArtifacts@0
-    displayName: Download tasks
-    inputs:
-      buildType: current
-      downloadPath: '$(Build.ArtifactStagingDirectory)'
 
   - publish: $(Build.ArtifactStagingDirectory)
     displayName: Publish extension
