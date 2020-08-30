@@ -1,10 +1,14 @@
 trigger: none
 
+variables:
+  artifactsDirectory: $(Build.ArtifactStagingDirectory)
+
 jobs:
 - job: OrchestratorV1
   pool:
     vmImage: windows-latest
   steps:
+
   - task: Npm@1
     displayName: Restore packages
     inputs:
@@ -46,6 +50,7 @@ jobs:
   pool:
     vmImage: windows-latest
   steps:
+
   - task: Npm@1
     displayName: Restore packages
     inputs:
@@ -94,11 +99,12 @@ jobs:
   pool:
     vmImage: windows-latest
   steps:
-  - task: DownloadBuildArtifacts@0
+
+  - task: DownloadPipelineArtifact@2
     displayName: Download tasks
     inputs:
-      buildType: current
-      downloadPath: '$(Build.ArtifactStagingDirectory)'
+      source: current
+      path: ${{ variables.artifactsDirectory }}
 
   - task: CopyFiles@2
     displayName: Copy extension
@@ -108,8 +114,8 @@ jobs:
         LICENSE
         *.md
         *.json
-      targetFolder: '$(Build.ArtifactStagingDirectory)'
+      targetFolder: ${{ variables.artifactsDirectory }}
 
-  - publish: $(Build.ArtifactStagingDirectory)
+  - publish: ${{ variables.artifactsDirectory }}
     displayName: Publish extension
     artifact: ReleaseOrchestrator
