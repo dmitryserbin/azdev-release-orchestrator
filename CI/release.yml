@@ -172,4 +172,11 @@ stages:
       runOnce:
         deploy:
           steps:
-          - script: echo Hello world
+          - task: QueryAzureDevOpsExtensionVersion@3
+            displayName: Get current version
+            inputs:
+              connectedServiceName: dmitryserbin.marketplace
+              publisherId: dmitryserbin
+              extensionId: release-orchestrator
+              outputVariable: currentExtensionVersion
+          - powershell: Write-Host $Env:extensionPath
