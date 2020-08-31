@@ -73,6 +73,6 @@ jobs:
       updateTasksVersion: true
       updateTasksVersionType: patch
 
-  #- publish: ${{ variables.extensionDirectory }}
-  #  displayName: Publish extension
-  #  artifact: ReleaseOrchestrator
+  - publish: ${{ variables.extensionDirectory }}
+    displayName: Publish extension
+    artifact: ReleaseOrchestrator
