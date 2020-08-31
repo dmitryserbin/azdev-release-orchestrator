@@ -62,7 +62,7 @@ stages:
         path: ${{ variables.extensionDirectory }}
 
     - task: PowerShell@2
-      displayName: Validate version
+      displayName: Validate extension
       inputs:
         targetType: filePath
         filePath: CI/validate.ps1
