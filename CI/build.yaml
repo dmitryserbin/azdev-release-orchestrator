@@ -97,6 +97,8 @@ stages:
   - deployment: Test
     pool:
       vmImage: windows-latest
+    dependsOn:
+    - Install
     environment: OrchestratorV1
     variables:
       projectId: 761623f0-c4c0-4dab-884b-a428a01c200f
