@@ -96,6 +96,8 @@ stages:
   - job: OrchestratorV1
     pool:
       vmImage: windows-latest
+    dependsOn:
+    - Install
     variables:
       projectId: 761623f0-c4c0-4dab-884b-a428a01c200f
       definitionId: 1
