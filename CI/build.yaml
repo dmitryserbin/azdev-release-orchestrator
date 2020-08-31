@@ -73,59 +73,61 @@ stages:
 
 - stage: Test
   jobs:
-  - deployment: Install
+  - job: Install
     pool:
       vmImage: windows-latest
-    environment: Tasks
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: taskpublisher@1
-            displayName: Install OrchestratorV1
-            inputs:
-              ConnectedService: dmitryserbin.tasks
-              TaskPath: $(Pipeline.Workspace)/OrchestratorV1
-              Replace: true
-          - task: taskpublisher@1
-            displayName: Install OrchestratorV2
-            inputs:
-              ConnectedService: dmitryserbin.tasks
-              TaskPath: $(Pipeline.Workspace)/OrchestratorV2
-              Replace: false
+    steps:
+    - download: current
+      displayName: Download artifacts
+    - task: taskpublisher@1
+      displayName: Install OrchestratorV1
+      inputs:
+        ConnectedService: dmitryserbin.tasks
+        TaskPath: $(Pipeline.Workspace)/OrchestratorV1
+        Replace: true
 
-  - deployment: Test
+    - task: taskpublisher@1
+      displayName: Install OrchestratorV2
+      inputs:
+        ConnectedService: dmitryserbin.tasks
+        TaskPath: $(Pipeline.Workspace)/OrchestratorV2
+        Replace: false
+
+  - job: Test OrchestratorV1
     pool:
       vmImage: windows-latest
-    dependsOn:
-    - Install
-    environment: OrchestratorV1
     variables:
       projectId: 761623f0-c4c0-4dab-884b-a428a01c200f
       definitionId: 1
       releaseId: 162
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - download: none
-          - task: releaseorchestrator@1
-            displayName: Specific Release (Manual)
-            inputs:
-              TargetProject: ${{ variables.projectId }}
-              TargetDefinition: ${{ variables.definitionId }}
-              ReleaseStrategy: specific
-              TargetRelease: ${{ variables.releaseId }}
-              TargetReleaseStages: DEV,TEST,PROD
-          - task: releaseorchestrator@1
-            displayName: Create Release (Auto)
-            inputs:
-              TargetProject: ${{ variables.projectId }}
-              TargetDefinition: ${{ variables.definitionId }}
-          - task: releaseorchestrator@1
-            displayName: Latest Release (Manual)
-            inputs:
-              TargetProject: ${{ variables.projectId }}
-              TargetDefinition: ${{ variables.definitionId }}
-              ReleaseStrategy: latest
-              TargetReleaseStages: DEV,TEST,PROD
+    steps:
+    - task: releaseorchestrator@1
+      displayName: Specific Release (Manual)
+      inputs:
+        TargetProject: ${{ variables.projectId }}
+        TargetDefinition: ${{ variables.definitionId }}
+        ReleaseStrategy: specific
+        TargetRelease: ${{ variables.releaseId }}
+        TargetReleaseStages: DEV,TEST,PROD
+
+    - task: releaseorchestrator@1
+      displayName: Create Release (Auto)
+      inputs:
+        TargetProject: ${{ variables.projectId }}
+        TargetDefinition: ${{ variables.definitionId }}
+
+    - task: releaseorchestrator@1
+      displayName: Latest Release (Manual)
+      inputs:
+        TargetProject: ${{ variables.projectId }}
+        TargetDefinition: ${{ variables.definitionId }}
+        ReleaseStrategy: latest
+        TargetReleaseStages: DEV,TEST,PROD
+
+  - job: Test OrchestratorV2
+    pool:
+      vmImage: windows-latest
+    variables:
+      projectName: HelloYo
+    steps:
+    - powershell: tree /F
