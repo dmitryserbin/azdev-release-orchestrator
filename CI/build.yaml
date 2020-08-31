@@ -103,6 +103,7 @@ stages:
       projectId: 761623f0-c4c0-4dab-884b-a428a01c200f
       definitionId: 1
       releaseId: 162
+      releaseStages: DEV,TEST,PROD
     steps:
     - task: releaseorchestrator@1
       displayName: Specific Release (Manual)
@@ -111,7 +112,7 @@ stages:
         TargetDefinition: ${{ variables.definitionId }}
         ReleaseStrategy: specific
         TargetRelease: ${{ variables.releaseId }}
-        TargetReleaseStages: DEV,TEST,PROD
+        TargetReleaseStages: ${{ variables.releaseStages }}
 
     - task: releaseorchestrator@1
       displayName: Create Release (Auto)
@@ -125,7 +126,7 @@ stages:
         TargetProject: ${{ variables.projectId }}
         TargetDefinition: ${{ variables.definitionId }}
         ReleaseStrategy: latest
-        TargetReleaseStages: DEV,TEST,PROD
+        TargetReleaseStages: ${{ variables.releaseStages }}
 
   - job: OrchestratorV2
     dependsOn:
@@ -134,5 +135,15 @@ stages:
       vmImage: windows-latest
     variables:
       projectName: HelloYo
+      definitionName: HelloYo
+      releaseName: HelloYo-20190521.1-1
+      releaseStages: DEV,TEST,PROD
     steps:
-    - powershell: tree /F
+    - task: releaseorchestrator@2
+      displayName: Specific Release (Manual)
+      inputs:
+        ProjectName: ${{ variables.projectName }}
+        DefinitionName: ${{ variables.definitionName }}
+        ReleaseStrategy: specific
+        ReleaseName: ${{ variables.releaseName }}
+        ReleaseStages: ${{ variables.releaseStages }}
