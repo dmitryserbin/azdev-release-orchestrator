@@ -2,7 +2,6 @@ trigger: none
 
 variables:
   extensionDirectory: $(Build.ArtifactStagingDirectory)
-  extensionPath: ""
 
 jobs:
 - job: OrchestratorV1
