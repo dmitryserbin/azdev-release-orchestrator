@@ -18,11 +18,11 @@ steps:
 
 - ${{ if eq(parameters.lint, true) }}:
   - task: Npm@1
-  displayName: Run lint
-  inputs:
-    command: custom
-    workingDir: ${{ parameters.path }}
-    customCommand: run lint
+    displayName: Run lint
+    inputs:
+      command: custom
+      workingDir: ${{ parameters.path }}
+      customCommand: run lint
 
 - ${{ if eq(parameters.build, true) }}:
   - task: Npm@1
