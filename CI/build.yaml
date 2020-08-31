@@ -41,6 +41,9 @@ jobs:
   - OrchestratorV1
   - OrchestratorV2
   steps:
+  - task: TfxInstaller@3
+    displayName: Use TFX CLI
+
   - task: CopyFiles@2
     displayName: Copy extension
     inputs:
@@ -52,13 +55,10 @@ jobs:
       targetFolder: ${{ variables.extensionDirectory }}
 
   - task: DownloadPipelineArtifact@2
-    displayName: Download tasks
+    displayName: Copy tasks
     inputs:
       source: current
       path: ${{ variables.extensionDirectory }}
-
-  - task: TfxInstaller@3
-    displayName: Use TFX CLI
 
   - task: PackageAzureDevOpsExtension@3
     displayName: Package extension
