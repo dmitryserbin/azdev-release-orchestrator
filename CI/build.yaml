@@ -93,7 +93,7 @@ stages:
         TaskPath: $(Pipeline.Workspace)/OrchestratorV2
         Replace: false
 
-  - job: Test OrchestratorV1
+  - job: OrchestratorV1
     pool:
       vmImage: windows-latest
     variables:
@@ -124,7 +124,7 @@ stages:
         ReleaseStrategy: latest
         TargetReleaseStages: DEV,TEST,PROD
 
-  - job: Test OrchestratorV2
+  - job: OrchestratorV2
     pool:
       vmImage: windows-latest
     variables:
