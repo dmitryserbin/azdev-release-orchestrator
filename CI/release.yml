@@ -61,6 +61,12 @@ stages:
         source: current
         path: ${{ variables.extensionDirectory }}
 
+    - pwsh:
+      displayName: Validate version
+      targetType: filePath
+      filePath: CI/validate.ps1
+      arguments: -Path ${{ variables.extensionDirectory }}
+
     - task: PackageAzureDevOpsExtension@3
       displayName: Package extension
       inputs:
@@ -174,19 +180,3 @@ stages:
           steps:
           - task: TfxInstaller@3
             displayName: Use TFX CLI
-
-          - task: QueryAzureDevOpsExtensionVersion@3
-            displayName: Get current version
-            inputs:
-              connectedServiceName: dmitryserbin.marketplace
-              publisherId: dmitryserbin
-              extensionId: release-orchestrator
-              outputVariable: extensionLatestVersion
-
-          - powershell: |
-              Write-Host $Env:extensionLatestVersion
-              Write-Host $Env:extensionPath
-            displayName: Validate version
-            env:
-              extensionLatestVersion: $(extensionLatestVersion)
-              extensionPath: $(extensionPath)
