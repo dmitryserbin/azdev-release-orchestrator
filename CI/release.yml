@@ -181,11 +181,11 @@ stages:
               connectedServiceName: dmitryserbin.marketplace
               publisherId: dmitryserbin
               extensionId: release-orchestrator
-              outputVariable: extensionVersion
+              outputVariable: extensionLatestVersion
 
           - powershell: |
-              Write-Host $(extensionVersion)
+              Write-Host $(extensionLatestVersion)
               Write-Host $(extensionPath)
             env:
-              extensionVersion: $(extensionVersion)
+              extensionLatestVersion: $(extensionLatestVersion)
               extensionPath: $(extensionPath)
