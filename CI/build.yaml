@@ -40,12 +40,6 @@ jobs:
   - OrchestratorV1
   - OrchestratorV2
   steps:
-  - task: DownloadPipelineArtifact@2
-    displayName: Download tasks
-    inputs:
-      source: current
-      path: ${{ variables.extensionDirectory }}
-
   - task: CopyFiles@2
     displayName: Copy extension
     inputs:
@@ -55,6 +49,12 @@ jobs:
         *.md
         *.json
       targetFolder: ${{ variables.extensionDirectory }}
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Download tasks
+    inputs:
+      source: current
+      path: ${{ variables.extensionDirectory }}
 
   - publish: ${{ variables.extensionDirectory }}
     displayName: Publish extension
