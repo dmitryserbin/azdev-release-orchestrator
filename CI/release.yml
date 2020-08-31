@@ -164,7 +164,7 @@ stages:
 
 - stage: Release
   jobs:
-  - deployment: Publish
+  - deployment: Extension
     pool:
       vmImage: windows-latest
     environment: Marketplace
@@ -181,5 +181,11 @@ stages:
               connectedServiceName: dmitryserbin.marketplace
               publisherId: dmitryserbin
               extensionId: release-orchestrator
-              outputVariable: currentVersion
-          - powershell: Write-Host $Env:currentVersion
+              outputVariable: extensionVersion
+
+          - powershell: |
+              Write-Host $(extensionVersion)
+              Write-Host $(extensionPath)
+            env:
+              extensionVersion: $(extensionVersion)
+              extensionPath: $(extensionPath)
