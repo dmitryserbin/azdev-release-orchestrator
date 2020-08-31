@@ -10,51 +10,52 @@ parameters:
   testResults: "**/results.xml"
 
 steps:
-- task: Npm@1
-  displayName: Restore packages
-  inputs:
-    workingDir: ${{ parameters.path }}
-  condition: eq(parameters.restore, true)
+- ${{ if eq(parameters.restore, true) }}:
+  - task: Npm@1
+    displayName: Restore packages
+    inputs:
+      workingDir: ${{ parameters.path }}
 
-- task: Npm@1
+- ${{ if eq(parameters.lint, true) }}:
+  - task: Npm@1
   displayName: Run lint
   inputs:
     command: custom
     workingDir: ${{ parameters.path }}
     customCommand: run lint
-  condition: eq(parameters.lint, true)
 
-- task: Npm@1
-  displayName: Run build
-  inputs:
-    command: custom
-    workingDir: ${{ parameters.path }}
-    customCommand: run build
-  condition: eq(parameters.build, true)
+- ${{ if eq(parameters.build, true) }}:
+  - task: Npm@1
+    displayName: Run build
+    inputs:
+      command: custom
+      workingDir: ${{ parameters.path }}
+      customCommand: run build
 
-- task: Npm@1
-  displayName: Run tests
-  inputs:
-    command: custom
-    workingDir: ${{ parameters.path }}
-    customCommand: run test
-  condition: eq(parameters.test, true)
+- ${{ if eq(parameters.test, true) }}:
+  - task: Npm@1
+    displayName: Run tests
+    inputs:
+      command: custom
+      workingDir: ${{ parameters.path }}
+      customCommand: run test
 
-- task: Npm@1
-  displayName: Run clean
-  inputs:
-    command: custom
-    workingDir: ${{ parameters.path }}
-    customCommand: run clean
-  condition: eq(parameters.clean, true)
+- ${{ if eq(parameters.clean, true) }}:
+  - task: Npm@1
+    displayName: Run clean
+    inputs:
+      command: custom
+      workingDir: ${{ parameters.path }}
+      customCommand: run clean
 
-- task: PublishTestResults@2
-  displayName: Publish test results
-  inputs:
-    testResultsFiles: ${{ parameters.testResults }}
-  condition: always()
+- ${{ if eq(parameters.test, true) }}:
+  - task: PublishTestResults@2
+    displayName: Publish test results
+    inputs:
+      testResultsFiles: ${{ parameters.testResults }}
+    condition: always()
 
-- publish: ${{ parameters.path }}
-  displayName: Publish task
-  artifact: ${{ parameters.name }}
-  condition: eq(parameters.publish, true)
+- ${{ if eq(parameters.publish, true) }}:
+  - publish: ${{ parameters.path }}
+    displayName: Publish task
+    artifact: ${{ parameters.name }}
