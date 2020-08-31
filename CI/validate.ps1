@@ -152,6 +152,11 @@ Confirm-ExtensionVersion `
 
 if ($UpdateBuildNumber)
 {
+	if (-not $Env:BUILD_BUILDNUMBER)
+	{
+		throw "Variable <BUILD_BUILDNUMBER> not found"
+	}
+
 	Set-BuildNumber `
 		-Value ("{0}-{1}" -f $ReleaseExtension.version, $Env:BUILD_BUILDNUMBER)
 }
