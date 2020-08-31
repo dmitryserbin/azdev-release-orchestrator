@@ -164,9 +164,12 @@ stages:
 
 - stage: Release
   jobs:
-  - job: Publish
+  - deployment: Publish
     pool:
       vmImage: windows-latest
-    steps:
-    - download: current
-      displayName: Download artifacts
+    environment: Marketplace
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - script: echo Hello world
