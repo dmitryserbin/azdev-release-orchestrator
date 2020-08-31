@@ -57,5 +57,5 @@ steps:
 
 - ${{ if eq(parameters.publish, true) }}:
   - publish: ${{ parameters.path }}
-    displayName: Publish task
+    displayName: Publish artifact
     artifact: ${{ parameters.name }}
