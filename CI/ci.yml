@@ -36,3 +36,4 @@ jobs:
       targetType: filePath
       filePath: CI/validate.ps1
       arguments: -Path $(Build.SourcesDirectory)
+      pwsh: true

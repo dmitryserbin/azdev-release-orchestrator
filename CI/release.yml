@@ -67,6 +67,7 @@ stages:
         targetType: filePath
         filePath: CI/validate.ps1
         arguments: -Path ${{ variables.extensionDirectory }}
+        pwsh: true
 
     - task: PackageAzureDevOpsExtension@3
       displayName: Package extension
