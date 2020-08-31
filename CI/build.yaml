@@ -64,10 +64,8 @@ jobs:
     displayName: Package extension
     inputs:
       rootFolder: ${{ variables.extensionDirectory }}
-      updateTasksVersion: true
-      updateTasksVersionType: patch
       outputVariable: extensionPath
 
-  - publish: '$(extensionPath)'
+  - publish: $(extensionPath)
     displayName: Publish artifact
     artifact: Extension
