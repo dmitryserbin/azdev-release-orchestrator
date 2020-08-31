@@ -73,10 +73,35 @@ stages:
 
 - stage: Test
   jobs:
+  - deployment: Install
+    pool:
+      vmImage: windows-latest
+    environment: Tasks
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: taskpublisher@1
+          displayName: Install OrchestratorV1
+          inputs:
+            ConnectedService: dmitryserbin.tasks
+            TaskPath: $(System.DefaultWorkingDirectory)/OrchestratorV1
+            Replace: true
+          - task: taskpublisher@1
+          displayName: Install OrchestratorV2
+          inputs:
+            ConnectedService: dmitryserbin.tasks
+            TaskPath: $(System.DefaultWorkingDirectory)/OrchestratorV2
+            Replace: false
+
   - deployment: Test
     pool:
       vmImage: windows-latest
     environment: OrchestratorV1
+    variables:
+      projectId: 761623f0-c4c0-4dab-884b-a428a01c200f
+      definitionId: 1
+      releaseId: 162
     strategy:
       runOnce:
         deploy:
@@ -84,20 +109,20 @@ stages:
           - task: releaseorchestrator@1
             displayName: Specific Release (Manual)
             inputs:
-              TargetProject: 761623f0-c4c0-4dab-884b-a428a01c200f
-              TargetDefinition: 1
+              TargetProject: ${{ variables.projectId }}
+              TargetDefinition: ${{ variables.definitionId }}
               ReleaseStrategy: specific
-              TargetRelease: 162
+              TargetRelease: ${{ variables.releaseId }}
               TargetReleaseStages: DEV,TEST,PROD
           - task: releaseorchestrator@1
             displayName: Create Release (Auto)
             inputs:
-              TargetProject: 761623f0-c4c0-4dab-884b-a428a01c200f
-              TargetDefinition: 1
+              TargetProject: ${{ variables.projectId }}
+              TargetDefinition: ${{ variables.definitionId }}
           - task: releaseorchestrator@1
             displayName: Latest Release (Manual)
             inputs:
-              TargetProject: 761623f0-c4c0-4dab-884b-a428a01c200f
-              TargetDefinition: 1
+              TargetProject: ${{ variables.projectId }}
+              TargetDefinition: ${{ variables.definitionId }}
               ReleaseStrategy: latest
               TargetReleaseStages: DEV,TEST,PROD
