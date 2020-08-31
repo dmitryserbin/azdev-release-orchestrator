@@ -15,10 +15,10 @@ stages:
       parameters:
         name: OrchestratorV1
         path: OrchestratorV1
-        restore: true
-        build: true
-        test: true
-        clean: true
+        restore: false
+        build: false
+        test: false
+        clean: false
         publish: true
 
   - job: OrchestratorV2
@@ -29,11 +29,11 @@ stages:
       parameters:
         name: OrchestratorV2
         path: OrchestratorV2
-        restore: true
-        lint: true
-        build: true
-        test: true
-        clean: true
+        restore: false
+        lint: false
+        build: false
+        test: false
+        clean: false
         publish: true
 
   - job: Extension
@@ -176,7 +176,7 @@ stages:
 - stage: Release
   dependsOn:
   - Build
-  - Test
+  #- Test
   jobs:
   - deployment: Extension
     pool:
@@ -186,5 +186,10 @@ stages:
       runOnce:
         deploy:
           steps:
-          - task: TfxInstaller@3
-            displayName: Use TFX CLI
+          #- task: TfxInstaller@3
+          #  displayName: Use TFX CLI
+          - powershell: |
+              Write-Host $Env:EXTENSIONPATH
+            env:
+              EXTENSIONPATH: ${{ variables.extensionPath }}
+
