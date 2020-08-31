@@ -82,17 +82,17 @@ stages:
         deploy:
           steps:
           - task: taskpublisher@1
-          displayName: Install OrchestratorV1
-          inputs:
-            ConnectedService: dmitryserbin.tasks
-            TaskPath: $(System.DefaultWorkingDirectory)/OrchestratorV1
-            Replace: true
+            displayName: Install OrchestratorV1
+            inputs:
+              ConnectedService: dmitryserbin.tasks
+              TaskPath: $(Pipeline.Workspace)/OrchestratorV1
+              Replace: true
           - task: taskpublisher@1
-          displayName: Install OrchestratorV2
-          inputs:
-            ConnectedService: dmitryserbin.tasks
-            TaskPath: $(System.DefaultWorkingDirectory)/OrchestratorV2
-            Replace: false
+            displayName: Install OrchestratorV2
+            inputs:
+              ConnectedService: dmitryserbin.tasks
+              TaskPath: $(Pipeline.Workspace)/OrchestratorV2
+              Replace: false
 
   - deployment: Test
     pool:
@@ -106,6 +106,7 @@ stages:
       runOnce:
         deploy:
           steps:
+          - download: none
           - task: releaseorchestrator@1
             displayName: Specific Release (Manual)
             inputs:
