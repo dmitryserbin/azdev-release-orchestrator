@@ -5,61 +5,23 @@ jobs:
   pool:
     vmImage: windows-latest
   steps:
-  - task: Npm@1
-    displayName: Restore packages
-    inputs:
-      workingDir: OrchestratorV1
-
-  - task: Npm@1
-    displayName: Run build
-    inputs:
-      command: custom
-      workingDir: OrchestratorV1
-      customCommand: run build
-
-  - task: Npm@1
-    displayName: Run tests
-    inputs:
-      command: custom
-      workingDir: OrchestratorV1
-      customCommand: run test
-
-  - task: PublishTestResults@2
-    displayName: Publish test results
-    inputs:
-      testResultsFiles: "**/results.xml"
+  - template: template.yml
+    parameters:
+      name: OrchestratorV1
+      path: OrchestratorV1
+      restore: true
+      build: true
+      test: true
 
 - job: OrchestratorV2
   pool:
     vmImage: windows-latest
   steps:
-  - task: Npm@1
-    displayName: Restore packages
-    inputs:
-      workingDir: OrchestratorV2
-
-  - task: Npm@1
-    displayName: Run lint
-    inputs:
-      command: custom
-      workingDir: OrchestratorV2
-      customCommand: run lint
-
-  - task: Npm@1
-    displayName: Run build
-    inputs:
-      command: custom
-      workingDir: OrchestratorV2
-      customCommand: run build
-
-  - task: Npm@1
-    displayName: Run tests
-    inputs:
-      command: custom
-      workingDir: OrchestratorV2
-      customCommand: run test
-
-  - task: PublishTestResults@2
-    displayName: Publish test results
-    inputs:
-      testResultsFiles: "**/results.xml"
+  - template: template.yml
+    parameters:
+      name: OrchestratorV2
+      path: OrchestratorV2
+      restore: true
+      lint: true
+      build: true
+      test: true
