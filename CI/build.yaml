@@ -24,8 +24,8 @@ jobs:
   steps:
   - template: template.yml
     parameters:
-      name: OrchestratorV1
-      path: OrchestratorV1
+      name: OrchestratorV2
+      path: OrchestratorV2
       restore: true
       lint: true
       build: true
@@ -40,7 +40,6 @@ jobs:
   - OrchestratorV1
   - OrchestratorV2
   steps:
-
   - task: DownloadPipelineArtifact@2
     displayName: Download tasks
     inputs:
