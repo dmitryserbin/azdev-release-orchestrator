@@ -1,7 +1,10 @@
 trigger: none
 
 parameters:
-- version: 1.0.0
+- name: version
+  displayName: Version
+  type: string
+  default: 1.0.0
 
 variables:
   extensionDirectory: $(Build.ArtifactStagingDirectory)
