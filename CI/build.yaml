@@ -147,3 +147,17 @@ stages:
         ReleaseStrategy: specific
         ReleaseName: ${{ variables.releaseName }}
         ReleaseStages: ${{ variables.releaseStages }}
+
+      - task: releaseorchestrator@2
+        displayName: Create Release (Auto)
+        inputs:
+          ProjectName: ${{ variables.projectName }}
+          DefinitionName: ${{ variables.definitionName }}
+
+      - task: releaseorchestrator@2
+        displayName: Latest Release (Manual)
+        inputs:
+          ProjectName: ${{ variables.projectName }}
+          DefinitionName: ${{ variables.definitionName }}
+          ReleaseStrategy: latest
+          ReleaseStages: ${{ variables.releaseStages }}
