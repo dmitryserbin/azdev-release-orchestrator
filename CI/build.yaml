@@ -3,68 +3,101 @@ trigger: none
 variables:
   extensionDirectory: $(Build.ArtifactStagingDirectory)
 
-jobs:
-- job: OrchestratorV1
-  pool:
-    vmImage: windows-latest
-  steps:
-  - template: template.yml
-    parameters:
-      name: OrchestratorV1
-      path: OrchestratorV1
-      restore: true
-      build: true
-      test: true
-      clean: true
-      publish: true
+stages:
+- stage: Build
+  jobs:
+  - job: OrchestratorV1
+    pool:
+      vmImage: windows-latest
+    steps:
+    - template: template.yml
+      parameters:
+        name: OrchestratorV1
+        path: OrchestratorV1
+        restore: true
+        build: true
+        test: true
+        clean: true
+        publish: true
 
-- job: OrchestratorV2
-  pool:
-    vmImage: windows-latest
-  steps:
-  - template: template.yml
-    parameters:
-      name: OrchestratorV2
-      path: OrchestratorV2
-      restore: true
-      lint: true
-      build: true
-      test: true
-      clean: true
-      publish: true
+  - job: OrchestratorV2
+    pool:
+      vmImage: windows-latest
+    steps:
+    - template: template.yml
+      parameters:
+        name: OrchestratorV2
+        path: OrchestratorV2
+        restore: true
+        lint: true
+        build: true
+        test: true
+        clean: true
+        publish: true
 
-- job: Extension
-  pool:
-    vmImage: windows-latest
-  dependsOn:
-  - OrchestratorV1
-  - OrchestratorV2
-  steps:
-  - task: TfxInstaller@3
-    displayName: Use TFX CLI
+  - job: Extension
+    pool:
+      vmImage: windows-latest
+    dependsOn:
+    - OrchestratorV1
+    - OrchestratorV2
+    steps:
+    - task: TfxInstaller@3
+      displayName: Use TFX CLI
 
-  - task: CopyFiles@2
-    displayName: Copy extension
-    inputs:
-      contents: |
-        Images/**
-        LICENSE
-        *.md
-        *.json
-      targetFolder: ${{ variables.extensionDirectory }}
+    - task: CopyFiles@2
+      displayName: Copy extension
+      inputs:
+        contents: |
+          Images/**
+          LICENSE
+          *.md
+          *.json
+        targetFolder: ${{ variables.extensionDirectory }}
 
-  - task: DownloadPipelineArtifact@2
-    displayName: Copy tasks
-    inputs:
-      source: current
-      path: ${{ variables.extensionDirectory }}
+    - task: DownloadPipelineArtifact@2
+      displayName: Copy tasks
+      inputs:
+        source: current
+        path: ${{ variables.extensionDirectory }}
 
-  - task: PackageAzureDevOpsExtension@3
-    displayName: Package extension
-    inputs:
-      rootFolder: ${{ variables.extensionDirectory }}
-      outputVariable: extensionPath
+    - task: PackageAzureDevOpsExtension@3
+      displayName: Package extension
+      inputs:
+        rootFolder: ${{ variables.extensionDirectory }}
+        outputVariable: extensionPath
 
-  - publish: $(extensionPath)
-    displayName: Publish artifact
-    artifact: Extension
+    - publish: $(extensionPath)
+      displayName: Publish artifact
+      artifact: Extension
+
+- stage: Test
+  jobs:
+  - deployment: Test
+    pool:
+      vmImage: windows-latest
+    environment: OrchestratorV1
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: releaseorchestrator@1
+            displayName: Specific Release (Manual)
+            inputs:
+              TargetProject: 761623f0-c4c0-4dab-884b-a428a01c200f
+              TargetDefinition: 1
+              ReleaseStrategy: specific
+              TargetRelease: 162
+              TargetReleaseStages: DEV,TEST,PROD
+          - task: releaseorchestrator@1
+            displayName: Create Release (Auto)
+            inputs:
+              TargetProject: 761623f0-c4c0-4dab-884b-a428a01c200f
+              TargetDefinition: 1
+          - task: releaseorchestrator@1
+            displayName: Latest Release (Manual)
+            inputs:
+              TargetProject: 761623f0-c4c0-4dab-884b-a428a01c200f
+              TargetDefinition: 1
+              ReleaseStrategy: latest
+              TargetReleaseStages: DEV,TEST,PROD
