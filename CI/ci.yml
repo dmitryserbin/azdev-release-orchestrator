@@ -31,6 +31,9 @@ jobs:
 - job: Extension
   pool:
     vmImage: windows-latest
+  dependsOn:
+    - OrchestratorV1
+    - OrchestratorV2
   steps:
   - task: PowerShell@2
     displayName: Validate extension
