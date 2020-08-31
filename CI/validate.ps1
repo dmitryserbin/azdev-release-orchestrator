@@ -153,5 +153,5 @@ Confirm-ExtensionVersion `
 if ($UpdateBuildNumber)
 {
 	Set-BuildNumber `
-		-Value ("{0}-{1}" -f $Env:BUILD_BUILDNUMBER, $ReleaseExtension.version)
+		-Value ("{0}-{1}" -f $ReleaseExtension.version, $Env:BUILD_BUILDNUMBER)
 }

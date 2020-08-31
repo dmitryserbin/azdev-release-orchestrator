@@ -1,8 +1,6 @@
 trigger:
 - master
 
-name: $(Build.DefinitionName)-$(Date:yyyyMMdd)$(Rev:.r)
-
 variables:
   extensionDirectory: $(Build.ArtifactStagingDirectory)
 

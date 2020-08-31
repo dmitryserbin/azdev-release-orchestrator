@@ -1,7 +1,5 @@
 trigger: none
 
-name: $(Build.DefinitionName)-$(Date:yyyyMMdd)$(Rev:.r)
-
 jobs:
 - job: OrchestratorV1
   pool:
