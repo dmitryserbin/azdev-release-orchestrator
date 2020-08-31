@@ -5,7 +5,10 @@ Param
 	[String]$Path,
 
 	[Parameter(Mandatory=$False)]
-	[Switch]$Required
+	[Switch]$Required,
+
+	[Parameter(Mandatory=$False)]
+	[Switch]$UpdateBuildNumber
 )
 
 function Get-LocalExtension
@@ -90,6 +93,36 @@ function Get-MarketplaceExtension
 	return $Extension
 }
 
+function Confirm-ExtensionVersion
+{
+	[CmdletBinding()]
+	Param
+	(
+		[Parameter(Mandatory=$True)]
+		[Object]$Release,
+
+		[Parameter(Mandatory=$True)]
+		[Object]$Latest
+	)
+
+	Write-Host ("Release extension version: {0}" -f $Release.version)
+	Write-Host ("Latest extension version: {0}" -f $Latest.version)
+
+	if ($Release.version -le $Latest.version)
+	{
+		$ErrorMessage = "Extension version <$($Release.version)> cannot be released"
+
+		if ($Required)
+		{
+			throw $ErrorMessage
+		}
+		else
+		{
+			Write-Warning $ErrorMessage
+		}
+	}
+}
+
 $ReleaseExtension = Get-LocalExtension `
 	-Path $Path
 
@@ -97,19 +130,12 @@ $LatestExtension = Get-MarketplaceExtension `
 	-Name ("{0}.{1}" -f $ReleaseExtension.publisher, $ReleaseExtension.id) `
 	-ApiVersion 6.1-preview.1
 
-Write-Host ("Latest extension version: {0}" -f $LatestExtension.version)
-Write-Host ("Release extension version: {0}" -f $ReleaseExtension.version)
+Confirm-ExtensionVersion `
+	-Release $ReleaseExtension `
+	-Latest $LatestExtension `
+	-Required:$Required
 
-if ($ReleaseExtension.version -le $LatestExtension.version)
+if ($UpdateBuildNumber)
 {
-	$ErrorMessage = "Extension version <$($ReleaseExtension.version)> cannot be released"
-
-	if ($Required)
-	{
-		throw $ErrorMessage
-	}
-	else
-	{
-		Write-Warning $ErrorMessage
-	}
+	Write-Host ("##vso[build.updatebuildnumber]{0}-{1}" -f $Env:BUILD_BUILDNUMBER, $ReleaseExtension.version)
 }
