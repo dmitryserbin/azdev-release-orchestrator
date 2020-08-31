@@ -79,6 +79,7 @@ stages:
     steps:
     - download: current
       displayName: Download artifacts
+
     - task: taskpublisher@1
       displayName: Install OrchestratorV1
       inputs:
@@ -127,6 +128,8 @@ stages:
         TargetReleaseStages: DEV,TEST,PROD
 
   - job: OrchestratorV2
+    dependsOn:
+    - Install
     pool:
       vmImage: windows-latest
     variables:
