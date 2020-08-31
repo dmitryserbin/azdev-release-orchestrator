@@ -184,8 +184,9 @@ stages:
               outputVariable: extensionLatestVersion
 
           - powershell: |
-              Write-Host $(extensionLatestVersion)
-              Write-Host $(extensionPath)
+              Write-Host $Env:extensionLatestVersion
+              Write-Host $Env:extensionPath
+            displayName: Validate version
             env:
               extensionLatestVersion: $(extensionLatestVersion)
               extensionPath: $(extensionPath)
