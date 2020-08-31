@@ -102,7 +102,10 @@ function Confirm-ExtensionVersion
 		[Object]$Release,
 
 		[Parameter(Mandatory=$True)]
-		[Object]$Latest
+		[Object]$Latest,
+
+		[Parameter(Mandatory=$False)]
+		[Switch]$Required
 	)
 
 	Write-Host ("Release extension version: {0}" -f $Release.version)
@@ -123,6 +126,18 @@ function Confirm-ExtensionVersion
 	}
 }
 
+function Set-BuildNumber
+{
+	[CmdletBinding()]
+	Param
+	(
+		[Parameter(Mandatory=$True)]
+		[String]$Value
+	)
+
+	Write-Host ("##vso[build.updatebuildnumber]{0}" -f $Value)
+}
+
 $ReleaseExtension = Get-LocalExtension `
 	-Path $Path
 
@@ -137,5 +152,6 @@ Confirm-ExtensionVersion `
 
 if ($UpdateBuildNumber)
 {
-	Write-Host ("##vso[build.updatebuildnumber]{0}-{1}" -f $Env:BUILD_BUILDNUMBER, $ReleaseExtension.version)
+	Set-BuildNumber `
+		-Value ("{0}-{1}" -f $Env:BUILD_BUILDNUMBER, $ReleaseExtension.version)
 }
