@@ -25,3 +25,14 @@ jobs:
       lint: true
       build: true
       test: true
+
+- job: Extension
+  pool:
+    vmImage: windows-latest
+  steps:
+  - task: PowerShell@2
+    displayName: Validate extension
+    inputs:
+      targetType: filePath
+      filePath: CI/validate.ps1
+      arguments: -Path $(Build.SourcesDirectory)
