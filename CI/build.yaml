@@ -1,13 +1,8 @@
 trigger: none
 
-parameters:
-- name: version
-  displayName: Version
-  type: string
-  default: 1.0.0
-
 variables:
   extensionDirectory: $(Build.ArtifactStagingDirectory)
+  extensionPath: ""
 
 jobs:
 - job: OrchestratorV1
@@ -71,8 +66,8 @@ jobs:
       rootFolder: ${{ variables.extensionDirectory }}
       updateTasksVersion: true
       updateTasksVersionType: patch
-      outputVariable: ExtensionPath
+      outputVariable: extensionPath
 
-  - publish: '$(ExtensionPath)'
+  - publish: '$(extensionPath)'
     displayName: Publish artifact
     artifact: Extension
