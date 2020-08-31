@@ -1,5 +1,4 @@
-**/tests
-**/.git
+**/tests/*
 **/.vscode
 **/*.yaml
 **/*.xml
