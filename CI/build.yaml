@@ -1,5 +1,8 @@
 trigger: none
 
+parameters:
+- version: 1.0.0
+
 variables:
   extensionDirectory: $(Build.ArtifactStagingDirectory)
 
@@ -12,10 +15,10 @@ jobs:
     parameters:
       name: OrchestratorV1
       path: OrchestratorV1
-      restore: true
-      build: true
-      test: true
-      clean: true
+      restore: false
+      build: false
+      test: false
+      clean: false
       publish: true
 
 - job: OrchestratorV2
@@ -26,11 +29,11 @@ jobs:
     parameters:
       name: OrchestratorV2
       path: OrchestratorV2
-      restore: true
-      lint: true
-      build: true
-      test: true
-      clean: true
+      restore: false
+      lint: false
+      build: false
+      test: false
+      clean: false
       publish: true
 
 - job: Extension
@@ -56,6 +59,17 @@ jobs:
       source: current
       path: ${{ variables.extensionDirectory }}
 
-  - publish: ${{ variables.extensionDirectory }}
-    displayName: Publish extension
-    artifact: ReleaseOrchestrator
+  - task: TfxInstaller@3
+    displayName: Use TFX CLI
+
+  - task: PackageAzureDevOpsExtension@3
+    displayName: Package extension
+    inputs:
+      rootFolder: ${{ variables.extensionDirectory }}
+      extensionVersion: ${{ parameters.version }}
+      updateTasksVersion: true
+      updateTasksVersionType: patch
+
+  #- publish: ${{ variables.extensionDirectory }}
+  #  displayName: Publish extension
+  #  artifact: ReleaseOrchestrator
