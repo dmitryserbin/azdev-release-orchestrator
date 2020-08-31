@@ -1,7 +1,7 @@
 trigger:
 - master
 
-name: $(Build.DefinitionName)-$(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.r)
+name: $(Build.DefinitionName)-$(Date:yyyyMMdd)$(Rev:.r)
 
 variables:
   extensionDirectory: $(Build.ArtifactStagingDirectory)

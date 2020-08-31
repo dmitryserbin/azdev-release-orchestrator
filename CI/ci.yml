@@ -1,6 +1,6 @@
 trigger: none
 
-name: $(Build.DefinitionName)-$(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.r)
+name: $(Build.DefinitionName)-$(Date:yyyyMMdd)$(Rev:.r)
 
 jobs:
 - job: OrchestratorV1
