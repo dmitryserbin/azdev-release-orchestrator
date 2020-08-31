@@ -75,4 +75,4 @@ jobs:
 
   - publish: '$(ExtensionPath)'
     displayName: Publish artifact
-    artifact: ReleaseOrchestrator
+    artifact: Extension
