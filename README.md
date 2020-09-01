@@ -20,7 +20,7 @@ The **Release Orchestrator** task performing Azure DevOps release pipeline execu
 
 ![Image](Images/ro-01.png)
 
-It uses either **integrated** (SystemVssConnection) or **user-defined**  personal access token (PAT) Azure DevOps service endpoint to connect to projects' pipelines.
+It uses either **integrated** (SystemVssConnection) or **specific**  personal access token (PAT) Azure DevOps service endpoint to connect to project pipelines.
 
 - Create new, deploy latest release or specific release
 - Target specific release deployment stages
@@ -29,14 +29,14 @@ It uses either **integrated** (SystemVssConnection) or **user-defined**  persona
 
 ## Prerequisites
 
-To perform release pipeline orchestration the task requires Azure DevOps service endpoint with specific access to target project' pipelines to be able to create and manage releases.
+To perform release pipeline orchestration the task requires Azure DevOps service endpoint with specific access to target project pipelines to be able to create and manage releases.
 
 There are two types of Azure DevOps **service endoints** supported:
 
 Type | Name | Account
 ---- | ---- | -------
-integrated | SystemVssConnection | Project Collection Build Service
-specific | User specified | User specified
+`integrated` | SystemVssConnection | Project Collection Build Service
+`specific` | User specified | User specified
 
 You may need to check and update the following settings in Azure DevOps to utilize full potential of Release Orchestrator.
 
@@ -62,7 +62,7 @@ Please refer to Azure DevOps [permissions and security roles documentation](http
 The task can automate release stage pre-deployment approval, in order to configure it you need:
 
 - Add Azure DevOps service endpoint user account to stage approvers
-- Uncheck 'The user requesting a release or deployment should not approve it' checkbox
+- Uncheck `The user requesting a release or deployment should not approve it` checkbox
 
 ![Image](Images/ro-03.png)
 
@@ -73,7 +73,7 @@ Please refer to Azure DevOps [approvals and gates documentation](https://docs.mi
 ## How To Use
 
 1. Add **Release Orchestrator** task to your release pipeline
-2. Select 'Integrated Endpoint' or 'Service Endpoint' endpoint type
+2. Select `Integrated Endpoint` or `Service Endpoint` endpoint type
 3. Select target project and release definition
 
 ![Image](Images/ro-04.png)
@@ -133,7 +133,7 @@ Deploying latest release requires you to provide target stages for deployment. T
 
 Deploying specific release requires you to provide target stages for deployment. The target stages will be re-deployed in sequential order, exactly as you specified.
 
-- Release Name: select existing release to target (or specify release ID)
+- Release Name: select existing release to target
 - Release Stages: specify release deployment stage(s) (comma separated)
 
 > Template: specific release deployment with target stages filter
