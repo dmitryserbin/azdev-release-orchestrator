@@ -34,7 +34,7 @@ jobs:
     - OrchestratorV2
   steps:
   - task: PowerShell@2
-    displayName: Validate extension
+    displayName: Validate version
     inputs:
       targetType: filePath
       filePath: CI/validate.ps1
