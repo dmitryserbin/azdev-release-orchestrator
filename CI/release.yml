@@ -2,7 +2,6 @@ trigger:
 - master
 
 variables:
-  extensionPath: ""
   extensionDirectory: $(Build.ArtifactStagingDirectory)
 
 stages:
@@ -16,10 +15,10 @@ stages:
       parameters:
         name: OrchestratorV1
         path: OrchestratorV1
-        restore: false
-        build: false
-        test: false
-        clean: false
+        restore: true
+        build: true
+        test: true
+        clean: true
         publish: true
 
   - job: OrchestratorV2
@@ -30,11 +29,11 @@ stages:
       parameters:
         name: OrchestratorV2
         path: OrchestratorV2
-        restore: false
-        lint: false
-        build: false
-        test: false
-        clean: false
+        restore: true
+        lint: true
+        build: true
+        test: true
+        clean: true
         publish: true
 
   - job: Extension
@@ -177,7 +176,7 @@ stages:
 - stage: Release
   dependsOn:
   - Build
-  #- Test
+  - Test
   jobs:
   - deployment: Extension
     pool:
@@ -187,10 +186,6 @@ stages:
       runOnce:
         deploy:
           steps:
-          #- task: TfxInstaller@3
-          #  displayName: Use TFX CLI
-          - powershell: |
-              Write-Host $Env:EXTENSIONPATH
-            env:
-              EXTENSIONPATH: ${{ variables.extensionPath }}
+          - task: TfxInstaller@3
+            displayName: Use TFX CLI
 
