@@ -97,6 +97,16 @@ By default, new release deployment uses default stage [triggers](https://docs.mi
 - Filter Source Branch: enable new release filtering by primary artifact source branch name (optional)
 - Release Variables: override release variables of the target release pipeline when creating a new release (optional). Specified release variables must be configured to be `settable at release time` in the release. Values in `Name=Value` format, special characters supported, new line separated
 
+> Template: new release deployment with automated stage triggers
+
+```yaml
+- task: releaseorchestrator@2
+  displayName: Create Release (Auto)
+  inputs:
+    ProjectName: My-Project
+    DefinitionName: My-Definition
+```
+
 ### Latest Release
 
 Deploying latest release requires you to provide target stages for deployment. The target stages will be re-deployed in sequential order, exactly as you specified.
@@ -107,12 +117,38 @@ Deploying latest release requires you to provide target stages for deployment. T
 - Filter Source Branch: enable filtering target release by primary artifact source branch name (optional)
 - Filter Stage Status: enable filtering target release by stage deployment status (optional)
 
+> Template: latest available release deployment with target stages filter
+
+```yml
+- task: releaseorchestrator@2
+  displayName: Latest Release (Manual)
+  inputs:
+    ProjectName: My-Project
+    DefinitionName: My-Definition
+    ReleaseStrategy: latest
+    ReleaseStages: DEV,TEST,PROD
+```
+
 ### Specific Release
 
 Deploying specific release requires you to provide target stages for deployment. The target stages will be re-deployed in sequential order, exactly as you specified.
 
 - Release Name: select existing release to target (or specify release ID)
 - Release Stages: specify release deployment stage(s) (comma separated)
+
+> Template: specific release deployment with target stages filter
+
+```yml
+steps:
+- task: releaseorchestrator@2
+  displayName: Specific Release (Manual)
+  inputs:
+    ProjectName: My-Project
+    DefinitionName: My-Definition
+    ReleaseStrategy: specific
+    ReleaseName: My-Release-1
+    ReleaseStages: DEV,TEST,PROD
+```
 
 ## Advanced
 
