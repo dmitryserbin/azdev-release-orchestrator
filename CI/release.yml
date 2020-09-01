@@ -2,6 +2,7 @@ trigger:
 - master
 
 variables:
+  extensionPath: ""
   extensionDirectory: $(Build.ArtifactStagingDirectory)
 
 stages:
