@@ -189,3 +189,10 @@ stages:
           steps:
           - task: TfxInstaller@3
             displayName: Use TFX CLI
+
+          - task: PublishAzureDevOpsExtension@3
+            displayName: Publish extension
+            inputs:
+              connectedServiceName: dmitryserbin.marketplace
+              fileType: vsix
+              vsixFile: $(Pipeline.Workspace)/Extension/*.vsix
