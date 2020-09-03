@@ -5,7 +5,7 @@ import Moment from "moment";
 
 import { String } from "typescript-string-operations";
 
-import { ApprovalStatus, EnvironmentStatus, TaskStatus, ReleaseTask, DeploymentReason } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ApprovalStatus, EnvironmentStatus, TaskStatus, ReleaseTask, DeploymentReason, Release, ReleaseStatus as AzDevReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
@@ -100,6 +100,32 @@ export class Reporter implements IReporter {
             }
 
         }
+
+        return table.toString();
+
+    }
+
+    public getRelease(release: Release): string {
+
+        const table: Table = this.newTable([
+
+            "ID",
+            "Name",
+            "Stages",
+            "Created By",
+            "Status",
+
+        ]);
+
+        table.push([
+
+            release.id,
+            release.name,
+            release.environments!.length ? String.Join("|", release.environments!.map((stage) => stage.name)) : "-",
+            release.createdBy ? release.createdBy!.displayName : "-",
+            release.status ? AzDevReleaseStatus[release.status] : "-",
+
+        ]);
 
         return table.toString();
 
