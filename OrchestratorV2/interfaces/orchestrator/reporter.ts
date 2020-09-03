@@ -10,7 +10,7 @@ export interface IReporter {
     getReleaseProgress(releaseProgress: IReleaseProgress): string;
     getStagesProgress(stagesProgress: IStageProgress[]): string;
     getStageProgress(stageProgress: IStageProgress): string;
-    getRelease(release: Release): string;
+    getRelease(release: Release, targetStages: string[]): string;
     getFilters(releaseFilter: IFilters): string;
     getVariables(variables: IReleaseVariable[]): string;
 

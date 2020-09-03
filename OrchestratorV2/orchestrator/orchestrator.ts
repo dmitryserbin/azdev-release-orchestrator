@@ -57,7 +57,7 @@ export class Orchestrator implements IOrchestrator {
                 this.consoleLogger.log(`Deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${String.Join("|", releaseJob.stages)}> stage(s) release`);
 
                 this.consoleLogger.log(
-                    reporter.getRelease(releaseJob.release));
+                    reporter.getRelease(releaseJob.release, releaseJob.stages));
 
                 switch (releaseJob.type) {
 
@@ -90,7 +90,7 @@ export class Orchestrator implements IOrchestrator {
                 this.consoleLogger.log(`Re-deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${String.Join("|", releaseJob.stages)}> stage(s) release`);
 
                 this.consoleLogger.log(
-                    reporter.getRelease(releaseJob.release));
+                    reporter.getRelease(releaseJob.release, releaseJob.stages));
 
                 // Manually trigger stages deployment and monitor progress
                 releaseProgress = await deployer.deployManual(releaseJob, details);

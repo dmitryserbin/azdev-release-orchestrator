@@ -105,7 +105,7 @@ export class Reporter implements IReporter {
 
     }
 
-    public getRelease(release: Release): string {
+    public getRelease(release: Release, targetStages: string[]): string {
 
         const table: Table = this.newTable([
 
@@ -117,6 +117,16 @@ export class Reporter implements IReporter {
 
         ]);
 
+        // Highlight target stages in the release stages
+        const releaseStages: (string | undefined)[] = release.environments!.map(
+            (stage) => {
+
+                const targetStage: boolean = targetStages.includes(stage.name!);
+
+                return (targetStage ? `${stage.name}*` : stage.name);
+
+            });
+
         const releaseDate: Date | undefined = release.createdOn ?
             new Date(release.createdOn!) : undefined;
 
@@ -124,7 +134,7 @@ export class Reporter implements IReporter {
 
             release.id,
             release.name,
-            release.environments!.length ? String.Join("|", release.environments!.map((stage) => stage.name)) : "-",
+            releaseStages ? String.Join("|", releaseStages) : "-",
             release.createdBy ? release.createdBy!.displayName : "-",
             releaseDate ? `${releaseDate.toLocaleDateString()} at ${releaseDate.toLocaleTimeString()}` : "-",
 
