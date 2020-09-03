@@ -44,7 +44,7 @@ stages:
     - OrchestratorV2
     steps:
     - task: TfxInstaller@3
-      displayName: Use TFX CLI
+      displayName: Install TFX CLI
 
     - task: CopyFiles@2
       displayName: Copy extension
@@ -188,7 +188,7 @@ stages:
         deploy:
           steps:
           - task: TfxInstaller@3
-            displayName: Use TFX CLI
+            displayName: Install TFX CLI
 
           - task: PublishAzureDevOpsExtension@3
             displayName: Publish extension
