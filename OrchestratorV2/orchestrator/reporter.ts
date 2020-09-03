@@ -113,9 +113,13 @@ export class Reporter implements IReporter {
             "Name",
             "Stages",
             "Created By",
+            "Created On",
             "Status",
 
         ]);
+
+        const releaseDate: Date | undefined = release.createdOn ?
+            new Date(release.createdOn!) : undefined;
 
         table.push([
 
@@ -123,6 +127,7 @@ export class Reporter implements IReporter {
             release.name,
             release.environments!.length ? String.Join("|", release.environments!.map((stage) => stage.name)) : "-",
             release.createdBy ? release.createdBy!.displayName : "-",
+            releaseDate ? `${releaseDate.toLocaleDateString()} at ${releaseDate.toLocaleTimeString()}` : "-",
             release.status ? AzDevReleaseStatus[release.status] : "-",
 
         ]);
