@@ -5,7 +5,7 @@ import Moment from "moment";
 
 import { String } from "typescript-string-operations";
 
-import { ApprovalStatus, EnvironmentStatus, TaskStatus, ReleaseTask, DeploymentReason, Release, ReleaseStatus as AzDevReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ApprovalStatus, EnvironmentStatus, TaskStatus, ReleaseTask, DeploymentReason, Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
@@ -114,7 +114,6 @@ export class Reporter implements IReporter {
             "Stages",
             "Created By",
             "Created On",
-            "Status",
 
         ]);
 
@@ -128,7 +127,6 @@ export class Reporter implements IReporter {
             release.environments!.length ? String.Join("|", release.environments!.map((stage) => stage.name)) : "-",
             release.createdBy ? release.createdBy!.displayName : "-",
             releaseDate ? `${releaseDate.toLocaleDateString()} at ${releaseDate.toLocaleTimeString()}` : "-",
-            release.status ? AzDevReleaseStatus[release.status] : "-",
 
         ]);
 
