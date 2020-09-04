@@ -17,7 +17,7 @@ export interface IReleaseHelper {
     getStageStatus(releaseStatus: Release, stageName: string): Promise<ReleaseEnvironment>;
     getArtifacts(projectName: string, definitionId: number, primaryId: string, versionId?: string, sourceBranch?: string): Promise<ArtifactMetadata[]>;
     getDefinitionStages(definition: ReleaseDefinition, stages: string[]): Promise<string[]>;
-    getDefinitionPrimaryArtifact(definition: ReleaseDefinition, type: string): Promise<Artifact>;
+    getDefinitionPrimaryArtifact(definition: ReleaseDefinition, type: string): Promise<Artifact | null>;
     getReleaseStages(release: Release, stages: string[]): Promise<string[]>;
     getStageApprovals(stage: ReleaseEnvironment, status: ApprovalStatus): Promise<ReleaseApproval[]>;
     getReleaseType(release: Release): Promise<DeploymentType>;

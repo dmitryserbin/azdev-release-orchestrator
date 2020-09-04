@@ -166,7 +166,7 @@ export class Creator implements ICreator {
         }
 
         // Get primary build artifact
-        const primaryBuildArtifact: Artifact = await this.releaseHelper.getDefinitionPrimaryArtifact(definition, "Build");
+        const primaryBuildArtifact: Artifact | null = await this.releaseHelper.getDefinitionPrimaryArtifact(definition, "Build");
 
         // Add release artifact filter
         if (primaryBuildArtifact) {
@@ -258,7 +258,7 @@ export class Creator implements ICreator {
         let artifactFilter: IArtifactFilter[] = [];
 
         // Get primary build artifact
-        const primaryBuildArtifact: Artifact = await this.releaseHelper.getDefinitionPrimaryArtifact(definition, "Build");
+        const primaryBuildArtifact: Artifact | null = await this.releaseHelper.getDefinitionPrimaryArtifact(definition, "Build");
 
         if (primaryBuildArtifact) {
 

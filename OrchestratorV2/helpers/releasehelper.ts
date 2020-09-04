@@ -352,7 +352,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    public async getDefinitionPrimaryArtifact(definition: ReleaseDefinition, type: string): Promise<Artifact> {
+    public async getDefinitionPrimaryArtifact(definition: ReleaseDefinition, type: string): Promise<Artifact | null> {
 
         const debug = this.debugLogger.extend(this.getDefinitionPrimaryArtifact.name);
 
