@@ -52,18 +52,20 @@ describe("Orchestrator", ()  => {
 
     beforeEach(async () => {
 
-        creatorMock.reset();
-        deployerMock.reset();
-        reporterMock.reset();
-
         detailsMock = TypeMoq.Mock.ofType<IDetails>();
         parametersMock = TypeMoq.Mock.ofType<IParameters>();
         releaseJobMock = TypeMoq.Mock.ofType<IReleaseJob>();
         releaseProgressMock = TypeMoq.Mock.ofType<IReleaseProgress>();
 
+        creatorMock.reset();
+        deployerMock.reset();
+        reporterMock.reset();
+
     });
 
     it("Should orchestrate new automated release", async () => {
+
+        //#region ARRANGE
 
         parametersMock.target.releaseType = ReleaseType.New;
         releaseJobMock.target.type = DeploymentType.Automated;
@@ -75,13 +77,25 @@ describe("Orchestrator", ()  => {
         deployerMock.setup((x) => x.deployAutomated(releaseJobMock.target, detailsMock.target)).returns(
             () => Promise.resolve(releaseProgressMock.target));
 
+        //#endregion
+
+        //#region ACT
+
         const result = await orchestrator.orchestrate(parametersMock.target, detailsMock.target);
 
+        //#endregion
+
+        //#region ASSERT
+
         chai.expect(result).to.not.eq(null);
+
+        //#endregion
 
     });
 
     it("Should orchestrate new manual release", async () => {
+
+        //#region ARRANGE
 
         parametersMock.target.releaseType = ReleaseType.New;
         releaseJobMock.target.type = DeploymentType.Manual;
@@ -93,13 +107,25 @@ describe("Orchestrator", ()  => {
         deployerMock.setup((x) => x.deployManual(releaseJobMock.target, detailsMock.target)).returns(
             () => Promise.resolve(releaseProgressMock.target));
 
+        //#endregion
+
+        //#region ACT
+
         const result = await orchestrator.orchestrate(parametersMock.target, detailsMock.target);
 
+        //#endregion
+
+        //#region ASSERT
+
         chai.expect(result).to.not.eq(null);
+
+        //#endregion
 
     });
 
     it("Should orchestrate latest manual release", async () => {
+
+        //#region ARRANGE
 
         parametersMock.target.releaseType = ReleaseType.Latest;
         releaseJobMock.target.type = DeploymentType.Manual;
@@ -111,13 +137,25 @@ describe("Orchestrator", ()  => {
         deployerMock.setup((x) => x.deployManual(releaseJobMock.target, detailsMock.target)).returns(
             () => Promise.resolve(releaseProgressMock.target));
 
+        //#endregion
+
+        //#region ACT
+
         const result = await orchestrator.orchestrate(parametersMock.target, detailsMock.target);
 
+        //#endregion
+
+        //#region ASSERT
+
         chai.expect(result).to.not.eq(null);
+
+        //#endregion
 
     });
 
     it("Should orchestrate specific manual release", async () => {
+
+        //#region ARRANGE
 
         parametersMock.target.releaseType = ReleaseType.Specific;
         releaseJobMock.target.type = DeploymentType.Manual;
@@ -129,9 +167,19 @@ describe("Orchestrator", ()  => {
         deployerMock.setup((x) => x.deployManual(releaseJobMock.target, detailsMock.target)).returns(
             () => Promise.resolve(releaseProgressMock.target));
 
+        //#endregion
+
+        //#region ACT
+
         const result = await orchestrator.orchestrate(parametersMock.target, detailsMock.target);
 
+        //#endregion
+
+        //#region ASSERT
+
         chai.expect(result).to.not.eq(null);
+
+        //#endregion
 
     });
 
