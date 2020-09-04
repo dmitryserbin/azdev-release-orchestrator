@@ -8,11 +8,7 @@ import { IDetails } from "../interfaces/task/details";
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
-import { IEndpoint } from "../interfaces/task/endpoint";
-import { IApiFactory } from "../interfaces/factories/apifactory";
-import { ApiFactory } from "../factories/apifactory";
 import { IOrchestratorFactory } from "../interfaces/factories/orchestratorfactory";
-import { OrchestratorFactory } from "../factories/orchestratorfactory";
 import { IReleaseJob } from "../interfaces/common/releasejob";
 import { ICreator } from "../interfaces/orchestrator/creator";
 import { IReleaseProgress } from "../interfaces/common/releaseprogress";
@@ -26,14 +22,11 @@ export class Orchestrator implements IOrchestrator {
 
     private orchestratorFactory: IOrchestratorFactory;
 
-    constructor(endpoint: IEndpoint, debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
+    constructor(orchestratorFactory: IOrchestratorFactory, debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
 
         this.debugLogger = debugCreator.extend(this.constructor.name);
         this.consoleLogger = consoleLogger;
-
-        const apiFactory: IApiFactory = new ApiFactory(endpoint.account, endpoint.token, debugCreator);
-
-        this.orchestratorFactory = new OrchestratorFactory(apiFactory, debugCreator, consoleLogger);
+        this.orchestratorFactory = orchestratorFactory; 
 
     }
 

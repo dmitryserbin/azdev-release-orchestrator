@@ -10,6 +10,10 @@ import { IDetails } from "./interfaces/task/details";
 import { IOrchestrator } from "./interfaces/orchestrator/orchestrator";
 import { Orchestrator } from "./orchestrator/orchestrator";
 import { IReleaseProgress } from "./interfaces/common/releaseprogress";
+import { IApiFactory } from "./interfaces/factories/apifactory";
+import { ApiFactory } from "./factories/apifactory";
+import { IOrchestratorFactory } from "./interfaces/factories/orchestratorfactory";
+import { OrchestratorFactory } from "./factories/orchestratorfactory";
 
 async function run() {
 
@@ -24,7 +28,10 @@ async function run() {
         const parameters: IParameters = await taskHelper.getParameters();
         const details: IDetails = await taskHelper.getDetails();
 
-        const orchestrator: IOrchestrator = new Orchestrator(endpoint, debugCreator, consoleLogger);
+        const apiFactory: IApiFactory = new ApiFactory(endpoint.account, endpoint.token, debugCreator);
+        const orchestratorFactory: IOrchestratorFactory = new OrchestratorFactory(apiFactory, debugCreator, consoleLogger);
+
+        const orchestrator: IOrchestrator = new Orchestrator(orchestratorFactory, debugCreator, consoleLogger);
 
         // Run orchestrator
         const releaseProgress: IReleaseProgress = await orchestrator.orchestrate(parameters, details);
