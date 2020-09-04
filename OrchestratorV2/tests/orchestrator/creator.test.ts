@@ -79,6 +79,9 @@ describe("Creator", ()  => {
         releaseHelperMock.setup((x) => x.getDefinitionPrimaryArtifact(definitionMock.target, "Build")).returns(
             () => Promise.resolve(null));
 
+        releaseHelperMock.setup((x) => x.getReleaseStages(releaseMock.target, parametersMock.target.stages)).returns(
+            () => Promise.resolve([]));
+
         releaseHelperMock.setup((x) => x.getReleaseType(releaseMock.target)).returns(
             () => Promise.resolve(DeploymentType.Automated));
 
@@ -92,7 +95,7 @@ describe("Creator", ()  => {
 
         //#region ASSERT
 
-        // TBU
+        chai.expect(result).to.not.eq(null);
 
         //#endregion
 
