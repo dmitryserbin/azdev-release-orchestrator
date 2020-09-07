@@ -53,7 +53,6 @@ export class Creator implements ICreator {
 
         const targetRelease: Release = await this.createRelease(targetProject, targetDefinition, parameters, details);
         const targetStages: string[] = await this.releaseHelper.getReleaseStages(targetRelease, parameters.stages);
-
         const releaseType: DeploymentType = await this.releaseHelper.getReleaseType(targetRelease);
 
         const releaseJob: IReleaseJob = {
