@@ -23,6 +23,8 @@ import { Reporter } from "../orchestrator/reporter";
 import { ICoreApiRetry } from "../interfaces/extensions/coreapiretry";
 import { IBuildApiRetry } from "../interfaces/extensions/buildapiretry";
 import { IReleaseApiRetry } from "../interfaces/extensions/releaseapiretry";
+import { IFiltrator } from "../interfaces/orchestrator/filtrator";
+import { Filtrator } from "../orchestrator/filtrator";
 
 export class OrchestratorFactory implements IOrchestratorFactory {
 
@@ -49,9 +51,10 @@ export class OrchestratorFactory implements IOrchestratorFactory {
         const coreHelper: ICoreHelper = new CoreHelper(coreApi, this.debugCreator);
         const buildHelper: IBuildHelper = new BuildHelper(buildApi, this.debugCreator);
         const releaseHelper: IReleaseHelper = new ReleaseHelper(releaseApi, this.debugCreator);
+        const filterCreator: IFiltrator = new Filtrator(buildHelper, releaseHelper, this.debugCreator);
         const progressReporter: IReporter = new Reporter(this.debugCreator);
 
-        return new Creator(coreHelper, buildHelper, releaseHelper, progressReporter, this.debugCreator, this.consoleLogger);
+        return new Creator(coreHelper, releaseHelper, filterCreator, progressReporter, this.debugCreator, this.consoleLogger);
 
     }
 

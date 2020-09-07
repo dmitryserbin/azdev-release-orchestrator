@@ -22,6 +22,8 @@ import { DeploymentType } from "../../interfaces/common/deploymenttype";
 import { IFilters } from "../../interfaces/task/filters";
 import { ISettings } from "../../interfaces/common/settings";
 import { IReleaseFilter } from "../../interfaces/common/releasefilter";
+import { IFiltrator } from "../../interfaces/orchestrator/filtrator";
+import { IArtifactFilter } from "../../interfaces/common/artifactfilter";
 
 describe("Creator", ()  => {
 
@@ -42,13 +44,14 @@ describe("Creator", ()  => {
     const coreHelperMock = TypeMoq.Mock.ofType<ICoreHelper>();
     const buildHelperMock = TypeMoq.Mock.ofType<IBuildHelper>();
     const releaseHelperMock = TypeMoq.Mock.ofType<IReleaseHelper>();
+    const filterCreatorMock = TypeMoq.Mock.ofType<IFiltrator>();
 
     let detailsMock: TypeMoq.IMock<IDetails>;
     let parametersMock: TypeMoq.IMock<IParameters>;
     let filtersMock: TypeMoq.IMock<IFilters>;
     let settingsMock: TypeMoq.IMock<ISettings>;
 
-    const creator: ICreator = new Creator(coreHelperMock.target, buildHelperMock.target, releaseHelperMock.target, reporterMock.target, debugCreatorMock.target, consoleLoggerMock.target);
+    const creator: ICreator = new Creator(coreHelperMock.target, releaseHelperMock.target, filterCreatorMock.target, reporterMock.target, debugCreatorMock.target, consoleLoggerMock.target);
 
     beforeEach(async () => {
 
@@ -63,6 +66,7 @@ describe("Creator", ()  => {
         coreHelperMock.reset();
         buildHelperMock.reset();
         releaseHelperMock.reset();
+        filterCreatorMock.reset();
         reporterMock.reset();
 
     });
@@ -76,6 +80,7 @@ describe("Creator", ()  => {
         const projectMock = TypeMoq.Mock.ofType<TeamProject>();
         const definitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>();
         const releaseMock = TypeMoq.Mock.ofType<Release>();
+        const artifactFilterMock = TypeMoq.Mock.ofType<IArtifactFilter[]>();
 
         coreHelperMock.setup((x) => x.getProject(parametersMock.target.projectName)).returns(
             () => Promise.resolve(projectMock.target));
@@ -83,8 +88,8 @@ describe("Creator", ()  => {
         releaseHelperMock.setup((x) => x.getDefinition(projectMock.target.name!, parametersMock.target.definitionName)).returns(
             () => Promise.resolve(definitionMock.target));
 
-        releaseHelperMock.setup((x) => x.getDefinitionPrimaryArtifact(definitionMock.target, "Build")).returns(
-            () => Promise.resolve(null));
+        filterCreatorMock.setup((x) => x.createArtifactFilter(projectMock.target, definitionMock.target, parametersMock.target.filters)).returns(
+            () => Promise.resolve(artifactFilterMock.target));
 
         releaseHelperMock.setup((x) => x.createRelease(projectMock.target.name!, definitionMock.target, detailsMock.target)).returns(
             () => Promise.resolve(releaseMock.target));
@@ -128,8 +133,8 @@ describe("Creator", ()  => {
         releaseHelperMock.setup((x) => x.getDefinition(projectMock.target.name!, parametersMock.target.definitionName)).returns(
             () => Promise.resolve(definitionMock.target));
 
-        releaseHelperMock.setup((x) => x.getDefinitionPrimaryArtifact(definitionMock.target, "Build")).returns(
-            () => Promise.resolve(null));
+        filterCreatorMock.setup((x) => x.createReleaseFilter(projectMock.target, definitionMock.target, parametersMock.target.stages, parametersMock.target.filters)).returns(
+            () => Promise.resolve(releaseFilterMock.target));
 
         releaseHelperMock.setup((x) => x.getLastRelease(projectMock.target.name!, definitionMock.target.id!, parametersMock.target.stages, releaseFilterMock.target)).returns(
             () => Promise.resolve(releaseMock.target));
