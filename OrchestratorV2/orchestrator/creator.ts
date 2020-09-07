@@ -140,6 +140,47 @@ export class Creator implements ICreator {
 
     }
 
+    private async createArtifactFilter(project: TeamProject, definition: ReleaseDefinition, filters: IFilters): Promise<IArtifactFilter[]> {
+
+        const debug = this.debugLogger.extend(this.createArtifactFilter.name);
+
+        let artifactFilter: IArtifactFilter[] = [];
+
+        // Get primary build artifact
+        const primaryBuildArtifact: Artifact | null = await this.releaseHelper.getDefinitionPrimaryArtifact(definition, "Build");
+
+        if (primaryBuildArtifact) {
+
+            let artifactVersion;
+
+            // Get build matching artifact tag
+            if (filters.artifactTags && filters.artifactTags.length > 0) {
+
+                debug(`Using <${String.Join("|", filters.artifactTags)}> artifact tag(s) filter`);
+
+                const targetArtifactBuild: Build = await this.buildHelper.findBuild(project.name!, Number(primaryBuildArtifact.definitionReference!.definition.id), filters.artifactTags);
+
+                artifactVersion = targetArtifactBuild.id!.toString();
+
+            }
+
+            // Confirm source branch filter
+            if (filters.artifactBranch) {
+
+                debug(`Using <${filters.artifactBranch}> artifact branch filter`);
+
+            }
+
+            artifactFilter = await this.releaseHelper.getArtifacts(project.name!, definition.id!, primaryBuildArtifact.sourceId!, artifactVersion, filters.artifactBranch);
+
+        }
+
+        debug(artifactFilter);
+
+        return artifactFilter;
+
+    }
+
     private async createReleaseFilter(project: TeamProject, definition: ReleaseDefinition, stages: string[], filters: IFilters): Promise<IReleaseFilter> {
 
         const debug = this.debugLogger.extend(this.createReleaseFilter.name);
@@ -247,47 +288,6 @@ export class Creator implements ICreator {
         debug(releaseFilter);
 
         return releaseFilter;
-
-    }
-
-    private async createArtifactFilter(project: TeamProject, definition: ReleaseDefinition, filters: IFilters): Promise<IArtifactFilter[]> {
-
-        const debug = this.debugLogger.extend(this.createArtifactFilter.name);
-
-        let artifactFilter: IArtifactFilter[] = [];
-
-        // Get primary build artifact
-        const primaryBuildArtifact: Artifact | null = await this.releaseHelper.getDefinitionPrimaryArtifact(definition, "Build");
-
-        if (primaryBuildArtifact) {
-
-            let artifactVersion;
-
-            // Get build matching artifact tag
-            if (filters.artifactTags && filters.artifactTags.length > 0) {
-
-                debug(`Using <${String.Join("|", filters.artifactTags)}> artifact tag(s) filter`);
-
-                const targetArtifactBuild: Build = await this.buildHelper.findBuild(project.name!, Number(primaryBuildArtifact.definitionReference!.definition.id), filters.artifactTags);
-
-                artifactVersion = targetArtifactBuild.id!.toString();
-
-            }
-
-            // Confirm source branch filter
-            if (filters.artifactBranch) {
-
-                debug(`Using <${filters.artifactBranch}> artifact branch filter`);
-
-            }
-
-            artifactFilter = await this.releaseHelper.getArtifacts(project.name!, definition.id!, primaryBuildArtifact.sourceId!, artifactVersion, filters.artifactBranch);
-
-        }
-
-        debug(artifactFilter);
-
-        return artifactFilter;
 
     }
 
