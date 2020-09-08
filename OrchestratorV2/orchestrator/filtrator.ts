@@ -46,9 +46,9 @@ export class Filtrator implements IFiltrator {
 
                 debug(`Using <${String.Join("|", filters.artifactTags)}> artifact tag filter`);
 
-                const buildAdtifact: Build = await this.buildHelper.findBuild(project.name!, Number(primaryBuildArtifact.definitionReference!.definition.id), filters.artifactTags);
+                const buildArtifact: Build = await this.buildHelper.findBuild(project.name!, Number(primaryBuildArtifact.definitionReference!.definition.id), filters.artifactTags);
 
-                buildArtifactId = buildAdtifact.id!.toString();
+                buildArtifactId = buildArtifact.id!.toString();
 
             }
 
@@ -85,7 +85,7 @@ export class Filtrator implements IFiltrator {
         };
 
         // Add release tag filter
-        if (filters.releaseTags && filters.releaseTags.length > 0) {
+        if (Array.isArray(filters.releaseTags) && filters.releaseTags.length) {
 
             debug(`Using <${String.Join("|", filters.releaseTags)}> release tag filter`);
 
@@ -100,7 +100,7 @@ export class Filtrator implements IFiltrator {
         if (primaryBuildArtifact) {
 
             // Add artifact tag filter
-            if (filters.artifactTags && filters.artifactTags.length > 0) {
+            if (Array.isArray(filters.artifactTags) && filters.artifactTags.length) {
 
                 debug(`Using <${String.Join("|", filters.artifactTags)}> artifact tag filter`);
 
@@ -123,7 +123,7 @@ export class Filtrator implements IFiltrator {
         }
 
         // Add stage status filter
-        if (filters.stageStatuses && filters.stageStatuses.length > 0) {
+        if (Array.isArray(filters.stageStatuses) && filters.stageStatuses.length) {
 
             debug(`Using <${String.Join("|", filters.stageStatuses)}> release stage status filter`);
 
