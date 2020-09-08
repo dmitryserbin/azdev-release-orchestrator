@@ -39,7 +39,7 @@ export class Filtrator implements IFiltrator {
 
         if (primaryBuildArtifact) {
 
-            let artifactVersion;
+            let buildArtifactId: string | undefined;
 
             // Get build matching artifact tag
             if (filters.artifactTags && filters.artifactTags.length > 0) {
@@ -48,7 +48,7 @@ export class Filtrator implements IFiltrator {
 
                 const targetArtifactBuild: Build = await this.buildHelper.findBuild(project.name!, Number(primaryBuildArtifact.definitionReference!.definition.id), filters.artifactTags);
 
-                artifactVersion = targetArtifactBuild.id!.toString();
+                buildArtifactId = targetArtifactBuild.id!.toString();
 
             }
 
@@ -59,7 +59,7 @@ export class Filtrator implements IFiltrator {
 
             }
 
-            artifactFilter = await this.releaseHelper.getArtifacts(project.name!, definition.id!, primaryBuildArtifact.sourceId!, artifactVersion, filters.artifactBranch);
+            artifactFilter = await this.releaseHelper.getArtifacts(project.name!, definition.id!, primaryBuildArtifact.sourceId!, buildArtifactId, filters.artifactBranch);
 
         }
 
