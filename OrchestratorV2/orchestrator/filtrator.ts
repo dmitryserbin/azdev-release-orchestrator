@@ -35,20 +35,20 @@ export class Filtrator implements IFiltrator {
         let artifactFilter: IArtifactFilter[] = [];
 
         // Get primary build artifact
-        const primaryBuildArtifact: Artifact | null = await this.releaseHelper.getDefinitionPrimaryArtifact(definition, "Build");
+        const primaryBuildArtifact: Artifact | undefined = await this.releaseHelper.getDefinitionPrimaryArtifact(definition, "Build");
 
         if (primaryBuildArtifact) {
 
             let buildArtifactId: string | undefined;
 
             // Get build matching artifact tag
-            if (filters.artifactTags && filters.artifactTags.length > 0) {
+            if (Array.isArray(filters.artifactTags) && filters.artifactTags.length) {
 
-                debug(`Using <${String.Join("|", filters.artifactTags)}> artifact tag(s) filter`);
+                debug(`Using <${String.Join("|", filters.artifactTags)}> artifact tag filter`);
 
-                const targetArtifactBuild: Build = await this.buildHelper.findBuild(project.name!, Number(primaryBuildArtifact.definitionReference!.definition.id), filters.artifactTags);
+                const buildAdtifact: Build = await this.buildHelper.findBuild(project.name!, Number(primaryBuildArtifact.definitionReference!.definition.id), filters.artifactTags);
 
-                buildArtifactId = targetArtifactBuild.id!.toString();
+                buildArtifactId = buildAdtifact.id!.toString();
 
             }
 
@@ -94,7 +94,7 @@ export class Filtrator implements IFiltrator {
         }
 
         // Get primary build artifact
-        const primaryBuildArtifact: Artifact | null = await this.releaseHelper.getDefinitionPrimaryArtifact(definition, "Build");
+        const primaryBuildArtifact: Artifact | undefined = await this.releaseHelper.getDefinitionPrimaryArtifact(definition, "Build");
 
         // Add release artifact filter
         if (primaryBuildArtifact) {

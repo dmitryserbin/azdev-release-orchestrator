@@ -352,11 +352,11 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    public async getDefinitionPrimaryArtifact(definition: ReleaseDefinition, type: string): Promise<Artifact | null> {
+    public async getDefinitionPrimaryArtifact(definition: ReleaseDefinition, type: string): Promise<Artifact | undefined> {
 
         const debug = this.debugLogger.extend(this.getDefinitionPrimaryArtifact.name);
 
-        let artifact: Artifact | null = null;
+        let artifact: Artifact | undefined;
 
         if (Array.isArray(definition.artifacts) && definition.artifacts.length) {
 
