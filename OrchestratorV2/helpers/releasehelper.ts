@@ -356,10 +356,16 @@ export class ReleaseHelper implements IReleaseHelper {
 
         const debug = this.debugLogger.extend(this.getDefinitionPrimaryArtifact.name);
 
-        const artifact: Artifact = definition.artifacts!.filter(
-            (i) => i.isPrimary === true && i.type === type)[0];
+        let artifact: Artifact | null = null;
 
-        debug(debug);
+        if (Array.isArray(definition.artifacts) && definition.artifacts.length) {
+
+            artifact = definition.artifacts!.filter(
+                (i) => i.isPrimary === true && i.type === type)[0]
+
+        }
+
+        debug(artifact);
 
         return artifact;
 

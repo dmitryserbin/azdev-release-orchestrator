@@ -289,7 +289,7 @@ export class TaskHelper implements ITaskHelper {
 
         const ignoreFailure: boolean = getBoolInput("IgnoreFailure");
 
-        debug(debug);
+        debug(ignoreFailure);
 
         const result: TaskResult = ignoreFailure
             ? TaskResult.SucceededWithIssues : TaskResult.Failed;
