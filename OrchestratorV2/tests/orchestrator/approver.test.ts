@@ -66,7 +66,7 @@ describe("Approver", ()  => {
 
     });
 
-    it("Should successfully approve stage deployment", async () => {
+    it("Should successfully approve stage", async () => {
 
         //#region ARRANGE
 
@@ -95,7 +95,7 @@ describe("Approver", ()  => {
 
     });
 
-    it("Should skip stage deployment approval when not required", async () => {
+    it("Should skip stage approval when not required", async () => {
 
         //#region ARRANGE
 
@@ -118,7 +118,7 @@ describe("Approver", ()  => {
 
     });
 
-    it("Should cancel stage deployment when approval rejected", async () => {
+    it("Should cancel stage when approval rejected", async () => {
 
         //#region ARRANGE
 
