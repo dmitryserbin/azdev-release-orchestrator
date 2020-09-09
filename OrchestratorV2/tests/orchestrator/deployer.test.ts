@@ -4,7 +4,7 @@ import * as chai from "chai";
 import * as TypeMoq from "typemoq";
 
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
-import { Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { Release, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
 import { IConsoleLogger } from "../../interfaces/loggers/consolelogger";
@@ -21,6 +21,7 @@ import { Deployer } from "../../orchestrator/deployer";
 import { IReleaseProgress } from "../../interfaces/common/releaseprogress";
 import { IStageProgress } from "../../interfaces/common/stageprogress";
 import { ReleaseStatus } from "../../interfaces/common/releasestatus";
+import { ISettings } from "../../interfaces/common/settings";
 
 describe("Deployer", ()  => {
 
@@ -43,6 +44,7 @@ describe("Deployer", ()  => {
 
     let detailsMock: TypeMoq.IMock<IDetails>;
     let releaseJobMock: TypeMoq.IMock<IReleaseJob>;
+    let settingsMock: TypeMoq.IMock<ISettings>;
     let projectMock: TypeMoq.IMock<TeamProject>;
     let releaseMock: TypeMoq.IMock<Release>;
 
@@ -53,9 +55,11 @@ describe("Deployer", ()  => {
 
         detailsMock = TypeMoq.Mock.ofType<IDetails>();
         releaseJobMock = TypeMoq.Mock.ofType<IReleaseJob>();
+        settingsMock = TypeMoq.Mock.ofType<ISettings>();
         projectMock = TypeMoq.Mock.ofType<TeamProject>();
         releaseMock = TypeMoq.Mock.ofType<Release>();
 
+        releaseJobMock.target.settings = settingsMock.target;
         releaseJobMock.target.project = projectMock.target;
         releaseJobMock.target.release = releaseMock.target;
 
@@ -84,7 +88,7 @@ describe("Deployer", ()  => {
         stageTwoProgress.setup((x) => x.name).returns(() => "My-Stage-Two")
 
         releaseProgressMock.setup((x) => x.stages).returns(
-            () => [stageOneProgress.target, stageTwoProgress.target ])
+            () => [ stageOneProgress.target, stageTwoProgress.target ])
 
         progressMonitorMock.setup((x) => x.createProgress(releaseJobMock.target)).returns(
             () => releaseProgressMock.target);
@@ -93,16 +97,40 @@ describe("Deployer", ()  => {
             () => Promise.resolve(releaseStatusMock.target));
 
         progressMonitorMock.setup((x) => x.getActiveStages(releaseProgressMock.target)).returns(
-            () => []);
+            () => [ stageOneProgress.target ]);
 
-        // TBU STAGE DEPLOY
+        //#region STAGE
 
-        progressMonitorMock.setup((x) => x.updateReleaseProgress(releaseProgressMock.target)).callback(() => {
+        const stageStatusMock = TypeMoq.Mock.ofType<ReleaseEnvironment>();
 
-            releaseProgressMock.setup((x) => x.status).returns(
-                () => ReleaseStatus.Succeeded)
+        releaseHelperMock.setup((x) => x.getStageStatus(releaseStatusMock.target, stageOneProgress.target.name)).returns(
+            () => Promise.resolve(stageStatusMock.target));
 
-        }).returns(() => null)
+        releaseApproverMock.setup((x) => x.isStageApproved(stageOneProgress.target, stageStatusMock.target)).returns(
+            () => Promise.resolve(false));
+
+        releaseApproverMock.setup((x) => x.approveStage(stageOneProgress.target, stageStatusMock.target, releaseJobMock.target.project.name!, detailsMock.target, releaseJobMock.target.settings)).returns(
+            () => Promise.resolve());
+
+        progressMonitorMock.setup((x) => x.updateStageProgress(stageOneProgress.target, stageStatusMock.target)).returns(
+            () => null);
+
+        progressMonitorMock.setup((x) => x.isStageCompleted(stageOneProgress.target)).returns(
+            () => true);  
+
+        //#endregion
+
+        progressMonitorMock.setup((x) => x.updateReleaseProgress(releaseProgressMock.target)).returns(
+            () => null);
+
+        releaseProgressMock.setup((x) => x.status).returns(
+            () => ReleaseStatus.InProgress);
+
+        commonHelperMock.setup((x) => x.wait(releaseJobMock.target.settings.sleep)).returns(
+            () => Promise.resolve());
+
+        releaseProgressMock.setup((x) => x.status).returns(
+            () => ReleaseStatus.Succeeded);
 
         //#endregion
 
@@ -115,6 +143,7 @@ describe("Deployer", ()  => {
         //#region ASSERT
 
         chai.expect(result).to.not.eq(null);
+        chai.expect(result.status).to.eq(ReleaseStatus.Succeeded);
 
         //#endregion
 
