@@ -73,6 +73,77 @@ export class Monitor implements IMonitor {
 
     }
 
+    public updateReleaseProgress(releaseProgress: IReleaseProgress): void {
+
+        const debug = this.debugLogger.extend(this.updateReleaseProgress.name);
+
+        const completedStages: string[] = releaseProgress.stages.filter(
+            (stage) => this.isStageCompleted(stage)).map(
+                (stage) => stage.name);
+
+        const activeStages: string[] = releaseProgress.stages.filter(
+            (stage) => this.isStageActive(stage)).map(
+                (stage) => stage.name);
+
+        // Get stages completion status
+        const completed: boolean = completedStages.length === releaseProgress.stages.length;
+
+        if (completed) {
+
+            debug(`All release stages <${String.Join("|", completedStages)}> completed`);
+
+            // Get rejected or canceled stages
+            const failed: boolean = releaseProgress.stages.filter((i) =>
+                i.status === EnvironmentStatus.Rejected || i.status === EnvironmentStatus.Canceled).length > 0;
+
+            if (failed) {
+
+                releaseProgress.status = ReleaseStatus.Failed;
+
+            } else {
+
+                // Get partially succeeded stages
+                const partiallySucceeded: boolean = releaseProgress.stages.filter((i) =>
+                    i.status === EnvironmentStatus.PartiallySucceeded).length > 0;
+
+                if (partiallySucceeded) {
+
+                    releaseProgress.status = ReleaseStatus.PartiallySucceeded;
+
+                } else {
+
+                    releaseProgress.status = ReleaseStatus.Succeeded;
+
+                }
+
+            }
+
+        } else {
+
+            debug(`Release stages <${String.Join("|", activeStages)}> in progress`);
+
+            releaseProgress.status = ReleaseStatus.InProgress;
+
+        }
+
+        debug(`Release status <${ReleaseStatus[releaseProgress.status]}> updated`);
+
+    }
+
+    public updateStageProgress(stageProgress: IStageProgress, stageStatus: ReleaseEnvironment): void {
+
+        // Get current deployment attempt
+        const currentAttempt: DeploymentAttempt = stageStatus.deploySteps!.sort((left, right) =>
+            left.deploymentId! - right.deploymentId!).reverse()[0];
+
+        stageProgress.status = stageStatus.status!;
+        stageProgress.id = stageStatus.id;
+        stageProgress.release = stageStatus.release!.name;
+        stageProgress.deployment = currentAttempt;
+        stageProgress.duration = stageStatus.timeToDeploy?.toLocaleString();
+
+    }
+
     public getActiveStages(releaseProgress: IReleaseProgress): IStageProgress[] {
 
         const debug = this.debugLogger.extend(this.getActiveStages.name);
@@ -142,77 +213,6 @@ export class Monitor implements IMonitor {
         debug(`Stage <${stageProgress.name}> (${EnvironmentStatus[stageProgress.status]}) status <${status}>`);
 
         return status;
-
-    }
-
-    public updateStageProgress(stageProgress: IStageProgress, stageStatus: ReleaseEnvironment): void {
-
-        // Get current deployment attempt
-        const currentAttempt: DeploymentAttempt = stageStatus.deploySteps!.sort((left, right) =>
-            left.deploymentId! - right.deploymentId!).reverse()[0];
-
-        stageProgress.status = stageStatus.status!;
-        stageProgress.id = stageStatus.id;
-        stageProgress.release = stageStatus.release!.name;
-        stageProgress.deployment = currentAttempt;
-        stageProgress.duration = stageStatus.timeToDeploy?.toLocaleString();
-
-    }
-
-    public updateReleaseProgress(releaseProgress: IReleaseProgress): void {
-
-        const debug = this.debugLogger.extend(this.updateReleaseProgress.name);
-
-        const completedStages: string[] = releaseProgress.stages.filter(
-            (stage) => this.isStageCompleted(stage)).map(
-                (stage) => stage.name);
-
-        const activeStages: string[] = releaseProgress.stages.filter(
-            (stage) => this.isStageActive(stage)).map(
-                (stage) => stage.name);
-
-        // Get stages completion status
-        const completed: boolean = completedStages.length === releaseProgress.stages.length;
-
-        if (completed) {
-
-            debug(`All release stages <${String.Join("|", completedStages)}> completed`);
-
-            // Get rejected or canceled stages
-            const failed: boolean = releaseProgress.stages.filter((i) =>
-                i.status === EnvironmentStatus.Rejected || i.status === EnvironmentStatus.Canceled).length > 0;
-
-            if (failed) {
-
-                releaseProgress.status = ReleaseStatus.Failed;
-
-            } else {
-
-                // Get partially succeeded stages
-                const partiallySucceeded: boolean = releaseProgress.stages.filter((i) =>
-                    i.status === EnvironmentStatus.PartiallySucceeded).length > 0;
-
-                if (partiallySucceeded) {
-
-                    releaseProgress.status = ReleaseStatus.PartiallySucceeded;
-
-                } else {
-
-                    releaseProgress.status = ReleaseStatus.Succeeded;
-
-                }
-
-            }
-
-        } else {
-
-            debug(`Release stages <${String.Join("|", activeStages)}> in progress`);
-
-            releaseProgress.status = ReleaseStatus.InProgress;
-
-        }
-
-        debug(`Release status <${ReleaseStatus[releaseProgress.status]}> updated`);
 
     }
 
