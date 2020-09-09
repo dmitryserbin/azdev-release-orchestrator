@@ -87,12 +87,97 @@ describe("Deployer", ()  => {
 
     });
 
+    it("Should deploy manual release", async () => {
+
+        //#region ARRANGE
+
+        releaseProgressMock.setup((x) => x.stages).returns(
+            () => [ stageOneProgress.target, stageTwoProgress.target ]);
+
+        progressMonitorMock.setup((x) => x.createProgress(releaseJobMock.target)).returns(
+            () => releaseProgressMock.target);
+
+        progressMonitorMock.setup((x) => x.getPendingStages(releaseProgressMock.target)).returns(
+            () => [ stageOneProgress.target ]);
+
+        // STAGE >>
+
+        const stageStatusMock = TypeMoq.Mock.ofType<ReleaseEnvironment>();
+
+        releaseHelperMock.setup((x) => x.getReleaseStatus(releaseJobMock.target.project.name!, releaseJobMock.target.release.id!)).returns(
+            () => Promise.resolve(releaseStatusMock.target));
+
+        releaseHelperMock.setup((x) => x.getStageStatus(releaseStatusMock.target, stageOneProgress.target.name)).returns(
+            () => Promise.resolve(stageStatusMock.target));
+
+        progressMonitorMock.setup((x) => x.updateStageProgress(stageOneProgress.target, stageStatusMock.target)).returns(
+            () => null);
+
+        progressMonitorMock.setup((x) => x.isStagePending(stageOneProgress.target)).returns(
+            () => true);
+
+        releaseHelperMock.setup((x) => x.startStage(stageStatusMock.target, releaseJobMock.target.project.name!, TypeMoq.It.isAnyString())).returns(
+            () => Promise.resolve(stageStatusMock.target));
+
+        progressMonitorMock.setup((x) => x.updateStageProgress(stageOneProgress.target, stageStatusMock.target)).returns(
+            () => null);
+
+        progressMonitorMock.setup((x) => x.isStageCompleted(stageOneProgress.target)).returns(
+            () => false);
+
+        // << STAGE
+
+        // MONITOR >>
+
+        releaseHelperMock.setup((x) => x.getReleaseStatus(releaseJobMock.target.project.name!, releaseJobMock.target.release.id!)).returns(
+            () => Promise.resolve(releaseStatusMock.target));
+
+        releaseHelperMock.setup((x) => x.getStageStatus(releaseStatusMock.target, stageOneProgress.target.name)).returns(
+            () => Promise.resolve(stageStatusMock.target));
+
+        releaseApproverMock.setup((x) => x.isStageApproved(stageOneProgress.target, stageStatusMock.target)).returns(
+            () => Promise.resolve(false));
+
+        releaseApproverMock.setup((x) => x.approveStage(stageOneProgress.target, stageStatusMock.target, releaseJobMock.target.project.name!, detailsMock.target, releaseJobMock.target.settings)).returns(
+            () => Promise.resolve());
+
+        progressMonitorMock.setup((x) => x.updateStageProgress(stageOneProgress.target, stageStatusMock.target)).returns(
+            () => null);
+
+        progressMonitorMock.setup((x) => x.updateReleaseProgress(releaseProgressMock.target)).returns(
+            () => null);
+
+        releaseProgressMock.setup((x) => x.status).returns(
+            () => ReleaseStatus.Succeeded);
+
+        progressMonitorMock.setup((x) => x.isStageCompleted(stageOneProgress.target)).returns(
+            () => true);
+
+        // << MONITOR
+
+        //#endregion
+
+        //#region ACT
+
+        const result = await deployer.deployManual(releaseJobMock.target, detailsMock.target);
+
+        //#endregion
+
+        //#region ASSERT
+
+        chai.expect(result).to.not.eq(null);
+        chai.expect(result.status).to.eq(ReleaseStatus.Succeeded);
+
+        //#endregion
+
+    });
+
     it("Should deploy automated release", async () => {
 
         //#region ARRANGE
 
         releaseProgressMock.setup((x) => x.stages).returns(
-            () => [ stageOneProgress.target, stageTwoProgress.target ])
+            () => [ stageOneProgress.target, stageTwoProgress.target ]);
 
         progressMonitorMock.setup((x) => x.createProgress(releaseJobMock.target)).returns(
             () => releaseProgressMock.target);
@@ -103,7 +188,7 @@ describe("Deployer", ()  => {
         progressMonitorMock.setup((x) => x.getActiveStages(releaseProgressMock.target)).returns(
             () => [ stageOneProgress.target ]);
 
-        //#region STAGE
+        // STAGE >>
 
         const stageStatusMock = TypeMoq.Mock.ofType<ReleaseEnvironment>();
 
@@ -122,7 +207,7 @@ describe("Deployer", ()  => {
         progressMonitorMock.setup((x) => x.isStageCompleted(stageOneProgress.target)).returns(
             () => true);  
 
-        //#endregion
+        // << STAGE
 
         progressMonitorMock.setup((x) => x.updateReleaseProgress(releaseProgressMock.target)).returns(
             () => null);
