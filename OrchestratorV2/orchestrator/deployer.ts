@@ -92,7 +92,7 @@ export class Deployer implements IDeployer {
                     // Approve stage deployment and validate outcome
                     // Use retry mechanism to check manual approval status
                     // Cancel stage deployment when retry count exceeded
-                    this.releaseApprover.approveStage(stage, stageStatus, releaseJob.project.name!, details, releaseJob.settings);
+                    await this.releaseApprover.approveStage(stage, stageStatus, releaseJob.project.name!, details, releaseJob.settings);
 
                 }
 
@@ -157,7 +157,7 @@ export class Deployer implements IDeployer {
                     // Approve stage deployment and validate outcome
                     // Use retry mechanism to check manual approval status
                     // Cancel stage deployment when retry count exceeded
-                    this.releaseApprover.approveStage(stage, stageStatus, releaseJob.project.name!, details, releaseJob.settings);
+                    await this.releaseApprover.approveStage(stage, stageStatus, releaseJob.project.name!, details, releaseJob.settings);
 
                 }
 
