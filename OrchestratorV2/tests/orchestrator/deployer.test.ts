@@ -47,6 +47,10 @@ describe("Deployer", ()  => {
     let settingsMock: TypeMoq.IMock<ISettings>;
     let projectMock: TypeMoq.IMock<TeamProject>;
     let releaseMock: TypeMoq.IMock<Release>;
+    let releaseProgressMock: TypeMoq.IMock<IReleaseProgress>;
+    let releaseStatusMock: TypeMoq.IMock<Release>;
+    let stageOneProgress: TypeMoq.IMock<IStageProgress>;
+    let stageTwoProgress: TypeMoq.IMock<IStageProgress>;
 
     const deployer: IDeployer = new Deployer(commonHelperMock.target, releaseHelperMock.target, releaseApproverMock.target, progressMonitorMock.target, progressReporterMock.target, debugCreatorMock.target, consoleLoggerMock.target);
 
@@ -56,8 +60,21 @@ describe("Deployer", ()  => {
         detailsMock = TypeMoq.Mock.ofType<IDetails>();
         releaseJobMock = TypeMoq.Mock.ofType<IReleaseJob>();
         settingsMock = TypeMoq.Mock.ofType<ISettings>();
+
         projectMock = TypeMoq.Mock.ofType<TeamProject>();
+        projectMock.target.id = "1";
+
         releaseMock = TypeMoq.Mock.ofType<Release>();
+        releaseMock.target.id = 1;
+
+        releaseProgressMock = TypeMoq.Mock.ofType<IReleaseProgress>();
+        releaseStatusMock = TypeMoq.Mock.ofType<Release>();
+
+        stageOneProgress = TypeMoq.Mock.ofType<IStageProgress>();
+        stageOneProgress.setup((x) => x.name).returns(() => "My-Stage-One")
+
+        stageTwoProgress = TypeMoq.Mock.ofType<IStageProgress>();
+        stageTwoProgress.setup((x) => x.name).returns(() => "My-Stage-Two")
 
         releaseJobMock.target.settings = settingsMock.target;
         releaseJobMock.target.project = projectMock.target;
@@ -74,18 +91,6 @@ describe("Deployer", ()  => {
     it("Should deploy automated release", async () => {
 
         //#region ARRANGE
-
-        projectMock.target.id = "1";
-        releaseMock.target.id = 1;
-
-        const releaseProgressMock = TypeMoq.Mock.ofType<IReleaseProgress>();
-        const releaseStatusMock = TypeMoq.Mock.ofType<Release>();
-
-        const stageOneProgress = TypeMoq.Mock.ofType<IStageProgress>();
-        stageOneProgress.setup((x) => x.name).returns(() => "My-Stage-One")
-
-        const stageTwoProgress = TypeMoq.Mock.ofType<IStageProgress>();
-        stageTwoProgress.setup((x) => x.name).returns(() => "My-Stage-Two")
 
         releaseProgressMock.setup((x) => x.stages).returns(
             () => [ stageOneProgress.target, stageTwoProgress.target ])
