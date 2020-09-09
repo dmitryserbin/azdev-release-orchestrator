@@ -12,6 +12,8 @@ import { IMonitor } from "../../interfaces/orchestrator/monitor";
 import { Monitor } from "../../orchestrator/monitor";
 import { IReleaseJob } from "../../interfaces/common/releasejob";
 import { ReleaseStatus } from "../../interfaces/common/releasestatus";
+import { IReleaseProgress } from "../../interfaces/common/releaseprogress";
+import { IStageProgress } from "../../interfaces/common/stageprogress";
 
 describe("Monitor", ()  => {
 
@@ -29,6 +31,9 @@ describe("Monitor", ()  => {
     const releaseStageIdMock: number = 1;
     const releaseStageNameMock: string = "DEV";
 
+    let releaseProgressMock: TypeMoq.IMock<IReleaseProgress>;
+    let stageProgressMock: TypeMoq.IMock<IStageProgress>;
+
     let releaseJobMock: TypeMoq.IMock<IReleaseJob>;
     let projectMock: TypeMoq.IMock<TeamProject>;
     let releaseMock: TypeMoq.IMock<Release>;
@@ -37,6 +42,9 @@ describe("Monitor", ()  => {
     const progressMonitor: IMonitor = new Monitor(debugCreatorMock.target);
 
     beforeEach(async () => {
+
+        releaseProgressMock = TypeMoq.Mock.ofType<IReleaseProgress>();
+        stageProgressMock = TypeMoq.Mock.ofType<IStageProgress>();
 
         projectMock = TypeMoq.Mock.ofType<TeamProject>();
         projectMock.setup((x) => x.id).returns(() => projectIdMock);
@@ -86,6 +94,75 @@ describe("Monitor", ()  => {
         chai.expect(result.stages[0].id).to.eq(releaseStageIdMock);
         chai.expect(result.stages[0].approval.status).to.eq(ApprovalStatus.Pending);
         chai.expect(result.stages[0].status).to.eq(EnvironmentStatus.NotStarted);
+
+        //#endregion
+
+    });
+
+    it("Should update completed release progress", async () => {
+
+        //#region ARRANGE
+
+        stageProgressMock.target.status = EnvironmentStatus.Succeeded;
+        releaseProgressMock.target.stages = [ stageProgressMock.target ];
+
+        //#endregion
+
+        //#region ACT
+
+        progressMonitor.updateReleaseProgress(releaseProgressMock.target);
+
+        //#endregion
+
+        //#region ASSERT
+
+        chai.expect(releaseProgressMock.target.status).to.eq(ReleaseStatus.Succeeded);
+
+        //#endregion
+
+    });
+
+    it("Should update failed release progress", async () => {
+
+        //#region ARRANGE
+
+        stageProgressMock.target.status = EnvironmentStatus.Rejected;
+        releaseProgressMock.target.stages = [ stageProgressMock.target ];
+
+        //#endregion
+
+        //#region ACT
+
+        progressMonitor.updateReleaseProgress(releaseProgressMock.target);
+
+        //#endregion
+
+        //#region ASSERT
+
+        chai.expect(releaseProgressMock.target.status).to.eq(ReleaseStatus.Failed);
+
+        //#endregion
+
+    });
+
+    it("Should update partially succeeded release progress", async () => {
+
+        //#region ARRANGE
+
+        stageProgressMock.target.status = EnvironmentStatus.PartiallySucceeded;
+        releaseProgressMock.target.stages = [ stageProgressMock.target ];
+
+        //#endregion
+
+        //#region ACT
+
+        progressMonitor.updateReleaseProgress(releaseProgressMock.target);
+
+        //#endregion
+
+        //#region ASSERT
+
+        chai.expect(releaseProgressMock.target.status).to.eq(ReleaseStatus.PartiallySucceeded);
 
         //#endregion
 
