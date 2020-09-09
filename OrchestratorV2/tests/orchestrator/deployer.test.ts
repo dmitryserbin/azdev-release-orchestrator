@@ -56,7 +56,6 @@ describe("Deployer", ()  => {
 
     beforeEach(async () => {
 
-
         detailsMock = TypeMoq.Mock.ofType<IDetails>();
         releaseJobMock = TypeMoq.Mock.ofType<IReleaseJob>();
         settingsMock = TypeMoq.Mock.ofType<ISettings>();
