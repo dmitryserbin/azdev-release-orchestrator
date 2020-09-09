@@ -4,7 +4,7 @@ import * as chai from "chai";
 import * as TypeMoq from "typemoq";
 
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
-import { ReleaseEnvironment, Release, ApprovalStatus, EnvironmentStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ReleaseEnvironment, Release, ApprovalStatus, EnvironmentStatus, DeploymentAttempt } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../../interfaces/loggers/debuglogger";
@@ -30,6 +30,7 @@ describe("Monitor", ()  => {
     const releaseNameMock: string = "My-Release";
     const releaseStageIdMock: number = 1;
     const releaseStageNameMock: string = "DEV";
+    const releaseStageDeploymentIdMock: number = 1;
 
     let releaseProgressMock: TypeMoq.IMock<IReleaseProgress>;
     let stageProgressMock: TypeMoq.IMock<IStageProgress>;
@@ -38,6 +39,7 @@ describe("Monitor", ()  => {
     let projectMock: TypeMoq.IMock<TeamProject>;
     let releaseMock: TypeMoq.IMock<Release>;
     let releaseStageMock: TypeMoq.IMock<ReleaseEnvironment>;
+    let stageDeploymentAttempt: TypeMoq.IMock<DeploymentAttempt>;
 
     const progressMonitor: IMonitor = new Monitor(debugCreatorMock.target);
 
@@ -50,6 +52,9 @@ describe("Monitor", ()  => {
         projectMock.setup((x) => x.id).returns(() => projectIdMock);
         projectMock.setup((x) => x.name).returns(() => projectNameMock);
         projectMock.setup((x) => x._links).returns(() => projectLinksMock);
+
+        stageDeploymentAttempt = TypeMoq.Mock.ofType<DeploymentAttempt>();
+        stageDeploymentAttempt.setup((x) => x.deploymentId).returns(() => releaseStageDeploymentIdMock);
 
         releaseStageMock = TypeMoq.Mock.ofType<ReleaseEnvironment>();
         releaseStageMock.setup((x) => x.name).returns(() => releaseStageNameMock);
@@ -163,6 +168,38 @@ describe("Monitor", ()  => {
         //#region ASSERT
 
         chai.expect(releaseProgressMock.target.status).to.eq(ReleaseStatus.PartiallySucceeded);
+
+        //#endregion
+
+    });
+
+    it("Should update stage progress", async () => {
+
+        //#region ARRANGE
+
+        const timeToDeployMock: number = 1;
+        const statusMock: EnvironmentStatus = EnvironmentStatus.InProgress;
+
+        releaseStageMock.setup((x) => x.status).returns(() => statusMock);
+        releaseStageMock.setup((x) => x.release).returns(() => releaseMock.target);
+        releaseStageMock.setup((x) => x.deploySteps).returns(() => [ stageDeploymentAttempt.target ]);
+        releaseStageMock.setup((x) => x.timeToDeploy).returns(() => timeToDeployMock);
+
+        //#endregion
+
+        //#region ACT
+
+        progressMonitor.updateStageProgress(stageProgressMock.target, releaseStageMock.target);
+
+        //#endregion
+
+        //#region ASSERT
+
+        chai.expect(stageProgressMock.target.status).to.eq(statusMock);
+        chai.expect(stageProgressMock.target.id).to.eq(releaseStageMock.target.id);
+        chai.expect(stageProgressMock.target.release).to.eq(releaseMock.target.name);
+        chai.expect(stageProgressMock.target.deployment).to.eq(stageDeploymentAttempt.target);
+        chai.expect(stageProgressMock.target.duration).to.eq(timeToDeployMock.toLocaleString());
 
         //#endregion
 
