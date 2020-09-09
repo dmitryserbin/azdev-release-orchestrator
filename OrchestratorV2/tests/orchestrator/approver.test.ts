@@ -26,6 +26,7 @@ describe("Approver", ()  => {
 
     const consoleLoggerMock = TypeMoq.Mock.ofType<IConsoleLogger>();
     consoleLoggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null);
+    consoleLoggerMock.setup((x) => x.warn(TypeMoq.It.isAny())).returns(() => null);
 
     const commonHelperMock = TypeMoq.Mock.ofType<ICommonHelper>();
     const releaseHelperMock = TypeMoq.Mock.ofType<IReleaseHelper>();
@@ -44,7 +45,10 @@ describe("Approver", ()  => {
     beforeEach(async () => {
 
         detailsMock = TypeMoq.Mock.ofType<IDetails>();
+
         settingsMock = TypeMoq.Mock.ofType<ISettings>();
+        settingsMock.setup((x) => x.approvalRetry).returns(() => 1);
+
         stageStatusMock = TypeMoq.Mock.ofType<ReleaseEnvironment>();
 
         stageApprovalMock = TypeMoq.Mock.ofType<IStageApproval>();
@@ -77,9 +81,70 @@ describe("Approver", ()  => {
 
         //#endregion
 
+        //#region ACT
+
+        await releaseApprover.approveStage(stageProgressMock.target, stageStatusMock.target, projectName, detailsMock.target, settingsMock.target);
+
+        //#endregion
+
+        //#region ASSERT
+
+        chai.expect(stageProgressMock.target.approval.status).to.eq(ApprovalStatus.Approved);
+
+        //#endregion
+
+    });
+
+    it("Should skip stage deployment approval when not required", async () => {
+
+        //#region ARRANGE
+
+        releaseHelperMock.setup((x) => x.getStageApprovals(stageStatusMock.target, ApprovalStatus.Pending)).returns(
+            () => Promise.resolve([ /* No pending approvals */ ]));
+
+        //#endregion
+
         //#region ACT & ASSERT
 
         await releaseApprover.approveStage(stageProgressMock.target, stageStatusMock.target, projectName, detailsMock.target, settingsMock.target);
+
+        //#endregion
+
+        //#region ASSERT
+
+        chai.expect(stageProgressMock.target.approval.status).to.eq(ApprovalStatus.Skipped);
+
+        //#endregion
+
+    });
+
+    it("Should cancel stage deployment when approval rejected", async () => {
+
+        //#region ARRANGE
+
+        releaseHelperMock.setup((x) => x.getStageApprovals(stageStatusMock.target, ApprovalStatus.Pending)).returns(
+            () => Promise.resolve([ releaseApprovalMock.target ]));
+
+        releaseHelperMock.setup((x) => x.approveStage(releaseApprovalMock.target, projectName, TypeMoq.It.isAnyString())).returns(
+            () => Promise.resolve(releaseApprovalMock.target));
+
+        releaseApprovalMock.setup((x) => x.status).returns(
+            () => ApprovalStatus.Rejected);
+
+        releaseHelperMock.setup((x) => x.cancelStage(stageStatusMock.target, projectName, TypeMoq.It.isAnyString())).returns(
+            () => Promise.resolve(stageStatusMock.target));
+
+        //#endregion
+
+        //#region ACT & ASSERT
+
+        await releaseApprover.approveStage(stageProgressMock.target, stageStatusMock.target, projectName, detailsMock.target, settingsMock.target);
+
+        //#endregion
+
+        //#region ASSERT
+
+        chai.expect(stageProgressMock.target.approval.status).to.eq(ApprovalStatus.Rejected);
 
         //#endregion
 
