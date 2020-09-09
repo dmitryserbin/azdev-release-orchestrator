@@ -70,10 +70,10 @@ describe("Deployer", ()  => {
         releaseStatusMock = TypeMoq.Mock.ofType<Release>();
 
         stageOneProgress = TypeMoq.Mock.ofType<IStageProgress>();
-        stageOneProgress.setup((x) => x.name).returns(() => "My-Stage-One")
+        stageOneProgress.setup((x) => x.name).returns(() => "My-Stage-One");
 
         stageTwoProgress = TypeMoq.Mock.ofType<IStageProgress>();
-        stageTwoProgress.setup((x) => x.name).returns(() => "My-Stage-Two")
+        stageTwoProgress.setup((x) => x.name).returns(() => "My-Stage-Two");
 
         releaseJobMock.target.settings = settingsMock.target;
         releaseJobMock.target.project = projectMock.target;

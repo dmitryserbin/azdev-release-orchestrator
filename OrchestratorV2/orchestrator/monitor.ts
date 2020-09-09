@@ -45,7 +45,7 @@ export class Monitor implements IMonitor {
             const approvalStatus: IStageApproval = {
 
                 status: ApprovalStatus.Pending,
-                count: 0,
+                retry: 0,
 
             };
 

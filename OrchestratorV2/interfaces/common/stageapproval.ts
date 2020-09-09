@@ -3,6 +3,6 @@ import { ApprovalStatus } from "azure-devops-node-api/interfaces/ReleaseInterfac
 export interface IStageApproval {
 
     status: ApprovalStatus;
-    count: number;
+    retry: number;
 
 }

@@ -33,9 +33,9 @@ export class Approver implements IApprover {
         const debug = this.debugLogger.extend(this.approveStage.name);
 
         // Increment retry count
-        stageProgress.approval.count++;
+        stageProgress.approval.retry++;
 
-        this.consoleLogger.log(`Approving <${stageProgress.name}> (${stageStatus.id}) stage deployment (retry ${stageProgress.approval.count})`);
+        this.consoleLogger.log(`Approving <${stageProgress.name}> (${stageStatus.id}) stage deployment (retry ${stageProgress.approval.retry})`);
 
         const pendingApprovals: ReleaseApproval[] = await this.releaseHelper.getStageApprovals(stageStatus, ApprovalStatus.Pending);
 
@@ -91,7 +91,7 @@ export class Approver implements IApprover {
         // Cancel stage deployment if unable to approve
         if (stageProgress.approval.status === ApprovalStatus.Rejected) {
 
-            const retryLimit: boolean = stageProgress.approval.count >= settings.approvalRetry;
+            const retryLimit: boolean = stageProgress.approval.retry >= settings.approvalRetry;
 
             if (retryLimit) {
 

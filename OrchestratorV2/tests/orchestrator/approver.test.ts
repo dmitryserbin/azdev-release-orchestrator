@@ -3,7 +3,7 @@ import "mocha";
 import * as chai from "chai";
 import * as TypeMoq from "typemoq";
 
-import { ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ReleaseEnvironment, ApprovalStatus, ReleaseApproval } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
 import { IConsoleLogger } from "../../interfaces/loggers/consolelogger";
@@ -15,6 +15,7 @@ import { IApprover } from "../../interfaces/orchestrator/approver";
 import { IStageProgress } from "../../interfaces/common/stageprogress";
 import { ISettings } from "../../interfaces/common/settings";
 import { Approver } from "../../orchestrator/approver";
+import { IStageApproval } from "../../interfaces/common/stageapproval";
 
 describe("Approver", ()  => {
 
@@ -35,6 +36,8 @@ describe("Approver", ()  => {
     let settingsMock: TypeMoq.IMock<ISettings>;
     let stageProgressMock: TypeMoq.IMock<IStageProgress>;
     let stageStatusMock: TypeMoq.IMock<ReleaseEnvironment>;
+    let stageApprovalMock: TypeMoq.IMock<IStageApproval>;
+    let releaseApprovalMock: TypeMoq.IMock<ReleaseApproval>;
 
     const releaseApprover: IApprover = new Approver(commonHelperMock.target, releaseHelperMock.target, debugCreatorMock.target, consoleLoggerMock.target);
 
@@ -44,27 +47,39 @@ describe("Approver", ()  => {
         settingsMock = TypeMoq.Mock.ofType<ISettings>();
         stageStatusMock = TypeMoq.Mock.ofType<ReleaseEnvironment>();
 
+        stageApprovalMock = TypeMoq.Mock.ofType<IStageApproval>();
+        stageApprovalMock.target.retry = 0;
+        stageApprovalMock.target.status = ApprovalStatus.Pending;
+
         stageProgressMock = TypeMoq.Mock.ofType<IStageProgress>();
-        stageProgressMock.setup((x) => x.name).returns(() => "My-Stage-One")
+        stageProgressMock.setup((x) => x.name).returns(() => "My-Stage");
+        stageProgressMock.setup((x) => x.approval).returns(() => stageApprovalMock.target);
+
+        releaseApprovalMock = TypeMoq.Mock.ofType<ReleaseApproval>();
 
         commonHelperMock.reset();
         releaseHelperMock.reset();
 
     });
 
-    it("Should approve stage deployment", async () => {
+    it("Should successfully approve stage deployment", async () => {
 
         //#region ARRANGE
 
+        releaseHelperMock.setup((x) => x.getStageApprovals(stageStatusMock.target, ApprovalStatus.Pending)).returns(
+            () => Promise.resolve([ releaseApprovalMock.target ]));
+
+        releaseHelperMock.setup((x) => x.approveStage(releaseApprovalMock.target, projectName, TypeMoq.It.isAnyString())).returns(
+            () => Promise.resolve(releaseApprovalMock.target));
+
+        releaseApprovalMock.setup((x) => x.status).returns(
+            () => ApprovalStatus.Approved);
+
         //#endregion
 
-        //#region ACT
+        //#region ACT & ASSERT
 
-        // const result = await releaseApprover.approveStage(stageProgressMock.target, stageStatusMock.target, projectName, detailsMock.target, settingsMock.target);
-
-        //#endregion
-
-        //#region ASSERT
+        await releaseApprover.approveStage(stageProgressMock.target, stageStatusMock.target, projectName, detailsMock.target, settingsMock.target);
 
         //#endregion
 
