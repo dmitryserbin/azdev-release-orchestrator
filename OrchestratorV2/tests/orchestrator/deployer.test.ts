@@ -97,11 +97,12 @@ describe("Deployer", ()  => {
 
         // TBU STAGE DEPLOY
 
-        progressMonitorMock.setup((x) => x.updateReleaseProgress(releaseProgressMock.target)).returns(
-            () => null);
+        progressMonitorMock.setup((x) => x.updateReleaseProgress(releaseProgressMock.target)).callback(() => {
 
-        releaseProgressMock.setup((x) => x.status).returns(
-            () => ReleaseStatus.Succeeded)
+            releaseProgressMock.setup((x) => x.status).returns(
+                () => ReleaseStatus.Succeeded)
+
+        }).returns(() => null)
 
         //#endregion
 
