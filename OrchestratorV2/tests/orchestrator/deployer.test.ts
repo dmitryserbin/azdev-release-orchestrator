@@ -100,7 +100,7 @@ describe("Deployer", ()  => {
         progressMonitorMock.setup((x) => x.getPendingStages(releaseProgressMock.target)).returns(
             () => [ stageOneProgress.target ]);
 
-        // STAGE >>
+        //#region STAGE
 
         const stageStatusMock = TypeMoq.Mock.ofType<ReleaseEnvironment>();
 
@@ -116,18 +116,20 @@ describe("Deployer", ()  => {
         progressMonitorMock.setup((x) => x.isStagePending(stageOneProgress.target)).returns(
             () => true);
 
+        //#region START
+
         releaseHelperMock.setup((x) => x.startStage(stageStatusMock.target, releaseJobMock.target.project.name!, TypeMoq.It.isAnyString())).returns(
             () => Promise.resolve(stageStatusMock.target));
 
         progressMonitorMock.setup((x) => x.updateStageProgress(stageOneProgress.target, stageStatusMock.target)).returns(
             () => null);
 
+        //#endregion
+
         progressMonitorMock.setup((x) => x.isStageCompleted(stageOneProgress.target)).returns(
             () => false);
 
-        // << STAGE
-
-        // MONITOR >>
+        //#region MONITOR
 
         releaseHelperMock.setup((x) => x.getReleaseStatus(releaseJobMock.target.project.name!, releaseJobMock.target.release.id!)).returns(
             () => Promise.resolve(releaseStatusMock.target));
@@ -153,7 +155,9 @@ describe("Deployer", ()  => {
         progressMonitorMock.setup((x) => x.isStageCompleted(stageOneProgress.target)).returns(
             () => true);
 
-        // << MONITOR
+        //#endregion
+
+        //#endregion
 
         //#endregion
 
@@ -188,7 +192,7 @@ describe("Deployer", ()  => {
         progressMonitorMock.setup((x) => x.getActiveStages(releaseProgressMock.target)).returns(
             () => [ stageOneProgress.target ]);
 
-        // STAGE >>
+        //#region STAGE
 
         const stageStatusMock = TypeMoq.Mock.ofType<ReleaseEnvironment>();
 
@@ -207,7 +211,7 @@ describe("Deployer", ()  => {
         progressMonitorMock.setup((x) => x.isStageCompleted(stageOneProgress.target)).returns(
             () => true);  
 
-        // << STAGE
+        //#endregion
 
         progressMonitorMock.setup((x) => x.updateReleaseProgress(releaseProgressMock.target)).returns(
             () => null);
