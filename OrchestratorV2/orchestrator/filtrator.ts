@@ -34,21 +34,20 @@ export class Filtrator implements IFiltrator {
 
         let artifactFilter: IArtifactFilter[] = [];
 
-        // Get primary build artifact
         const primaryBuildArtifact: Artifact | undefined = await this.releaseHelper.getDefinitionPrimaryArtifact(definition, "Build");
 
         if (primaryBuildArtifact) {
 
-            let buildArtifactId: string | undefined;
+            let artifactVersion: string | undefined;
 
-            // Get build matching artifact tag
+            // Get build artifact version
             if (Array.isArray(filters.artifactTags) && filters.artifactTags.length) {
 
                 debug(`Using <${String.Join("|", filters.artifactTags)}> artifact tag filter`);
 
                 const buildArtifact: Build = await this.buildHelper.findBuild(project.name!, Number(primaryBuildArtifact.definitionReference!.definition.id), filters.artifactTags);
 
-                buildArtifactId = buildArtifact.id!.toString();
+                artifactVersion = buildArtifact.id!.toString();
 
             }
 
@@ -59,7 +58,7 @@ export class Filtrator implements IFiltrator {
 
             }
 
-            artifactFilter = await this.releaseHelper.getArtifacts(project.name!, definition.id!, primaryBuildArtifact.sourceId!, buildArtifactId, filters.artifactBranch);
+            artifactFilter = await this.releaseHelper.getArtifacts(project.name!, definition.id!, primaryBuildArtifact.sourceId!, artifactVersion, filters.artifactBranch);
 
         }
 
@@ -84,30 +83,19 @@ export class Filtrator implements IFiltrator {
 
         };
 
-        // Add release tag filter
-        if (Array.isArray(filters.releaseTags) && filters.releaseTags.length) {
-
-            debug(`Using <${String.Join("|", filters.releaseTags)}> release tag filter`);
-
-            releaseFilter.tags = filters.releaseTags;
-
-        }
-
-        // Get primary build artifact
         const primaryBuildArtifact: Artifact | undefined = await this.releaseHelper.getDefinitionPrimaryArtifact(definition, "Build");
 
-        // Add release artifact filter
+        // Add artifact filter
         if (primaryBuildArtifact) {
 
-            // Add artifact tag filter
+            // Add build artifact version
             if (Array.isArray(filters.artifactTags) && filters.artifactTags.length) {
 
                 debug(`Using <${String.Join("|", filters.artifactTags)}> artifact tag filter`);
 
-                // Get build matching artifact tag
-                const targetArtifactBuild: Build = await this.buildHelper.findBuild(project.name!, Number(primaryBuildArtifact.definitionReference!.definition.id), filters.artifactTags);
+                const buildArtifact: Build = await this.buildHelper.findBuild(project.name!, Number(primaryBuildArtifact.definitionReference!.definition.id), filters.artifactTags);
 
-                releaseFilter.artifactVersion = targetArtifactBuild.id!.toString();
+                releaseFilter.artifactVersion = buildArtifact.id!.toString();
 
             }
 
@@ -119,6 +107,15 @@ export class Filtrator implements IFiltrator {
                 releaseFilter.sourceBranch = filters.artifactBranch;
 
             }
+
+        }
+
+        // Add release tag filter
+        if (Array.isArray(filters.releaseTags) && filters.releaseTags.length) {
+
+            debug(`Using <${String.Join("|", filters.releaseTags)}> release tag filter`);
+
+            releaseFilter.tags = filters.releaseTags;
 
         }
 
