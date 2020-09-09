@@ -38,7 +38,10 @@ export class Filtrator implements IFiltrator {
 
         if (primaryBuildArtifact) {
 
+            const artifactSourceId: string = primaryBuildArtifact.sourceId!;
+
             let artifactVersion: string | undefined;
+            let artifactBranch: string | undefined;
 
             // Get build artifact version
             if (Array.isArray(filters.artifactTags) && filters.artifactTags.length) {
@@ -53,14 +56,16 @@ export class Filtrator implements IFiltrator {
 
             }
 
-            // Confirm source branch filter
+            // Get source branch filter
             if (filters.artifactBranch) {
 
                 debug(`Using <${filters.artifactBranch}> artifact branch filter`);
 
+                artifactBranch = filters.artifactBranch;
+
             }
 
-            artifactFilter = await this.releaseHelper.getArtifacts(project.name!, definition.id!, primaryBuildArtifact.sourceId!, artifactVersion, filters.artifactBranch);
+            artifactFilter = await this.releaseHelper.getArtifacts(project.name!, definition.id!, artifactSourceId, artifactVersion, artifactBranch);
 
         }
 

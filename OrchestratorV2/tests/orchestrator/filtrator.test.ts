@@ -5,7 +5,7 @@ import * as TypeMoq from "typemoq";
 
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
-import { ReleaseDefinition, Artifact, ArtifactMetadata } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ReleaseDefinition, Artifact, ArtifactMetadata, EnvironmentStatus, ReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IParameters } from "../../interfaces/task/parameters";
 import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
@@ -66,26 +66,18 @@ describe("Filtrator", ()  => {
 
         const primaryBuildArtifactMock = TypeMoq.Mock.ofType<Artifact>();
         primaryBuildArtifactMock.target.sourceId = "1";
-        primaryBuildArtifactMock.target.definitionReference = {
+        primaryBuildArtifactMock.target.definitionReference = { definition: { id: "1" } }
 
-            definition: {
-
-                id: "1",
-
-            },
-
-        }
-
-        const buildMock = TypeMoq.Mock.ofType<Build>();
-        buildMock.target.id = 1
+        const buildArtifactMock = TypeMoq.Mock.ofType<Build>();
+        buildArtifactMock.target.id = 1
 
         releaseHelperMock.setup((x) => x.getDefinitionPrimaryArtifact(definitionMock.target, "Build")).returns(
             () => Promise.resolve(primaryBuildArtifactMock.target));
 
         buildHelperMock.setup((x) => x.findBuild(projectMock.target.name!, Number(primaryBuildArtifactMock.target.definitionReference!.definition.id), parametersMock.target.filters.artifactTags)).returns(
-            () => Promise.resolve(buildMock.target));
+            () => Promise.resolve(buildArtifactMock.target));
 
-        releaseHelperMock.setup((x) => x.getArtifacts(projectMock.target.name!, definitionMock.target.id!, primaryBuildArtifactMock.target.sourceId!, buildMock.target.id!.toString(), parametersMock.target.filters.artifactBranch)).returns(
+        releaseHelperMock.setup((x) => x.getArtifacts(projectMock.target.name!, definitionMock.target.id!, primaryBuildArtifactMock.target.sourceId!, buildArtifactMock.target.id!.toString(), parametersMock.target.filters.artifactBranch)).returns(
             () => Promise.resolve(artifactsMock.target));
 
         //#endregion
@@ -115,24 +107,16 @@ describe("Filtrator", ()  => {
 
         const primaryBuildArtifactMock = TypeMoq.Mock.ofType<Artifact>();
         primaryBuildArtifactMock.target.sourceId = "1";
-        primaryBuildArtifactMock.target.definitionReference = {
+        primaryBuildArtifactMock.target.definitionReference = { definition: { id: "1" } }
 
-            definition: {
-
-                id: "1",
-
-            },
-
-        }
-
-        const buildMock = TypeMoq.Mock.ofType<Build>();
-        buildMock.target.id = 1
+        const buildArtifactMock = TypeMoq.Mock.ofType<Build>();
+        buildArtifactMock.target.id = 1
 
         releaseHelperMock.setup((x) => x.getDefinitionPrimaryArtifact(definitionMock.target, "Build")).returns(
             () => Promise.resolve(primaryBuildArtifactMock.target));
 
         buildHelperMock.setup((x) => x.findBuild(projectMock.target.name!, Number(primaryBuildArtifactMock.target.definitionReference!.definition.id), parametersMock.target.filters.artifactTags)).returns(
-            () => Promise.resolve(buildMock.target));
+            () => Promise.resolve(buildArtifactMock.target));
 
         //#endregion
 
@@ -145,6 +129,12 @@ describe("Filtrator", ()  => {
         //#region ASSERT
 
         chai.expect(result).to.not.eq(null);
+        chai.expect(result.artifactVersion).to.eq(buildArtifactMock.target.id.toString());
+        chai.expect(result.sourceBranch).to.eq(filtersMock.target.artifactBranch);
+        chai.expect(result.tags).to.eql(filtersMock.target.releaseTags);
+        chai.expect(result.stages).to.eql(parametersMock.target.stages);
+        chai.expect(result.stageStatuses).to.eql([ EnvironmentStatus.Succeeded, EnvironmentStatus.Rejected ]);
+        chai.expect(result.releaseStatus).to.eq(ReleaseStatus.Active);
 
         //#endregion
 
