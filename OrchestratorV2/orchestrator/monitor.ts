@@ -42,6 +42,12 @@ export class Monitor implements IMonitor {
             const releaseStage: ReleaseEnvironment = releaseJob.release.environments!.find(
                 (i) => i.name === stage)!;
 
+            if (!releaseStage) {
+
+                throw new Error(`Release <${releaseJob.release.name}> stage <${stage}> not found`);
+
+            }
+
             const approvalStatus: IStageApproval = {
 
                 status: ApprovalStatus.Pending,
