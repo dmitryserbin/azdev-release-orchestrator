@@ -4,28 +4,19 @@ import * as chai from "chai";
 import * as TypeMoq from "typemoq";
 
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
-import { ReleaseDefinition, Release, Artifact } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { ReleaseDefinition, Artifact, ArtifactMetadata } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IParameters } from "../../interfaces/task/parameters";
-import { IDetails } from "../../interfaces/task/details";
 import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
 import { IConsoleLogger } from "../../interfaces/loggers/consolelogger";
-import { ICreator } from "../../interfaces/orchestrator/creator";
-import { IReporter } from "../../interfaces/orchestrator/reporter";
 import { IDebugLogger } from "../../interfaces/loggers/debuglogger";
-import { Creator } from "../../orchestrator/creator";
-import { ICoreHelper } from "../../interfaces/helpers/corehelper";
 import { IBuildHelper } from "../../interfaces/helpers/buildhelper";
 import { IReleaseHelper } from "../../interfaces/helpers/releasehelper";
-import { ReleaseType } from "../../interfaces/common/releasetype";
-import { DeploymentType } from "../../interfaces/common/deploymenttype";
 import { IFilters } from "../../interfaces/task/filters";
 import { ISettings } from "../../interfaces/common/settings";
-import { IReleaseFilter } from "../../interfaces/common/releasefilter";
 import { IFiltrator } from "../../interfaces/orchestrator/filtrator";
-import { IArtifactFilter } from "../../interfaces/common/artifactfilter";
 import { Filtrator } from "../../orchestrator/filtrator";
-import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 describe("Filtrator", ()  => {
 
@@ -71,7 +62,7 @@ describe("Filtrator", ()  => {
         filtersMock.target.artifactBranch = "My-Branch";
         filtersMock.target.artifactTags = [ "My-Tag-One", "My-Tag-Two" ];
 
-        const artifactFilterMock = TypeMoq.Mock.ofType<IArtifactFilter[]>();
+        const artifactsMock = TypeMoq.Mock.ofType<ArtifactMetadata[]>();
 
         const primaryBuildArtifactMock = TypeMoq.Mock.ofType<Artifact>();
         primaryBuildArtifactMock.target.sourceId = "1";
@@ -95,7 +86,7 @@ describe("Filtrator", ()  => {
             () => Promise.resolve(buildMock.target));
 
         releaseHelperMock.setup((x) => x.getArtifacts(projectMock.target.name!, definitionMock.target.id!, primaryBuildArtifactMock.target.sourceId!, buildMock.target.id!.toString(), parametersMock.target.filters.artifactBranch)).returns(
-            () => Promise.resolve(artifactFilterMock.target));
+            () => Promise.resolve(artifactsMock.target));
 
         //#endregion
 
@@ -117,19 +108,43 @@ describe("Filtrator", ()  => {
 
         //#region ARRANGE
 
+        filtersMock.target.releaseTags = [ "My-Tag-One", "My-Tag-Two" ];
+        filtersMock.target.artifactTags = [ "My-Tag-One", "My-Tag-Two" ];
+        filtersMock.target.artifactBranch = "My-Branch";
+        filtersMock.target.stageStatuses = [ "Succeeded", "Rejected" ];
 
+        const primaryBuildArtifactMock = TypeMoq.Mock.ofType<Artifact>();
+        primaryBuildArtifactMock.target.sourceId = "1";
+        primaryBuildArtifactMock.target.definitionReference = {
+
+            definition: {
+
+                id: "1",
+
+            },
+
+        }
+
+        const buildMock = TypeMoq.Mock.ofType<Build>();
+        buildMock.target.id = 1
+
+        releaseHelperMock.setup((x) => x.getDefinitionPrimaryArtifact(definitionMock.target, "Build")).returns(
+            () => Promise.resolve(primaryBuildArtifactMock.target));
+
+        buildHelperMock.setup((x) => x.findBuild(projectMock.target.name!, Number(primaryBuildArtifactMock.target.definitionReference!.definition.id), parametersMock.target.filters.artifactTags)).returns(
+            () => Promise.resolve(buildMock.target));
 
         //#endregion
 
         //#region ACT
 
-        
+        const result = await filterCreator.createReleaseFilter(projectMock.target, definitionMock.target, parametersMock.target.stages, parametersMock.target.filters);
 
         //#endregion
 
         //#region ASSERT
 
-        
+        chai.expect(result).to.not.eq(null);
 
         //#endregion
 
