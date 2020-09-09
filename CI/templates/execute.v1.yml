@@ -1,0 +1,29 @@
+parameters:
+  projectId: ""
+  definitionId: ""
+  releaseId: ""
+  releaseStages: ""
+
+steps:
+- task: releaseorchestrator@1
+  displayName: Specific Release (Manual)
+  inputs:
+    TargetProject: ${{ parameters.projectId }}
+    TargetDefinition: ${{ parameters.definitionId }}
+    ReleaseStrategy: specific
+    TargetRelease: ${{ parameters.releaseId }}
+    TargetReleaseStages: ${{ parameters.releaseStages }}
+
+- task: releaseorchestrator@1
+  displayName: Create Release (Auto)
+  inputs:
+    TargetProject: ${{ parameters.projectId }}
+    TargetDefinition: ${{ parameters.definitionId }}
+
+- task: releaseorchestrator@1
+  displayName: Latest Release (Manual)
+  inputs:
+    TargetProject: ${{ parameters.projectId }}
+    TargetDefinition: ${{ parameters.definitionId }}
+    ReleaseStrategy: latest
+    TargetReleaseStages: ${{ parameters.releaseStages }}

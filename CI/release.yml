@@ -11,7 +11,7 @@ stages:
     pool:
       vmImage: windows-latest
     steps:
-    - template: template.yml
+    - template: templates/build.yml
       parameters:
         name: OrchestratorV1
         path: OrchestratorV1
@@ -25,7 +25,7 @@ stages:
     pool:
       vmImage: windows-latest
     steps:
-    - template: template.yml
+    - template: templates/build.yml
       parameters:
         name: OrchestratorV2
         path: OrchestratorV2
@@ -116,28 +116,12 @@ stages:
       releaseId: 162
       releaseStages: DEV,TEST,PROD
     steps:
-    - task: releaseorchestrator@1
-      displayName: Specific Release (Manual)
-      inputs:
-        TargetProject: ${{ variables.projectId }}
-        TargetDefinition: ${{ variables.definitionId }}
-        ReleaseStrategy: specific
-        TargetRelease: ${{ variables.releaseId }}
-        TargetReleaseStages: ${{ variables.releaseStages }}
-
-    - task: releaseorchestrator@1
-      displayName: Create Release (Auto)
-      inputs:
-        TargetProject: ${{ variables.projectId }}
-        TargetDefinition: ${{ variables.definitionId }}
-
-    - task: releaseorchestrator@1
-      displayName: Latest Release (Manual)
-      inputs:
-        TargetProject: ${{ variables.projectId }}
-        TargetDefinition: ${{ variables.definitionId }}
-        ReleaseStrategy: latest
-        TargetReleaseStages: ${{ variables.releaseStages }}
+    - template: templates/execute.v1.yml
+      parameters:
+        projectId: ${{ variables.projectId }}
+        definitionId: ${{ variables.definitionId }}
+        releaseId: ${{ variables.releaseId }}
+        releaseStages: ${{ variables.releaseStages }}
 
   - job: OrchestratorV2
     dependsOn:
@@ -150,28 +134,12 @@ stages:
       releaseName: HelloYo-20190521.1-1
       releaseStages: DEV,TEST,PROD
     steps:
-    - task: releaseorchestrator@2
-      displayName: Specific Release (Manual)
-      inputs:
-        ProjectName: ${{ variables.projectName }}
-        DefinitionName: ${{ variables.definitionName }}
-        ReleaseStrategy: specific
-        ReleaseName: ${{ variables.releaseName }}
-        ReleaseStages: ${{ variables.releaseStages }}
-
-    - task: releaseorchestrator@2
-      displayName: Create Release (Auto)
-      inputs:
-        ProjectName: ${{ variables.projectName }}
-        DefinitionName: ${{ variables.definitionName }}
-
-    - task: releaseorchestrator@2
-      displayName: Latest Release (Manual)
-      inputs:
-        ProjectName: ${{ variables.projectName }}
-        DefinitionName: ${{ variables.definitionName }}
-        ReleaseStrategy: latest
-        ReleaseStages: ${{ variables.releaseStages }}
+    - template: templates/execute.v2.yml
+      parameters:
+        projectName: ${{ variables.projectName }}
+        definitionName: ${{ variables.definitionName }}
+        releaseName: ${{ variables.releaseName }}
+        releaseStages: ${{ variables.releaseStages }}
 
 - stage: Release
   dependsOn:
