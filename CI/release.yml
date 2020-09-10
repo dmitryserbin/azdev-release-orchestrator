@@ -67,7 +67,7 @@ stages:
       inputs:
         targetType: filePath
         filePath: CI/version.ps1
-        arguments: -Path ${{ variables.extensionDirectory }} -Patch $(BuildID) -UpdateBuildNumber
+        arguments: -Path ${{ variables.extensionDirectory }} -Patch $(Build.BuildId) -UpdateBuildNumber
         pwsh: true
 
     - task: PackageAzureDevOpsExtension@3
