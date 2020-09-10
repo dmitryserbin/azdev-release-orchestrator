@@ -10,7 +10,7 @@ parameters:
 
 steps:
 - task: releaseorchestrator@2
-  displayName: Specific Release (manual)
+  displayName: Specific release (manual)
   inputs:
     ProjectName: ${{ parameters.projectName }}
     DefinitionName: ${{ parameters.definitionName }}
@@ -19,13 +19,13 @@ steps:
     ReleaseStages: ${{ parameters.releaseStages }}
 
 - task: releaseorchestrator@2
-  displayName: Create Release (auto)
+  displayName: Create release (auto)
   inputs:
     ProjectName: ${{ parameters.projectName }}
     DefinitionName: ${{ parameters.definitionName }}
 
 - task: releaseorchestrator@2
-  displayName: Create Release (manual)
+  displayName: Create release (manual)
   inputs:
     ProjectName: ${{ parameters.projectName }}
     DefinitionName: ${{ parameters.definitionName }}
@@ -33,7 +33,7 @@ steps:
     DefinitionStages: PROD
 
 - task: releaseorchestrator@2
-  displayName: Create Release (artifact tag)
+  displayName: Create release (artifact tag)
   inputs:
     ProjectName: ${{ parameters.projectName }}
     DefinitionName: ${{ parameters.definitionName }}
@@ -43,7 +43,7 @@ steps:
     ArtifactTagName: ${{ parameters.artifactTagName }}
 
 - task: releaseorchestrator@2
-  displayName: Create Release (release variables)
+  displayName: Create release (release variables)
   inputs:
     ProjectName: ${{ parameters.projectName }}
     DefinitionName: ${{ parameters.definitionName }}
@@ -54,7 +54,7 @@ steps:
      Yo-Variable-Two=Yo-Updated-Value-One
 
 - task: releaseorchestrator@2
-  displayName: Create Release (branch name)
+  displayName: Create release (branch name)
   inputs:
     ProjectName: ${{ parameters.projectName }}
     DefinitionName: ${{ parameters.definitionName }}
@@ -64,7 +64,7 @@ steps:
     SourceBranchName: ${{ parameters.sourceBranchName }}
 
 - task: releaseorchestrator@2
-  displayName: Latest Release (manual)
+  displayName: Latest release (manual)
   inputs:
     ProjectName: ${{ parameters.projectName }}
     DefinitionName: ${{ parameters.definitionName }}
@@ -72,7 +72,7 @@ steps:
     ReleaseStages: ${{ parameters.releaseStages }}
 
 - task: releaseorchestrator@2
-  displayName: Latest Release (release tag)
+  displayName: Latest release (release tag)
   inputs:
     ProjectName: ${{ parameters.projectName }}
     DefinitionName: ${{ parameters.definitionName }}
@@ -82,7 +82,7 @@ steps:
     ReleaseTagName: ${{ parameters.releaseTagName }}
 
 - task: releaseorchestrator@2
-  displayName: Latest Release (artifact tag)
+  displayName: Latest release (artifact tag)
   inputs:
     ProjectName: ${{ parameters.projectName }}
     DefinitionName: ${{ parameters.definitionName }}
@@ -92,7 +92,7 @@ steps:
     ArtifactTagName: ${{ parameters.artifactTagName }}
 
 - task: releaseorchestrator@2
-  displayName: Latest Release (branch name)
+  displayName: Latest release (branch name)
   inputs:
     ProjectName: ${{ parameters.projectName }}
     DefinitionName: ${{ parameters.definitionName }}
@@ -102,7 +102,7 @@ steps:
     SourceBranchName: ${{ parameters.sourceBranchName }}
 
 - task: releaseorchestrator@2
-  displayName: Latest Release (stage status)
+  displayName: Latest release (stage status)
   inputs:
     ProjectName: ${{ parameters.projectName }}
     DefinitionName: ${{ parameters.definitionName }}

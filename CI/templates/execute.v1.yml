@@ -9,7 +9,7 @@ parameters:
 
 steps:
 - task: releaseorchestrator@1
-  displayName: Specific Release (manual)
+  displayName: Specific release (manual)
   inputs:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
@@ -18,13 +18,13 @@ steps:
     TargetReleaseStages: ${{ parameters.releaseStages }}
 
 - task: releaseorchestrator@1
-  displayName: Create Release (auto)
+  displayName: Create release (auto)
   inputs:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
 
 - task: releaseorchestrator@1
-  displayName: Create Release (manual)
+  displayName: Create release (manual)
   inputs:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
@@ -32,7 +32,7 @@ steps:
     TargetDefinitionStages: PROD
 
 - task: releaseorchestrator@1
-  displayName: Create Release (artifact tag)
+  displayName: Create release (artifact tag)
   inputs:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
@@ -42,7 +42,7 @@ steps:
     ArtifactTagName: ${{ parameters.artifactTagName }}
 
 - task: releaseorchestrator@1
-  displayName: Create Release (branch name)
+  displayName: Create release (branch name)
   inputs:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
@@ -52,7 +52,7 @@ steps:
     SourceBranchName: ${{ parameters.sourceBranchName }}
 
 - task: releaseorchestrator@1
-  displayName: Latest Release (manual)
+  displayName: Latest release (manual)
   inputs:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
@@ -60,7 +60,7 @@ steps:
     TargetReleaseStages: ${{ parameters.releaseStages }}
 
 - task: releaseorchestrator@1
-  displayName: Latest Release (release tag)
+  displayName: Latest release (release tag)
   inputs:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
@@ -70,7 +70,7 @@ steps:
     ReleaseTagName: ${{ parameters.releaseTagName }}
 
 - task: releaseorchestrator@1
-  displayName: Latest Release (artifact tag)
+  displayName: Latest release (artifact tag)
   inputs:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
@@ -80,7 +80,7 @@ steps:
     ArtifactTagName: ${{ parameters.artifactTagName }}
 
 - task: releaseorchestrator@1
-  displayName: Latest Release (branch name)
+  displayName: Latest release (branch name)
   inputs:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
