@@ -20,7 +20,7 @@ steps:
     ReleaseStages: ${{ parameters.releaseStages }}
 
 - task: releaseorchestrator@2
-  displayName: Specific release (Ppartial)
+  displayName: Specific release (partial)
   inputs:
     ProjectName: ${{ parameters.projectName }}
     DefinitionName: ${{ parameters.definitionName }}
