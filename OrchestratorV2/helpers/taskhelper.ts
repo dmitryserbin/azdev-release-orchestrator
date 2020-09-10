@@ -242,11 +242,16 @@ export class TaskHelper implements ITaskHelper {
 
         const details: IDetails = {
 
-            endpointName: endpointName ? endpointName : "Project Collection Build Service",
-            projectName: getVariable("SYSTEM_TEAMPROJECT")!,
-            releaseName: getVariable("RELEASE_RELEASENAME")!,
-            requesterName: getVariable("RELEASE_DEPLOYMENT_REQUESTEDFOR")!,
-            requesterId: getVariable("RELEASE_DEPLOYMENT_REQUESTEDFORID")!,
+            endpointName: endpointName
+                ? endpointName : "Project Collection Build Service",
+            projectName: getVariable("SYSTEM_TEAMPROJECT")! ?
+                getVariable("SYSTEM_TEAMPROJECT")! : "-",
+            releaseName: getVariable("RELEASE_RELEASENAME")!
+                ? getVariable("RELEASE_RELEASENAME")! : getVariable("BUILD_BUILDNUMBER")!,
+            requesterName: getVariable("RELEASE_DEPLOYMENT_REQUESTEDFOR")!
+                ? getVariable("RELEASE_DEPLOYMENT_REQUESTEDFOR")! : getVariable("BUILD_REQUESTEDFOR")!,
+            requesterId: getVariable("RELEASE_DEPLOYMENT_REQUESTEDFORID")!
+                ? getVariable("RELEASE_DEPLOYMENT_REQUESTEDFORID")! : getVariable("BUILD_REQUESTEDFORID")!,
 
         }
 
