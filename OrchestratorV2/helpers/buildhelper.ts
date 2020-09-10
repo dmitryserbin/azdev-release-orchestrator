@@ -40,7 +40,7 @@ export class BuildHelper implements IBuildHelper {
 
             if (tags) {
 
-                throw new Error(`No definition <${definitionId}> builds matching filter found (tags: ${tags})`);
+                throw new Error(`No definition <${definitionId}> builds matching filter found (tags: ${tags ?? "-"})`);
 
             } else {
 
