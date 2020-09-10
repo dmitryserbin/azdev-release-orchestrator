@@ -87,7 +87,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    public async findReleases(projectName: string, definitionId: number, filter: IReleaseFilter): Promise<Release[]> {
+    public async findReleases(projectName: string, definitionId: number, filter: IReleaseFilter, top: number): Promise<Release[]> {
 
         const debug = this.debugLogger.extend(this.findReleases.name);
 
@@ -103,7 +103,7 @@ export class ReleaseHelper implements IReleaseHelper {
             undefined,
             undefined,
             undefined,
-            undefined,
+            top,
             undefined,
             undefined,
             ReleaseExpands.Environments,
@@ -149,11 +149,11 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    public async getLastRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter): Promise<Release> {
+    public async getLastRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter, top: number): Promise<Release> {
 
         const debug = this.debugLogger.extend(this.getLastRelease.name);
 
-        const filteredReleases: Release[] = await this.findReleases(projectName, definitionId, filter);
+        const filteredReleases: Release[] = await this.findReleases(projectName, definitionId, filter, top);
 
         // Get latest release by ID
         const filteredRelease: Release = filteredReleases.sort(

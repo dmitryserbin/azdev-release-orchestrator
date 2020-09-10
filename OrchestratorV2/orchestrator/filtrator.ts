@@ -50,7 +50,7 @@ export class Filtrator implements IFiltrator {
 
                 const buildDefinitionId: number = Number(primaryBuildArtifact.definitionReference!.definition.id);
 
-                const buildArtifact: Build = await this.buildHelper.findBuild(project.name!, buildDefinitionId, filters.artifactTags);
+                const buildArtifact: Build = await this.buildHelper.findBuild(project.name!, buildDefinitionId, 100, filters.artifactTags);
 
                 artifactVersion = buildArtifact.id!.toString();
 
@@ -102,7 +102,7 @@ export class Filtrator implements IFiltrator {
 
                 const buildDefinitionId: number = Number(primaryBuildArtifact.definitionReference!.definition.id);
 
-                const buildArtifact: Build = await this.buildHelper.findBuild(project.name!, buildDefinitionId, filters.artifactTags);
+                const buildArtifact: Build = await this.buildHelper.findBuild(project.name!, buildDefinitionId, 100, filters.artifactTags);
 
                 releaseFilter.artifactVersion = buildArtifact.id!.toString();
 

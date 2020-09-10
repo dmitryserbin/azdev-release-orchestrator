@@ -93,8 +93,8 @@ You can choose different strategy for orchestrator to perform target release dep
 By default, new release deployment uses default stage [triggers](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#env-triggers) configured in the target pipeline. In order to deploy specific or manual stages, you need to specify target stages using `Filter Definition Stages` option.
 
 - Filter Definition Stages: target specific deployment stage(s) (comma separated) (optional)
-- Filter Artifact Tag: enable new release filtering by primary build artifact tag (optional)
-- Filter Source Branch: enable new release filtering by primary artifact source branch name (optional)
+- Filter Artifact Tag: enable new release filtering (last 100 builds) by primary build artifact tag (optional)
+- Filter Source Branch: enable new release filtering (last 100 builds) by primary build artifact source branch name (optional)
 - Release Variables: override release variables of the target release pipeline when creating a new release (optional). Specified release variables must be configured to be `settable at release time` in the release. Values in `Name=Value` format, special characters supported, new line separated
 
 > Template: new release deployment with automated stage triggers
@@ -109,7 +109,7 @@ By default, new release deployment uses default stage [triggers](https://docs.mi
 
 ### Latest Release
 
-Deploying latest release requires you to provide target stages for deployment. The target stages will be re-deployed in sequential order, exactly as you specified.
+Deploying latest release requires you to provide target stages for deployment. The target stages will be re-deployed in sequential order, exactly as you specified. Search range is last 100 releases.
 
 - Release Stages: specify release deployment stage(s) (comma separated)
 - Filter Release Tag: enable filtering target release by release pipeline tag (optional)

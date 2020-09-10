@@ -46,6 +46,8 @@ describe("Creator", ()  => {
     const releaseHelperMock = TypeMoq.Mock.ofType<IReleaseHelper>();
     const filterCreatorMock = TypeMoq.Mock.ofType<IFiltrator>();
 
+    const releaseCount: number = 1;
+
     let detailsMock: TypeMoq.IMock<IDetails>;
     let parametersMock: TypeMoq.IMock<IParameters>;
     let filtersMock: TypeMoq.IMock<IFilters>;
@@ -136,7 +138,7 @@ describe("Creator", ()  => {
         filterCreatorMock.setup((x) => x.createReleaseFilter(projectMock.target, definitionMock.target, parametersMock.target.stages, parametersMock.target.filters)).returns(
             () => Promise.resolve(releaseFilterMock.target));
 
-        releaseHelperMock.setup((x) => x.getLastRelease(projectMock.target.name!, definitionMock.target.id!, parametersMock.target.stages, releaseFilterMock.target)).returns(
+        releaseHelperMock.setup((x) => x.getLastRelease(projectMock.target.name!, definitionMock.target.id!, parametersMock.target.stages, releaseFilterMock.target, releaseCount)).returns(
             () => Promise.resolve(releaseMock.target));
 
         releaseHelperMock.setup((x) => x.getReleaseStages(releaseMock.target, parametersMock.target.stages)).returns(

@@ -31,6 +31,8 @@ describe("Filtrator", ()  => {
     const buildHelperMock = TypeMoq.Mock.ofType<IBuildHelper>();
     const releaseHelperMock = TypeMoq.Mock.ofType<IReleaseHelper>();
 
+    const buildCount: number = 1;
+
     let projectMock: TypeMoq.IMock<TeamProject>;
     let definitionMock: TypeMoq.IMock<ReleaseDefinition>;
     let parametersMock: TypeMoq.IMock<IParameters>;
@@ -74,7 +76,7 @@ describe("Filtrator", ()  => {
         releaseHelperMock.setup((x) => x.getDefinitionPrimaryArtifact(definitionMock.target, "Build")).returns(
             () => Promise.resolve(primaryBuildArtifactMock.target));
 
-        buildHelperMock.setup((x) => x.findBuild(projectMock.target.name!, Number(primaryBuildArtifactMock.target.definitionReference!.definition.id), parametersMock.target.filters.artifactTags)).returns(
+        buildHelperMock.setup((x) => x.findBuild(projectMock.target.name!, Number(primaryBuildArtifactMock.target.definitionReference!.definition.id), buildCount, parametersMock.target.filters.artifactTags)).returns(
             () => Promise.resolve(buildArtifactMock.target));
 
         releaseHelperMock.setup((x) => x.getArtifacts(projectMock.target.name!, definitionMock.target.id!, primaryBuildArtifactMock.target.sourceId!, buildArtifactMock.target.id!.toString(), parametersMock.target.filters.artifactBranch)).returns(
@@ -115,7 +117,7 @@ describe("Filtrator", ()  => {
         releaseHelperMock.setup((x) => x.getDefinitionPrimaryArtifact(definitionMock.target, "Build")).returns(
             () => Promise.resolve(primaryBuildArtifactMock.target));
 
-        buildHelperMock.setup((x) => x.findBuild(projectMock.target.name!, Number(primaryBuildArtifactMock.target.definitionReference!.definition.id), parametersMock.target.filters.artifactTags)).returns(
+        buildHelperMock.setup((x) => x.findBuild(projectMock.target.name!, Number(primaryBuildArtifactMock.target.definitionReference!.definition.id), buildCount, parametersMock.target.filters.artifactTags)).returns(
             () => Promise.resolve(buildArtifactMock.target));
 
         //#endregion

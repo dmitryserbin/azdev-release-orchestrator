@@ -19,7 +19,7 @@ export class BuildHelper implements IBuildHelper {
 
     }
 
-    public async findBuild(projectName: string, definitionId: number, tags?: string[]): Promise<Build> {
+    public async findBuild(projectName: string, definitionId: number, top: number, tags?: string[]): Promise<Build> {
 
         const debug = this.debugLogger.extend(this.findBuild.name);
 
@@ -34,7 +34,9 @@ export class BuildHelper implements IBuildHelper {
             undefined,
             undefined,
             undefined,
-            tags);
+            tags,
+            undefined,
+            top);
 
         if (availableBuilds.length <= 0) {
 
