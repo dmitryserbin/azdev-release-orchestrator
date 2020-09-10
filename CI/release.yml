@@ -115,6 +115,10 @@ stages:
       definitionId: 1
       releaseId: 162
       releaseStages: DEV,TEST,PROD
+      artifactTagName: Build-Yo
+      releaseTagName: Release-Yo
+      sourceBranchName: refs/heads/working/test
+
     steps:
     - template: templates/execute.v1.yml
       parameters:
@@ -122,6 +126,9 @@ stages:
         definitionId: ${{ variables.definitionId }}
         releaseId: ${{ variables.releaseId }}
         releaseStages: ${{ variables.releaseStages }}
+        artifactTagName: ${{ variables.artifactTagName }}
+        releaseTagName: ${{ variables.releaseTagName }}
+        sourceBranchName: ${{ variables.sourceBranchName }}
 
   - job: OrchestratorV2
     dependsOn:

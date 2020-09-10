@@ -3,10 +3,13 @@ parameters:
   definitionId: ""
   releaseId: ""
   releaseStages: ""
+  artifactTagName: ""
+  releaseTagName: ""
+  sourceBranchName: ""
 
 steps:
 - task: releaseorchestrator@1
-  displayName: Specific Release (Manual)
+  displayName: Specific Release (manual)
   inputs:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
@@ -15,15 +18,73 @@ steps:
     TargetReleaseStages: ${{ parameters.releaseStages }}
 
 - task: releaseorchestrator@1
-  displayName: Create Release (Auto)
+  displayName: Create Release (auto)
   inputs:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
 
 - task: releaseorchestrator@1
-  displayName: Latest Release (Manual)
+  displayName: Create Release (manual)
+  inputs:
+    TargetProject: ${{ parameters.projectId }}
+    TargetDefinition: ${{ parameters.definitionId }}
+    DefinitionStagesFilter: true
+    TargetDefinitionStages: PROD
+
+- task: releaseorchestrator@1
+  displayName: Create Release (artifact tag)
+  inputs:
+    TargetProject: ${{ parameters.projectId }}
+    TargetDefinition: ${{ parameters.definitionId }}
+    DefinitionStagesFilter: true
+    TargetDefinitionStages: DEV
+    ArtifactTagFilter: true
+    ArtifactTagName: ${{ parameters.artifactTagName }}
+
+- task: releaseorchestrator@1
+  displayName: Create Release (branch name)
+  inputs:
+    TargetProject: ${{ parameters.projectId }}
+    TargetDefinition: ${{ parameters.definitionId }}
+    DefinitionStagesFilter: true
+    TargetDefinitionStages: DEV
+    SourceBranchFilter: true
+    SourceBranchName: ${{ parameters.sourceBranchName }}
+
+- task: releaseorchestrator@1
+  displayName: Latest Release (manual)
   inputs:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
     ReleaseStrategy: latest
     TargetReleaseStages: ${{ parameters.releaseStages }}
+
+- task: releaseorchestrator@1
+  displayName: Latest Release (release tag)
+  inputs:
+    TargetProject: ${{ parameters.projectId }}
+    TargetDefinition: ${{ parameters.definitionId }}
+    ReleaseStrategy: latest
+    TargetReleaseStages: PROD
+    ReleaseTagFilter: true
+    ReleaseTagName: ${{ parameters.releaseTagName }}
+
+- task: releaseorchestrator@1
+  displayName: Latest Release (build tag)
+  inputs:
+    TargetProject: ${{ parameters.projectId }}
+    TargetDefinition: ${{ parameters.definitionId }}
+    ReleaseStrategy: latest
+    TargetReleaseStages: PROD
+    ArtifactTagFilter: true
+    ArtifactTagName: ${{ parameters.artifactTagName }}
+
+- task: releaseorchestrator@1
+  displayName: Latest Release (branch name)
+  inputs:
+    TargetProject: ${{ parameters.projectId }}
+    TargetDefinition: ${{ parameters.definitionId }}
+    ReleaseStrategy: latest
+    TargetReleaseStages: PROD
+    SourceBranchFilter: true
+    SourceBranchName: ${{ parameters.sourceBranchName }}
