@@ -136,12 +136,6 @@ export class Monitor implements IMonitor {
         const currentAttempt: DeploymentAttempt = stageStatus.deploySteps!.sort((left, right) =>
             left.deploymentId! - right.deploymentId!).reverse()[0];
 
-        if (!currentAttempt) {
-
-            throw new Error(`Stage <${stageProgress.name}> deployment attempt not found`);
-
-        }
-
         stageProgress.status = stageStatus.status!;
         stageProgress.id = stageStatus.id;
         stageProgress.release = stageStatus.release!.name;
