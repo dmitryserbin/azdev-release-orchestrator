@@ -136,7 +136,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
         if (releases.length <= 0) {
 
-            throw new Error(`No definition <${definitionId}> releases matching filter (tags: ${filter.tags ?? "-"}, artifact: ${filter.artifactVersion ?? "-"}, branch: ${filter.sourceBranch ?? "-"}, stage status: ${filter.stageStatuses ?? "-"}) criteria found`);
+            throw new Error(`No definition <${definitionId}> releases matching filter (tags: ${filter.tags ? filter.tags : "-"}, artifact: ${filter.artifactVersion ? filter.artifactVersion : "-"}, branch: ${filter.sourceBranch ? filter.sourceBranch : "-"}, stage status: ${filter.stageStatuses ? filter.stageStatuses : "-"}) criteria found`);
 
         }
 
@@ -307,7 +307,7 @@ export class ReleaseHelper implements IReleaseHelper {
             // Validate version
             if (!targetVersion) {
 
-                throw new Error(`No artifact <${artifact.alias}> matching filter found (version: ${versionId ?? "-"}, branch: ${sourceBranch ?? "-"})`);
+                throw new Error(`No artifact <${artifact.alias}> matching filter found (version: ${versionId ? versionId : "-"}, branch: ${sourceBranch ? sourceBranch : "-"})`);
 
             }
 
