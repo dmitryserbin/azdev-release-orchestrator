@@ -63,11 +63,11 @@ stages:
         path: ${{ variables.extensionDirectory }}
 
     - task: PowerShell@2
-      displayName: Validate version
+      displayName: Version extension
       inputs:
         targetType: filePath
-        filePath: CI/validate.ps1
-        arguments: -Path ${{ variables.extensionDirectory }} -Required -UpdateBuildNumber
+        filePath: CI/version.ps1
+        arguments: -Path ${{ variables.extensionDirectory }} -Patch $(BuildID) -UpdateBuildNumber
         pwsh: true
 
     - task: PackageAzureDevOpsExtension@3

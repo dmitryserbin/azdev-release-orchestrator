@@ -25,18 +25,3 @@ jobs:
       lint: true
       build: true
       test: true
-
-- job: Extension
-  pool:
-    vmImage: windows-latest
-  dependsOn:
-    - OrchestratorV1
-    - OrchestratorV2
-  steps:
-  - task: PowerShell@2
-    displayName: Validate version
-    inputs:
-      targetType: filePath
-      filePath: CI/validate.ps1
-      arguments: -Path $(Build.SourcesDirectory) -UpdateBuildNumber
-      pwsh: true
