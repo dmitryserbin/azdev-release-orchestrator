@@ -70,7 +70,7 @@ steps:
     ReleaseTagName: ${{ parameters.releaseTagName }}
 
 - task: releaseorchestrator@1
-  displayName: Latest Release (build tag)
+  displayName: Latest Release (artifact tag)
   inputs:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}

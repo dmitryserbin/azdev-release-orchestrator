@@ -110,43 +110,33 @@ stages:
       vmImage: windows-latest
     dependsOn:
     - Install
-    variables:
-      projectId: 761623f0-c4c0-4dab-884b-a428a01c200f
-      definitionId: 1
-      releaseId: 162
-      releaseStages: DEV,TEST,PROD
-      artifactTagName: Build-Yo
-      releaseTagName: Release-Yo
-      sourceBranchName: refs/heads/working/test
-
     steps:
     - template: templates/execute.v1.yml
       parameters:
-        projectId: ${{ variables.projectId }}
-        definitionId: ${{ variables.definitionId }}
-        releaseId: ${{ variables.releaseId }}
-        releaseStages: ${{ variables.releaseStages }}
-        artifactTagName: ${{ variables.artifactTagName }}
-        releaseTagName: ${{ variables.releaseTagName }}
-        sourceBranchName: ${{ variables.sourceBranchName }}
+        projectId: 761623f0-c4c0-4dab-884b-a428a01c200f
+        definitionId: 1
+        releaseId: 162
+        releaseStages: DEV,TEST,PROD
+        artifactTagName: Build-Yo
+        releaseTagName: Release-Yo
+        sourceBranchName: refs/heads/working/test
 
   - job: OrchestratorV2
     dependsOn:
     - Install
     pool:
       vmImage: windows-latest
-    variables:
-      projectName: HelloYo
-      definitionName: HelloYo
-      releaseName: HelloYo-20190521.1-1
-      releaseStages: DEV,TEST,PROD
     steps:
     - template: templates/execute.v2.yml
       parameters:
-        projectName: ${{ variables.projectName }}
-        definitionName: ${{ variables.definitionName }}
-        releaseName: ${{ variables.releaseName }}
-        releaseStages: ${{ variables.releaseStages }}
+        projectName: HelloYo
+        definitionName: HelloYo
+        releaseName: HelloYo-20190521.1-1
+        releaseStages: DEV,TEST,PROD
+        artifactTagName: Build-Yo
+        releaseTagName: Release-Yo
+        sourceBranchName: refs/heads/working/test
+        stageStatus: Succeeded
 
 - stage: Release
   dependsOn:
