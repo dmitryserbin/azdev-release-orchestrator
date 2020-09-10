@@ -1,51 +1,57 @@
 # Changelog
 
-## 2.0.0
+## 2.0.*
 
-- Major code refactoring (TBU)
+`TBU`
+
+- Major code refactoring ([TBU](TBU))
 - Update task to use name parameters ([4](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/4), [43](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/43))
 - Add latest release stage status filter support ([26](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/26))
 - Add release variables support ([24](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/24))
 - Make approval retries configurable ([23](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/23))
 
-## 1.2.9
+---
+
+## 1.2.*
+
+`2020-08-10`
 
 - Add partially succeeded release support ([#40](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/40))
 
-## 1.2.8
+`2020-02-02`
 
 - Address optional parameters issue
 
-## 1.2.7
+`2020-01-31`
 
 - Minor internal improvements
 
-## 1.2.6
+`2020-01-20`
 
 - Address get release status issue ([#31](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/31))
 
-## 1.2.5
+`2019-06-28`
 
 - Address partially succeeded status issue
 
-## 1.2.4
+`2019-06-09`
 
 - Add retry mechanism
 
-## 1.2.3
+`2019-05-13`
 
 - Increase max retries
 
-## 1.2.2
+`2019-03-31`
 
 - Switch to native retry mechanism
 
-## 1.2.1
+`2019-03-21`
 
 - Add debug mode support
 - Minor improvements
 
-## 1.2.0
+`2019-03-20`
 
 - Add new release filters support
 - Remove specific artifact support
@@ -53,37 +59,45 @@
 - Improve default endpoint support
 - Increase retry & timeout
 
-## 1.1.7
+---
+
+## 1.1.*
+
+`2019-03-11`
 
 - Improve task parameters support
 
-## 1.1.6
+`2019-03-11`
 
 - Add release tag filter support
 - Add artifact tag filter support
 - Minor improvements & bugfixes ([#2](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/2))
 
-## 1.1.5
+`2019-02-18`
 
 - Improve ignoreFailure logic
 - Minor improvements & bug fixes
 
-## 1.1.3
+`2019-02-15`
 
 - Add latest release artifact branch filter
 
-## 1.1.2
+`2019-02-07`
 
 - Address automated release detection issue
 
-## 1.1.0
+`2019-01-24`
 
 - Added 'Latest' release strategy ([#1](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/1))
 - Major code refactor and minor bug fixes
 - Addressed intermittent ECONNRESET issue
 - Added unit and integration tests
 
-## 1.0.0
+---
+
+## 1.0.*
+
+`2018-12-19`
 
 - Create new or re-deploy existing release
 - Target specific release deployment stages
