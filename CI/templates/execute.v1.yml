@@ -2,6 +2,8 @@ parameters:
   projectId: ""
   definitionId: ""
   releaseId: ""
+  releasePartialId: ""
+  releaseFailedId: ""
   releaseStages: ""
   artifactTagName: ""
   releaseTagName: ""
@@ -16,6 +18,25 @@ steps:
     ReleaseStrategy: specific
     TargetRelease: ${{ parameters.releaseId }}
     TargetReleaseStages: ${{ parameters.releaseStages }}
+
+- task: releaseorchestrator@1
+  displayName: Specific release (partial)
+  inputs:
+    TargetProject: ${{ parameters.projectId }}
+    TargetDefinition: ${{ parameters.definitionId }}
+    ReleaseStrategy: specific
+    TargetRelease: ${{ parameters.releasePartialId }}
+    TargetReleaseStages: ${{ parameters.releaseStages }}
+
+- task: releaseorchestrator@1
+  displayName: Specific release (failed)
+  inputs:
+    TargetProject: ${{ parameters.projectId }}
+    TargetDefinition: ${{ parameters.definitionId }}
+    ReleaseStrategy: specific
+    TargetRelease: ${{ parameters.releaseFailedId }}
+    TargetReleaseStages: ${{ parameters.releaseStages }}
+    IgnoreFailure: true
 
 - task: releaseorchestrator@1
   displayName: Create release (auto)

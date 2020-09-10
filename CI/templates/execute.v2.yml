@@ -2,11 +2,12 @@ parameters:
   projectName: ""
   definitionName: ""
   releaseName: ""
+  releasePartialName: ""
+  releaseFailedName: ""
   releaseStages: ""
   artifactTagName: ""
   sourceBranchName: ""
   releaseTagName: ""
-  stageStatus: ""
 
 steps:
 - task: releaseorchestrator@2
@@ -17,6 +18,25 @@ steps:
     ReleaseStrategy: specific
     ReleaseName: ${{ parameters.releaseName }}
     ReleaseStages: ${{ parameters.releaseStages }}
+
+- task: releaseorchestrator@2
+  displayName: Specific release (Ppartial)
+  inputs:
+    ProjectName: ${{ parameters.projectName }}
+    DefinitionName: ${{ parameters.definitionName }}
+    ReleaseStrategy: specific
+    ReleaseName: ${{ parameters.releasePartialName }}
+    ReleaseStages: ${{ parameters.releaseStages }}
+
+- task: releaseorchestrator@2
+  displayName: Specific release (failed)
+  inputs:
+    ProjectName: ${{ parameters.projectName }}
+    DefinitionName: ${{ parameters.definitionName }}
+    ReleaseStrategy: specific
+    ReleaseName: ${{ parameters.releaseFailedName }}
+    ReleaseStages: ${{ parameters.releaseStages }}
+    IgnoreFailure: true
 
 - task: releaseorchestrator@2
   displayName: Create release (auto)
@@ -102,11 +122,22 @@ steps:
     SourceBranchName: ${{ parameters.sourceBranchName }}
 
 - task: releaseorchestrator@2
-  displayName: Latest release (stage status)
+  displayName: Latest release (rejected stage)
   inputs:
     ProjectName: ${{ parameters.projectName }}
     DefinitionName: ${{ parameters.definitionName }}
     ReleaseStrategy: latest
     ReleaseStages: TEST
     StageStatusFilter: true
-    StageStatus: ${{ parameters.stageStatus }}
+    StageStatus: Rejected
+    IgnoreFailure: true
+
+- task: releaseorchestrator@2
+  displayName: Latest release (succeeded stage)
+  inputs:
+    ProjectName: ${{ parameters.projectName }}
+    DefinitionName: ${{ parameters.definitionName }}
+    ReleaseStrategy: latest
+    ReleaseStages: TEST
+    StageStatusFilter: true
+    StageStatus: Succeeded
