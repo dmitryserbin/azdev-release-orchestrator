@@ -1,14 +1,14 @@
-# Privacy
+# Privacy Policy
 
-This extension does not collect, store or transmit any data.
+This privacy statement explains data collection and use practices for this extension.
+
+## Data Collection
+
+This extension does not store, collect or transmit any data.
 
 ## Usage Tracking
 
-No usage tracking is put in place between this extensions and any other external systems.
-
-## Error Tracking
-
-No error tracking is put in place between this extensions and other external systems.
+This extension does not collect any telemetry about usage, performance and errors.
 
 ## More Information
 
