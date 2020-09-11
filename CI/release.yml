@@ -136,8 +136,6 @@ stages:
           -ProjectName HelloYo
           -DefinitionName HelloYo
           -AccessToken $(System.AccessToken)
-        env:
-          SYSTEM_ACCESSTOKEN: $(System.AccessToken)
         pwsh: true
 
   - job: OrchestratorV2
@@ -167,8 +165,7 @@ stages:
           -OrganizationName dmitryserbin
           -ProjectName HelloYo
           -DefinitionName HelloYo
-        env:
-          SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+          -AccessToken $(System.AccessToken)
         pwsh: true
 
 - stage: Release
