@@ -35,6 +35,9 @@
     },
     "license": {
       "path": "LICENSE"
+    },
+    "privacy": {
+      "path": "PRIVACY"
     }
   },
   "links": {
@@ -43,6 +46,9 @@
     },
     "support": {
       "uri": "https://github.com/dmitryserbin/azdev-release-orchestrator/issues"
+    },
+    "privacypolicy": {
+      "uri": "https://github.com/dmitryserbin/azdev-release-orchestrator/blob/master/PRIVACY"
     }
   },
   "repository": {
