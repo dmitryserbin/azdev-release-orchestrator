@@ -33,11 +33,11 @@
     "changelog": {
       "path": "CHANGELOG.md"
     },
+    "privacy": {
+      "path": "PRIVACY.md"
+    },
     "license": {
       "path": "LICENSE"
-    },
-    "privacy": {
-      "path": "PRIVACY"
     }
   },
   "links": {
@@ -48,7 +48,7 @@
       "uri": "https://github.com/dmitryserbin/azdev-release-orchestrator/issues"
     },
     "privacypolicy": {
-      "uri": "https://github.com/dmitryserbin/azdev-release-orchestrator/blob/master/PRIVACY"
+      "uri": "https://github.com/dmitryserbin/azdev-release-orchestrator/blob/master/PRIVACY.md"
     }
   },
   "repository": {
