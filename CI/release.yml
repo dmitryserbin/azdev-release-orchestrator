@@ -67,7 +67,10 @@ stages:
       inputs:
         targetType: filePath
         filePath: CI/scripts/version.ps1
-        arguments: -Path ${{ variables.extensionDirectory }} -Patch $(Build.BuildId) -UpdateBuildNumber
+        arguments: >
+          -Path ${{ variables.extensionDirectory }}
+          -Patch $(Build.BuildId)
+          -UpdateBuildNumber
         pwsh: true
 
     - task: PackageAzureDevOpsExtension@3
@@ -123,6 +126,20 @@ stages:
         releaseTagName: Release-Yo
         sourceBranchName: refs/heads/working/test
 
+    - task: PowerShell@2
+      displayName: Cleanup releases
+      inputs:
+        targetType: filePath
+        filePath: CI/scripts/cleanup.ps1
+        arguments: >
+          -OrganizationName dmitryserbin
+          -ProjectName HelloYo
+          -DefinitionName HelloYo
+          -AccessToken $(System.AccessToken)
+        env:
+          SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+        pwsh: true
+
   - job: OrchestratorV2
     dependsOn:
     - Install
@@ -140,6 +157,19 @@ stages:
         artifactTagName: Build-Yo
         releaseTagName: Release-Yo
         sourceBranchName: refs/heads/working/test
+
+    - task: PowerShell@2
+      displayName: Cleanup releases
+      inputs:
+        targetType: filePath
+        filePath: CI/scripts/cleanup.ps1
+        arguments: >
+          -OrganizationName dmitryserbin
+          -ProjectName HelloYo
+          -DefinitionName HelloYo
+        env:
+          SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+        pwsh: true
 
 - stage: Release
   dependsOn:

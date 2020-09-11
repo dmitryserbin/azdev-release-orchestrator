@@ -238,20 +238,19 @@ export class TaskHelper implements ITaskHelper {
 
         const debug = this.debugLogger.extend(this.getDetails.name);
 
-        const endpointName: string = getInput("ConnectedService", false)!;
+        const endpointName: string | undefined = getInput("ConnectedService", false);
+        const projectName: string | undefined = getVariable("SYSTEM_TEAMPROJECT");
+        const releaseName: string | undefined = getVariable("RELEASE_RELEASENAME") ? getVariable("RELEASE_RELEASENAME") : getVariable("BUILD_BUILDNUMBER");
+        const requesterName: string | undefined = getVariable("RELEASE_DEPLOYMENT_REQUESTEDFOR") ? getVariable("RELEASE_DEPLOYMENT_REQUESTEDFOR") : getVariable("BUILD_REQUESTEDFOR");
+        const requesterId: string | undefined = getVariable("RELEASE_DEPLOYMENT_REQUESTEDFORID") ? getVariable("RELEASE_DEPLOYMENT_REQUESTEDFORID") : getVariable("BUILD_REQUESTEDFORID");
 
         const details: IDetails = {
 
-            endpointName: endpointName
-                ? endpointName : "Project Collection Build Service",
-            projectName: getVariable("SYSTEM_TEAMPROJECT")! ?
-                getVariable("SYSTEM_TEAMPROJECT")! : "-",
-            releaseName: getVariable("RELEASE_RELEASENAME")!
-                ? getVariable("RELEASE_RELEASENAME")! : getVariable("BUILD_BUILDNUMBER")!,
-            requesterName: getVariable("RELEASE_DEPLOYMENT_REQUESTEDFOR")!
-                ? getVariable("RELEASE_DEPLOYMENT_REQUESTEDFOR")! : getVariable("BUILD_REQUESTEDFOR")!,
-            requesterId: getVariable("RELEASE_DEPLOYMENT_REQUESTEDFORID")!
-                ? getVariable("RELEASE_DEPLOYMENT_REQUESTEDFORID")! : getVariable("BUILD_REQUESTEDFORID")!,
+            endpointName: endpointName ? endpointName : "Project Collection Build Service",
+            projectName: projectName ? projectName : "Unknown",
+            releaseName: releaseName ? releaseName : "Unknown",
+            requesterName: requesterName ? requesterName : "Release Orchestrator",
+            requesterId: requesterId ? requesterId : "Unknown",
 
         }
 
