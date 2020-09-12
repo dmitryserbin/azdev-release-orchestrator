@@ -76,8 +76,6 @@ Please refer to Azure DevOps [approvals and gates documentation](https://docs.mi
 2. Select `Integrated Endpoint` or `Service Endpoint` endpoint type
 3. Select target project and release definition
 
-![Image](Images/ro-04.png)
-
 > Template: baseline task configuration
 
 ```yaml
