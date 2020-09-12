@@ -78,6 +78,21 @@ Please refer to Azure DevOps [approvals and gates documentation](https://docs.mi
 
 ![Image](Images/ro-04.png)
 
+> Template: baseline task configuration
+
+```yaml
+- task: releaseorchestrator@2
+  displayName: Release Orchestrator
+  inputs:
+    ProjectName: My-Project
+    DefinitionName: My-Definition
+    EndpointType: service # Optional
+    ConnectedService: My-Endpoint # Optional
+    IgnoreFailure: false # Optional
+    ApprovalRetry: 60 # Optional
+    UpdateInterval: 5 # Optional
+```
+
 > You may need to create a new Azure Pipelines [service connection](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) using [PAT](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate) token.
 
 ## Release Strategy
@@ -105,6 +120,16 @@ By default, new release deployment uses default stage [triggers](https://docs.mi
   inputs:
     ProjectName: My-Project
     DefinitionName: My-Definition
+    ReleaseStrategy: create
+    # DefinitionStagesFilter: false # Optional
+    # DefinitionStages: DEV,TEST,PROD # Optional
+    # ArtifactTagFilter: false # Optional
+    # ArtifactTagName: My-Artifact # Optional
+    # SourceBranchFilter: false # Optional
+    # SourceBranchName: refs/heads/master # Optional
+    # ReleaseVariables: | # Optional
+    #  My-Variable-One=My-Value-One
+    #  My-Variable-Two=My-Value-Two
 ```
 
 ### Latest Release
@@ -117,7 +142,7 @@ Deploying latest release requires you to provide target stages for deployment. T
 - Filter Source Branch: enable filtering target release by primary artifact source branch name (optional)
 - Filter Stage Status: enable filtering target release by stage deployment status (optional)
 
-> Template: latest available release deployment with target stages filter
+> Template: latest available release deployment without stage filter
 
 ```yml
 - task: releaseorchestrator@2
@@ -126,7 +151,15 @@ Deploying latest release requires you to provide target stages for deployment. T
     ProjectName: My-Project
     DefinitionName: My-Definition
     ReleaseStrategy: latest
-    ReleaseStages: DEV,TEST,PROD
+    # ReleaseStages: DEV,TEST,PROD # Optional
+    # ReleaseTagFilter: false # Optional
+    # ReleaseTagName: My-Release # Optional
+    # ArtifactTagFilter: false # Optional
+    # ArtifactTagName: My-Artifact # Optional
+    # SourceBranchFilter: false # Optional
+    # SourceBranchName: refs/heads/master # Optional
+    # StageStatusFilter: false # Optional
+    # StageStatus: Rejected,Succeeded # Optional
 ```
 
 ### Specific Release
@@ -136,7 +169,7 @@ Deploying specific release requires you to provide target stages for deployment.
 - Release Name: select existing release to target
 - Release Stages: specify release deployment stage(s) (comma separated)
 
-> Template: specific release deployment with target stages filter
+> Template: specific release deployment without stage filter
 
 ```yml
 steps:
@@ -146,8 +179,8 @@ steps:
     ProjectName: My-Project
     DefinitionName: My-Definition
     ReleaseStrategy: specific
-    ReleaseName: My-Release-1
-    ReleaseStages: DEV,TEST,PROD
+    ReleaseName: My-Release
+    # ReleaseStages: DEV,TEST,PROD # Optional
 ```
 
 ## Advanced
