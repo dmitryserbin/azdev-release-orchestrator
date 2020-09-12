@@ -8,7 +8,7 @@
 
 ## Overview
 
-The **Release Orchestrator** [extension](https://marketplace.visualstudio.com/items?itemName=dmitryserbin.release-orchestrator) adds a task to easily execute and track progress of multiple release pipelines in Azure DevOps. You can use this task to orchestrate numerous pipelines and deploy microservices components in a specific order.
+This extension adds [Release Orchestrator](https://marketplace.visualstudio.com/items?itemName=dmitryserbin.release-orchestrator) task to easily execute and track progress of multiple release pipelines in Azure DevOps. You can use this task to orchestrate numerous pipelines and deploy microservices components in a specific order.
 
 Extension | Build | Code
 :-------|:-------|:-------
@@ -16,11 +16,11 @@ Extension | Build | Code
 
 ## Features
 
-The **Release Orchestrator** task performing Azure DevOps release pipeline execution and provides various customization settings.
+The **Release Orchestrator** task performs target Azure DevOps release pipeline execution and provides various customization settings.
 
 ![Image](Images/ro-01.png)
 
-It uses either **integrated** (SystemVssConnection) or **specific**  personal access token (PAT) Azure DevOps service endpoint to connect to project pipelines.
+The task uses either **integrated** (SystemVssConnection) or **specific**  personal access token (PAT) Azure DevOps service endpoint to connect to project pipelines.
 
 - Create new, deploy latest release or specific release
 - Target specific release deployment stages
@@ -86,11 +86,8 @@ Please refer to Azure DevOps [approvals and gates documentation](https://docs.mi
   inputs:
     ProjectName: My-Project
     DefinitionName: My-Definition
-    EndpointType: service # Optional
-    ConnectedService: My-Endpoint # Optional
-    IgnoreFailure: false # Optional
-    ApprovalRetry: 60 # Optional
-    UpdateInterval: 5 # Optional
+    # EndpointType: service # Optional
+    # ConnectedService: My-Endpoint # Optional
 ```
 
 > You may need to create a new Azure Pipelines [service connection](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) using [PAT](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate) token.
@@ -188,6 +185,19 @@ steps:
 - Ignore Failures: suppress errors and set task result to partially succeeded in case of failure
 - Approval Retries: number of attempts to retry (with 1 minute delay) approving target release stage deployment (if unsuccessful) before failing
 - Progress Update Interval: number seconds to wait before next release deployment progress update (i.e. every `X` seconds)
+
+> Template: advanced task configuration
+
+```yaml
+- task: releaseorchestrator@2
+  displayName: Release Orchestrator
+  inputs:
+    ProjectName: My-Project
+    DefinitionName: My-Definition
+    IgnoreFailure: false # Optional
+    ApprovalRetry: 60 # Optional
+    UpdateInterval: 5 # Optional
+```
 
 ## Support
 
