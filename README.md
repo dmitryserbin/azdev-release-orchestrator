@@ -195,8 +195,8 @@ steps:
     ProjectName: My-Project
     DefinitionName: My-Definition
     IgnoreFailure: false # Optional
-    ApprovalRetry: 60 # Optional
-    UpdateInterval: 5 # Optional
+    ApprovalRetry: 60 # Required. Default: 60 (times)
+    UpdateInterval: 5 # Required. Default: 5 (seconds)
 ```
 
 ## Support
