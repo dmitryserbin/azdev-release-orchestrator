@@ -88,11 +88,11 @@ export class TaskHelper implements ITaskHelper {
                 ? Number(updateInterval) * 1000 : 5000,
             approvalRetry: Number.isFinite(approvalRetry)
                 ? Number(approvalRetry) : 60,
-            approvalSleep: 60000
+            approvalSleep: 60000,
 
         };
 
-        const parameters: IParameters = {
+        let parameters: IParameters = {
 
             releaseType: ReleaseType.New,
             projectName: projectName,
@@ -109,120 +109,25 @@ export class TaskHelper implements ITaskHelper {
 
             case "create": {
 
-                parameters.releaseType = ReleaseType.New;
-
-                const definitionStagesFilter: boolean = getBoolInput("definitionStagesFilter");
-                const artifactTagFilter: boolean = getBoolInput("artifactTagFilter");
-                const sourceBranchFilter: boolean = getBoolInput("sourceBranchFilter");
-
-                // Get definition stages
-                if (definitionStagesFilter) {
-
-                    parameters.stages = getDelimitedInput("definitionStages", ",", true);
-
-                }
-
-                // Get artifact tag name filter
-                // Optional to support variable input
-                if (artifactTagFilter) {
-
-                    filters.artifactTags = getDelimitedInput("artifactTagName", ",", false);
-
-                }
-
-                // Get artifacts source branch filter
-                // Optional to support variable input
-                if (sourceBranchFilter) {
-
-                    filters.artifactBranch = getInput("sourceBranchName", false)!;
-
-                }
-
-                // Get release variables
-                const releaseVariables: string[] = getDelimitedInput("releaseVariables", "\n", false);
-
-                if (releaseVariables.length > 0) {
-
-                    for (const variable of releaseVariables) {
-
-                        const value: [string, string] | null = parseKeyValue(variable);
-
-                        if (value) {
-
-                            const releaseVariable: IReleaseVariable = {
-
-                                name: value[0],
-                                value: value[1],
-
-                            };
-
-                            parameters.variables.push(releaseVariable);
-
-                        }
-
-                    }
-
-                }
+                parameters = await this.readCreateInputs(parameters);
 
                 break;
 
             } case "latest": {
 
-                parameters.releaseType = ReleaseType.Latest;
-
-                // Get release stages
-                parameters.stages = getDelimitedInput("releaseStages", ",", true);
-
-                const releaseTagFilter: boolean = getBoolInput("releaseTagFilter");
-                const artifactTagFilter: boolean = getBoolInput("artifactTagFilter");
-                const sourceBranchFilter: boolean = getBoolInput("sourceBranchFilter");
-                const stageStatusFilter: boolean = getBoolInput("stageStatusFilter");
-
-                // Get release tag name filter
-                // Optional to support variable input
-                if (releaseTagFilter) {
-
-                    filters.releaseTags = getDelimitedInput("releaseTagName", ",", false);
-
-                }
-
-                // Get artifact tag name filter
-                // Optional to support variable input
-                if (artifactTagFilter) {
-
-                    filters.artifactTags = getDelimitedInput("artifactTagName", ",", false);
-
-                }
-
-                // Get artifacts source branch filter
-                // Optional to support variable input
-                if (sourceBranchFilter) {
-
-                    filters.artifactBranch = getInput("sourceBranchName", false)!;
-
-                }
-
-                // Get release stage status filter
-                // Optional to support variable input
-                if (stageStatusFilter) {
-
-                    filters.stageStatuses = getDelimitedInput("stageStatus", ",", true);
-
-                }
+                parameters = await this.readLatestInputs(parameters);
 
                 break;
 
             } case "specific": {
 
-                parameters.releaseType = ReleaseType.Specific;
-
-                // Get release ID
-                parameters.releaseName = getInput("releaseName", true)!;
-
-                // Get release stages
-                parameters.stages = getDelimitedInput("releaseStages", ",", true);
+                parameters = await this.readSpecificInputs(parameters);
 
                 break;
+
+            } default: {
+
+                throw new Error(`Release strategy <${releaseStrategy}> not supported`);
 
             }
 
@@ -301,6 +206,129 @@ export class TaskHelper implements ITaskHelper {
         debug(result);
 
         setResult(result, message);
+
+    }
+
+    private async readCreateInputs(parameters: IParameters): Promise<IParameters> {
+
+        parameters.releaseType = ReleaseType.New;
+
+        const definitionStagesFilter: boolean = getBoolInput("definitionStagesFilter");
+        const artifactTagFilter: boolean = getBoolInput("artifactTagFilter");
+        const sourceBranchFilter: boolean = getBoolInput("sourceBranchFilter");
+
+        // Get definition stages
+        if (definitionStagesFilter) {
+
+            parameters.stages = getDelimitedInput("definitionStages", ",", true);
+
+        }
+
+        // Get artifact tag name filter
+        // Optional to support variable input
+        if (artifactTagFilter) {
+
+            parameters.filters.artifactTags = getDelimitedInput("artifactTagName", ",", false);
+
+        }
+
+        // Get artifacts source branch filter
+        // Optional to support variable input
+        if (sourceBranchFilter) {
+
+            parameters.filters.artifactBranch = getInput("sourceBranchName", false)!;
+
+        }
+
+        // Get release variables
+        const releaseVariables: string[] = getDelimitedInput("releaseVariables", "\n", false);
+
+        if (releaseVariables.length > 0) {
+
+            for (const variable of releaseVariables) {
+
+                const value: [string, string] | null = parseKeyValue(variable);
+
+                if (value) {
+
+                    const releaseVariable: IReleaseVariable = {
+
+                        name: value[0],
+                        value: value[1],
+
+                    };
+
+                    parameters.variables.push(releaseVariable);
+
+                }
+
+            }
+
+        }
+
+        return parameters;
+
+    }
+
+    private async readLatestInputs(parameters: IParameters): Promise<IParameters> {
+
+        parameters.releaseType = ReleaseType.Latest;
+
+        // Get release stages
+        parameters.stages = getDelimitedInput("releaseStages", ",", true);
+
+        const releaseTagFilter: boolean = getBoolInput("releaseTagFilter");
+        const artifactTagFilter: boolean = getBoolInput("artifactTagFilter");
+        const sourceBranchFilter: boolean = getBoolInput("sourceBranchFilter");
+        const stageStatusFilter: boolean = getBoolInput("stageStatusFilter");
+
+        // Get release tag name filter
+        // Optional to support variable input
+        if (releaseTagFilter) {
+
+            parameters.filters.releaseTags = getDelimitedInput("releaseTagName", ",", false);
+
+        }
+
+        // Get artifact tag name filter
+        // Optional to support variable input
+        if (artifactTagFilter) {
+
+            parameters.filters.artifactTags = getDelimitedInput("artifactTagName", ",", false);
+
+        }
+
+        // Get artifacts source branch filter
+        // Optional to support variable input
+        if (sourceBranchFilter) {
+
+            parameters.filters.artifactBranch = getInput("sourceBranchName", false)!;
+
+        }
+
+        // Get release stage status filter
+        // Optional to support variable input
+        if (stageStatusFilter) {
+
+            parameters.filters.stageStatuses = getDelimitedInput("stageStatus", ",", true);
+
+        }
+
+        return parameters;
+
+    }
+
+    private async readSpecificInputs(parameters: IParameters): Promise<IParameters> {
+
+        parameters.releaseType = ReleaseType.Specific;
+
+        // Get release ID
+        parameters.releaseName = getInput("releaseName", true)!;
+
+        // Get release stages
+        parameters.stages = getDelimitedInput("releaseStages", ",", true);
+
+        return parameters;
 
     }
 
