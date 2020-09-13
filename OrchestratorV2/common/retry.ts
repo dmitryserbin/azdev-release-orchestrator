@@ -9,7 +9,7 @@ import { DebugCreator } from "../loggers/debugcreator";
 const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator");
 const debugLogger: IDebugLogger = debugCreator.extend("Retry");
 
-export function Retryable(attempts: number = 10, timeout: number = 5000): Function {
+export function Retryable(attempts: number = 12, timeout: number = 5000): Function {
 
     const debug = debugLogger.extend("retryable");
 
