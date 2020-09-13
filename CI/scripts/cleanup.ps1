@@ -65,6 +65,7 @@ function Get-Releases
 
 function Remove-Release
 {
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "")]
 	[CmdletBinding()]
 	Param
 	(
@@ -84,6 +85,8 @@ function Remove-Release
 		[Parameter(Mandatory=$True)]
 		[String]$ApiVersion
 	)
+
+	Write-Host "Removing <$($Release.releaseDefinition.name)> definition <$($Release.name)> ($($Release.id)) release"
 
 	$Uri = ('{0}?comment={1}&api-version={2}' `
 		-f $Release.url, $Comment, $ApiVersion)
@@ -112,8 +115,6 @@ $Releases = Get-Releases `
 
 ForEach ($Release in $Releases)
 {
-	Write-Host "Removing <$($Release.releaseDefinition.name)> definition <$($Release.name)> ($($Release.id)) release"
-
 	$Result = Remove-Release `
 		-Release $Release `
 		-Comment "Deleted by Orchestrator CI cleanup" `

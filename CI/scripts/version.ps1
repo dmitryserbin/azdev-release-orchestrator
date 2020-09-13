@@ -162,6 +162,7 @@ function Update-ExtensionVersion
 
 function Confirm-ExtensionVersion
 {
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "")]
 	[CmdletBinding()]
 	Param
 	(
@@ -232,6 +233,7 @@ function Set-TaskVersion
 
 function Set-BuildNumber
 {
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "")]
 	[CmdletBinding()]
 	Param
 	(
