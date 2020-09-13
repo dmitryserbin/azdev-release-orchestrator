@@ -59,7 +59,7 @@ export class Approver implements IApprover {
 
                 debug(pendingApproval);
 
-                const approvalMessage: string = `Approved by <${details.releaseName}> (${details.endpointName}) via release orchestrator`;
+                const approvalMessage: string = `Approved by <${details.releaseName}> (${details.endpointName}) via Release Orchestrator`;
 
                 // Approve stage deployment
                 const approvalStatus: ReleaseApproval = await this.releaseHelper.approveStage(pendingApproval, projectName, approvalMessage);
