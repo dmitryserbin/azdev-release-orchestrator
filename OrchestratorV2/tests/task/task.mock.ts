@@ -30,7 +30,7 @@ const inputs: string[] = [
     "SourceBranchFilter",
     "SourceBranchName",
 
-    "ConnectedService",
+    "EndpointName",
     "SYSTEM_TEAMPROJECT",
     "RELEASE_RELEASENAME",
     "RELEASE_DEPLOYMENT_REQUESTEDFOR",

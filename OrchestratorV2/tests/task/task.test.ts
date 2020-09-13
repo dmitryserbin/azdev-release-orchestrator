@@ -36,7 +36,7 @@ describe("Orchestrator", ()  => {
         SourceBranchFilter: "false",
         SourceBranchName: null,
 
-        ConnectedService: "My-Endpoint",
+        EndpointName: "My-Endpoint",
         SYSTEM_TEAMPROJECT: "HelloYo",
         RELEASE_RELEASENAME: "HelloYo-20180101-1",
         RELEASE_DEPLOYMENT_REQUESTEDFOR: "My-Name",

@@ -21,7 +21,7 @@ export function mockEndpoint(taskRunner: TaskMockRunner, type: string, name: str
 
     if (type === "service") {
 
-        taskRunner.setInput("ConnectedService", name);
+        taskRunner.setInput("EndpointName", name);
         tokenParameterName = "ApiToken";
 
     }

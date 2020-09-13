@@ -85,7 +85,7 @@ Please refer to Azure DevOps [approvals and gates documentation](https://docs.mi
     ProjectName: My-Project
     DefinitionName: My-Definition
     # EndpointType: service # Optional. Options: integrated, service
-    # ConnectedService: My-Endpoint # Required when EndpointType == service
+    # EndpointName: My-Endpoint # Required when EndpointType == service
 ```
 
 > You may need to create a new Azure Pipelines [service connection](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) using [PAT](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate) token.

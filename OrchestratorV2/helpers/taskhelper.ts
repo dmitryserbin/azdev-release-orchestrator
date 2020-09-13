@@ -39,7 +39,7 @@ export class TaskHelper implements ITaskHelper {
         // Get service endpoint
         if (endpointType === "service") {
 
-            endpointName = getInput("ConnectedService", true)!;
+            endpointName = getInput("EndpointName", true)!;
             tokenParameterName = "ApiToken";
 
         }
@@ -238,7 +238,7 @@ export class TaskHelper implements ITaskHelper {
 
         const debug = this.debugLogger.extend(this.getDetails.name);
 
-        const endpointName: string | undefined = getInput("ConnectedService", false);
+        const endpointName: string | undefined = getInput("EndpointName", false);
         const projectName: string | undefined = getVariable("SYSTEM_TEAMPROJECT");
         const releaseName: string | undefined = getVariable("RELEASE_RELEASENAME") ? getVariable("RELEASE_RELEASENAME") : getVariable("BUILD_BUILDNUMBER");
         const requesterName: string | undefined = getVariable("RELEASE_DEPLOYMENT_REQUESTEDFOR") ? getVariable("RELEASE_DEPLOYMENT_REQUESTEDFOR") : getVariable("BUILD_REQUESTEDFOR");
