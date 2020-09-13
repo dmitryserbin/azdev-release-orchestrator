@@ -4,7 +4,7 @@
 
 `TBU`
 
-- Major code refactoring ([TBU](TBU))
+- Major code refactoring & improvements ([TBU](TBU))
 - Update task to use name parameters ([4](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/4), [43](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/43))
 - Add latest release stage status filter support ([26](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/26))
 - Add release variables support ([24](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/24))
