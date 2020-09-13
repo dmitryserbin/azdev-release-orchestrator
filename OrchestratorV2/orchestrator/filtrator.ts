@@ -133,35 +133,45 @@ export class Filtrator implements IFiltrator {
 
             debug(`Using <${String.Join("|", filters.stageStatuses)}> release stage status filter`);
 
+            const supportedStatuses: string[] = [
+
+                "succeeded",
+                "partiallySucceeded",
+                "notStarted",
+                "rejected",
+                "canceled",
+
+            ];
+
             for (const status of filters.stageStatuses) {
 
-                switch (status) {
+                switch (status.toLowerCase()) {
 
-                    case "Succeeded": {
+                    case "succeeded": {
 
                         releaseFilter.stageStatuses.push(EnvironmentStatus.Succeeded);
 
                         break;
 
-                    } case "PartiallySucceeded": {
+                    } case "partiallysucceeded": {
 
                         releaseFilter.stageStatuses.push(EnvironmentStatus.PartiallySucceeded);
 
                         break;
 
-                    } case "NotStarted": {
+                    } case "notstarted": {
 
                         releaseFilter.stageStatuses.push(EnvironmentStatus.NotStarted);
 
                         break;
 
-                    } case "Rejected": {
+                    } case "rejected": {
 
                         releaseFilter.stageStatuses.push(EnvironmentStatus.Rejected);
 
                         break;
 
-                    } case "Canceled": {
+                    } case "canceled": {
 
                         releaseFilter.stageStatuses.push(EnvironmentStatus.Canceled);
 
@@ -169,7 +179,7 @@ export class Filtrator implements IFiltrator {
 
                     } default: {
 
-                        throw new Error(`Stage status filter <${status}> not supported`);
+                        throw new Error(`Stage status filter <${status}> not supported. Supported statuses: ${String.Join("|", supportedStatuses)}`);
 
                     }
 

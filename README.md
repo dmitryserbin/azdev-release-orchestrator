@@ -84,10 +84,10 @@ Please refer to Azure DevOps [approvals and gates documentation](https://docs.mi
 - task: releaseorchestrator@2
   displayName: Release Orchestrator
   inputs:
-    ProjectName: My-Project
-    DefinitionName: My-Definition
-    # EndpointType: service # Optional. Options: integrated, service
-    # EndpointName: My-Endpoint # Required when EndpointType == service
+    projectName: My-Project
+    definitionName: My-Definition
+    # endpointType: service # Optional. Options: integrated, service
+    # endpointName: My-Endpoint # Required when endpointType == service
 ```
 
 > You may need to create a new Azure Pipelines [service connection](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) using [PAT](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate) token.
@@ -113,18 +113,18 @@ By default, new release deployment uses default stage [triggers](https://docs.mi
 
 ```yaml
 - task: releaseorchestrator@2
-  displayName: Create Release (Auto)
+  displayName: Create release (auto)
   inputs:
-    ProjectName: My-Project
-    DefinitionName: My-Definition
-    ReleaseStrategy: create
-    # DefinitionStagesFilter: false # Optional
-    # DefinitionStages: DEV,TEST,PROD # Required when DefinitionStagesFilter == true
-    # ArtifactTagFilter: false # Optional
-    # ArtifactTagName: My-Artifact # Required when ArtifactTagFilter == true
-    # SourceBranchFilter: false # Optional
-    # SourceBranchName: refs/heads/master # Required when SourceBranchFilter == true
-    # ReleaseVariables: | # Optional
+    projectName: My-Project
+    definitionName: My-Definition
+    releaseStrategy: create
+    # definitionStagesFilter: false # Optional
+    # definitionStages: DEV,TEST,PROD # Required when definitionStagesFilter == true
+    # artifactTagFilter: false # Optional
+    # artifactTagName: My-Artifact # Required when artifactTagFilter == true
+    # sourceBranchFilter: false # Optional
+    # sourceBranchName: refs/heads/master # Required when sourceBranchFilter == true
+    # releaseVariables: | # Optional
     #  My-Variable-One=My-Value-One
     #  My-Variable-Two=My-Value-Two
 ```
@@ -143,20 +143,20 @@ Deploying latest release requires you to provide target stages for deployment. T
 
 ```yml
 - task: releaseorchestrator@2
-  displayName: Latest Release (Manual)
+  displayName: Latest release (manual)
   inputs:
-    ProjectName: My-Project
-    DefinitionName: My-Definition
-    ReleaseStrategy: latest
-    ReleaseStages: DEV,TEST,PROD
-    # ReleaseTagFilter: false # Optional
-    # ReleaseTagName: My-Release # Required when ReleaseTagFilter == true
-    # ArtifactTagFilter: false # Optional
-    # ArtifactTagName: My-Artifact # Required when ArtifactTagFilter == true
-    # SourceBranchFilter: false # Optional
-    # SourceBranchName: refs/heads/master # Required when SourceBranchFilter == true
-    # StageStatusFilter: false # Optional
-    # StageStatus: Rejected,Succeeded # Required when StageStatusFilter == true
+    projectName: My-Project
+    definitionName: My-Definition
+    releaseStrategy: latest
+    releaseStages: DEV,TEST,PROD
+    # releaseTagFilter: false # Optional
+    # releaseTagName: My-Release # Required when releaseTagFilter == true
+    # artifactTagFilter: false # Optional
+    # artifactTagName: My-Artifact # Required when artifactTagFilter == true
+    # sourceBranchFilter: false # Optional
+    # sourceBranchName: refs/heads/master # Required when sourceBranchFilter == true
+    # stageStatusFilter: false # Optional
+    # stageStatus: Rejected,Succeeded # Required when stageStatusFilter == true
 ```
 
 ### Specific release
@@ -171,13 +171,13 @@ Deploying specific release requires you to provide target stages for deployment.
 ```yml
 steps:
 - task: releaseorchestrator@2
-  displayName: Specific Release (Manual)
+  displayName: Specific release (manual)
   inputs:
-    ProjectName: My-Project
-    DefinitionName: My-Definition
-    ReleaseStrategy: specific
-    ReleaseName: My-Release
-    ReleaseStages: DEV,TEST,PROD
+    projectName: My-Project
+    definitionName: My-Definition
+    releaseStrategy: specific
+    releaseName: My-Release
+    releaseStages: DEV,TEST,PROD
 ```
 
 ## Advanced
@@ -192,11 +192,11 @@ steps:
 - task: releaseorchestrator@2
   displayName: Release Orchestrator
   inputs:
-    ProjectName: My-Project
-    DefinitionName: My-Definition
-    IgnoreFailure: false # Optional
-    ApprovalRetry: 60 # Required. Default: 60 (times)
-    UpdateInterval: 5 # Required. Default: 5 (seconds)
+    projectName: My-Project
+    definitionName: My-Definition
+    ignoreFailure: false # Optional
+    approvalRetry: 60 # Required. Default: 60 (times)
+    updateInterval: 5 # Required. Default: 5 (seconds)
 ```
 
 ## Support

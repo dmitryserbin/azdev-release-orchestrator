@@ -29,7 +29,7 @@ export class TaskHelper implements ITaskHelper {
 
         const debug = this.debugLogger.extend(this.getEndpoint.name);
 
-        const endpointType: string = getInput("EndpointType", true)!;
+        const endpointType: string = getInput("endpointType", true)!;
 
         // Use upper-case default endpoint name
         // For compartability with non-Windows systems
@@ -39,7 +39,7 @@ export class TaskHelper implements ITaskHelper {
         // Get service endpoint
         if (endpointType === "service") {
 
-            endpointName = getInput("EndpointName", true)!;
+            endpointName = getInput("endpointName", true)!;
             tokenParameterName = "ApiToken";
 
         }
@@ -66,12 +66,12 @@ export class TaskHelper implements ITaskHelper {
 
         const debug = this.debugLogger.extend(this.getParameters.name);
 
-        const releaseStrategy: string = getInput("ReleaseStrategy", true)!;
-        const projectName: string = getInput("ProjectName", true)!;
-        const definitionName: string = getInput("DefinitionName", true)!;
+        const releaseStrategy: string = getInput("releaseStrategy", true)!;
+        const projectName: string = getInput("projectName", true)!;
+        const definitionName: string = getInput("definitionName", true)!;
 
-        const updateInterval: string = getInput("UpdateInterval", true)!;
-        const approvalRetry: string = getInput("ApprovalRetry", true)!;
+        const updateInterval: string = getInput("updateInterval", true)!;
+        const approvalRetry: string = getInput("approvalRetry", true)!;
 
         const filters: IFilters = {
 
@@ -111,14 +111,14 @@ export class TaskHelper implements ITaskHelper {
 
                 parameters.releaseType = ReleaseType.New;
 
-                const definitionStagesFilter: boolean = getBoolInput("DefinitionStagesFilter");
-                const artifactTagFilter: boolean = getBoolInput("ArtifactTagFilter");
-                const sourceBranchFilter: boolean = getBoolInput("SourceBranchFilter");
+                const definitionStagesFilter: boolean = getBoolInput("definitionStagesFilter");
+                const artifactTagFilter: boolean = getBoolInput("artifactTagFilter");
+                const sourceBranchFilter: boolean = getBoolInput("sourceBranchFilter");
 
                 // Get definition stages
                 if (definitionStagesFilter) {
 
-                    parameters.stages = getDelimitedInput("DefinitionStages", ",", true);
+                    parameters.stages = getDelimitedInput("definitionStages", ",", true);
 
                 }
 
@@ -126,7 +126,7 @@ export class TaskHelper implements ITaskHelper {
                 // Optional to support variable input
                 if (artifactTagFilter) {
 
-                    filters.artifactTags = getDelimitedInput("ArtifactTagName", ",", false);
+                    filters.artifactTags = getDelimitedInput("artifactTagName", ",", false);
 
                 }
 
@@ -134,12 +134,12 @@ export class TaskHelper implements ITaskHelper {
                 // Optional to support variable input
                 if (sourceBranchFilter) {
 
-                    filters.artifactBranch = getInput("SourceBranchName", false)!;
+                    filters.artifactBranch = getInput("sourceBranchName", false)!;
 
                 }
 
                 // Get release variables
-                const releaseVariables: string[] = getDelimitedInput("ReleaseVariables", "\n", false);
+                const releaseVariables: string[] = getDelimitedInput("releaseVariables", "\n", false);
 
                 if (releaseVariables.length > 0) {
 
@@ -171,18 +171,18 @@ export class TaskHelper implements ITaskHelper {
                 parameters.releaseType = ReleaseType.Latest;
 
                 // Get release stages
-                parameters.stages = getDelimitedInput("ReleaseStages", ",", true);
+                parameters.stages = getDelimitedInput("releaseStages", ",", true);
 
-                const releaseTagFilter: boolean = getBoolInput("ReleaseTagFilter");
-                const artifactTagFilter: boolean = getBoolInput("ArtifactTagFilter");
-                const sourceBranchFilter: boolean = getBoolInput("SourceBranchFilter");
-                const stageStatusFilter: boolean = getBoolInput("StageStatusFilter");
+                const releaseTagFilter: boolean = getBoolInput("releaseTagFilter");
+                const artifactTagFilter: boolean = getBoolInput("artifactTagFilter");
+                const sourceBranchFilter: boolean = getBoolInput("sourceBranchFilter");
+                const stageStatusFilter: boolean = getBoolInput("stageStatusFilter");
 
                 // Get release tag name filter
                 // Optional to support variable input
                 if (releaseTagFilter) {
 
-                    filters.releaseTags = getDelimitedInput("ReleaseTagName", ",", false);
+                    filters.releaseTags = getDelimitedInput("releaseTagName", ",", false);
 
                 }
 
@@ -190,7 +190,7 @@ export class TaskHelper implements ITaskHelper {
                 // Optional to support variable input
                 if (artifactTagFilter) {
 
-                    filters.artifactTags = getDelimitedInput("ArtifactTagName", ",", false);
+                    filters.artifactTags = getDelimitedInput("artifactTagName", ",", false);
 
                 }
 
@@ -198,7 +198,7 @@ export class TaskHelper implements ITaskHelper {
                 // Optional to support variable input
                 if (sourceBranchFilter) {
 
-                    filters.artifactBranch = getInput("SourceBranchName", false)!;
+                    filters.artifactBranch = getInput("sourceBranchName", false)!;
 
                 }
 
@@ -206,7 +206,7 @@ export class TaskHelper implements ITaskHelper {
                 // Optional to support variable input
                 if (stageStatusFilter) {
 
-                    filters.stageStatuses = getDelimitedInput("StageStatus", ",", true);
+                    filters.stageStatuses = getDelimitedInput("stageStatus", ",", true);
 
                 }
 
@@ -217,10 +217,10 @@ export class TaskHelper implements ITaskHelper {
                 parameters.releaseType = ReleaseType.Specific;
 
                 // Get release ID
-                parameters.releaseName = getInput("ReleaseName", true)!;
+                parameters.releaseName = getInput("releaseName", true)!;
 
                 // Get release stages
-                parameters.stages = getDelimitedInput("ReleaseStages", ",", true);
+                parameters.stages = getDelimitedInput("releaseStages", ",", true);
 
                 break;
 
@@ -238,7 +238,7 @@ export class TaskHelper implements ITaskHelper {
 
         const debug = this.debugLogger.extend(this.getDetails.name);
 
-        const endpointName: string | undefined = getInput("EndpointName", false);
+        const endpointName: string | undefined = getInput("endpointName", false);
         const projectName: string | undefined = getVariable("SYSTEM_TEAMPROJECT");
         const releaseName: string | undefined = getVariable("RELEASE_RELEASENAME") ? getVariable("RELEASE_RELEASENAME") : getVariable("BUILD_BUILDNUMBER");
         const requesterName: string | undefined = getVariable("RELEASE_DEPLOYMENT_REQUESTEDFOR") ? getVariable("RELEASE_DEPLOYMENT_REQUESTEDFOR") : getVariable("BUILD_REQUESTEDFOR");
@@ -291,7 +291,7 @@ export class TaskHelper implements ITaskHelper {
 
         const debug = this.debugLogger.extend(this.fail.name);
 
-        const ignoreFailure: boolean = getBoolInput("IgnoreFailure");
+        const ignoreFailure: boolean = getBoolInput("ignoreFailure");
 
         debug(ignoreFailure);
 

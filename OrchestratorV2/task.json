@@ -23,7 +23,7 @@
   ],
   "inputs": [
     {
-      "name": "EndpointType",
+      "name": "endpointType",
       "type": "radio",
       "label": "Azure DevOps endpoint type",
       "helpMarkDown": "Select endpoint type to connect Azure DevOps: \n- Integrated = default 'SystemVssConnection' service endpoint for 'Project Collection Build Service' user account; \n- Service = user-defined personal access token (PAT) service endpoint \n\nNote: requires 'View releases', 'View release definition', 'Create releases' and 'Manage deployments' target release pipeline permissions",
@@ -35,15 +35,15 @@
       }
     },
     {
-      "name": "EndpointName",
+      "name": "endpointName",
       "type": "connectedService:ExternalTfs",
       "label": "Service endpoint",
       "required": true,
       "helpMarkDown": "Select service endpoint for Azure DevOps account",
-      "visibleRule": "EndpointType = service"
+      "visibleRule": "endpointType = service"
     },
     {
-      "name": "ProjectName",
+      "name": "projectName",
       "type": "pickList",
       "label": "Project name",
       "helpMarkDown": "Select target project from the list or specify project name",
@@ -53,7 +53,7 @@
       }
     },
     {
-      "name": "DefinitionName",
+      "name": "definitionName",
       "type": "pickList",
       "label": "Release definition",
       "helpMarkDown": "Select target release definition or specify definition name",
@@ -63,7 +63,7 @@
       }
     },
     {
-      "name": "ReleaseStrategy",
+      "name": "releaseStrategy",
       "type": "radio",
       "label": "Release strategy",
       "helpMarkDown": "Create new release, target existing or latest release in the release definition",
@@ -76,7 +76,7 @@
       }
     },
     {
-      "name": "ReleaseName",
+      "name": "releaseName",
       "type": "pickList",
       "label": "Release name",
       "helpMarkDown": "Select target release (shows last 25 releases) or specify release name or ID",
@@ -84,10 +84,10 @@
       "properties": {
         "EditableOptions": true
       },
-      "visibleRule": "ReleaseStrategy = specific"
+      "visibleRule": "releaseStrategy = specific"
     },
     {
-      "name": "ReleaseStages",
+      "name": "releaseStages",
       "type": "pickList",
       "label": "Release stages",
       "helpMarkDown": "Target specific release stages (comma separated)",
@@ -95,19 +95,19 @@
       "properties": {
         "EditableOptions": true
       },
-      "visibleRule": "ReleaseStrategy = specific || ReleaseStrategy = latest"
+      "visibleRule": "releaseStrategy = specific || releaseStrategy = latest"
     },
     {
-      "name": "DefinitionStagesFilter",
+      "name": "definitionStagesFilter",
       "type": "boolean",
       "label": "Filter definition stages",
       "helpMarkDown": "Use default or target specific release definition stages",
       "defaultValue": false,
       "required": false,
-      "visibleRule": "ReleaseStrategy = create"
+      "visibleRule": "releaseStrategy = create"
     },
     {
-      "name": "DefinitionStages",
+      "name": "definitionStages",
       "type": "pickList",
       "label": "Definition stages",
       "helpMarkDown": "Target specific release definition stages (comma separated)",
@@ -115,71 +115,71 @@
       "properties": {
         "EditableOptions": true
       },
-      "visibleRule": "ReleaseStrategy = create && DefinitionStagesFilter = true"
+      "visibleRule": "releaseStrategy = create && definitionStagesFilter = true"
     },
     {
-      "name": "ReleaseTagFilter",
+      "name": "releaseTagFilter",
       "type": "boolean",
       "label": "Filter release tag",
       "helpMarkDown": "Enable target release filtering by tag name",
       "defaultValue": false,
       "required": false,
-      "visibleRule": "ReleaseStrategy = latest"
+      "visibleRule": "releaseStrategy = latest"
     },
     {
-      "name": "ReleaseTagName",
+      "name": "releaseTagName",
       "type": "string",
       "label": "Release tag name",
       "helpMarkDown": "Specify tag name filter of target release",
       "required": true,
-      "visibleRule": "ReleaseTagFilter = true"
+      "visibleRule": "releaseTagFilter = true"
     },
     {
-      "name": "ArtifactTagFilter",
+      "name": "artifactTagFilter",
       "type": "boolean",
       "label": "Filter artifact tag",
       "helpMarkDown": "Enable target release filtering by primary build artifact tag name",
       "defaultValue": false,
       "required": false,
-      "visibleRule": "ReleaseStrategy = create || ReleaseStrategy = latest"
+      "visibleRule": "releaseStrategy = create || releaseStrategy = latest"
     },
     {
-      "name": "ArtifactTagName",
+      "name": "artifactTagName",
       "type": "string",
       "label": "Artifact tag name",
       "helpMarkDown": "Specify tag name filter of primary build type release artifact",
       "required": true,
-      "visibleRule": "ArtifactTagFilter = true"
+      "visibleRule": "artifactTagFilter = true"
     },
     {
-      "name": "SourceBranchFilter",
+      "name": "sourceBranchFilter",
       "type": "boolean",
       "label": "Filter source branch",
       "helpMarkDown": "Enable target release filtering by primary artifact source branch name",
       "defaultValue": false,
       "required": false,
-      "visibleRule": "ReleaseStrategy = create || ReleaseStrategy = latest"
+      "visibleRule": "releaseStrategy = create || releaseStrategy = latest"
     },
     {
-      "name": "SourceBranchName",
+      "name": "sourceBranchName",
       "type": "string",
       "label": "Source branch name",
       "helpMarkDown": "Specify branch name of primary release artifact source. Default = 'refs/heads/master' (build artifacts) or 'master' (Git artifacts)",
       "defaultValue": "refs/heads/master",
       "required": true,
-      "visibleRule": "SourceBranchFilter = true"
+      "visibleRule": "sourceBranchFilter = true"
     },
     {
-      "name": "StageStatusFilter",
+      "name": "stageStatusFilter",
       "type": "boolean",
       "label": "Filter stage status",
       "helpMarkDown": "Enable target release filtering by stage(s) deployment status",
       "defaultValue": false,
       "required": false,
-      "visibleRule": "ReleaseStrategy = latest"
+      "visibleRule": "releaseStrategy = latest"
     },
     {
-      "name": "StageStatus",
+      "name": "stageStatus",
       "type": "pickList",
       "label": "Target stage status",
       "helpMarkDown": "Specify target release stage status filter. Default = Succeeded",
@@ -189,17 +189,17 @@
         "EditableOptions": false
       },
       "options": {
-        "Succeeded": "Succeeded",
-        "PartiallySucceeded": "Partially succeeded",
-        "NotStarted": "Not started",
-        "Rejected": "Rejected",
-        "Canceled": "Canceled"
+        "succeeded": "Succeeded",
+        "partiallySucceeded": "Partially succeeded",
+        "notStarted": "Not started",
+        "rejected": "Rejected",
+        "canceled": "Canceled"
       },
       "required": true,
-      "visibleRule": "StageStatusFilter = true"
+      "visibleRule": "stageStatusFilter = true"
     },
     {
-      "name": "ReleaseVariables",
+      "name": "releaseVariables",
       "type": "multiLine",
       "label": "Release variables",
       "helpMarkDown": "Override release variables of the target release pipeline when creating a new release. Specified release variables must be configured to be 'settable at release time'. In 'Name=Value' format, special characters supported, new line separated",
@@ -209,10 +209,10 @@
         "resizable": true
       },
       "required": false,
-      "visibleRule": "ReleaseStrategy = create"
+      "visibleRule": "releaseStrategy = create"
     },
     {
-      "name": "IgnoreFailure",
+      "name": "ignoreFailure",
       "type": "boolean",
       "label": "Ignore failures",
       "helpMarkDown": "Suppress errors and set task result to partially succeeded in case of failure. Default = false",
@@ -221,7 +221,7 @@
       "groupName": "Advanced"
     },
     {
-      "name": "ApprovalRetry",
+      "name": "approvalRetry",
       "type": "string",
       "label": "Approval retries",
       "helpMarkDown": "Specify number of attempts to retry (with 1 minute delay) approving target release stage deployment (if unsuccessful) before failing. Default = 60",
@@ -230,7 +230,7 @@
       "groupName": "Advanced"
     },
     {
-      "name": "UpdateInterval",
+      "name": "updateInterval",
       "type": "string",
       "label": "Update interval",
       "helpMarkDown": "Specify number seconds to wait before next release deployment progress update. Default = 5 (i.e. every 'X' seconds)",
@@ -241,37 +241,37 @@
   ],
   "dataSourceBindings": [
     {
-      "target": "ProjectName",
+      "target": "projectName",
       "endpointId": "tfs:teamfoundation",
       "endpointUrl": "{{endpoint.url}}/_apis/projects",
       "resultSelector": "jsonpath:$.value[?(@.state == 'wellFormed')]",
       "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
     },
     {
-      "target": "DefinitionName",
+      "target": "definitionName",
       "endpointId": "tfs:rm",
-      "endpointUrl": "{{endpoint.url}}/$(ProjectName)/_apis/release/definitions",
+      "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/release/definitions",
       "resultSelector": "jsonpath:$.value[?(@.isDeleted == false)]",
       "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
     },
     {
-      "target": "DefinitionStages",
+      "target": "definitionStages",
       "endpointId": "tfs:rm",
-      "endpointUrl": "{{endpoint.url}}/$(ProjectName)/_apis/release/definitions/?searchText=$(DefinitionName)&isExactNameMatch=true&$expand=Environments",
+      "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/release/definitions/?searchText=$(definitionName)&isExactNameMatch=true&$expand=Environments",
       "resultSelector": "jsonpath:$.value[*].environments[*]",
       "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
     },
     {
-      "target": "ReleaseName",
+      "target": "releaseName",
       "endpointId": "tfs:rm",
-      "endpointUrl": "{{endpoint.url}}/$(ProjectName)/_apis/release/releases?definitionId=$(DefinitionName)&$top=25",
+      "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/release/releases?definitionId=$(definitionName)&$top=25",
       "resultSelector": "jsonpath:$.value[*]",
       "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}} (by {{{createdBy.displayName}}} at {{{createdOn}}})\" }"
     },
     {
-      "target": "ReleaseStages",
+      "target": "releaseStages",
       "endpointId": "tfs:rm",
-      "endpointUrl": "{{endpoint.url}}/$(ProjectName)/_apis/release/releases?definitionId=$(DefinitionName)&searchText=$(ReleaseName)&$expand=Environments",
+      "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/release/releases?definitionId=$(definitionName)&searchText=$(releaseName)&$expand=Environments",
       "resultSelector": "jsonpath:$.value[*].environments[*]",
       "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
     }

@@ -105,7 +105,7 @@ describe("Filtrator", ()  => {
         filtersMock.target.releaseTags = [ "My-Tag-One", "My-Tag-Two" ];
         filtersMock.target.artifactTags = [ "My-Tag-One", "My-Tag-Two" ];
         filtersMock.target.artifactBranch = "My-Branch";
-        filtersMock.target.stageStatuses = [ "Succeeded", "Rejected" ];
+        filtersMock.target.stageStatuses = [ "succeeded", "rejected" ];
 
         const primaryBuildArtifactMock = TypeMoq.Mock.ofType<Artifact>();
         primaryBuildArtifactMock.target.sourceId = "1";
