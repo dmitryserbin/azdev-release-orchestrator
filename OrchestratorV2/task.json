@@ -25,19 +25,19 @@
     {
       "name": "EndpointType",
       "type": "radio",
-      "label": "Azure DevOps Endpoint Type",
+      "label": "Azure DevOps endpoint type",
       "helpMarkDown": "Select endpoint type to connect Azure DevOps: \nIntegrated = default 'SystemVssConnection' service endpoint for 'Project Collection Build Service' user account; \nService = user-defined personal access token (PAT) service endpoint \n\nNote: requires 'View releases', 'View release definition', 'Create releases' and 'Manage deployments' release pipeline permissions",
       "required": true,
       "defaultValue": "integrated",
       "options": {
-        "integrated": "Integrated Endpoint",
-        "service": "Service Endpoint"
+        "integrated": "Integrated endpoint",
+        "service": "Service endpoint"
       }
     },
     {
       "name": "EndpointName",
       "type": "connectedService:ExternalTfs",
-      "label": "Service Endpoint",
+      "label": "Service endpoint",
       "required": true,
       "helpMarkDown": "Select service endpoint for Azure DevOps account",
       "visibleRule": "EndpointType = service"
@@ -45,7 +45,7 @@
     {
       "name": "ProjectName",
       "type": "pickList",
-      "label": "Project Name",
+      "label": "Project name",
       "helpMarkDown": "Select target project from the list or specify project name",
       "required": true,
       "properties": {
@@ -55,7 +55,7 @@
     {
       "name": "DefinitionName",
       "type": "pickList",
-      "label": "Release Definition",
+      "label": "Release definition",
       "helpMarkDown": "Select target release definition or specify definition name",
       "required": true,
       "properties": {
@@ -65,20 +65,20 @@
     {
       "name": "ReleaseStrategy",
       "type": "radio",
-      "label": "Release Strategy",
+      "label": "Release strategy",
       "helpMarkDown": "Create new release, target existing or latest release in the release definition",
       "required": true,
       "defaultValue": "create",
       "options": {
-        "create": "Create Release",
-        "latest": "Latest Release",
-        "specific": "Specific Release"
+        "create": "Create release",
+        "latest": "Latest release",
+        "specific": "Specific release"
       }
     },
     {
       "name": "ReleaseName",
       "type": "pickList",
-      "label": "Release Name",
+      "label": "Release name",
       "helpMarkDown": "Select target release (shows last 25 releases) or specify release name or ID",
       "required": true,
       "properties": {
@@ -89,7 +89,7 @@
     {
       "name": "ReleaseStages",
       "type": "pickList",
-      "label": "Release Stages",
+      "label": "Release stages",
       "helpMarkDown": "Target specific release stages (comma separated)",
       "required": true,
       "properties": {
@@ -100,7 +100,7 @@
     {
       "name": "DefinitionStagesFilter",
       "type": "boolean",
-      "label": "Filter Definition Stages",
+      "label": "Filter definition stages",
       "helpMarkDown": "Use default or target specific release definition stages",
       "defaultValue": false,
       "required": false,
@@ -109,7 +109,7 @@
     {
       "name": "DefinitionStages",
       "type": "pickList",
-      "label": "Definition Stages",
+      "label": "Definition stages",
       "helpMarkDown": "Target specific release definition stages (comma separated)",
       "required": true,
       "properties": {
@@ -120,7 +120,7 @@
     {
       "name": "ReleaseTagFilter",
       "type": "boolean",
-      "label": "Filter Release Tag",
+      "label": "Filter release tag",
       "helpMarkDown": "Enable target release filtering by tag name",
       "defaultValue": false,
       "required": false,
@@ -129,7 +129,7 @@
     {
       "name": "ReleaseTagName",
       "type": "string",
-      "label": "Release Tag Name",
+      "label": "Release tag name",
       "helpMarkDown": "Specify tag name filter of target release",
       "required": true,
       "visibleRule": "ReleaseTagFilter = true"
@@ -137,8 +137,8 @@
     {
       "name": "ArtifactTagFilter",
       "type": "boolean",
-      "label": "Filter Artifact Tag",
-      "helpMarkDown": "Enable target release filtering by primary artifact tag name",
+      "label": "Filter artifact tag",
+      "helpMarkDown": "Enable target release filtering by primary build artifact tag name",
       "defaultValue": false,
       "required": false,
       "visibleRule": "ReleaseStrategy = create || ReleaseStrategy = latest"
@@ -146,15 +146,15 @@
     {
       "name": "ArtifactTagName",
       "type": "string",
-      "label": "Artifact Tag Name",
-      "helpMarkDown": "Specify tag name filter of primary release artifact",
+      "label": "Artifact tag name",
+      "helpMarkDown": "Specify tag name filter of primary build type release artifact",
       "required": true,
       "visibleRule": "ArtifactTagFilter = true"
     },
     {
       "name": "SourceBranchFilter",
       "type": "boolean",
-      "label": "Filter Source Branch",
+      "label": "Filter source branch",
       "helpMarkDown": "Enable target release filtering by primary artifact source branch name",
       "defaultValue": false,
       "required": false,
@@ -163,7 +163,7 @@
     {
       "name": "SourceBranchName",
       "type": "string",
-      "label": "Source Branch Name",
+      "label": "Source branch name",
       "helpMarkDown": "Specify branch name of primary release artifact source. Default = 'refs/heads/master' (build artifacts) or 'master' (Git artifacts)",
       "defaultValue": "refs/heads/master",
       "required": true,
@@ -172,7 +172,7 @@
     {
       "name": "StageStatusFilter",
       "type": "boolean",
-      "label": "Filter Stage Status",
+      "label": "Filter stage status",
       "helpMarkDown": "Enable target release filtering by stage(s) deployment status",
       "defaultValue": false,
       "required": false,
@@ -181,7 +181,7 @@
     {
       "name": "StageStatus",
       "type": "pickList",
-      "label": "Target Stage Status",
+      "label": "Target stage status",
       "helpMarkDown": "Specify target release stage status filter. Default = Succeeded",
       "defaultValue": "Succeeded",
       "properties": {
@@ -190,8 +190,8 @@
       },
       "options": {
         "Succeeded": "Succeeded",
-        "PartiallySucceeded": "Partially Succeeded",
-        "NotStarted": "Not Started",
+        "PartiallySucceeded": "Partially succeeded",
+        "NotStarted": "Not started",
         "Rejected": "Rejected",
         "Canceled": "Canceled"
       },
@@ -201,7 +201,7 @@
     {
       "name": "ReleaseVariables",
       "type": "multiLine",
-      "label": "Release Variables",
+      "label": "Release variables",
       "helpMarkDown": "Override release variables of the target release pipeline when creating a new release. Specified release variables must be configured to be 'settable at release time'. In 'Name=Value' format, special characters supported, new line separated",
       "properties": {
         "rows": 8,
@@ -214,7 +214,7 @@
     {
       "name": "IgnoreFailure",
       "type": "boolean",
-      "label": "Ignore Failures",
+      "label": "Ignore failures",
       "helpMarkDown": "Suppress errors and set task result to partially succeeded in case of failure. Default = false",
       "defaultValue": false,
       "required": false,
@@ -223,7 +223,7 @@
     {
       "name": "ApprovalRetry",
       "type": "string",
-      "label": "Approval Retries",
+      "label": "Approval retries",
       "helpMarkDown": "Specify number of attempts to retry (with 1 minute delay) approving target release stage deployment (if unsuccessful) before failing. Default = 60",
       "defaultValue": 60,
       "required": true,
@@ -232,7 +232,7 @@
     {
       "name": "UpdateInterval",
       "type": "string",
-      "label": "Progress Update Interval",
+      "label": "Update interval",
       "helpMarkDown": "Specify number seconds to wait before next release deployment progress update. Default = 5 (i.e. every 'X' seconds)",
       "defaultValue": 5,
       "required": true,
