@@ -33,7 +33,7 @@ The task uses either **integrated** (SystemVssConnection) or **specific**  perso
 
 To perform release pipeline orchestration the task requires Azure DevOps service endpoint with specific access to target project pipelines to be able to create and manage releases.
 
-There are two types of Azure DevOps **service endoints** supported:
+There are two types of Azure DevOps [service endoints](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) supported:
 
 Type | Name | Account
 ---- | ---- | -------
@@ -182,9 +182,9 @@ steps:
 
 ## Advanced
 
-- `Ignore failures`: suppress errors and set task result to partially succeeded in case of failure
-- `Approval fetries`: number of attempts to retry (with 1 minute delay) approving target release stage deployment (if unsuccessful) before failing
-- `Update interval`: number seconds to wait before next release deployment progress update (i.e. every `X` seconds)
+- `Ignore failures`: suppress errors and set task result to partially succeeded in case of failure. Might be useful when it is expected for target pipeline to fail
+- `Approval fetries`: number of attempts to retry (with 1 minute delay) approving target release stage deployment (if unsuccessful) before failing. Set to `0` if you want to disable approval retry and stop immediately if approval fails
+- `Update interval`: number seconds to wait before next release deployment progress update (i.e. every `X` seconds). Might be useful for longer releases to help reducing number of calls to your Azure DevOps pipeline
 
 > Template: advanced task configuration
 
