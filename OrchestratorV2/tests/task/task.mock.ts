@@ -7,30 +7,35 @@ import { mockEndpoint, mockInput } from "./helpers";
 
 const path: string = join(__dirname, "../..", "task.js");
 
-const endpointType: string = process.env.EndpointType!;
-const endpointName: string = process.env.EndpointName!;
-const accountName: string = process.env.EndpointAccount!;
-const accountToken: string = process.env.EndpointToken!;
+const endpointType: string = process.env.endpointType!;
+const endpointName: string = process.env.endpointName!;
+const accountName: string = process.env.endpointAccount!;
+const accountToken: string = process.env.endpointToken!;
 
 const inputs: string[] = [
 
-    "TargetProject",
-    "TargetDefinition",
-    "ReleaseStrategy",
-    "IgnoreFailure",
+    "endpointType",
+    "endpointName",
 
-    "DefinitionStagesFilter",
-    "TargetDefinitionStages",
-    "TargetRelease",
-    "TargetReleaseStages",
-    "ReleaseTagFilter",
-    "ReleaseTagName",
-    "ArtifactTagFilter",
-    "ArtifactTagName",
-    "SourceBranchFilter",
-    "SourceBranchName",
+    "projectName",
+    "definitionName",
+    "releaseStrategy",
 
-    "EndpointName",
+    "definitionStagesFilter",
+    "definitionStages",
+    "releaseName",
+    "releaseStages",
+    "releaseTagFilter",
+    "releaseTagName",
+    "artifactTagFilter",
+    "artifactTagName",
+    "sourceBranchFilter",
+    "sourceBranchName",
+
+    "ignoreFailure",
+    "updateInterval",
+    "approvalRetry",
+
     "SYSTEM_TEAMPROJECT",
     "RELEASE_RELEASENAME",
     "RELEASE_DEPLOYMENT_REQUESTEDFOR",

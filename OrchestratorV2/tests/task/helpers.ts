@@ -15,13 +15,13 @@ export function mockInput(taskRunner: TaskMockRunner, variables: string[]): void
 
 export function mockEndpoint(taskRunner: TaskMockRunner, type: string, name: string, account: string, token: string): void {
 
-    taskRunner.setInput("EndpointType", type);
+    taskRunner.setInput("endpointType", type);
 
     let tokenParameterName: string = "AccessToken";
 
     if (type === "service") {
 
-        taskRunner.setInput("EndpointName", name);
+        taskRunner.setInput("endpointName", name);
         tokenParameterName = "ApiToken";
 
     }

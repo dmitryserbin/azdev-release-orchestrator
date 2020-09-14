@@ -9,32 +9,35 @@ import { MockTestRunner } from "azure-pipelines-task-lib/mock-test";
 
 import { clearMockVariables, setMockVariables } from "./helpers";
 
-describe("Orchestrator", ()  => {
+describe("Task", ()  => {
 
     const path: string = join(__dirname, "task.mock.js");
 
     const defaultVariables: any = {
 
-        EndpointType: "service",
-        EndpointName: "My-Endpoint",
-        EndpointAccount: process.env.azAccount ? process.env.azAccount : "My-Account",
-        EndpointToken: process.env.azToken ? process.env.azToken : "My-Token",
+        endpointType: "service",
+        endpointName: "My-Endpoint",
+        endpointAccount: "My-Account",
+        endpointToken: "My-Token",
 
-        TargetProject: "761623f0-c4c0-4dab-884b-a428a01c200f",
-        TargetDefinition: "1",
-        ReleaseStrategy: null,
-        IgnoreFailure: "false",
+        projectName: "My-Project",
+        definitionName: "My-Definition",
+        releaseStrategy: "create",
 
-        DefinitionStagesFilter: "false",
-        TargetDefinitionStages: "DEV,TEST,PROD",
-        TargetRelease: null,
-        TargetReleaseStages: "DEV,TEST,PROD",
-        ReleaseTagFilter: "false",
-        ReleaseTagName: null,
-        ArtifactTagFilter: "false",
-        ArtifactTagName: null,
-        SourceBranchFilter: "false",
-        SourceBranchName: null,
+        definitionStagesFilter: "false",
+        definitionStages: "DEV,TEST,PROD",
+        releaseName: null,
+        releaseStages: "DEV,TEST,PROD",
+        releaseTagFilter: "false",
+        releaseTagName: null,
+        artifactTagFilter: "false",
+        artifactTagName: null,
+        sourceBranchFilter: "false",
+        sourceBranchName: null,
+
+        ignoreFailure: "false",
+        updateInterval: 1,
+        approvalRetry: 1,
 
         SYSTEM_TEAMPROJECT: "HelloYo",
         RELEASE_RELEASENAME: "HelloYo-20180101-1",
@@ -46,7 +49,6 @@ describe("Orchestrator", ()  => {
     it("Should run orchestrator @task", async () => {
 
         const variables: any = Object.assign({}, defaultVariables);
-        variables.ReleaseStrategy = "create";
 
         setMockVariables(variables);
 
