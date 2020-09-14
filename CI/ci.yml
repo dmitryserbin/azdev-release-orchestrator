@@ -1,5 +1,3 @@
-trigger: none
-
 jobs:
 - job: OrchestratorV1
   pool:
