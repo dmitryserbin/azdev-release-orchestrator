@@ -19,6 +19,9 @@ describe("TaskHelper", ()  => {
     debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target);
 
     const endpointNameMock: string = "My-Endpoint";
+    const endpointAccountMock: string = "My-Organization";
+    const endpointUrlMock: string = `https://dev.azure.com/${endpointAccountMock}`;
+    const endpointTokenMock: string = "My-Token";
 
     const orchestratorProjectNameMock: string = "My-Orchestrator-Project";
     const orchestratorReleaseNameMock: string = "My-Orchestrator-Release";
@@ -68,6 +71,38 @@ describe("TaskHelper", ()  => {
     afterEach(async () => {
 
         ImportMock.restore();
+
+    });
+
+    it("Should get service endpoint", async () => {
+
+        //#region ARRANGE
+
+        inputs["endpointName"] = endpointNameMock;
+        inputs["endpointType"] = "service";
+
+        const getEndpointUrlMock = ImportMock.mockFunction(TaskLibrary, "getEndpointUrl");
+        getEndpointUrlMock.callsFake(() => endpointUrlMock);
+
+        const getEndpointAuthorizationParameterMock = ImportMock.mockFunction(TaskLibrary, "getEndpointAuthorizationParameter");
+        getEndpointAuthorizationParameterMock.callsFake(() => endpointTokenMock);
+
+        //#endregion
+
+        //#region ACT
+
+        const result = await taskHelper.getEndpoint();
+
+        //#endregion
+
+        //#region ASSERT
+
+        chai.expect(result).to.not.eq(null);
+        chai.expect(result.url).to.eq(endpointUrlMock);
+        chai.expect(result.account).to.eq(endpointAccountMock);
+        chai.expect(result.token).to.eq(endpointTokenMock);
+
+        //#endregion
 
     });
 
