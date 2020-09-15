@@ -121,7 +121,6 @@ describe("TaskHelper", ()  => {
 
     });
 
-
     it("Should get specific release parameters", async () => {
 
         //#region ARRANGE
