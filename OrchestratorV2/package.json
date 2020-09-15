@@ -10,8 +10,7 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint . --ext .ts",
-    "test": "mocha -r ts-node/register tests/**/*.test.ts --no-timeouts --grep \"@task|@manual\" --invert --reporter mocha-multi-reporters --reporter-options configFile=tests/config.json",
-    "task": "mocha -r ts-node/register tests/**/*.test.ts --no-timeouts --grep @task",
+    "test": "mocha -r ts-node/register tests/**/*.test.ts --no-timeouts --grep \"@manual\" --invert --reporter mocha-multi-reporters --reporter-options configFile=tests/config.json",
     "manual": "set DEBUG=release-orchestrator:* & mocha -r ts-node/register tests/**/*.test.ts --no-timeouts --grep @manual",
     "clean": "npm prune --production"
   },
