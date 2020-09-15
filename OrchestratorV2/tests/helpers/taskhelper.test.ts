@@ -27,6 +27,7 @@ describe("TaskHelper", ()  => {
 
     const projectNameMock: string = "My-Project";
     const definitionNameMock: string = "My-Definition";
+    const definitionStagesMock: string = "DEV,TEST,PROD";
     const releaseNameMock: string = "My-Release";
     const releaseStagesMock: string = "DEV,TEST,PROD";
 
@@ -34,6 +35,8 @@ describe("TaskHelper", ()  => {
     const artifactTagNameMock: string = "My-Artifact-Tag-One,My-Artifact-Tag-Two";
     const sourceBranchNameMock: string = "My-Branch";
     const stageStatusMock: string = "succeeded,rejected";
+
+    const releaseVariablesMock: string = "My-Variable-One=My-Value-One"
 
     const updateIntervalMock: string = "1";
     const approvalRetryMock: string = "1";
@@ -68,6 +71,58 @@ describe("TaskHelper", ()  => {
 
     });
 
+    it("Should get new release parameters", async () => {
+
+        //#region ARRANGE
+
+        inputs["releaseStrategy"] = "create";
+        inputs["projectName"] = projectNameMock;
+        inputs["definitionName"] = definitionNameMock;
+
+        inputs["definitionStagesFilter"] = true;
+        inputs["definitionStages"] = definitionStagesMock;
+
+        inputs["artifactTagFilter"] = true;
+        inputs["artifactTagName"] = artifactTagNameMock;
+
+        inputs["sourceBranchFilter"] = true;
+        inputs["sourceBranchName"] = sourceBranchNameMock;
+
+        inputs["releaseVariables"] = releaseVariablesMock;
+
+        inputs["updateInterval"] = updateIntervalMock;
+        inputs["approvalRetry"] = approvalRetryMock;
+
+        //#endregion
+
+        //#region ACT
+
+        const result = await taskHelper.getParameters();
+
+        //#endregion
+
+        //#region ASSERT
+
+        chai.expect(result).to.not.eq(null);
+        chai.expect(result.releaseType).to.eq("New");
+        chai.expect(result.projectName).to.eq(projectNameMock);
+        chai.expect(result.definitionName).to.eq(definitionNameMock);
+
+        chai.expect(result.settings.sleep).to.eq(Number(updateIntervalMock) * 1000);
+        chai.expect(result.settings.approvalRetry).to.eq(Number(approvalRetryMock));
+
+        chai.expect(result.stages).to.eql([ "DEV", "TEST", "PROD" ]);
+        chai.expect(result.filters.artifactTags).to.eql([ "My-Artifact-Tag-One", "My-Artifact-Tag-Two" ]);
+        chai.expect(result.filters.artifactBranch).to.eq(sourceBranchNameMock);
+
+        chai.expect(result.variables.length).to.eq(1);
+        chai.expect(result.variables[0].name).to.eq("My-Variable-One");
+        chai.expect(result.variables[0].value).to.eq("My-Value-One");
+
+        //#endregion
+
+    });
+
     it("Should get latest release parameters", async () => {
 
         //#region ARRANGE
@@ -75,6 +130,8 @@ describe("TaskHelper", ()  => {
         inputs["releaseStrategy"] = "latest";
         inputs["projectName"] = projectNameMock;
         inputs["definitionName"] = definitionNameMock;
+
+        inputs["releaseStages"] = releaseStagesMock;
 
         inputs["releaseTagFilter"] = true;
         inputs["releaseTagName"] = releaseTagNameMock;
@@ -90,8 +147,6 @@ describe("TaskHelper", ()  => {
 
         inputs["updateInterval"] = updateIntervalMock;
         inputs["approvalRetry"] = approvalRetryMock;
-
-        inputs["releaseStages"] = releaseStagesMock;
 
         //#endregion
 
