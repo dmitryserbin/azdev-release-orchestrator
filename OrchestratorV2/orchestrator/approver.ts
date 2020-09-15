@@ -71,7 +71,7 @@ export class Approver implements IApprover {
                 // When at least one approval succeeded
                 if (approvalStatus.status === ApprovalStatus.Approved) {
 
-                    this.consoleLogger.log(`Stage <${stageStatus.name}> (${stageStatus.id}) successfully approved`);
+                    this.consoleLogger.log(`Stage <${stageStatus.name}> (${stageStatus.id}) approved successfully`);
 
                     break;
 
