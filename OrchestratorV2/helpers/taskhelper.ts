@@ -84,9 +84,9 @@ export class TaskHelper implements ITaskHelper {
 
         const settings: ISettings = {
 
-            sleep: Number.isFinite(updateInterval)
+            sleep: Number(updateInterval)
                 ? Number(updateInterval) * 1000 : 5000,
-            approvalRetry: Number.isFinite(approvalRetry)
+            approvalRetry: Number(approvalRetry)
                 ? Number(approvalRetry) : 60,
             approvalSleep: 60000,
 
