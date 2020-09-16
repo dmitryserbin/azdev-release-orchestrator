@@ -4,7 +4,7 @@
   "friendlyName": "Release Orchestrator",
   "instanceNameFormat": "Release Orchestrator",
   "description": "Manage and orchestrate Azure DevOps release pipelines",
-  "helpMarkDown": "This version of the task is deprecated, please update to the latest version. For aditional information and support please refer to <https://github.com/dmitryserbin/azdev-release-orchestrator> project repository",
+  "helpMarkDown": "This version of the task is deprecated, please update to the latest version.\n\nFor aditional information and support please refer to <https://github.com/dmitryserbin/azdev-release-orchestrator> project repository",
   "category": "Release",
   "author": "Dmitry Serbin",
   "deprecated": true,
