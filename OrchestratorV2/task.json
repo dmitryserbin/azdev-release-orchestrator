@@ -1,4 +1,4 @@
-{
+﻿{
   "id": "5d38d46b-4c0a-4c14-8f0c-04df59e4dc27",
   "name": "releaseorchestrator",
   "friendlyName": "Release Orchestrator",
@@ -222,20 +222,28 @@
     },
     {
       "name": "approvalRetry",
-      "type": "string",
+      "type": "int",
       "label": "Approval retries",
       "helpMarkDown": "Specify number of attempts to retry (with 1 minute delay) approving target release stage deployment (if unsuccessful) before failing. Default = 60",
       "defaultValue": 60,
       "required": true,
+      "validation": {
+        "expression": "isInRange(value, 0, 100)",
+        "message": "Approval retries must be within 0 <=> 100 range"
+      },
       "groupName": "Advanced"
     },
     {
       "name": "updateInterval",
-      "type": "string",
+      "type": "int",
       "label": "Update interval",
       "helpMarkDown": "Specify number seconds to wait before next release deployment progress update. Default = 5 (i.e. every 'X' seconds)",
       "defaultValue": 5,
       "required": true,
+      "validation": {
+        "expression": "isInRange(value, 1, 300)",
+        "message": "Update interval must be within 1 <=> 300 range"
+      },
       "groupName": "Advanced"
     }
   ],
