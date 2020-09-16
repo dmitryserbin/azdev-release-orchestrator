@@ -9,7 +9,7 @@ import { DebugCreator } from "../loggers/debugcreator";
 const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator");
 const debugLogger: IDebugLogger = debugCreator.extend("Retry");
 
-export function Retryable(attempts: number = 12, timeout: number = 5000): Function {
+export function Retryable(attempts: number = 10, timeout: number = 6000): Function {
 
     const debug = debugLogger.extend("retryable");
 
@@ -27,7 +27,7 @@ export function Retryable(attempts: number = 12, timeout: number = 5000): Functi
 
             } catch (e) {
 
-                e.message = `Failed retrying <${name}> for <${attempts}> times. ${e.message}`;
+                e.message = `Failed retrying <${propertyKey}> for <${attempts}> times. ${e.message}`;
 
                 throw e;
 
@@ -50,8 +50,6 @@ async function retryAsync(target: Function, args: any[], attempts: number, timeo
         return await target.apply(this, args);
 
     } catch (e) {
-
-        debug(e.message);
 
         if (--attempts < 0) {
 
