@@ -1,6 +1,6 @@
 import "mocha";
 
-import { use, expect } from "chai";
+import * as chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 
 import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
@@ -11,38 +11,56 @@ const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator");
 
 describe("Retryable", () => {
 
-    use(chaiAsPromised);
+    chai.use(chaiAsPromised);
 
     it("Should pass immediately", async () => {
 
-        // Arrange
+        //#region ARRANGE
+
         const retryCount: number = 0;
         const retryThis: IRetryThis = new RetryThis(0, debugCreator);
 
-        // Act & Assert
-        await expect(retryThis.retry(retryCount)).not.to.be.rejected;
+        //#endregion
+
+        //#region ACT & ASSERT
+
+        await chai.expect(retryThis.retry(retryCount)).not.to.be.rejected;
+
+        //#endregion
 
     });
 
     it("Should retry and pass", async () => {
 
-        // Arrange
+        //#region ARRANGE
+
         const retryCount: number = 3;
         const retryThis: IRetryThis = new RetryThis(0, debugCreator);
 
-        // Act & Assert
-        await expect(retryThis.retry(retryCount)).not.to.be.rejected;
+        //#endregion
+
+        //#region ACT & ASSERT
+
+        await chai.expect(retryThis.retry(retryCount)).not.to.be.rejected;
+
+        //#endregion
 
     });
 
     it("Should retry and fail", async () => {
 
-        // Arrange
+        //#region ARRANGE
+
         const retryCount: number = 10;
         const retryThis: IRetryThis = new RetryThis(0, debugCreator);
 
-        // Act & Assert
-        await expect(retryThis.retry(retryCount)).to.be.rejected;
+        //#endregion
+
+        //#region ACT & ASSERT
+
+        await chai.expect(retryThis.retry(retryCount)).to.be.rejected;
+
+        //#endregion
 
     });
 
