@@ -66,7 +66,7 @@ export class ReleaseHelper implements IReleaseHelper {
             definitionId,
             undefined,
             releaseName
-        )
+        );
 
         debug(matchingReleases.map(
             (release) => `${release.name} (${release.id})`));
@@ -87,7 +87,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    public async findReleases(projectName: string, definitionId: number, filter: IReleaseFilter, top: number): Promise<Release[]> {
+    public async findReleases(projectName: string, definitionName: string, definitionId: number, filter: IReleaseFilter, top: number): Promise<Release[]> {
 
         const debug = this.debugLogger.extend(this.findReleases.name);
 
@@ -134,9 +134,9 @@ export class ReleaseHelper implements IReleaseHelper {
 
         }
 
-        if (releases.length <= 0) {
+        if (!releases.length) {
 
-            throw new Error(`No definition <${definitionId}> releases matching filter (tags: ${filter.tags ? filter.tags : "-"}, artifact: ${filter.artifactVersion ? filter.artifactVersion : "-"}, branch: ${filter.sourceBranch ? filter.sourceBranch : "-"}, stage status: ${filter.stageStatuses ? filter.stageStatuses : "-"}) criteria found`);
+            throw new Error(`No definition <${definitionName}> (${definitionId}) releases matching filter found`);
 
         }
 
@@ -149,11 +149,11 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    public async getLastRelease(projectName: string, definitionId: number, stages: string[], filter: IReleaseFilter, top: number): Promise<Release> {
+    public async getLastRelease(projectName: string, definitionName: string, definitionId: number, stages: string[], filter: IReleaseFilter, top: number): Promise<Release> {
 
         const debug = this.debugLogger.extend(this.getLastRelease.name);
 
-        const filteredReleases: Release[] = await this.findReleases(projectName, definitionId, filter, top);
+        const filteredReleases: Release[] = await this.findReleases(projectName, definitionName, definitionId, filter, top);
 
         // Get latest release by ID
         const filteredRelease: Release = filteredReleases.sort(

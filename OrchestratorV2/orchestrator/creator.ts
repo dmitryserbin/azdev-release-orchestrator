@@ -113,7 +113,7 @@ export class Creator implements ICreator {
 
                 const releaseFilter: IReleaseFilter = await this.filterCreator.createReleaseFilter(project, definition, parameters.stages, parameters.filters);
 
-                release = await this.releaseHelper.getLastRelease(project.name!, definition.id!, parameters.stages, releaseFilter, 100);
+                release = await this.releaseHelper.getLastRelease(project.name!, definition.name!, definition.id!, parameters.stages, releaseFilter, 100);
 
                 break;
 

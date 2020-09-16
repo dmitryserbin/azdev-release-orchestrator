@@ -33,6 +33,9 @@ describe("Filtrator", ()  => {
 
     const buildCount: number = 1;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const buildDefinitionReferenceMock: any = { definition: { name: "My-Definition", id: "1" } };
+
     let projectMock: TypeMoq.IMock<TeamProject>;
     let definitionMock: TypeMoq.IMock<ReleaseDefinition>;
     let parametersMock: TypeMoq.IMock<IParameters>;
@@ -68,7 +71,7 @@ describe("Filtrator", ()  => {
 
         const primaryBuildArtifactMock = TypeMoq.Mock.ofType<Artifact>();
         primaryBuildArtifactMock.target.sourceId = "1";
-        primaryBuildArtifactMock.target.definitionReference = { definition: { id: "1" } }
+        primaryBuildArtifactMock.target.definitionReference = buildDefinitionReferenceMock;
 
         const buildArtifactMock = TypeMoq.Mock.ofType<Build>();
         buildArtifactMock.target.id = 1
@@ -76,7 +79,7 @@ describe("Filtrator", ()  => {
         releaseHelperMock.setup((x) => x.getDefinitionPrimaryArtifact(definitionMock.target, "Build")).returns(
             () => Promise.resolve(primaryBuildArtifactMock.target));
 
-        buildHelperMock.setup((x) => x.findBuild(projectMock.target.name!, Number(primaryBuildArtifactMock.target.definitionReference!.definition.id), buildCount, parametersMock.target.filters.artifactTags)).returns(
+        buildHelperMock.setup((x) => x.findBuild(projectMock.target.name!, primaryBuildArtifactMock.target.definitionReference!.definition.name!, Number(primaryBuildArtifactMock.target.definitionReference!.definition.id!), buildCount, parametersMock.target.filters.artifactTags)).returns(
             () => Promise.resolve(buildArtifactMock.target));
 
         releaseHelperMock.setup((x) => x.getArtifacts(projectMock.target.name!, definitionMock.target.id!, primaryBuildArtifactMock.target.sourceId!, buildArtifactMock.target.id!.toString(), parametersMock.target.filters.artifactBranch)).returns(
@@ -109,7 +112,7 @@ describe("Filtrator", ()  => {
 
         const primaryBuildArtifactMock = TypeMoq.Mock.ofType<Artifact>();
         primaryBuildArtifactMock.target.sourceId = "1";
-        primaryBuildArtifactMock.target.definitionReference = { definition: { id: "1" } }
+        primaryBuildArtifactMock.target.definitionReference = buildDefinitionReferenceMock;
 
         const buildArtifactMock = TypeMoq.Mock.ofType<Build>();
         buildArtifactMock.target.id = 1
@@ -117,7 +120,7 @@ describe("Filtrator", ()  => {
         releaseHelperMock.setup((x) => x.getDefinitionPrimaryArtifact(definitionMock.target, "Build")).returns(
             () => Promise.resolve(primaryBuildArtifactMock.target));
 
-        buildHelperMock.setup((x) => x.findBuild(projectMock.target.name!, Number(primaryBuildArtifactMock.target.definitionReference!.definition.id), buildCount, parametersMock.target.filters.artifactTags)).returns(
+        buildHelperMock.setup((x) => x.findBuild(projectMock.target.name!, primaryBuildArtifactMock.target.definitionReference!.definition.name!, Number(primaryBuildArtifactMock.target.definitionReference!.definition.id!), buildCount, parametersMock.target.filters.artifactTags)).returns(
             () => Promise.resolve(buildArtifactMock.target));
 
         //#endregion

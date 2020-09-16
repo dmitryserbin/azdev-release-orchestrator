@@ -48,9 +48,10 @@ export class Filtrator implements IFiltrator {
 
                 debug(`Using <${String.Join("|", filters.artifactTags)}> artifact tag filter`);
 
-                const buildDefinitionId: number = Number(primaryBuildArtifact.definitionReference!.definition.id);
+                const buildDefinitionName: string = primaryBuildArtifact.definitionReference!.definition.name!;
+                const buildDefinitionId: number = Number(primaryBuildArtifact.definitionReference!.definition.id!);
 
-                const buildArtifact: Build = await this.buildHelper.findBuild(project.name!, buildDefinitionId, 100, filters.artifactTags);
+                const buildArtifact: Build = await this.buildHelper.findBuild(project.name!, buildDefinitionName, buildDefinitionId, 100, filters.artifactTags);
 
                 artifactVersion = buildArtifact.id!.toString();
 
@@ -100,9 +101,10 @@ export class Filtrator implements IFiltrator {
 
                 debug(`Using <${String.Join("|", filters.artifactTags)}> artifact tag filter`);
 
-                const buildDefinitionId: number = Number(primaryBuildArtifact.definitionReference!.definition.id);
+                const buildDefinitionName: string = primaryBuildArtifact.definitionReference!.definition.name!;
+                const buildDefinitionId: number = Number(primaryBuildArtifact.definitionReference!.definition.id!);
 
-                const buildArtifact: Build = await this.buildHelper.findBuild(project.name!, buildDefinitionId, 100, filters.artifactTags);
+                const buildArtifact: Build = await this.buildHelper.findBuild(project.name!, buildDefinitionName, buildDefinitionId, 100, filters.artifactTags);
 
                 releaseFilter.artifactVersion = buildArtifact.id!.toString();
 

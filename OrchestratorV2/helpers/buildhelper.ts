@@ -19,11 +19,11 @@ export class BuildHelper implements IBuildHelper {
 
     }
 
-    public async findBuild(projectName: string, definitionId: number, top: number, tags?: string[]): Promise<Build> {
+    public async findBuild(projectName: string, definitionName: string, definitionId: number, top: number, tags: string[]): Promise<Build> {
 
         const debug = this.debugLogger.extend(this.findBuild.name);
 
-        const availableBuilds: Build[] = await this.buildApi.getBuilds(
+        const builds: Build[] = await this.buildApi.getBuilds(
             projectName,
             [ definitionId ],
             undefined,
@@ -38,22 +38,14 @@ export class BuildHelper implements IBuildHelper {
             undefined,
             top);
 
-        if (availableBuilds.length <= 0) {
+        if (!builds.length) {
 
-            if (tags) {
-
-                throw new Error(`No definition <${definitionId}> builds matching filter found (tags: ${tags ? tags : "-"})`);
-
-            } else {
-
-                throw new Error(`No definition <${definitionId}> builds found`);
-
-            }
+            throw new Error(`No definition <${definitionName}> (${definitionId}) builds matching filter found`);
 
         }
 
-        // Get last available build
-        const targetBuild: Build = availableBuilds[0];
+        // Filter last available build
+        const targetBuild: Build = builds[0];
 
         debug(targetBuild);
 
