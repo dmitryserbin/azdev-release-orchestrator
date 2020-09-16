@@ -4,11 +4,11 @@
   "friendlyName": "Release Orchestrator",
   "instanceNameFormat": "Release Orchestrator",
   "description": "Manage and orchestrate Azure DevOps release pipelines",
-  "helpMarkDown": "For aditional information and support please refer to <https://github.com/dmitryserbin/azdev-release-orchestrator> project repository.",
+  "helpMarkDown": "For aditional information and support please refer to <https://github.com/dmitryserbin/azdev-release-orchestrator> project repository",
   "category": "Release",
   "author": "Dmitry Serbin",
   "deprecated": false,
-  "preview": true,
+  "preview": false,
   "version": {
     "Major": 2,
     "Minor": 0,
