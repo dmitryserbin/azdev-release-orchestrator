@@ -51,6 +51,8 @@ async function retryAsync(target: Function, args: any[], attempts: number, timeo
 
     } catch (e) {
 
+        debug(e.message);
+
         if (--attempts < 0) {
 
             throw new Error(e);
