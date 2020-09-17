@@ -4,7 +4,7 @@ pr:
 jobs:
 - job: OrchestratorV1
   pool:
-    vmImage: windows-latest
+    name: Default
   steps:
   - template: templates/build.yml
     parameters:
@@ -16,7 +16,7 @@ jobs:
 
 - job: OrchestratorV2
   pool:
-    vmImage: windows-latest
+    name: Default
   steps:
   - template: templates/build.yml
     parameters:

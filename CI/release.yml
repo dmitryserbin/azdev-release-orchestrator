@@ -9,7 +9,7 @@ stages:
   jobs:
   - job: OrchestratorV1
     pool:
-      vmImage: windows-latest
+      name: Default
     steps:
     - template: templates/build.yml
       parameters:
@@ -23,7 +23,7 @@ stages:
 
   - job: OrchestratorV2
     pool:
-      vmImage: windows-latest
+      name: Default
     steps:
     - template: templates/build.yml
       parameters:
@@ -38,7 +38,7 @@ stages:
 
   - job: Extension
     pool:
-      vmImage: windows-latest
+      name: Default
     dependsOn:
     - OrchestratorV1
     - OrchestratorV2
@@ -89,7 +89,7 @@ stages:
   jobs:
   - job: Install
     pool:
-      vmImage: windows-latest
+      name: Default
     steps:
     - download: current
       displayName: Download artifacts
@@ -110,7 +110,7 @@ stages:
 
   - job: OrchestratorV1
     pool:
-      vmImage: windows-latest
+      name: Default
     dependsOn:
     - Install
     steps:
@@ -142,7 +142,7 @@ stages:
     dependsOn:
     - Install
     pool:
-      vmImage: windows-latest
+      name: Default
     steps:
     - template: templates/execute.v2.yml
       parameters:
@@ -176,7 +176,7 @@ stages:
   jobs:
   - deployment: Extension
     pool:
-      vmImage: windows-latest
+      name: Default
     environment: Marketplace
     strategy:
       runOnce:
