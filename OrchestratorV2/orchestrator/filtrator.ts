@@ -82,7 +82,7 @@ export class Filtrator implements IFiltrator {
 
         const releaseFilter: IReleaseFilter = {
 
-            artifactVersion: "",
+            artifactVersionId: undefined,
             artifactBranch: "",
             tags: [],
             stages,
@@ -106,7 +106,7 @@ export class Filtrator implements IFiltrator {
 
                 const buildArtifact: Build = await this.buildHelper.findBuild(project.name!, buildDefinitionName, buildDefinitionId, 100, filters.artifactTags);
 
-                releaseFilter.artifactVersion = buildArtifact.id!.toString();
+                releaseFilter.artifactVersionId = buildArtifact.id!;
 
             }
 

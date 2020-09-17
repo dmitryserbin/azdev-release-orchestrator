@@ -2,7 +2,7 @@ import { EnvironmentStatus, ReleaseStatus } from "azure-devops-node-api/interfac
 
 export interface IReleaseFilter {
 
-    artifactVersion: string;
+    artifactVersionId: number | undefined;
     artifactBranch: string;
     tags: string[];
     stages: string[];

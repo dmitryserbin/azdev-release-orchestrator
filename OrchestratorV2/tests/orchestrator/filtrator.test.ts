@@ -134,7 +134,7 @@ describe("Filtrator", ()  => {
         //#region ASSERT
 
         chai.expect(result).to.not.eq(null);
-        chai.expect(result.artifactVersion).to.eq(buildArtifactMock.target.id.toString());
+        chai.expect(result.artifactVersionId).to.eq(buildArtifactMock.target.id);
         chai.expect(result.artifactBranch).to.eq(filtersMock.target.artifactBranch);
         chai.expect(result.tags).to.eql(filtersMock.target.releaseTags);
         chai.expect(result.stages).to.eql(parametersMock.target.stages);

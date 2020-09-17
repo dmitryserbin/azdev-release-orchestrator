@@ -109,12 +109,12 @@ export class ReleaseHelper implements IReleaseHelper {
             ReleaseExpands.Environments,
             undefined,
             undefined,
-            filter.artifactVersion,
+            (filter.artifactVersionId ? filter.artifactVersionId.toString() : undefined),
             filter.artifactBranch,
             undefined,
             filter.tags);
 
-        if (filter.stageStatuses.length > 0) {
+        if (filter.stageStatuses.length) {
 
             const filtered: Release[] = [];
 
