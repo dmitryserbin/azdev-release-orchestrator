@@ -44,7 +44,7 @@ export class Filtrator implements IFiltrator {
             let artifactBranch: string | undefined;
 
             // Get build artifact version
-            if (Array.isArray(filters.artifactTags) && filters.artifactTags.length) {
+            if (filters.artifactTags.length) {
 
                 debug(`Using <${String.Join("|", filters.artifactTags)}> artifact tag filter`);
 
@@ -97,7 +97,7 @@ export class Filtrator implements IFiltrator {
         if (primaryBuildArtifact) {
 
             // Add build artifact version
-            if (Array.isArray(filters.artifactTags) && filters.artifactTags.length) {
+            if (filters.artifactTags.length) {
 
                 debug(`Using <${String.Join("|", filters.artifactTags)}> artifact tag filter`);
 
@@ -122,7 +122,7 @@ export class Filtrator implements IFiltrator {
         }
 
         // Add release tag filter
-        if (Array.isArray(filters.releaseTags) && filters.releaseTags.length) {
+        if (filters.releaseTags.length) {
 
             debug(`Using <${String.Join("|", filters.releaseTags)}> release tag filter`);
 
@@ -131,7 +131,7 @@ export class Filtrator implements IFiltrator {
         }
 
         // Add stage status filter
-        if (Array.isArray(filters.stageStatuses) && filters.stageStatuses.length) {
+        if (filters.stageStatuses.length) {
 
             debug(`Using <${String.Join("|", filters.stageStatuses)}> release stage status filter`);
 
