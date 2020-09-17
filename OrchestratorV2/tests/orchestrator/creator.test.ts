@@ -135,7 +135,7 @@ describe("Creator", ()  => {
         releaseHelperMock.setup((x) => x.getDefinition(projectMock.target.name!, parametersMock.target.definitionName)).returns(
             () => Promise.resolve(definitionMock.target));
 
-        filterCreatorMock.setup((x) => x.createReleaseFilter(projectMock.target, definitionMock.target, parametersMock.target.stages, parametersMock.target.filters)).returns(
+        filterCreatorMock.setup((x) => x.createReleaseFilter(definitionMock.target, parametersMock.target.stages, parametersMock.target.filters)).returns(
             () => Promise.resolve(releaseFilterMock.target));
 
         releaseHelperMock.setup((x) => x.getLastRelease(projectMock.target.name!, definitionMock.target.name!, definitionMock.target.id!, parametersMock.target.stages, releaseFilterMock.target, releaseCount)).returns(

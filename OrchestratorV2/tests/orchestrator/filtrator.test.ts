@@ -143,7 +143,7 @@ describe("Filtrator", ()  => {
 
         //#region ACT
 
-        const result = await filterCreator.createReleaseFilter(projectMock.target, definitionMock.target, parametersMock.target.stages, parametersMock.target.filters);
+        const result = await filterCreator.createReleaseFilter(definitionMock.target, parametersMock.target.stages, parametersMock.target.filters);
 
         //#endregion
 

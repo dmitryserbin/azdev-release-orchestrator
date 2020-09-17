@@ -71,7 +71,7 @@ export class Filtrator implements IFiltrator {
 
     }
 
-    public async createReleaseFilter(project: TeamProject, definition: ReleaseDefinition, stages: string[], filters: IFilters): Promise<IReleaseFilter> {
+    public async createReleaseFilter(definition: ReleaseDefinition, stages: string[], filters: IFilters): Promise<IReleaseFilter> {
 
         const debug = this.debugLogger.extend(this.createReleaseFilter.name);
 

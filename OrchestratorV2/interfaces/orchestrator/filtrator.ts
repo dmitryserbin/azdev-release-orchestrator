@@ -8,6 +8,6 @@ import { IReleaseFilter } from "../common/releasefilter";
 export interface IFiltrator {
 
     createArtifactFilter(project: TeamProject, definition: ReleaseDefinition, filters: IFilters): Promise<IArtifactFilter[]>;
-    createReleaseFilter(project: TeamProject, definition: ReleaseDefinition, stages: string[], filters: IFilters): Promise<IReleaseFilter>;
+    createReleaseFilter(definition: ReleaseDefinition, stages: string[], filters: IFilters): Promise<IReleaseFilter>;
 
 }

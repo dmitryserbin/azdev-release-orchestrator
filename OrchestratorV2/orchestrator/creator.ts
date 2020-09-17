@@ -111,7 +111,7 @@ export class Creator implements ICreator {
                     this.progressReporter.getFilters(parameters.filters)
                 );
 
-                const releaseFilter: IReleaseFilter = await this.filterCreator.createReleaseFilter(project, definition, parameters.stages, parameters.filters);
+                const releaseFilter: IReleaseFilter = await this.filterCreator.createReleaseFilter(definition, parameters.stages, parameters.filters);
 
                 release = await this.releaseHelper.getLastRelease(project.name!, definition.name!, definition.id!, parameters.stages, releaseFilter, 100);
 
