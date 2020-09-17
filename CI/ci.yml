@@ -1,5 +1,12 @@
 pr:
-- master
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - OrchestratorV1/*
+    - OrchestratorV2/*
+  autoCancel: true
 
 jobs:
 - job: OrchestratorV1
