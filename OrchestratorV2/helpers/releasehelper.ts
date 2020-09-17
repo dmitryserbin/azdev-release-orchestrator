@@ -184,21 +184,21 @@ export class ReleaseHelper implements IReleaseHelper {
         };
 
         // Set manual stages filter
-        if (stages && stages.length > 0) {
+        if (Array.isArray(stages) && stages.length) {
 
             releaseMetadata.manualEnvironments = await this.getDefinitionStages(definition, stages);
 
         }
 
         // Set custom artifacts filter
-        if (artifacts && artifacts.length > 0) {
+        if (Array.isArray(artifacts) && artifacts.length) {
 
             releaseMetadata.artifacts = artifacts;
 
         }
 
         // Set release variables
-        if (variables && variables.length > 0) {
+        if (Array.isArray(variables) && variables.length) {
 
             releaseMetadata.variables = await this.formatReleaseVariables(variables);
 
@@ -375,9 +375,10 @@ export class ReleaseHelper implements IReleaseHelper {
 
         const debug = this.debugLogger.extend(this.getReleaseStages.name);
 
-        const releaseStages: string[] = release.environments!.map((i) => i.name!);
+        const releaseStages: string[] = release.environments!.map(
+            (i) => i.name!);
 
-        const targetStages: string[] = (stages && stages.length > 0)
+        const targetStages: string[] = (stages.length)
             ? stages : releaseStages;
 
         debug(targetStages);
