@@ -90,7 +90,7 @@ describe("Creator", ()  => {
         releaseHelperMock.setup((x) => x.getDefinition(projectMock.target.name!, parametersMock.target.definitionName)).returns(
             () => Promise.resolve(definitionMock.target));
 
-        filterCreatorMock.setup((x) => x.createArtifactFilter(projectMock.target, definitionMock.target, parametersMock.target.filters)).returns(
+        filterCreatorMock.setup((x) => x.createArtifactFilter(definitionMock.target, parametersMock.target.filters)).returns(
             () => Promise.resolve(artifactFilterMock.target));
 
         releaseHelperMock.setup((x) => x.createRelease(projectMock.target.name!, definitionMock.target, detailsMock.target)).returns(

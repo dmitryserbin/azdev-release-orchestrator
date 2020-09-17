@@ -87,7 +87,7 @@ export class Creator implements ICreator {
                     this.progressReporter.getFilters(parameters.filters)
                 );
 
-                const artifactFilter: IArtifactFilter[] = await this.filterCreator.createArtifactFilter(project, definition, parameters.filters);
+                const artifactFilter: IArtifactFilter[] = await this.filterCreator.createArtifactFilter(definition, parameters.filters);
 
                 if (Array.isArray(parameters.variables) && parameters.variables.length) {
 
