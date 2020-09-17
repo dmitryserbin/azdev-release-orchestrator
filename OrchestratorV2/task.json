@@ -130,7 +130,7 @@
       "name": "releaseTagName",
       "type": "string",
       "label": "Release tag name",
-      "helpMarkDown": "Specify tag name filter of target release",
+      "helpMarkDown": "Specify tag name filter of target release (comma separated)",
       "required": true,
       "visibleRule": "releaseTagFilter = true"
     },
@@ -147,7 +147,7 @@
       "name": "artifactVersionName",
       "type": "string",
       "label": "Artifact version name",
-      "helpMarkDown": "Specify version name filter of primary build type release artifact",
+      "helpMarkDown": "Specify version name (i.e. build number) filter of primary build type release artifact",
       "required": true,
       "visibleRule": "artifactVersionFilter = true"
     },
@@ -164,7 +164,7 @@
       "name": "artifactTagName",
       "type": "string",
       "label": "Artifact tag name",
-      "helpMarkDown": "Specify tag name filter of primary build type release artifact",
+      "helpMarkDown": "Specify tag name filter of primary build type release artifact (comma separated)",
       "required": true,
       "visibleRule": "artifactTagFilter = true"
     },
