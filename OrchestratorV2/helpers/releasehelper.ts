@@ -307,7 +307,7 @@ export class ReleaseHelper implements IReleaseHelper {
             // Validate version
             if (!targetVersion) {
 
-                throw new Error(`No artifact <${artifact.alias}> matching filter found (version: ${versionId ? versionId : "-"}, branch: ${sourceBranch ? sourceBranch : "-"})`);
+                throw new Error(`No artifact <${artifact.alias}> matching filter found`);
 
             }
 

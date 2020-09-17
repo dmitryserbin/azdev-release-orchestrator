@@ -215,7 +215,7 @@ export class TaskHelper implements ITaskHelper {
 
         const definitionStagesFilter: boolean = getBoolInput("definitionStagesFilter");
         const artifactTagFilter: boolean = getBoolInput("artifactTagFilter");
-        const sourceBranchFilter: boolean = getBoolInput("sourceBranchFilter");
+        const artifactBranchFilter: boolean = getBoolInput("artifactBranchFilter");
 
         // Get definition stages
         if (definitionStagesFilter) {
@@ -234,9 +234,9 @@ export class TaskHelper implements ITaskHelper {
 
         // Get artifacts source branch filter
         // Optional to support variable input
-        if (sourceBranchFilter) {
+        if (artifactBranchFilter) {
 
-            parameters.filters.artifactBranch = getInput("sourceBranchName", false)!;
+            parameters.filters.artifactBranch = getInput("artifactBranchName", false)!;
 
         }
 
@@ -279,7 +279,7 @@ export class TaskHelper implements ITaskHelper {
 
         const releaseTagFilter: boolean = getBoolInput("releaseTagFilter");
         const artifactTagFilter: boolean = getBoolInput("artifactTagFilter");
-        const sourceBranchFilter: boolean = getBoolInput("sourceBranchFilter");
+        const artifactBranchFilter: boolean = getBoolInput("artifactBranchFilter");
         const stageStatusFilter: boolean = getBoolInput("stageStatusFilter");
 
         // Get release tag name filter
@@ -300,9 +300,9 @@ export class TaskHelper implements ITaskHelper {
 
         // Get artifacts source branch filter
         // Optional to support variable input
-        if (sourceBranchFilter) {
+        if (artifactBranchFilter) {
 
-            parameters.filters.artifactBranch = getInput("sourceBranchName", false)!;
+            parameters.filters.artifactBranch = getInput("artifactBranchName", false)!;
 
         }
 

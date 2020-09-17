@@ -107,7 +107,7 @@ By default, new release deployment uses default stage [triggers](https://docs.mi
 
 - `Filter definition stages`: target specific deployment stage(s) (comma separated) (optional)
 - `Filter artifact tag`: enable new release filtering (last 100 builds) by primary build artifact tag (optional)
-- `Filter source branch`: enable new release filtering (last 100 builds) by primary build artifact source branch name (optional)
+- `Filter artifact branch`: enable new release filtering (last 100 builds) by primary build artifact source branch name (optional)
 - `Release variables`: override release variables of the target release pipeline when creating a new release (optional). Specified release variables must be configured to be `settable at release time` in the release. Values in `Name=Value` format, special characters supported, new line separated
 
 > Template: new release deployment with automated stage triggers
@@ -123,8 +123,8 @@ By default, new release deployment uses default stage [triggers](https://docs.mi
     # definitionStages: DEV,TEST,PROD # Required when definitionStagesFilter == true
     # artifactTagFilter: false # Optional
     # artifactTagName: My-Artifact # Required when artifactTagFilter == true
-    # sourceBranchFilter: false # Optional
-    # sourceBranchName: refs/heads/master # Required when sourceBranchFilter == true
+    # artifactBranchFilter: false # Optional
+    # artifactBranchName: refs/heads/master # Required when artifactBranchFilter == true
     # releaseVariables: | # Optional
     #  My-Variable-One=My-Value-One
     #  My-Variable-Two=My-Value-Two
@@ -137,7 +137,7 @@ Deploying latest release requires you to provide target stages for deployment. T
 - `Release stages`: specify release deployment stage(s) (comma separated)
 - `Filter release tag`: enable filtering target release by release pipeline tag (optional)
 - `Filter artifact tag`: enable filtering target release by primary build artifact tag (optional)
-- `Filter source branch`: enable filtering target release by primary artifact source branch name (optional)
+- `Filter artifact branch`: enable filtering target release by primary artifact source branch name (optional)
 - `Filter stage status`: enable filtering target release by stage deployment status (optional)
 
 > Template: latest release deployment
@@ -154,8 +154,8 @@ Deploying latest release requires you to provide target stages for deployment. T
     # releaseTagName: My-Release # Required when releaseTagFilter == true
     # artifactTagFilter: false # Optional
     # artifactTagName: My-Artifact # Required when artifactTagFilter == true
-    # sourceBranchFilter: false # Optional
-    # sourceBranchName: refs/heads/master # Required when sourceBranchFilter == true
+    # artifactBranchFilter: false # Optional
+    # artifactBranchName: refs/heads/master # Required when artifactBranchFilter == true
     # stageStatusFilter: false # Optional
     # stageStatus: Rejected,Succeeded # Required when stageStatusFilter == true
 ```

@@ -36,7 +36,7 @@ describe("TaskHelper", ()  => {
 
     const releaseTagNameMock: string = "My-Tag-One,My-Tag-Two";
     const artifactTagNameMock: string = "My-Artifact-Tag-One,My-Artifact-Tag-Two";
-    const sourceBranchNameMock: string = "My-Branch";
+    const artifactBranchNameMock: string = "My-Branch";
     const stageStatusMock: string = "succeeded,rejected";
 
     const releaseVariablesMock: string = "My-Variable-One=My-Value-One"
@@ -120,8 +120,8 @@ describe("TaskHelper", ()  => {
         inputs["artifactTagFilter"] = true;
         inputs["artifactTagName"] = artifactTagNameMock;
 
-        inputs["sourceBranchFilter"] = true;
-        inputs["sourceBranchName"] = sourceBranchNameMock;
+        inputs["artifactBranchFilter"] = true;
+        inputs["artifactBranchName"] = artifactBranchNameMock;
 
         inputs["releaseVariables"] = releaseVariablesMock;
 
@@ -148,7 +148,7 @@ describe("TaskHelper", ()  => {
 
         chai.expect(result.stages).to.eql([ "DEV", "TEST", "PROD" ]);
         chai.expect(result.filters.artifactTags).to.eql([ "My-Artifact-Tag-One", "My-Artifact-Tag-Two" ]);
-        chai.expect(result.filters.artifactBranch).to.eq(sourceBranchNameMock);
+        chai.expect(result.filters.artifactBranch).to.eq(artifactBranchNameMock);
 
         chai.expect(result.variables.length).to.eq(1);
         chai.expect(result.variables[0].name).to.eq("My-Variable-One");
@@ -174,8 +174,8 @@ describe("TaskHelper", ()  => {
         inputs["artifactTagFilter"] = true;
         inputs["artifactTagName"] = artifactTagNameMock;
 
-        inputs["sourceBranchFilter"] = true;
-        inputs["sourceBranchName"] = sourceBranchNameMock;
+        inputs["artifactBranchFilter"] = true;
+        inputs["artifactBranchName"] = artifactBranchNameMock;
 
         inputs["stageStatusFilter"] = true;
         inputs["stageStatus"] = stageStatusMock;
@@ -204,7 +204,7 @@ describe("TaskHelper", ()  => {
         chai.expect(result.stages).to.eql([ "DEV", "TEST", "PROD" ]);
         chai.expect(result.filters.releaseTags).to.eql([ "My-Tag-One", "My-Tag-Two" ]);
         chai.expect(result.filters.artifactTags).to.eql([ "My-Artifact-Tag-One", "My-Artifact-Tag-Two" ]);
-        chai.expect(result.filters.artifactBranch).to.eq(sourceBranchNameMock);
+        chai.expect(result.filters.artifactBranch).to.eq(artifactBranchNameMock);
         chai.expect(result.filters.stageStatuses).to.eql([ "succeeded", "rejected" ]);
 
         //#endregion

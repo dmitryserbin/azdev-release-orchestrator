@@ -152,22 +152,22 @@
       "visibleRule": "artifactTagFilter = true"
     },
     {
-      "name": "sourceBranchFilter",
+      "name": "artifactBranchFilter",
       "type": "boolean",
-      "label": "Filter source branch",
+      "label": "Filter artifact branch",
       "helpMarkDown": "Enable target release filtering by primary artifact source branch name",
       "defaultValue": false,
       "required": false,
       "visibleRule": "releaseStrategy = create || releaseStrategy = latest"
     },
     {
-      "name": "sourceBranchName",
+      "name": "artifactBranchName",
       "type": "string",
-      "label": "Source branch name",
+      "label": "Artifact branch name",
       "helpMarkDown": "Specify branch name of primary release artifact source. Default = 'refs/heads/master' (build artifacts) or 'master' (Git artifacts)",
       "defaultValue": "refs/heads/master",
       "required": true,
-      "visibleRule": "sourceBranchFilter = true"
+      "visibleRule": "artifactBranchFilter = true"
     },
     {
       "name": "stageStatusFilter",
