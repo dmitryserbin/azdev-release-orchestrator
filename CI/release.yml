@@ -158,6 +158,7 @@ stages:
         releasePartialName: HelloYo-20190521.4-27
         releaseFailedName: HelloYo-20190521.4-32
         releaseStages: DEV,TEST,PROD
+        artifactVersionName: 20190521.1
         artifactTagName: Build-Yo
         releaseTagName: Release-Yo
         sourceBranchName: refs/heads/working/test

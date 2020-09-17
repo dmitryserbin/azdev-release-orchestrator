@@ -77,6 +77,7 @@ export class TaskHelper implements ITaskHelper {
 
             releaseTags: [],
             artifactTags: [],
+            artifactVersion: "",
             artifactBranch: "",
             stageStatuses: [],
 
@@ -214,6 +215,7 @@ export class TaskHelper implements ITaskHelper {
         parameters.releaseType = ReleaseType.New;
 
         const definitionStagesFilter: boolean = getBoolInput("definitionStagesFilter");
+        const artifactVersionFilter: boolean = getBoolInput("artifactVersionFilter");
         const artifactTagFilter: boolean = getBoolInput("artifactTagFilter");
         const artifactBranchFilter: boolean = getBoolInput("artifactBranchFilter");
 
@@ -221,6 +223,14 @@ export class TaskHelper implements ITaskHelper {
         if (definitionStagesFilter) {
 
             parameters.stages = getDelimitedInput("definitionStages", ",", true);
+
+        }
+
+        // Get artifact version name filter
+        // Optional to support variable input
+        if (artifactVersionFilter) {
+
+            parameters.filters.artifactVersion = getInput("artifactVersionName", false)!;
 
         }
 
@@ -278,6 +288,7 @@ export class TaskHelper implements ITaskHelper {
         parameters.stages = getDelimitedInput("releaseStages", ",", true);
 
         const releaseTagFilter: boolean = getBoolInput("releaseTagFilter");
+        const artifactVersionFilter: boolean = getBoolInput("artifactVersionFilter");
         const artifactTagFilter: boolean = getBoolInput("artifactTagFilter");
         const artifactBranchFilter: boolean = getBoolInput("artifactBranchFilter");
         const stageStatusFilter: boolean = getBoolInput("stageStatusFilter");
@@ -287,6 +298,14 @@ export class TaskHelper implements ITaskHelper {
         if (releaseTagFilter) {
 
             parameters.filters.releaseTags = getDelimitedInput("releaseTagName", ",", false);
+
+        }
+
+        // Get artifact version name filter
+        // Optional to support variable input
+        if (artifactVersionFilter) {
+
+            parameters.filters.artifactVersion = getInput("artifactVersionName", false)!;
 
         }
 

@@ -106,6 +106,7 @@ You can choose different strategy for orchestrator to perform target release dep
 By default, new release deployment uses default stage [triggers](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#env-triggers) configured in the target pipeline. In order to deploy specific or manual stages, you need to specify target stages using `Filter definition stages` option.
 
 - `Filter definition stages`: target specific deployment stage(s) (comma separated) (optional)
+- `Filter artifact version`: enable new release filtering (last 100 builds) by primary build artifact version name (optional)
 - `Filter artifact tag`: enable new release filtering (last 100 builds) by primary build artifact tag (optional)
 - `Filter artifact branch`: enable new release filtering (last 100 builds) by primary build artifact source branch name (optional)
 - `Release variables`: override release variables of the target release pipeline when creating a new release (optional). Specified release variables must be configured to be `settable at release time` in the release. Values in `Name=Value` format, special characters supported, new line separated
@@ -121,6 +122,8 @@ By default, new release deployment uses default stage [triggers](https://docs.mi
     releaseStrategy: create
     # definitionStagesFilter: false # Optional
     # definitionStages: DEV,TEST,PROD # Required when definitionStagesFilter == true
+    # artifactVersionFilter: false # Optional
+    # artifactVersionName: My-Build-01 # Required when artifactVersionFilter == true
     # artifactTagFilter: false # Optional
     # artifactTagName: My-Artifact # Required when artifactTagFilter == true
     # artifactBranchFilter: false # Optional
@@ -136,6 +139,7 @@ Deploying latest release requires you to provide target stages for deployment. T
 
 - `Release stages`: specify release deployment stage(s) (comma separated)
 - `Filter release tag`: enable filtering target release by release pipeline tag (optional)
+- `Filter artifact version`: enable new release filtering (last 100 builds) by primary build artifact version name (optional)
 - `Filter artifact tag`: enable filtering target release by primary build artifact tag (optional)
 - `Filter artifact branch`: enable filtering target release by primary artifact source branch name (optional)
 - `Filter stage status`: enable filtering target release by stage deployment status (optional)
@@ -152,6 +156,8 @@ Deploying latest release requires you to provide target stages for deployment. T
     releaseStages: DEV,TEST,PROD
     # releaseTagFilter: false # Optional
     # releaseTagName: My-Release # Required when releaseTagFilter == true
+    # artifactVersionFilter: false # Optional
+    # artifactVersionName: My-Build-01 # Required when artifactVersionFilter == true
     # artifactTagFilter: false # Optional
     # artifactTagName: My-Artifact # Required when artifactTagFilter == true
     # artifactBranchFilter: false # Optional

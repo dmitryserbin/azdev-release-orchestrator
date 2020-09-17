@@ -53,6 +53,16 @@ steps:
     definitionStages: PROD
 
 - task: releaseorchestrator@2
+  displayName: Create release (artifact version)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    definitionStagesFilter: true
+    definitionStages: DEV
+    artifactVersionFilter: true
+    artifactVersionName: ${{ parameters.artifactVersionName }}
+
+- task: releaseorchestrator@2
   displayName: Create release (artifact tag)
   inputs:
     projectName: ${{ parameters.projectName }}
@@ -61,6 +71,16 @@ steps:
     definitionStages: DEV
     artifactTagFilter: true
     artifactTagName: ${{ parameters.artifactTagName }}
+
+- task: releaseorchestrator@2
+  displayName: Create release (artifact branch)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    definitionStagesFilter: true
+    definitionStages: DEV
+    artifactBranchFilter: true
+    artifactBranchName: ${{ parameters.artifactBranchName }}
 
 - task: releaseorchestrator@2
   displayName: Create release (release variables)
@@ -72,16 +92,6 @@ steps:
     releaseVariables: |
      Yo-Variable-One=Yo-Updated-Value-One
      Yo-Variable-Two=Yo-Updated-Value-One
-
-- task: releaseorchestrator@2
-  displayName: Create release (branch name)
-  inputs:
-    projectName: ${{ parameters.projectName }}
-    definitionName: ${{ parameters.definitionName }}
-    definitionStagesFilter: true
-    definitionStages: DEV
-    artifactBranchFilter: true
-    artifactBranchName: ${{ parameters.artifactBranchName }}
 
 - task: releaseorchestrator@2
   displayName: Latest release (manual)
@@ -102,6 +112,16 @@ steps:
     releaseTagName: ${{ parameters.releaseTagName }}
 
 - task: releaseorchestrator@2
+  displayName: Latest release (artifact version)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: latest
+    releaseStages: DEV
+    artifactVersionFilter: true
+    artifactVersionName: ${{ parameters.artifactVersionName }}
+
+- task: releaseorchestrator@2
   displayName: Latest release (artifact tag)
   inputs:
     projectName: ${{ parameters.projectName }}
@@ -112,7 +132,7 @@ steps:
     artifactTagName: ${{ parameters.artifactTagName }}
 
 - task: releaseorchestrator@2
-  displayName: Latest release (branch name)
+  displayName: Latest release (artifact branch)
   inputs:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}

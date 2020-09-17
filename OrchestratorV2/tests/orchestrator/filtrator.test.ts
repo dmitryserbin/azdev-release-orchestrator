@@ -64,6 +64,7 @@ describe("Filtrator", ()  => {
 
         //#region ARRANGE
 
+        filtersMock.target.artifactVersion = "My-Build-01";
         filtersMock.target.artifactBranch = "My-Branch";
         filtersMock.target.artifactTags = [ "My-Tag-One", "My-Tag-Two" ];
 
@@ -79,7 +80,7 @@ describe("Filtrator", ()  => {
         releaseHelperMock.setup((x) => x.getDefinitionPrimaryArtifact(definitionMock.target, "Build")).returns(
             () => Promise.resolve(primaryBuildArtifactMock.target));
 
-        buildHelperMock.setup((x) => x.findBuild(projectMock.target.name!, primaryBuildArtifactMock.target.definitionReference!.definition.name!, Number(primaryBuildArtifactMock.target.definitionReference!.definition.id!), buildCount, parametersMock.target.filters.artifactTags)).returns(
+        buildHelperMock.setup((x) => x.findBuild(projectMock.target.name!, primaryBuildArtifactMock.target.definitionReference!.definition.name!, Number(primaryBuildArtifactMock.target.definitionReference!.definition.id!), filtersMock.target.artifactVersion, parametersMock.target.filters.artifactTags, buildCount)).returns(
             () => Promise.resolve(buildArtifactMock.target));
 
         releaseHelperMock.setup((x) => x.getArtifacts(projectMock.target.name!, definitionMock.target.id!, primaryBuildArtifactMock.target.sourceId!, buildArtifactMock.target.id!.toString(), parametersMock.target.filters.artifactBranch)).returns(
@@ -107,6 +108,7 @@ describe("Filtrator", ()  => {
 
         filtersMock.target.releaseTags = [ "My-Tag-One", "My-Tag-Two" ];
         filtersMock.target.artifactTags = [ "My-Tag-One", "My-Tag-Two" ];
+        filtersMock.target.artifactVersion = "My-Build-01";
         filtersMock.target.artifactBranch = "My-Branch";
         filtersMock.target.stageStatuses = [ "succeeded", "rejected" ];
 
@@ -120,7 +122,7 @@ describe("Filtrator", ()  => {
         releaseHelperMock.setup((x) => x.getDefinitionPrimaryArtifact(definitionMock.target, "Build")).returns(
             () => Promise.resolve(primaryBuildArtifactMock.target));
 
-        buildHelperMock.setup((x) => x.findBuild(projectMock.target.name!, primaryBuildArtifactMock.target.definitionReference!.definition.name!, Number(primaryBuildArtifactMock.target.definitionReference!.definition.id!), buildCount, parametersMock.target.filters.artifactTags)).returns(
+        buildHelperMock.setup((x) => x.findBuild(projectMock.target.name!, primaryBuildArtifactMock.target.definitionReference!.definition.name!, Number(primaryBuildArtifactMock.target.definitionReference!.definition.id!), filtersMock.target.artifactBranch, parametersMock.target.filters.artifactTags, buildCount)).returns(
             () => Promise.resolve(buildArtifactMock.target));
 
         //#endregion

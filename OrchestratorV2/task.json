@@ -135,6 +135,23 @@
       "visibleRule": "releaseTagFilter = true"
     },
     {
+      "name": "artifactVersionFilter",
+      "type": "boolean",
+      "label": "Filter artifact version",
+      "helpMarkDown": "Enable target release filtering by primary build artifact version name",
+      "defaultValue": false,
+      "required": false,
+      "visibleRule": "releaseStrategy = create || releaseStrategy = latest"
+    },
+    {
+      "name": "artifactVersionName",
+      "type": "string",
+      "label": "Artifact version name",
+      "helpMarkDown": "Specify version name filter of primary build type release artifact",
+      "required": true,
+      "visibleRule": "artifactTagFilter = true"
+    },
+    {
       "name": "artifactTagFilter",
       "type": "boolean",
       "label": "Filter artifact tag",
