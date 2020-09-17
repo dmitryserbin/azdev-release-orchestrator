@@ -6,9 +6,9 @@ import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
 import { IReleaseFilter } from "../interfaces/common/releasefilter";
 import { IArtifactFilter } from "../interfaces/common/artifactfilter";
 import { DeploymentType } from "../interfaces/common/deploymenttype";
-import { IDetails } from "../interfaces/task/details";
 import { IReleaseApiRetry } from "../interfaces/extensions/releaseapiretry";
 import { IReleaseVariable } from "../interfaces/common/releasevariable";
+import { IDetails } from "../interfaces/task/details";
 
 export class ReleaseHelper implements IReleaseHelper {
 
@@ -110,7 +110,7 @@ export class ReleaseHelper implements IReleaseHelper {
             undefined,
             undefined,
             filter.artifactVersion,
-            filter.sourceBranch,
+            filter.artifactBranch,
             undefined,
             filter.tags);
 
@@ -255,7 +255,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
     }
 
-    public async getArtifacts(projectName: string, definitionId: number, primaryId: string, versionId?: string, sourceBranch?: string): Promise<ArtifactMetadata[]> {
+    public async getArtifacts(projectName: string, definitionId: number, primaryId: string, versionId?: string, branchName?: string): Promise<ArtifactMetadata[]> {
 
         const debug = this.debugLogger.extend(this.getArtifacts.name);
 
@@ -282,23 +282,23 @@ export class ReleaseHelper implements IReleaseHelper {
             if (artifact.sourceId === primaryId) {
 
                 // Filter by version ID
-                if (versionId && !sourceBranch) {
+                if (versionId && !branchName) {
 
                     targetVersion = artifact.versions!.filter((i) => i.id === versionId)[0];
 
                 }
 
                 // Filter by source branch
-                if (sourceBranch && !versionId) {
+                if (branchName && !versionId) {
 
-                    targetVersion = artifact.versions!.filter((i) => i.sourceBranch === sourceBranch)[0];
+                    targetVersion = artifact.versions!.filter((i) => i.sourceBranch === branchName)[0];
 
                 }
 
                 // Filter by version ID and source branch
-                if (versionId && sourceBranch) {
+                if (versionId && branchName) {
 
-                    targetVersion = artifact.versions!.filter((i) => i.id === versionId && i.sourceBranch === sourceBranch)[0];
+                    targetVersion = artifact.versions!.filter((i) => i.id === versionId && i.sourceBranch === branchName)[0];
 
                 }
 

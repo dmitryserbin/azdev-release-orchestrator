@@ -135,7 +135,7 @@ describe("Filtrator", ()  => {
 
         chai.expect(result).to.not.eq(null);
         chai.expect(result.artifactVersion).to.eq(buildArtifactMock.target.id.toString());
-        chai.expect(result.sourceBranch).to.eq(filtersMock.target.artifactBranch);
+        chai.expect(result.artifactBranch).to.eq(filtersMock.target.artifactBranch);
         chai.expect(result.tags).to.eql(filtersMock.target.releaseTags);
         chai.expect(result.stages).to.eql(parametersMock.target.stages);
         chai.expect(result.stageStatuses).to.eql([ EnvironmentStatus.Succeeded, EnvironmentStatus.Rejected ]);

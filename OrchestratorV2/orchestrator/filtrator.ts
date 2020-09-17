@@ -57,7 +57,7 @@ export class Filtrator implements IFiltrator {
 
             }
 
-            // Get source branch filter
+            // Get artifact branch filter
             if (filters.artifactBranch) {
 
                 debug(`Using <${filters.artifactBranch}> artifact branch filter`);
@@ -83,7 +83,7 @@ export class Filtrator implements IFiltrator {
         const releaseFilter: IReleaseFilter = {
 
             artifactVersion: "",
-            sourceBranch: "",
+            artifactBranch: "",
             tags: [],
             stages,
             stageStatuses: [],
@@ -110,12 +110,12 @@ export class Filtrator implements IFiltrator {
 
             }
 
-            // Add source branch filter
+            // Add artifact branch filter
             if (filters.artifactBranch) {
 
                 debug(`Using <${filters.artifactBranch}> artifact branch filter`);
 
-                releaseFilter.sourceBranch = filters.artifactBranch;
+                releaseFilter.artifactBranch = filters.artifactBranch;
 
             }
 
