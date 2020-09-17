@@ -6,7 +6,7 @@ parameters:
   releaseFailedName: ""
   releaseStages: ""
   artifactTagName: ""
-  sourceBranchName: ""
+  artifactBranchName: ""
   releaseTagName: ""
 
 steps:
@@ -80,8 +80,8 @@ steps:
     definitionName: ${{ parameters.definitionName }}
     definitionStagesFilter: true
     definitionStages: DEV
-    sourceBranchFilter: true
-    sourceBranchName: ${{ parameters.sourceBranchName }}
+    artifactBranchFilter: true
+    artifactBranchName: ${{ parameters.artifactBranchName }}
 
 - task: releaseorchestrator@2
   displayName: Latest release (manual)
@@ -118,8 +118,8 @@ steps:
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: latest
     releaseStages: PROD
-    sourceBranchFilter: true
-    sourceBranchName: ${{ parameters.sourceBranchName }}
+    artifactBranchFilter: true
+    artifactBranchName: ${{ parameters.artifactBranchName }}
 
 - task: releaseorchestrator@2
   displayName: Latest release (rejected stage)
