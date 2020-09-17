@@ -149,7 +149,7 @@
       "label": "Artifact version name",
       "helpMarkDown": "Specify version name filter of primary build type release artifact",
       "required": true,
-      "visibleRule": "artifactTagFilter = true"
+      "visibleRule": "artifactVersionFilter = true"
     },
     {
       "name": "artifactTagFilter",
