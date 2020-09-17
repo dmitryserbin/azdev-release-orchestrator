@@ -46,22 +46,7 @@ export class Filtrator implements IFiltrator {
             // Get build artifact version
             if (filters.artifactVersion || filters.artifactTags.length) {
 
-                if (filters.artifactVersion) {
-
-                    debug(`Using <${filters.artifactVersion}> artifact version filter`);
-
-                }
-
-                if (filters.artifactTags.length) {
-
-                    debug(`Using <${String.Join("|", filters.artifactTags)}> artifact tag filter`);
-
-                }
-
-                const buildDefinitionName: string = primaryBuildArtifact.definitionReference!.definition.name!;
-                const buildDefinitionId: number = Number(primaryBuildArtifact.definitionReference!.definition.id!);
-
-                const buildArtifact: Build = await this.buildHelper.findBuild(project.name!, buildDefinitionName, buildDefinitionId, filters.artifactVersion, filters.artifactTags, 100);
+                const buildArtifact: Build = await this.getArtifactBuild(primaryBuildArtifact, filters.artifactVersion, filters.artifactTags);
 
                 artifactVersion = buildArtifact.id!.toString();
 
@@ -109,22 +94,7 @@ export class Filtrator implements IFiltrator {
             // Add build artifact version
             if (filters.artifactVersion || filters.artifactTags.length) {
 
-                if (filters.artifactVersion) {
-
-                    debug(`Using <${filters.artifactVersion}> artifact version filter`);
-
-                }
-
-                if (filters.artifactTags.length) {
-
-                    debug(`Using <${String.Join("|", filters.artifactTags)}> artifact tag filter`);
-
-                }
-
-                const buildDefinitionName: string = primaryBuildArtifact.definitionReference!.definition.name!;
-                const buildDefinitionId: number = Number(primaryBuildArtifact.definitionReference!.definition.id!);
-
-                const buildArtifact: Build = await this.buildHelper.findBuild(project.name!, buildDefinitionName, buildDefinitionId, filters.artifactVersion, filters.artifactTags, 100);
+                const buildArtifact: Build = await this.getArtifactBuild(primaryBuildArtifact, filters.artifactVersion, filters.artifactTags);
 
                 releaseFilter.artifactVersionId = buildArtifact.id!;
 
@@ -214,6 +184,32 @@ export class Filtrator implements IFiltrator {
         debug(releaseFilter);
 
         return releaseFilter;
+
+    }
+
+    private async getArtifactBuild(buildArtifact: Artifact, version: string, tags: string[]): Promise<Build> {
+
+        const debug = this.debugLogger.extend(this.getArtifactBuild.name);
+
+        if (version) {
+
+            debug(`Using <${version}> artifact version filter`);
+
+        }
+
+        if (tags.length) {
+
+            debug(`Using <${String.Join("|", tags)}> artifact tag filter`);
+
+        }
+
+        const projectName: string = buildArtifact.definitionReference!.project.name!;
+        const buildDefinitionName: string = buildArtifact.definitionReference!.definition.name!;
+        const buildDefinitionId: number = Number(buildArtifact.definitionReference!.definition.id!);
+
+        const build: Build = await this.buildHelper.findBuild(projectName, buildDefinitionName, buildDefinitionId, version, tags, 100);
+
+        return build;
 
     }
 
