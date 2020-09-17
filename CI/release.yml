@@ -1,5 +1,11 @@
 trigger:
-- master
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - OrchestratorV1/*
+    - OrchestratorV2/*
 
 variables:
   extensionDirectory: $(Build.ArtifactStagingDirectory)
