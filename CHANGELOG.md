@@ -90,7 +90,7 @@
 
 `2019-01-24`
 
-- Added 'Latest' release strategy ([#1](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/1))
+- Added latest release strategy ([#1](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/1))
 - Major code refactor and minor bug fixes
 - Addressed intermittent ECONNRESET issue
 - Added unit and integration tests
