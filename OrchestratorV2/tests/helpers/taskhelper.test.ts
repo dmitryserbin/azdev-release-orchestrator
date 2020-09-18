@@ -171,6 +171,7 @@ describe("TaskHelper", ()  => {
         inputs["projectName"] = projectNameMock;
         inputs["definitionName"] = definitionNameMock;
 
+        inputs["releaseStagesFilter"] = true;
         inputs["releaseStages"] = releaseStagesMock;
 
         inputs["releaseTagFilter"] = true;
@@ -232,6 +233,8 @@ describe("TaskHelper", ()  => {
         inputs["approvalRetry"] = approvalRetryMock;
 
         inputs["releaseName"] = releaseNameMock;
+
+        inputs["releaseStagesFilter"] = true;
         inputs["releaseStages"] = releaseStagesMock;
 
         //#endregion

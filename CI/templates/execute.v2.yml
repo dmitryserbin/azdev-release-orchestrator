@@ -11,12 +11,21 @@ parameters:
 
 steps:
 - task: releaseorchestrator@2
+  displayName: Specific release (auto)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: specific
+    releaseName: ${{ parameters.releaseName }}
+
+- task: releaseorchestrator@2
   displayName: Specific release (manual)
   inputs:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: specific
     releaseName: ${{ parameters.releaseName }}
+    releaseStagesFilter: true
     releaseStages: ${{ parameters.releaseStages }}
 
 - task: releaseorchestrator@2
@@ -26,6 +35,7 @@ steps:
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: specific
     releaseName: ${{ parameters.releasePartialName }}
+    releaseStagesFilter: true
     releaseStages: ${{ parameters.releaseStages }}
 
 - task: releaseorchestrator@2
@@ -35,6 +45,7 @@ steps:
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: specific
     releaseName: ${{ parameters.releaseFailedName }}
+    releaseStagesFilter: true
     releaseStages: ${{ parameters.releaseStages }}
     ignoreFailure: true
 
@@ -43,12 +54,14 @@ steps:
   inputs:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: create
 
 - task: releaseorchestrator@2
   displayName: Create release (manual)
   inputs:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: create
     definitionStagesFilter: true
     definitionStages: PROD
 
@@ -57,6 +70,7 @@ steps:
   inputs:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: create
     definitionStagesFilter: true
     definitionStages: DEV
     artifactVersionFilter: true
@@ -67,6 +81,7 @@ steps:
   inputs:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: create
     definitionStagesFilter: true
     definitionStages: DEV
     artifactTagFilter: true
@@ -77,6 +92,7 @@ steps:
   inputs:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: create
     definitionStagesFilter: true
     definitionStages: DEV
     artifactBranchFilter: true
@@ -87,6 +103,7 @@ steps:
   inputs:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: create
     definitionStagesFilter: true
     definitionStages: DEV
     releaseVariables: |
@@ -94,11 +111,19 @@ steps:
      Yo-Variable-Two=Yo-Updated-Value-One
 
 - task: releaseorchestrator@2
+  displayName: Latest release (auto)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: latest
+
+- task: releaseorchestrator@2
   displayName: Latest release (manual)
   inputs:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: latest
+    releaseStagesFilter: true
     releaseStages: ${{ parameters.releaseStages }}
 
 - task: releaseorchestrator@2
@@ -107,6 +132,7 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: latest
+    releaseStagesFilter: true
     releaseStages: PROD
     releaseTagFilter: true
     releaseTagName: ${{ parameters.releaseTagName }}
@@ -117,6 +143,7 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: latest
+    releaseStagesFilter: true
     releaseStages: DEV
     artifactVersionFilter: true
     artifactVersionName: ${{ parameters.artifactVersionName }}
@@ -127,6 +154,7 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: latest
+    releaseStagesFilter: true
     releaseStages: PROD
     artifactTagFilter: true
     artifactTagName: ${{ parameters.artifactTagName }}
@@ -137,6 +165,7 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: latest
+    releaseStagesFilter: true
     releaseStages: PROD
     artifactBranchFilter: true
     artifactBranchName: ${{ parameters.artifactBranchName }}
@@ -147,6 +176,7 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: latest
+    releaseStagesFilter: true
     releaseStages: TEST
     stageStatusFilter: true
     stageStatus: rejected
@@ -158,6 +188,7 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: latest
+    releaseStagesFilter: true
     releaseStages: TEST
     stageStatusFilter: true
     stageStatus: succeeded

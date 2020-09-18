@@ -137,7 +137,7 @@ By default, new release deployment uses default stage [triggers](https://docs.mi
 
 Deploying latest release requires you to provide target stages for deployment. The target stages will be re-deployed in sequential order, exactly as you specified. Search range is last 100 releases.
 
-- `Release stages`: specify release deployment stage(s) (comma separated)
+- `Filter release stages`: target specific deployment stage(s) (comma separated) _(optional)_
 - `Filter release tag`: enable filtering target release by release pipeline tag (comma separated) _(optional)_
 - `Filter artifact version`: enable new release filtering (last 100 builds) by primary build artifact version name (i.e. build number) _(optional)_
 - `Filter artifact tag`: enable filtering target release by primary build artifact tag (comma separated) _(optional)_
@@ -153,7 +153,8 @@ Deploying latest release requires you to provide target stages for deployment. T
     projectName: My-Project
     definitionName: My-Definition
     releaseStrategy: latest
-    releaseStages: DEV,TEST,PROD
+    # releaseStagesFilter: false # Optional
+    # releaseStages: DEV,TEST,PROD # Required when releaseStagesFilter == true
     # releaseTagFilter: false # Optional
     # releaseTagName: My-Release # Required when releaseTagFilter == true
     # artifactVersionFilter: false # Optional

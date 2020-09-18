@@ -43,12 +43,14 @@ steps:
   inputs:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
+    ReleaseStrategy: create
 
 - task: releaseorchestrator@1
   displayName: Create release (manual)
   inputs:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
+    ReleaseStrategy: create
     DefinitionStagesFilter: true
     TargetDefinitionStages: PROD
 
@@ -57,6 +59,7 @@ steps:
   inputs:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
+    ReleaseStrategy: create
     DefinitionStagesFilter: true
     TargetDefinitionStages: DEV
     ArtifactTagFilter: true
@@ -67,6 +70,7 @@ steps:
   inputs:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
+    ReleaseStrategy: create
     DefinitionStagesFilter: true
     TargetDefinitionStages: DEV
     SourceBranchFilter: true

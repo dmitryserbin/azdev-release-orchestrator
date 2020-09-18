@@ -87,6 +87,15 @@
       "visibleRule": "releaseStrategy = specific"
     },
     {
+      "name": "releaseStagesFilter",
+      "type": "boolean",
+      "label": "Filter release stages",
+      "helpMarkDown": "Use default or target specific release stages",
+      "defaultValue": false,
+      "required": false,
+      "visibleRule": "releaseStrategy = specific || releaseStrategy = latest"
+    },
+    {
       "name": "releaseStages",
       "type": "pickList",
       "label": "Release stages",
@@ -95,7 +104,7 @@
       "properties": {
         "EditableOptions": true
       },
-      "visibleRule": "releaseStrategy = specific || releaseStrategy = latest"
+      "visibleRule": "(releaseStrategy = specific || releaseStrategy = latest) && releaseStagesFilter = true"
     },
     {
       "name": "definitionStagesFilter",
