@@ -127,7 +127,7 @@ stages:
         releaseId: 162
         releasePartialId: 194
         releaseFailedId: 200
-        releaseStageName: DEV,TEST,PROD
+        releaseStages: DEV,TEST,PROD
         artifactTagName: Build-Yo
         releaseTagName: Release-Yo
         sourceBranchName: refs/heads/working/test
