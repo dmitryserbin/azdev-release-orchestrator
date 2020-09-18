@@ -214,15 +214,15 @@ export class TaskHelper implements ITaskHelper {
 
         parameters.releaseType = ReleaseType.New;
 
-        const definitionStagesFilter: boolean = getBoolInput("definitionStagesFilter");
+        const definitionStageFilter: boolean = getBoolInput("definitionStageFilter");
         const artifactVersionFilter: boolean = getBoolInput("artifactVersionFilter");
         const artifactTagFilter: boolean = getBoolInput("artifactTagFilter");
         const artifactBranchFilter: boolean = getBoolInput("artifactBranchFilter");
 
         // Get definition stages
-        if (definitionStagesFilter) {
+        if (definitionStageFilter) {
 
-            parameters.stages = getDelimitedInput("definitionStages", ",", true);
+            parameters.stages = getDelimitedInput("definitionStageName", ",", true);
 
         }
 
@@ -284,7 +284,7 @@ export class TaskHelper implements ITaskHelper {
 
         parameters.releaseType = ReleaseType.Latest;
 
-        const releaseStagesFilter: boolean = getBoolInput("releaseStagesFilter");
+        const releaseStageFilter: boolean = getBoolInput("releaseStageFilter");
         const releaseTagFilter: boolean = getBoolInput("releaseTagFilter");
         const artifactVersionFilter: boolean = getBoolInput("artifactVersionFilter");
         const artifactTagFilter: boolean = getBoolInput("artifactTagFilter");
@@ -292,9 +292,9 @@ export class TaskHelper implements ITaskHelper {
         const stageStatusFilter: boolean = getBoolInput("stageStatusFilter");
 
         // Get release stages
-        if (releaseStagesFilter) {
+        if (releaseStageFilter) {
 
-            parameters.stages = getDelimitedInput("releaseStages", ",", true);
+            parameters.stages = getDelimitedInput("releaseStageName", ",", true);
 
         }
 
@@ -334,7 +334,7 @@ export class TaskHelper implements ITaskHelper {
         // Optional to support variable input
         if (stageStatusFilter) {
 
-            parameters.filters.stageStatuses = getDelimitedInput("stageStatus", ",", true);
+            parameters.filters.stageStatuses = getDelimitedInput("stageStatusName", ",", true);
 
         }
 
@@ -346,15 +346,15 @@ export class TaskHelper implements ITaskHelper {
 
         parameters.releaseType = ReleaseType.Specific;
 
-        const releaseStagesFilter: boolean = getBoolInput("releaseStagesFilter");
+        const releaseStageFilter: boolean = getBoolInput("releaseStageFilter");
 
         // Get release name
         parameters.releaseName = getInput("releaseName", true)!;
 
         // Get release stages
-        if (releaseStagesFilter) {
+        if (releaseStageFilter) {
 
-            parameters.stages = getDelimitedInput("releaseStages", ",", true);
+            parameters.stages = getDelimitedInput("releaseStageName", ",", true);
 
         }
 

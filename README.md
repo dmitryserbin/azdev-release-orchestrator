@@ -120,8 +120,8 @@ By default, new release deployment uses default stage [triggers](https://docs.mi
     projectName: My-Project
     definitionName: My-Definition
     releaseStrategy: create
-    # definitionStagesFilter: false # Optional
-    # definitionStages: DEV,TEST,PROD # Required when definitionStagesFilter == true
+    # definitionStageFilter: false # Optional
+    # definitionStageName: DEV,TEST,PROD # Required when definitionStageFilter == true
     # artifactVersionFilter: false # Optional
     # artifactVersionName: My-Build-01 # Required when artifactVersionFilter == true
     # artifactTagFilter: false # Optional
@@ -153,8 +153,8 @@ Deploying latest release requires you to provide target stages for deployment. T
     projectName: My-Project
     definitionName: My-Definition
     releaseStrategy: latest
-    # releaseStagesFilter: false # Optional
-    # releaseStages: DEV,TEST,PROD # Required when releaseStagesFilter == true
+    # releaseStageFilter: false # Optional
+    # releaseStageName: DEV,TEST,PROD # Required when releaseStageFilter == true
     # releaseTagFilter: false # Optional
     # releaseTagName: My-Release # Required when releaseTagFilter == true
     # artifactVersionFilter: false # Optional
@@ -164,7 +164,7 @@ Deploying latest release requires you to provide target stages for deployment. T
     # artifactBranchFilter: false # Optional
     # artifactBranchName: refs/heads/master # Required when artifactBranchFilter == true
     # stageStatusFilter: false # Optional
-    # stageStatus: Rejected,Succeeded # Required when stageStatusFilter == true
+    # stageStatusName: Rejected,Succeeded # Required when stageStatusFilter == true
 ```
 
 ### Specific release
@@ -185,7 +185,7 @@ steps:
     definitionName: My-Definition
     releaseStrategy: specific
     releaseName: My-Release
-    releaseStages: DEV,TEST,PROD
+    releaseStageName: DEV,TEST,PROD
 ```
 
 ## Advanced

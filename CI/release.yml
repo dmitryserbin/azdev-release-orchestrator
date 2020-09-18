@@ -127,7 +127,7 @@ stages:
         releaseId: 162
         releasePartialId: 194
         releaseFailedId: 200
-        releaseStages: DEV,TEST,PROD
+        releaseStageName: DEV,TEST,PROD
         artifactTagName: Build-Yo
         releaseTagName: Release-Yo
         sourceBranchName: refs/heads/working/test
@@ -157,7 +157,7 @@ stages:
         releaseName: HelloYo-20190521.1-1
         releasePartialName: HelloYo-20190521.4-27
         releaseFailedName: HelloYo-20190521.4-32
-        releaseStages: DEV,TEST,PROD
+        releaseStageName: DEV,TEST,PROD
         artifactVersionName: 20190521.1
         artifactTagName: Build-Yo
         releaseTagName: Release-Yo

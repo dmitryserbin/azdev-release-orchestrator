@@ -87,7 +87,7 @@
       }
     },
     {
-      "name": "releaseStagesFilter",
+      "name": "releaseStageFilter",
       "type": "boolean",
       "label": "Filter release stages",
       "helpMarkDown": "Use default or target specific release stages",
@@ -96,7 +96,7 @@
       "visibleRule": "releaseStrategy != create"
     },
     {
-      "name": "releaseStages",
+      "name": "releaseStageName",
       "type": "pickList",
       "label": "Release stages",
       "helpMarkDown": "Target specific release stages (comma separated)",
@@ -104,10 +104,10 @@
       "properties": {
         "EditableOptions": true
       },
-      "visibleRule": "releaseStrategy != create && releaseStagesFilter = true"
+      "visibleRule": "releaseStrategy != create && releaseStageFilter = true"
     },
     {
-      "name": "definitionStagesFilter",
+      "name": "definitionStageFilter",
       "type": "boolean",
       "label": "Filter definition stages",
       "helpMarkDown": "Use default or target specific release definition stages",
@@ -116,7 +116,7 @@
       "visibleRule": "releaseStrategy = create"
     },
     {
-      "name": "definitionStages",
+      "name": "definitionStageName",
       "type": "pickList",
       "label": "Definition stages",
       "helpMarkDown": "Target specific release definition stages (comma separated)",
@@ -124,7 +124,7 @@
       "properties": {
         "EditableOptions": true
       },
-      "visibleRule": "releaseStrategy = create && definitionStagesFilter = true"
+      "visibleRule": "releaseStrategy = create && definitionStageFilter = true"
     },
     {
       "name": "releaseTagFilter",
@@ -205,7 +205,7 @@
       "visibleRule": "releaseStrategy = latest"
     },
     {
-      "name": "stageStatus",
+      "name": "stageStatusName",
       "type": "pickList",
       "label": "Target stage status",
       "helpMarkDown": "Specify target release stage status filter. Default = Succeeded",
@@ -289,7 +289,7 @@
       "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
     },
     {
-      "target": "definitionStages",
+      "target": "definitionStageName",
       "endpointId": "tfs:rm",
       "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/release/definitions/?searchText=$(definitionName)&isExactNameMatch=true&$expand=Environments",
       "resultSelector": "jsonpath:$.value[*].environments[*]",
@@ -303,7 +303,7 @@
       "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}} (by {{{createdBy.displayName}}} at {{{createdOn}}})\" }"
     },
     {
-      "target": "releaseStages",
+      "target": "releaseStageName",
       "endpointId": "tfs:rm",
       "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/release/releases?definitionId=$(definitionName)&searchText=$(releaseName)&$expand=Environments",
       "resultSelector": "jsonpath:$.value[*].environments[*]",

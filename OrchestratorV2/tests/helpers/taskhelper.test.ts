@@ -30,15 +30,15 @@ describe("TaskHelper", ()  => {
 
     const projectNameMock: string = "My-Project";
     const definitionNameMock: string = "My-Definition";
-    const definitionStagesMock: string = "DEV,TEST,PROD";
+    const definitionStageNameMock: string = "DEV,TEST,PROD";
     const releaseNameMock: string = "My-Release";
-    const releaseStagesMock: string = "DEV,TEST,PROD";
+    const releaseStageNameMock: string = "DEV,TEST,PROD";
 
     const releaseTagNameMock: string = "My-Tag-One,My-Tag-Two";
     const artifactVersionNameMock: string = "My-Build-01";
     const artifactTagNameMock: string = "My-Artifact-Tag-One,My-Artifact-Tag-Two";
     const artifactBranchNameMock: string = "My-Branch";
-    const stageStatusMock: string = "succeeded,rejected";
+    const stageStatusNameMock: string = "succeeded,rejected";
 
     const releaseVariablesMock: string = "My-Variable-One=My-Value-One"
 
@@ -115,8 +115,8 @@ describe("TaskHelper", ()  => {
         inputs["projectName"] = projectNameMock;
         inputs["definitionName"] = definitionNameMock;
 
-        inputs["definitionStagesFilter"] = true;
-        inputs["definitionStages"] = definitionStagesMock;
+        inputs["definitionStageFilter"] = true;
+        inputs["definitionStageName"] = definitionStageNameMock;
 
         inputs["artifactVersionFilter"] = true;
         inputs["artifactVersionName"] = artifactVersionNameMock;
@@ -171,8 +171,8 @@ describe("TaskHelper", ()  => {
         inputs["projectName"] = projectNameMock;
         inputs["definitionName"] = definitionNameMock;
 
-        inputs["releaseStagesFilter"] = true;
-        inputs["releaseStages"] = releaseStagesMock;
+        inputs["releaseStageFilter"] = true;
+        inputs["releaseStageName"] = releaseStageNameMock;
 
         inputs["releaseTagFilter"] = true;
         inputs["releaseTagName"] = releaseTagNameMock;
@@ -187,7 +187,7 @@ describe("TaskHelper", ()  => {
         inputs["artifactBranchName"] = artifactBranchNameMock;
 
         inputs["stageStatusFilter"] = true;
-        inputs["stageStatus"] = stageStatusMock;
+        inputs["stageStatusName"] = stageStatusNameMock;
 
         inputs["updateInterval"] = updateIntervalMock;
         inputs["approvalRetry"] = approvalRetryMock;
@@ -234,8 +234,8 @@ describe("TaskHelper", ()  => {
 
         inputs["releaseName"] = releaseNameMock;
 
-        inputs["releaseStagesFilter"] = true;
-        inputs["releaseStages"] = releaseStagesMock;
+        inputs["releaseStageFilter"] = true;
+        inputs["releaseStageName"] = releaseStageNameMock;
 
         //#endregion
 
