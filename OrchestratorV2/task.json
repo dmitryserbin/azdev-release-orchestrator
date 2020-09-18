@@ -93,7 +93,7 @@
       "helpMarkDown": "Use default or target specific release stages",
       "defaultValue": false,
       "required": false,
-      "visibleRule": "releaseStrategy = specific || releaseStrategy = latest"
+      "visibleRule": "releaseStrategy != create"
     },
     {
       "name": "releaseStages",
@@ -104,7 +104,7 @@
       "properties": {
         "EditableOptions": true
       },
-      "visibleRule": "(releaseStrategy = specific || releaseStrategy = latest) && releaseStagesFilter = true"
+      "visibleRule": "releaseStrategy != create && releaseStagesFilter = true"
     },
     {
       "name": "definitionStagesFilter",
