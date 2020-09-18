@@ -122,7 +122,7 @@ ForEach ($Release in $Releases)
 		-TokenType $TokenType `
 		-ApiVersion 6.0
 
-	if ($Result)
+	if ($Result.message)
 	{
 		Write-Warning $Result.message
 	}
