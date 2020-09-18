@@ -495,6 +495,8 @@ export class ReleaseHelper implements IReleaseHelper {
 
         };
 
+        // Do not use REST API retry for approvals
+        // Rely on approval retry mechanism instead
         const approvalStatus: ReleaseApproval = await this.releaseApi.updateReleaseApproval(approvalRequest, projectName, releaseApproval.id!);
 
         debug(approvalStatus);

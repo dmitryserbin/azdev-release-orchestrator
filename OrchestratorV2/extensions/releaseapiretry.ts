@@ -109,7 +109,8 @@ export class ReleaseApiRetry implements IReleaseApiRetry {
 
     }
 
-    @Retryable()
+    // Do not use REST API retry for approvals
+    // Rely on approval retry mechanism instead
     public async updateReleaseApproval(approval: ReleaseApproval, project: string, approvalId: number): Promise<ReleaseApproval> {
 
         return await this.releaseApi.updateReleaseApproval(approval, project, approvalId);
