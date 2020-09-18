@@ -3,6 +3,7 @@ import "mocha";
 import * as chai from "chai";
 import * as TypeMoq from "typemoq";
 
+import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import { ReleaseDefinition, Artifact, ArtifactMetadata, EnvironmentStatus, ReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
@@ -56,6 +57,7 @@ describe("Filtrator", ()  => {
 
     };
 
+    let projectMock: TypeMoq.IMock<TeamProject>;
     let definitionMock: TypeMoq.IMock<ReleaseDefinition>;
     let parametersMock: TypeMoq.IMock<IParameters>;
     let filtersMock: TypeMoq.IMock<IFilters>;
@@ -65,6 +67,7 @@ describe("Filtrator", ()  => {
 
     beforeEach(async () => {
 
+        projectMock = TypeMoq.Mock.ofType<TeamProject>();
         definitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>();
         parametersMock = TypeMoq.Mock.ofType<IParameters>();
         filtersMock = TypeMoq.Mock.ofType<IFilters>();
@@ -86,8 +89,6 @@ describe("Filtrator", ()  => {
         filtersMock.target.artifactBranch = "My-Branch";
         filtersMock.target.artifactTags = [ "My-Tag-One", "My-Tag-Two" ];
 
-        definitionMock.target.projectReference = projectReferenceMock;
-
         const artifactsMock = TypeMoq.Mock.ofType<ArtifactMetadata[]>();
 
         const primaryBuildArtifactMock = TypeMoq.Mock.ofType<Artifact>();
@@ -103,14 +104,14 @@ describe("Filtrator", ()  => {
         buildHelperMock.setup((x) => x.findBuild(primaryBuildArtifactMock.target.definitionReference!.project.name!, primaryBuildArtifactMock.target.definitionReference!.definition.name!, Number(primaryBuildArtifactMock.target.definitionReference!.definition.id!), filtersMock.target.artifactVersion, parametersMock.target.filters.artifactTags, buildCount)).returns(
             () => Promise.resolve(buildArtifactMock.target));
 
-        releaseHelperMock.setup((x) => x.getArtifacts(definitionMock.target.projectReference!.name!, definitionMock.target.id!, primaryBuildArtifactMock.target.sourceId!, buildArtifactMock.target.id!.toString(), parametersMock.target.filters.artifactBranch)).returns(
+        releaseHelperMock.setup((x) => x.getArtifacts(projectMock.target.name!, definitionMock.target.id!, primaryBuildArtifactMock.target.sourceId!, buildArtifactMock.target.id!.toString(), parametersMock.target.filters.artifactBranch)).returns(
             () => Promise.resolve(artifactsMock.target));
 
         //#endregion
 
         //#region ACT
 
-        const result = await filterCreator.createArtifactFilter(definitionMock.target, parametersMock.target.filters);
+        const result = await filterCreator.createArtifactFilter(projectMock.target, definitionMock.target, parametersMock.target.filters);
 
         //#endregion
 

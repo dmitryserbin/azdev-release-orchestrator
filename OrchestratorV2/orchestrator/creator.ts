@@ -1,6 +1,7 @@
+import { String } from "typescript-string-operations";
+
 import { ReleaseDefinition, Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
-import { String } from "typescript-string-operations";
 
 import { IParameters } from "../interfaces/task/parameters";
 import { ReleaseType } from "../interfaces/common/releasetype";
@@ -87,7 +88,7 @@ export class Creator implements ICreator {
                     this.progressReporter.getFilters(parameters.filters)
                 );
 
-                const artifactFilter: IArtifactFilter[] = await this.filterCreator.createArtifactFilter(definition, parameters.filters);
+                const artifactFilter: IArtifactFilter[] = await this.filterCreator.createArtifactFilter(project, definition, parameters.filters);
 
                 if (Array.isArray(parameters.variables) && parameters.variables.length) {
 

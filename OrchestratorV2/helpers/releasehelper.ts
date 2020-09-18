@@ -49,7 +49,9 @@ export class ReleaseHelper implements IReleaseHelper {
 
         }
 
-        const targetDefinition: ReleaseDefinition = await this.releaseApi.getReleaseDefinition(projectName, matchingDefinitions[0].id!);
+        const targetDefinition: ReleaseDefinition = await this.releaseApi.getReleaseDefinition(
+            projectName,
+            matchingDefinitions[0].id!);
 
         debug(targetDefinition);
 
@@ -275,7 +277,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
             }
 
-            // Use default (latest)
+            // Use default latest
             let targetVersion: BuildVersion = artifact.versions![0];
 
             // Filter primary artifact
@@ -284,27 +286,29 @@ export class ReleaseHelper implements IReleaseHelper {
                 // Filter by version ID
                 if (versionId && !branchName) {
 
-                    targetVersion = artifact.versions!.filter((i) => i.id === versionId)[0];
+                    targetVersion = artifact.versions!.filter(
+                        (i) => i.id === versionId)[0];
 
                 }
 
-                // Filter by source branch
+                // Filter by branch name
                 if (branchName && !versionId) {
 
-                    targetVersion = artifact.versions!.filter((i) => i.sourceBranch === branchName)[0];
+                    targetVersion = artifact.versions!.filter(
+                        (i) => i.sourceBranch === branchName)[0];
 
                 }
 
                 // Filter by version ID and source branch
                 if (versionId && branchName) {
 
-                    targetVersion = artifact.versions!.filter((i) => i.id === versionId && i.sourceBranch === branchName)[0];
+                    targetVersion = artifact.versions!.filter(
+                        (i) => i.id === versionId && i.sourceBranch === branchName)[0];
 
                 }
 
             }
 
-            // Validate version
             if (!targetVersion) {
 
                 throw new Error(`No artifact <${artifact.alias}> matching filter found`);

@@ -1,5 +1,6 @@
-import { Release, ReleaseEnvironment, EnvironmentStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { String } from "typescript-string-operations";
+
+import { Release, ReleaseEnvironment, EnvironmentStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDetails } from "../interfaces/task/details";
 import { IDeployer } from "../interfaces/orchestrator/deployer";

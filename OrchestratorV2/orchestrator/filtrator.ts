@@ -1,6 +1,8 @@
+import { String } from "typescript-string-operations";
+
+import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { ReleaseDefinition, Artifact, EnvironmentStatus, ReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
-import { String } from "typescript-string-operations";
 
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
@@ -27,7 +29,7 @@ export class Filtrator implements IFiltrator {
 
     }
 
-    public async createArtifactFilter(definition: ReleaseDefinition, filters: IFilters): Promise<IArtifactFilter[]> {
+    public async createArtifactFilter(project: TeamProject, definition: ReleaseDefinition, filters: IFilters): Promise<IArtifactFilter[]> {
 
         const debug = this.debugLogger.extend(this.createArtifactFilter.name);
 
@@ -37,7 +39,7 @@ export class Filtrator implements IFiltrator {
 
         if (primaryBuildArtifact) {
 
-            const artifactProjectName: string = definition.projectReference!.name!;
+            const artifactProjectName: string = project.name!;
             const artifactDefinitionId: number = definition.id!;
             const artifactSourceId: string = primaryBuildArtifact.sourceId!;
 
