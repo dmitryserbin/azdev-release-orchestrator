@@ -55,12 +55,23 @@
     {
       "name": "definitionName",
       "type": "pickList",
-      "label": "Release definition",
+      "label": "Definition name",
       "helpMarkDown": "Select target release definition or specify definition name",
       "required": true,
       "properties": {
         "EditableOptions": true
       }
+    },
+    {
+      "name": "releaseName",
+      "type": "pickList",
+      "label": "Release name",
+      "helpMarkDown": "Select target release (shows last 25 releases) or specify release name or ID",
+      "required": true,
+      "properties": {
+        "EditableOptions": true
+      },
+      "visibleRule": "releaseStrategy = specific"
     },
     {
       "name": "releaseStrategy",
@@ -74,17 +85,6 @@
         "latest": "Latest release",
         "specific": "Specific release"
       }
-    },
-    {
-      "name": "releaseName",
-      "type": "pickList",
-      "label": "Release name",
-      "helpMarkDown": "Select target release (shows last 25 releases) or specify release name or ID",
-      "required": true,
-      "properties": {
-        "EditableOptions": true
-      },
-      "visibleRule": "releaseStrategy = specific"
     },
     {
       "name": "releaseStagesFilter",
