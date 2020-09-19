@@ -178,7 +178,7 @@ Deploying latest release requires you to provide target stages for deployment. T
 Deploying specific release requires you to provide target stages for deployment. The target stages will be re-deployed in sequential order, exactly as you specified.
 
 - `Release name`: select existing release to target
-- `Release ntages`: specify release deployment stage(s) (comma separated)
+- `Release stages`: specify release deployment stage(s) (comma separated)
 
 > Template: specific release deployment
 
