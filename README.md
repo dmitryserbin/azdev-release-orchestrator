@@ -1,13 +1,19 @@
 # Release Orchestrator
 
-- [Overview](##overview)
-- [Features](##features)
-- [Prerequisites](##prerequisites)
-- [How to use](##how-to-use)
-- [Release strategy](##release-strategy)
-- [Advanced](##advanced)
-- [Support](##support)
-- [See also](##see-also)
+- [Release Orchestrator](#release-orchestrator)
+  - [Overview](#overview)
+  - [Features](#features)
+  - [Prerequisites](#prerequisites)
+    - [Service endpoint permissions](#service-endpoint-permissions)
+    - [Approval gates configuration](#approval-gates-configuration)
+  - [How to use](#how-to-use)
+  - [Release strategy](#release-strategy)
+    - [Create release](#create-release)
+    - [Latest release](#latest-release)
+    - [Specific release](#specific-release)
+  - [Advanced](#advanced)
+  - [Support](#support)
+  - [See also](#see-also)
 
 ## Overview
 
@@ -191,7 +197,7 @@ steps:
 ## Advanced
 
 - `Ignore failures`: suppress errors and set task result to partially succeeded in case of failure. Might be useful when it is expected for target pipeline to fail
-- `Approval fetries`: number of attempts to retry (with 1 minute delay) approving target release stage deployment (if unsuccessful) before failing. Set to `0` if you want to disable approval retry and stop immediately if approval fails
+- `Approval retries`: number of attempts to retry (with 1 minute delay) approving target release stage deployment (if unsuccessful) before failing. Set to `0` if you want to disable approval retry and stop immediately if approval fails
 - `Update interval`: number seconds to wait before next release deployment progress update (i.e. every `X` seconds). Might be useful for longer releases to help reducing number of calls to your Azure DevOps pipeline
 
 > Template: advanced task configuration
