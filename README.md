@@ -7,7 +7,6 @@
     - [Service endpoint permissions](#service-endpoint-permissions)
     - [Approval gates configuration](#approval-gates-configuration)
   - [How to use](#how-to-use)
-  - [Release strategy](#release-strategy)
     - [Create release](#create-release)
     - [Latest release](#latest-release)
     - [Specific release](#specific-release)
@@ -38,29 +37,28 @@ The task uses either **integrated** (SystemVssConnection) or **specific**  perso
 
 ## Prerequisites
 
-To perform release pipeline orchestration the task requires Azure DevOps service endpoint with specific access to target project pipelines to be able to create and manage releases.
-
-There are two types of Azure DevOps [service endoints](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) supported:
+To perform release pipeline orchestration the task requires Azure DevOps service endpoint with specific access to target project pipelines to be able to create and manage releases. There are two types of Azure DevOps [service endoints](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) supported:
 
 Type | Name | Account
 ---- | ---- | -------
 `integrated` | SystemVssConnection | Project Collection Build Service
-`specific` | User specified | User specified
+`service` | User specified | User specified
 
-You may need to check and update the following settings in Azure DevOps to utilize full potential of Release Orchestrator.
-
-- Service endpoint pipelines permissions
-- Deployment appoval gates configuration
+In order to use custom service endpoint, you may need to create a new Azure Pipelines [service connection](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) using [PAT](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate) token.
 
 ### Service endpoint permissions
 
 In release pipelines security section of Azure DevOps project allow the following access to user account of the service endpoint:
 
-- Create releases
-- Edit release stage
-- Manage deployments
-- View release pipeline
-- View releases
+Permission | Type
+:--------- | :---
+Create releases | `Allow`
+Edit release stage | `Allow`
+Manage deployments | `Allow`
+View release pipeline | `Allow`
+View releases | `Allow`
+
+You can grant required permissions to all release pipelines in the project or to a specific release pipeline.
 
 ![Image](Images/ro-02.png)
 
@@ -83,7 +81,21 @@ Please refer to Azure DevOps [approvals and gates documentation](https://docs.mi
 
 1. Add `Release Orchestrator` task to your release pipeline
 2. Select `Integrated endpoint` or `Service endpoint` endpoint type
-3. Select target project and release definition
+3. Select target project as well as target release definition
+
+You can choose different strategy to perform target release deployment:
+
+- `Create release`: create new release using [default stage triggers](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#env-triggers) or target specific stages
+- `Latest release`: find and re-deploy latest active release from release definition
+- `Specific release`: find and re-deploy specific release from release definition
+
+Parameter | Type | Required | Default | Options | Description
+:-------- | :--- | :------- | :------ | :------ | :----------
+projectName | `[string]` | ✅ | - | - | Target project name or ID
+definitionName | `[string]` | ✅ | - | - | Target release definition name or ID
+endpointType | `[string]` | ✅ | `integrated` | `integrated`<br />`service` | Use integrated or user specified service endpoint
+endpointName | `[string]` | - | - | - | User specified service endpoint name
+releaseStrategy | `[string]` | ✅ | `create` | `create`<br />`latest`<br />`specific`<br /> |  Release strategy to perform target release deployment
 
 > Template: baseline task configuration
 
@@ -97,25 +109,15 @@ Please refer to Azure DevOps [approvals and gates documentation](https://docs.mi
     # endpointName: My-Endpoint # Required when endpointType == service
 ```
 
-> You may need to create a new Azure Pipelines [service connection](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) using [PAT](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate) token.
-
-## Release strategy
-
-You can choose different strategy for orchestrator to perform target release deployment:
-
-- `Create new release`: create new release using [default stage triggers](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#env-triggers) or target specific stages
-- `Deploy latest release`: find and re-deploy latest active release from release definition (target specific stages only)
-- `Deploy specific release`: find and re-deploy specific release from release definition (target specific stages only)
-
 ### Create release
 
-By default, new release deployment uses default stage [triggers](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#env-triggers) configured in the target pipeline. In order to deploy specific or manual stages, you need to specify target stages using `Filter definition stages` option.
+By default, new release deployment uses default stage [triggers](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#env-triggers) configured in the target pipeline. In order to deploy specific stages, you need to specify target stages using `Filter definition stages` option.
 
-- `Filter definition stages`: target specific deployment stage(s) (comma separated) _(optional)_
-- `Filter artifact version`: enable new release filtering (last 100 builds) by primary build artifact version name (i.e. build number) _(optional)_
-- `Filter artifact tag`: enable new release filtering (last 100 builds) by primary build artifact tag (comma separated) _(optional)_
-- `Filter artifact branch`: enable new release filtering (last 100 builds) by primary build artifact source branch name _(optional)_
-- `Release variables`: override release variables of the target release pipeline when creating a new release _(optional)_. Specified release variables must be configured to be `settable at release time` in the release. Values in `Name=Value` format, special characters supported, new line separated
+- `Filter definition stages`: target specific deployment stage(s) (comma separated)
+- `Filter artifact version`: enable new release filtering (last 100 builds) by primary build artifact version name (i.e. build number)
+- `Filter artifact tag`: enable new release filtering (last 100 builds) by primary build artifact tag (comma separated)
+- `Filter artifact branch`: enable new release filtering (last 100 builds) by primary build artifact source branch name
+- `Release variables`: override release variables of the target release pipeline when creating a new release. Specified release variables must be configured to be `settable at release time` in the release. Values in `Name=Value` format, special characters supported, new line separated
 
 > Template: new release deployment with automated stage triggers
 
@@ -143,12 +145,12 @@ By default, new release deployment uses default stage [triggers](https://docs.mi
 
 Deploying latest release requires you to provide target stages for deployment. The target stages will be re-deployed in sequential order, exactly as you specified. Search range is last 100 releases.
 
-- `Filter release stages`: target specific deployment stage(s) (comma separated) _(optional)_
-- `Filter release tag`: enable filtering target release by release pipeline tag (comma separated) _(optional)_
-- `Filter artifact version`: enable new release filtering (last 100 builds) by primary build artifact version name (i.e. build number) _(optional)_
-- `Filter artifact tag`: enable filtering target release by primary build artifact tag (comma separated) _(optional)_
-- `Filter artifact branch`: enable filtering target release by primary artifact source branch name _(optional)_
-- `Filter stage status`: enable filtering target release by stage deployment status (comma separated) _(optional)_. Supported options: succeeded, partiallySucceeded, notStarted, rejected, canceled.
+- `Filter release stages`: target specific deployment stage(s) (comma separated)
+- `Filter release tag`: enable filtering target release by release pipeline tag (comma separated)
+- `Filter artifact version`: enable new release filtering (last 100 builds) by primary build artifact version name (i.e. build number)
+- `Filter artifact tag`: enable filtering target release by primary build artifact tag (comma separated)
+- `Filter artifact branch`: enable filtering target release by primary artifact source branch name
+- `Filter stage status`: enable filtering target release by stage deployment status (comma separated). Supported options: succeeded, partiallySucceeded, notStarted, rejected, canceled.
 
 > Template: latest release deployment
 
