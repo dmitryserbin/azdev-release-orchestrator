@@ -89,13 +89,13 @@ You can choose different strategy to perform target release deployment:
 - `Latest release`: find and re-deploy latest active release from release definition
 - `Specific release`: find and re-deploy specific release from release definition
 
-Parameter | Required | Default | Options | Description
-:-------- | :------- | :------ | :------ | :----------
-projectName | ✅ | - | - | Target project name or ID
-definitionName | ✅ | - | - | Target release definition name or ID
-endpointType | ✅ | `integrated` | `integrated`<br />`service` | Use integrated or user specified service endpoint
-endpointName | - | - | - | User specified service endpoint name
-releaseStrategy | ✅ | `create` | `create`<br />`latest`<br />`specific`<br /> |  Release strategy to perform target release deployment
+Parameter | Type | Default | Options | Description
+:-------- | :--- | :------ | :------ | :----------
+projectName | `[string]` | - | - | Target project name or ID
+definitionName | `[string]` | - | - | Target release definition name or ID
+endpointType | `[string]` | `integrated` | `integrated`<br />`service` | Use integrated or user specified service endpoint
+endpointName | `[string]` | - | - | User specified service endpoint name
+releaseStrategy | `[string]` | `create` | `create`<br />`latest`<br />`specific`<br /> |  Release strategy to perform target release deployment
 
 > Template: baseline task configuration
 
