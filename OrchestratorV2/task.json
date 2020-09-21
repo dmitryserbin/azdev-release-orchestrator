@@ -208,7 +208,7 @@
       "name": "stageStatusName",
       "type": "pickList",
       "label": "Target stage status",
-      "helpMarkDown": "Specify target release stage status filter name(s) (comma separated). Default = Succeeded. Options: Succeeded, PartiallySucceeded, NotStarted, Rejected & Canceled",
+      "helpMarkDown": "Specify target release stage status filter name(s) (comma separated). Default = succeeded. Options: succeeded, partiallySucceeded, notStarted, rejected & canceled",
       "defaultValue": "Succeeded",
       "properties": {
         "MultiSelectFlatList": true,

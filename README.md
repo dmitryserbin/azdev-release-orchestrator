@@ -125,7 +125,7 @@ By default, new release deployment uses default stage [triggers](https://docs.mi
     # artifactVersionFilter: false # Optional
     # artifactVersionName: My-Build-01 # Required when artifactVersionFilter == true
     # artifactTagFilter: false # Optional
-    # artifactTagName: My-Artifact # Required when artifactTagFilter == true
+    # artifactTagName: My-Artifact-Tag # Required when artifactTagFilter == true
     # artifactBranchFilter: false # Optional
     # artifactBranchName: refs/heads/master # Required when artifactBranchFilter == true
     # releaseVariables: | # Optional
@@ -142,7 +142,7 @@ By default, latest release deployment targets all stages configured in the targe
 - `Filter artifact version`: target release primary build type artifact version name (i.e. build number, last 100 builds)
 - `Filter artifact tag`: target release primary build type artifact tag name(s) (comma separated, last 100 builds)
 - `Filter artifact branch`: target release primary artifact source branch name. Supports build artifact (last 100 builds) or Git artifact
-- `Filter stage status`: target release stage status filter name(s) (comma separated). Options: Succeeded, PartiallySucceeded, NotStarted, Rejected & Canceled
+- `Filter stage status`: target release stage status filter name(s) (comma separated). Options: succeeded, partiallySucceeded, notStarted, rejected & canceled
 
 > Template: latest release deployment
 
@@ -156,15 +156,15 @@ By default, latest release deployment targets all stages configured in the targe
     # releaseStageFilter: false # Optional
     # releaseStageName: DEV,TEST,PROD # Required when releaseStageFilter == true
     # releaseTagFilter: false # Optional
-    # releaseTagName: My-Release # Required when releaseTagFilter == true
+    # releaseTagName: My-Release-Tag # Required when releaseTagFilter == true
     # artifactVersionFilter: false # Optional
     # artifactVersionName: My-Build-01 # Required when artifactVersionFilter == true
     # artifactTagFilter: false # Optional
-    # artifactTagName: My-Artifact # Required when artifactTagFilter == true
+    # artifactTagName: My-Artifact-Tag # Required when artifactTagFilter == true
     # artifactBranchFilter: false # Optional
     # artifactBranchName: refs/heads/master # Required when artifactBranchFilter == true
     # stageStatusFilter: false # Optional
-    # stageStatusName: Rejected,Succeeded # Required when stageStatusFilter == true
+    # stageStatusName: succeeded # Required when stageStatusFilter == true
 ```
 
 ### Specific release
