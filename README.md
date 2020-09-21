@@ -63,7 +63,7 @@ Please refer to Azure DevOps [permissions and security roles documentation](http
 
 ### Approval permissions
 
-The task can automate release stage pre-deployment approval, in order to configure it you need:
+The task can automate release stage pre-deployment approval, in order to configure it you need update release definition stages settings:
 
 - Add `Project Collection Build Service` or user specified service endpoint user account to stage approvers
 - Uncheck `The user requesting a release or deployment should not approve it` checkbox
