@@ -23,7 +23,7 @@ Extension | Build | Code
 
 ## Features
 
-<img align="left" style="margin: 6px 10px 0 0" width="85" height="85" src="Images/icon.png" />
+<img align="left" width="90" height="90" src="Images/icon.png" />
 
 The **Release Orchestrator** task performs target Azure DevOps release pipeline execution and provides various customization settings.
 
