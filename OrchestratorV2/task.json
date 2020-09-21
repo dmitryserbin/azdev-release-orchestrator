@@ -63,17 +63,6 @@
       }
     },
     {
-      "name": "releaseName",
-      "type": "pickList",
-      "label": "Release name",
-      "helpMarkDown": "Specify target release name or ID (shows last 25 releases)",
-      "required": true,
-      "properties": {
-        "EditableOptions": true
-      },
-      "visibleRule": "releaseStrategy = specific"
-    },
-    {
       "name": "releaseStrategy",
       "type": "radio",
       "label": "Release strategy",
@@ -85,6 +74,17 @@
         "latest": "Latest release",
         "specific": "Specific release"
       }
+    },
+    {
+      "name": "releaseName",
+      "type": "pickList",
+      "label": "Release name",
+      "helpMarkDown": "Specify target release name or ID (shows last 25 releases)",
+      "required": true,
+      "properties": {
+        "EditableOptions": true
+      },
+      "visibleRule": "releaseStrategy = specific"
     },
     {
       "name": "releaseStageFilter",
@@ -124,7 +124,7 @@
       "properties": {
         "EditableOptions": true
       },
-      "visibleRule": "releaseStrategy = create && definitionStageFilter = true"
+      "visibleRule": "definitionStageFilter = true"
     },
     {
       "name": "releaseTagFilter",
@@ -150,7 +150,7 @@
       "helpMarkDown": "Enable target release primary build artifact version filter",
       "defaultValue": false,
       "required": false,
-      "visibleRule": "releaseStrategy = create || releaseStrategy = latest"
+      "visibleRule": "releaseStrategy != specific"
     },
     {
       "name": "artifactVersionName",
@@ -167,7 +167,7 @@
       "helpMarkDown": "Enable target release primary build artifact tag filter",
       "defaultValue": false,
       "required": false,
-      "visibleRule": "releaseStrategy = create || releaseStrategy = latest"
+      "visibleRule": "releaseStrategy != specific"
     },
     {
       "name": "artifactTagName",
@@ -184,14 +184,13 @@
       "helpMarkDown": "Enable target release primary artifact source branch filter",
       "defaultValue": false,
       "required": false,
-      "visibleRule": "releaseStrategy = create || releaseStrategy = latest"
+      "visibleRule": "releaseStrategy != specific"
     },
     {
       "name": "artifactBranchName",
       "type": "string",
       "label": "Artifact branch name",
-      "helpMarkDown": "Specify target release primary artifact source branch name. Default = 'refs/heads/master' (build artifact, last 100 builds) or 'master' (Git artifact)",
-      "defaultValue": "refs/heads/master",
+      "helpMarkDown": "Specify target release primary artifact source branch name. Example = 'refs/heads/master' (build artifact, last 100 builds) or 'master' (Git artifact)",
       "required": true,
       "visibleRule": "artifactBranchFilter = true"
     },
@@ -208,8 +207,7 @@
       "name": "stageStatusName",
       "type": "pickList",
       "label": "Target stage status",
-      "helpMarkDown": "Specify target release stage status filter name(s) (comma separated). Default = succeeded. Options: succeeded, partiallySucceeded, notStarted, rejected & canceled",
-      "defaultValue": "Succeeded",
+      "helpMarkDown": "Specify target release stage status filter name(s) (comma separated). Options: succeeded, partiallySucceeded, notStarted, rejected & canceled",
       "properties": {
         "MultiSelectFlatList": true,
         "EditableOptions": false
