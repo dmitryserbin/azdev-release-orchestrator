@@ -1,18 +1,17 @@
 # Release Orchestrator
 
-- [Release Orchestrator](#release-orchestrator)
-  - [Overview](#overview)
-  - [Features](#features)
-  - [Prerequisites](#prerequisites)
-    - [Service endpoint permissions](#service-endpoint-permissions)
-    - [Approval gates configuration](#approval-gates-configuration)
-  - [How to use](#how-to-use)
-    - [Create release](#create-release)
-    - [Latest release](#latest-release)
-    - [Specific release](#specific-release)
-  - [Advanced](#advanced)
-  - [Support](#support)
-  - [See also](#see-also)
+- [Overview](#overview)
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+  - [Endpoint permissions](#endpoint-permissions)
+  - [Approval permissions](#approval-permissions)
+- [How to use](#how-to-use)
+  - [Create release](#create-release)
+  - [Latest release](#latest-release)
+  - [Specific release](#specific-release)
+- [Advanced](#advanced)
+- [Support](#support)
+- [See also](#see-also)
 
 ## Overview
 
@@ -46,7 +45,7 @@ Type | Name | Account
 
 In order to use custom service endpoint, you may need to create a new Azure Pipelines [service connection](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) using [PAT](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate) token.
 
-### Service endpoint permissions
+### Release permissions
 
 In release pipelines security section of Azure DevOps project allow the following access to user account of the service endpoint:
 
@@ -58,13 +57,13 @@ Manage deployments | `Allow`
 View release pipeline | `Allow`
 View releases | `Allow`
 
-You can grant required permissions to all release pipelines in the project or to a specific release pipeline.
+Use `Project Collection Build Service` for integrated endpoint or user specified account for custom service endpoint. You can grant required permissions to all release pipelines in the project or to a specific release pipeline.
 
 ![Image](Images/ro-02.png)
 
 Please refer to Azure DevOps [permissions and security roles documentation](https://docs.microsoft.com/en-us/azure/devops/pipelines/policies/permissions) for more details.
 
-### Approval gates configuration
+### Approval permissions
 
 The task can automate release stage pre-deployment approval, in order to configure it you need:
 
