@@ -115,18 +115,10 @@ describe("TaskHelper", ()  => {
         inputs["projectName"] = projectNameMock;
         inputs["definitionName"] = definitionNameMock;
 
-        inputs["definitionStageFilter"] = true;
         inputs["definitionStageName"] = definitionStageNameMock;
-
-        inputs["artifactVersionFilter"] = true;
         inputs["artifactVersionName"] = artifactVersionNameMock;
-
-        inputs["artifactTagFilter"] = true;
         inputs["artifactTagName"] = artifactTagNameMock;
-
-        inputs["artifactBranchFilter"] = true;
         inputs["artifactBranchName"] = artifactBranchNameMock;
-
         inputs["releaseVariables"] = releaseVariablesMock;
 
         inputs["updateInterval"] = updateIntervalMock;
@@ -171,22 +163,11 @@ describe("TaskHelper", ()  => {
         inputs["projectName"] = projectNameMock;
         inputs["definitionName"] = definitionNameMock;
 
-        inputs["releaseStageFilter"] = true;
         inputs["releaseStageName"] = releaseStageNameMock;
-
-        inputs["releaseTagFilter"] = true;
         inputs["releaseTagName"] = releaseTagNameMock;
-
-        inputs["artifactVersionFilter"] = true;
         inputs["artifactVersionName"] = artifactVersionNameMock;
-
-        inputs["artifactTagFilter"] = true;
         inputs["artifactTagName"] = artifactTagNameMock;
-
-        inputs["artifactBranchFilter"] = true;
         inputs["artifactBranchName"] = artifactBranchNameMock;
-
-        inputs["stageStatusFilter"] = true;
         inputs["stageStatusName"] = stageStatusNameMock;
 
         inputs["updateInterval"] = updateIntervalMock;
@@ -229,13 +210,11 @@ describe("TaskHelper", ()  => {
         inputs["projectName"] = projectNameMock;
         inputs["definitionName"] = definitionNameMock;
 
+        inputs["releaseName"] = releaseNameMock;
+        inputs["releaseStageName"] = releaseStageNameMock;
+
         inputs["updateInterval"] = updateIntervalMock;
         inputs["approvalRetry"] = approvalRetryMock;
-
-        inputs["releaseName"] = releaseNameMock;
-
-        inputs["releaseStageFilter"] = true;
-        inputs["releaseStageName"] = releaseStageNameMock;
 
         //#endregion
 

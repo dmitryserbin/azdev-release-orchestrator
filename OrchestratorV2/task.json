@@ -87,85 +87,40 @@
       "visibleRule": "releaseStrategy = specific"
     },
     {
-      "name": "releaseStageFilter",
-      "type": "boolean",
-      "label": "Filter release stages",
-      "helpMarkDown": "Enable target release stage filter",
-      "defaultValue": false,
-      "required": false,
-      "visibleRule": "releaseStrategy != create"
-    },
-    {
       "name": "releaseStageName",
       "type": "pickList",
-      "label": "Release stages",
+      "label": "Release stage name",
       "helpMarkDown": "Specify target release stage name(s) (comma separated)",
-      "required": true,
+      "required": false,
       "properties": {
         "EditableOptions": true
       },
-      "visibleRule": "releaseStageFilter = true"
-    },
-    {
-      "name": "definitionStageFilter",
-      "type": "boolean",
-      "label": "Filter definition stages",
-      "helpMarkDown": "Enable target release definition stage filter",
-      "defaultValue": false,
-      "required": false,
-      "visibleRule": "releaseStrategy = create"
+      "visibleRule": "releaseStrategy != create"
     },
     {
       "name": "definitionStageName",
       "type": "pickList",
-      "label": "Definition stages",
+      "label": "Definition stage name",
       "helpMarkDown": "Specify target release definition stage name(s) (comma separated)",
-      "required": true,
+      "required": false,
       "properties": {
         "EditableOptions": true
       },
-      "visibleRule": "definitionStageFilter = true"
-    },
-    {
-      "name": "releaseTagFilter",
-      "type": "boolean",
-      "label": "Filter release tag",
-      "helpMarkDown": "Enable target release tag filter",
-      "defaultValue": false,
-      "required": false,
-      "visibleRule": "releaseStrategy = latest"
+      "visibleRule": "releaseStrategy = create"
     },
     {
       "name": "releaseTagName",
       "type": "string",
       "label": "Release tag name",
       "helpMarkDown": "Specify target release tag name(s) (comma separated, last 100 releases)",
-      "required": true,
-      "visibleRule": "releaseTagFilter = true"
-    },
-    {
-      "name": "artifactVersionFilter",
-      "type": "boolean",
-      "label": "Filter artifact version",
-      "helpMarkDown": "Enable target release primary build artifact version filter",
-      "defaultValue": false,
       "required": false,
-      "visibleRule": "releaseStrategy != specific"
+      "visibleRule": "releaseStrategy = latest"
     },
     {
       "name": "artifactVersionName",
       "type": "string",
       "label": "Artifact version name",
       "helpMarkDown": "Specify target release primary build type artifact version name (i.e. build number, last 100 builds)",
-      "required": true,
-      "visibleRule": "artifactVersionFilter = true"
-    },
-    {
-      "name": "artifactTagFilter",
-      "type": "boolean",
-      "label": "Filter artifact tag",
-      "helpMarkDown": "Enable target release primary build artifact tag filter",
-      "defaultValue": false,
       "required": false,
       "visibleRule": "releaseStrategy != specific"
     },
@@ -174,15 +129,6 @@
       "type": "string",
       "label": "Artifact tag name",
       "helpMarkDown": "Specify target release primary build type artifact tag name(s) (comma separated, last 100 builds)",
-      "required": true,
-      "visibleRule": "artifactTagFilter = true"
-    },
-    {
-      "name": "artifactBranchFilter",
-      "type": "boolean",
-      "label": "Filter artifact branch",
-      "helpMarkDown": "Enable target release primary artifact source branch filter",
-      "defaultValue": false,
       "required": false,
       "visibleRule": "releaseStrategy != specific"
     },
@@ -191,17 +137,8 @@
       "type": "string",
       "label": "Artifact branch name",
       "helpMarkDown": "Specify target release primary artifact source branch name. Example = 'refs/heads/master' (build artifact, last 100 builds) or 'master' (Git artifact)",
-      "required": true,
-      "visibleRule": "artifactBranchFilter = true"
-    },
-    {
-      "name": "stageStatusFilter",
-      "type": "boolean",
-      "label": "Filter stage status",
-      "helpMarkDown": "Enable target release stage deployment status filter",
-      "defaultValue": false,
       "required": false,
-      "visibleRule": "releaseStrategy = latest"
+      "visibleRule": "releaseStrategy != specific"
     },
     {
       "name": "stageStatusName",
@@ -219,8 +156,8 @@
         "rejected": "Rejected",
         "canceled": "Canceled"
       },
-      "required": true,
-      "visibleRule": "stageStatusFilter = true"
+      "required": false,
+      "visibleRule": "releaseStrategy = latest"
     },
     {
       "name": "releaseVariables",

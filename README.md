@@ -115,14 +115,10 @@ By default, new release deployment uses default stage [triggers](https://docs.mi
     projectName: My-Project
     definitionName: My-Definition
     releaseStrategy: create
-    # definitionStageFilter: false # Optional
-    # definitionStageName: DEV,TEST,PROD # Required when definitionStageFilter == true
-    # artifactVersionFilter: false # Optional
-    # artifactVersionName: My-Build-01 # Required when artifactVersionFilter == true
-    # artifactTagFilter: false # Optional
-    # artifactTagName: My-Artifact-Tag # Required when artifactTagFilter == true
-    # artifactBranchFilter: false # Optional
-    # artifactBranchName: refs/heads/master # Required when artifactBranchFilter == true
+    # definitionStageName: DEV,TEST,PROD # Optional
+    # artifactVersionName: My-Build-01 # Optional
+    # artifactTagName: My-Artifact-Tag # Optional
+    # artifactBranchName: refs/heads/master # Optional
     # releaseVariables: | # Optional
     #  My-Variable-One=My-Value-One
     #  My-Variable-Two=My-Value-Two
@@ -148,18 +144,12 @@ By default, latest release deployment targets all stages configured in the targe
     projectName: My-Project
     definitionName: My-Definition
     releaseStrategy: latest
-    # releaseStageFilter: false # Optional
-    # releaseStageName: DEV,TEST,PROD # Required when releaseStageFilter == true
-    # releaseTagFilter: false # Optional
-    # releaseTagName: My-Release-Tag # Required when releaseTagFilter == true
-    # artifactVersionFilter: false # Optional
-    # artifactVersionName: My-Build-01 # Required when artifactVersionFilter == true
-    # artifactTagFilter: false # Optional
-    # artifactTagName: My-Artifact-Tag # Required when artifactTagFilter == true
-    # artifactBranchFilter: false # Optional
-    # artifactBranchName: refs/heads/master # Required when artifactBranchFilter == true
-    # stageStatusFilter: false # Optional
-    # stageStatusName: succeeded # Required when stageStatusFilter == true
+    # releaseStageName: DEV,TEST,PROD # Optional
+    # releaseTagName: My-Release-Tag # Optional
+    # artifactVersionName: My-Build-01 # Optional
+    # artifactTagName: My-Artifact-Tag # Optional
+    # artifactBranchName: refs/heads/master # Optional
+    # stageStatusName: succeeded # Optional
 ```
 
 ### Specific release
@@ -179,7 +169,7 @@ steps:
     definitionName: My-Definition
     releaseStrategy: specific
     releaseName: My-Release
-    releaseStageName: DEV,TEST,PROD
+    # releaseStageName: DEV,TEST,PROD # Optional
 ```
 
 ## Advanced

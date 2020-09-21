@@ -214,46 +214,43 @@ export class TaskHelper implements ITaskHelper {
 
         parameters.releaseType = ReleaseType.New;
 
-        const definitionStageFilter: boolean = getBoolInput("definitionStageFilter");
-        const artifactVersionFilter: boolean = getBoolInput("artifactVersionFilter");
-        const artifactTagFilter: boolean = getBoolInput("artifactTagFilter");
-        const artifactBranchFilter: boolean = getBoolInput("artifactBranchFilter");
+        // Optional to support variable input
+        const definitionStages: string[] = getDelimitedInput("definitionStageName", ",", false);
+        const artifactVersion: string | undefined = getInput("artifactVersionName", false);
+        const artifactTags: string[] = getDelimitedInput("artifactTagName", ",", false);
+        const artifactBranch: string | undefined = getInput("artifactBranchName", false);
+        const releaseVariables: string[] = getDelimitedInput("releaseVariables", "\n", false);
 
-        // Get definition stages
-        if (definitionStageFilter) {
+        // Get definition stages filter
+        if (definitionStages.length) {
 
-            parameters.stages = getDelimitedInput("definitionStageName", ",", true);
+            parameters.stages = definitionStages;
 
         }
 
         // Get artifact version name filter
-        // Optional to support variable input
-        if (artifactVersionFilter) {
+        if (artifactVersion) {
 
-            parameters.filters.artifactVersion = getInput("artifactVersionName", false)!;
+            parameters.filters.artifactVersion = artifactVersion;
 
         }
 
         // Get artifact tag name filter
-        // Optional to support variable input
-        if (artifactTagFilter) {
+        if (artifactTags.length) {
 
-            parameters.filters.artifactTags = getDelimitedInput("artifactTagName", ",", false);
+            parameters.filters.artifactTags = artifactTags;
 
         }
 
         // Get artifacts source branch filter
-        // Optional to support variable input
-        if (artifactBranchFilter) {
+        if (artifactBranch) {
 
-            parameters.filters.artifactBranch = getInput("artifactBranchName", false)!;
+            parameters.filters.artifactBranch = artifactBranch;
 
         }
 
         // Get release variables
-        const releaseVariables: string[] = getDelimitedInput("releaseVariables", "\n", false);
-
-        if (releaseVariables.length > 0) {
+        if (releaseVariables.length) {
 
             for (const variable of releaseVariables) {
 
@@ -284,57 +281,53 @@ export class TaskHelper implements ITaskHelper {
 
         parameters.releaseType = ReleaseType.Latest;
 
-        const releaseStageFilter: boolean = getBoolInput("releaseStageFilter");
-        const releaseTagFilter: boolean = getBoolInput("releaseTagFilter");
-        const artifactVersionFilter: boolean = getBoolInput("artifactVersionFilter");
-        const artifactTagFilter: boolean = getBoolInput("artifactTagFilter");
-        const artifactBranchFilter: boolean = getBoolInput("artifactBranchFilter");
-        const stageStatusFilter: boolean = getBoolInput("stageStatusFilter");
+        // Optional to support variable input
+        const releaseStages: string[] = getDelimitedInput("releaseStageName", ",", true);
+        const releaseTags: string[] = getDelimitedInput("releaseTagName", ",", false);
+        const artifactVersion: string | undefined = getInput("artifactVersionName", false);
+        const artifactTags: string[] = getDelimitedInput("artifactTagName", ",", false);
+        const artifactBranch: string | undefined = getInput("artifactBranchName", false);
+        const stageStatuses: string[] = getDelimitedInput("stageStatusName", ",", true);
 
-        // Get release stages
-        if (releaseStageFilter) {
+        // Get release stages filter
+        if (releaseStages.length) {
 
-            parameters.stages = getDelimitedInput("releaseStageName", ",", true);
+            parameters.stages = releaseStages;
 
         }
 
         // Get release tag name filter
-        // Optional to support variable input
-        if (releaseTagFilter) {
+        if (releaseTags.length) {
 
-            parameters.filters.releaseTags = getDelimitedInput("releaseTagName", ",", false);
+            parameters.filters.releaseTags = releaseTags;
 
         }
 
         // Get artifact version name filter
-        // Optional to support variable input
-        if (artifactVersionFilter) {
+        if (artifactVersion) {
 
-            parameters.filters.artifactVersion = getInput("artifactVersionName", false)!;
+            parameters.filters.artifactVersion = artifactVersion;
 
         }
 
         // Get artifact tag name filter
-        // Optional to support variable input
-        if (artifactTagFilter) {
+        if (artifactTags.length) {
 
-            parameters.filters.artifactTags = getDelimitedInput("artifactTagName", ",", false);
+            parameters.filters.artifactTags = artifactTags;
 
         }
 
         // Get artifacts source branch filter
-        // Optional to support variable input
-        if (artifactBranchFilter) {
+        if (artifactBranch) {
 
-            parameters.filters.artifactBranch = getInput("artifactBranchName", false)!;
+            parameters.filters.artifactBranch = artifactBranch;
 
         }
 
         // Get release stage status filter
-        // Optional to support variable input
-        if (stageStatusFilter) {
+        if (stageStatuses.length) {
 
-            parameters.filters.stageStatuses = getDelimitedInput("stageStatusName", ",", true);
+            parameters.filters.stageStatuses = stageStatuses;
 
         }
 
@@ -346,15 +339,15 @@ export class TaskHelper implements ITaskHelper {
 
         parameters.releaseType = ReleaseType.Specific;
 
-        const releaseStageFilter: boolean = getBoolInput("releaseStageFilter");
+        const releaseStages: string[] = getDelimitedInput("releaseStageName", ",", true);
 
         // Get release name
         parameters.releaseName = getInput("releaseName", true)!;
 
-        // Get release stages
-        if (releaseStageFilter) {
+        // Get release stages filter
+        if (releaseStages.length) {
 
-            parameters.stages = getDelimitedInput("releaseStageName", ",", true);
+            parameters.stages = releaseStages;
 
         }
 
