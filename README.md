@@ -23,9 +23,9 @@ Extension | Build | Code
 
 ## Features
 
-The **Release Orchestrator** task performs target Azure DevOps release pipeline execution and provides various customization settings.
+<img style="float: left; margin: 6px 10px 0 0" width="85" height="85" src="Images/icon.png" />
 
-![Image](Images/ro-01.png)
+The **Release Orchestrator** task performs target Azure DevOps release pipeline execution and provides various customization settings.
 
 The task uses either **integrated** (SystemVssConnection) or **specific**  personal access token (PAT) Azure DevOps service endpoint to connect to project pipelines.
 
