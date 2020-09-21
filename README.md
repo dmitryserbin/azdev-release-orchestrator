@@ -59,18 +59,14 @@ View releases | `Allow`
 
 Use `Project Collection Build Service` for integrated endpoint or user specified account for custom service endpoint. You can grant required permissions to all release pipelines in the project or to a specific release pipeline.
 
-![Image](Images/ro-02.png)
-
 Please refer to Azure DevOps [permissions and security roles documentation](https://docs.microsoft.com/en-us/azure/devops/pipelines/policies/permissions) for more details.
 
 ### Approval permissions
 
 The task can automate release stage pre-deployment approval, in order to configure it you need:
 
-- Add Azure DevOps service endpoint user account to stage approvers
+- Add `Project Collection Build Service` or user specified service endpoint user account to stage approvers
 - Uncheck `The user requesting a release or deployment should not approve it` checkbox
-
-![Image](Images/ro-03.png)
 
 In case service endpoint user is not in the approval list or is not allowed to approve the release, manual approval is required and a warning is displayed in the release pipeline progress.
 
