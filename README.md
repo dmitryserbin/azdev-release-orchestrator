@@ -100,10 +100,10 @@ You can choose different strategy to perform target release deployment:
 
 By default, new release deployment uses default stage [triggers](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#env-triggers) configured in the target pipeline. In order to deploy specific stages, you need to specify target stages using `Filter definition stages` option.
 
-- `Filter definition stage`: target release definition stage filter (comma separated)
-- `Filter artifact version`: target release primary build type artifact version filter (i.e. build number, last 100 builds)
-- `Filter artifact tag`: target release primary build type artifact tag filter (comma separated, last 100 builds)
-- `Filter artifact branch`: target release primary artifact source branch filter. Supports build artifact (last 100 builds) or Git artifact
+- `Definition stage`: target release Definition stage filter (comma separated)
+- `Artifact version`: target release primary build type artifact version filter (i.e. build number, last 100 builds)
+- `Artifact tag`: target release primary build type artifact tag filter (comma separated, last 100 builds)
+- `Artifact branch`: target release primary artifact source branch filter. Supports build artifact (last 100 builds) or Git artifact
 - `Release variables`: override target release pipeline variables when creating a new release. Specified release variables must be configured to be 'settable at release time'. In 'Name=Value' format, special characters supported, new line separated
 
 > Template: new release deployment with automated stage triggers
@@ -128,12 +128,12 @@ By default, new release deployment uses default stage [triggers](https://docs.mi
 
 By default, latest release deployment targets all stages configured in the target pipeline. In order to deploy specific stages, you need to specify target stages using `Filter release stages` option. The target stages will be re-deployed in sequential order, exactly as you specified. Search range is last 100 releases.
 
-- `Filter release stage`: target release stage filter (comma separated)
-- `Filter release tag`: target release tag filter (comma separated, last 100 releases)
-- `Filter artifact version`: target release primary build type artifact version filter (i.e. build number, last 100 builds)
-- `Filter artifact tag`: target release primary build type artifact tag filter (comma separated, last 100 builds)
-- `Filter artifact branch`: target release primary artifact source branch filter. Supports build artifact (last 100 builds) or Git artifact
-- `Filter stage status`: target release stage status filter (comma separated). Options: succeeded, partiallySucceeded, notStarted, rejected & canceled
+- `Release stage`: target release stage filter (comma separated)
+- `Release tag`: target release tag filter (comma separated, last 100 releases)
+- `Artifact version`: target release primary build type artifact version filter (i.e. build number, last 100 builds)
+- `Artifact tag`: target release primary build type artifact tag filter (comma separated, last 100 builds)
+- `Artifact branch`: target release primary artifact source branch filter. Supports build artifact (last 100 builds) or Git artifact
+- `Stage status`: target release stage status filter (comma separated). Options: succeeded, partiallySucceeded, notStarted, rejected & canceled
 
 > Template: latest release deployment
 
@@ -156,7 +156,7 @@ By default, latest release deployment targets all stages configured in the targe
 
 By default, specific release deployment targets all stages configured in the target pipeline. In order to deploy specific stages, you need to specify target stages using `Filter release stages` option. The target stages will be re-deployed in sequential order, exactly as you specified. Search range is last 100 releases.
 
-- `Filter release stage`: target release stage filter (comma separated)
+- `Release stage`: target release stage filter (comma separated)
 
 > Template: specific release deployment
 
