@@ -215,10 +215,10 @@ export class TaskHelper implements ITaskHelper {
         parameters.releaseType = ReleaseType.New;
 
         // Optional to support variable input
-        const definitionStages: string[] = getDelimitedInput("definitionStageName", ",", false);
-        const artifactVersion: string | undefined = getInput("artifactVersionName", false);
-        const artifactTags: string[] = getDelimitedInput("artifactTagName", ",", false);
-        const artifactBranch: string | undefined = getInput("artifactBranchName", false);
+        const definitionStages: string[] = getDelimitedInput("definitionStage", ",", false);
+        const artifactVersion: string | undefined = getInput("artifactVersion", false);
+        const artifactTags: string[] = getDelimitedInput("artifactTag", ",", false);
+        const artifactBranch: string | undefined = getInput("artifactBranch", false);
         const releaseVariables: string[] = getDelimitedInput("releaseVariables", "\n", false);
 
         // Get definition stages filter
@@ -282,12 +282,12 @@ export class TaskHelper implements ITaskHelper {
         parameters.releaseType = ReleaseType.Latest;
 
         // Optional to support variable input
-        const releaseStages: string[] = getDelimitedInput("releaseStageName", ",", true);
-        const releaseTags: string[] = getDelimitedInput("releaseTagName", ",", false);
-        const artifactVersion: string | undefined = getInput("artifactVersionName", false);
-        const artifactTags: string[] = getDelimitedInput("artifactTagName", ",", false);
-        const artifactBranch: string | undefined = getInput("artifactBranchName", false);
-        const stageStatuses: string[] = getDelimitedInput("stageStatusName", ",", true);
+        const releaseStages: string[] = getDelimitedInput("releaseStage", ",", false);
+        const releaseTags: string[] = getDelimitedInput("releaseTag", ",", false);
+        const artifactVersion: string | undefined = getInput("artifactVersion", false);
+        const artifactTags: string[] = getDelimitedInput("artifactTag", ",", false);
+        const artifactBranch: string | undefined = getInput("artifactBranch", false);
+        const stageStatuses: string[] = getDelimitedInput("stageStatus", ",", false);
 
         // Get release stages filter
         if (releaseStages.length) {
@@ -296,21 +296,21 @@ export class TaskHelper implements ITaskHelper {
 
         }
 
-        // Get release tag name filter
+        // Get release tag filter
         if (releaseTags.length) {
 
             parameters.filters.releaseTags = releaseTags;
 
         }
 
-        // Get artifact version name filter
+        // Get artifact version filter
         if (artifactVersion) {
 
             parameters.filters.artifactVersion = artifactVersion;
 
         }
 
-        // Get artifact tag name filter
+        // Get artifact tag filter
         if (artifactTags.length) {
 
             parameters.filters.artifactTags = artifactTags;
@@ -339,7 +339,7 @@ export class TaskHelper implements ITaskHelper {
 
         parameters.releaseType = ReleaseType.Specific;
 
-        const releaseStages: string[] = getDelimitedInput("releaseStageName", ",", true);
+        const releaseStages: string[] = getDelimitedInput("releaseStage", ",", false);
 
         // Get release name
         parameters.releaseName = getInput("releaseName", true)!;

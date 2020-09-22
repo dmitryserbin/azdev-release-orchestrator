@@ -4,10 +4,11 @@ parameters:
   releaseName: ""
   releasePartialName: ""
   releaseFailedName: ""
-  releaseStageName: ""
-  artifactTagName: ""
-  artifactBranchName: ""
-  releaseTagName: ""
+  releaseStage: ""
+  artifactVersion: ""
+  artifactTag: ""
+  artifactBranch: ""
+  releaseTag: ""
 
 steps:
 - task: releaseorchestrator@2
@@ -25,7 +26,7 @@ steps:
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: specific
     releaseName: ${{ parameters.releaseName }}
-    releaseStageName: ${{ parameters.releaseStageName }}
+    releaseStage: ${{ parameters.releaseStage }}
 
 - task: releaseorchestrator@2
   displayName: Specific release (partial)
@@ -34,7 +35,7 @@ steps:
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: specific
     releaseName: ${{ parameters.releasePartialName }}
-    releaseStageName: ${{ parameters.releaseStageName }}
+    releaseStage: ${{ parameters.releaseStage }}
 
 - task: releaseorchestrator@2
   displayName: Specific release (failed)
@@ -43,7 +44,7 @@ steps:
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: specific
     releaseName: ${{ parameters.releaseFailedName }}
-    releaseStageName: ${{ parameters.releaseStageName }}
+    releaseStage: ${{ parameters.releaseStage }}
     ignoreFailure: true
 
 - task: releaseorchestrator@2
@@ -59,7 +60,7 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: create
-    definitionStageName: PROD
+    definitionStage: PROD
 
 - task: releaseorchestrator@2
   displayName: Create release (artifact version)
@@ -67,8 +68,8 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: create
-    definitionStageName: DEV
-    artifactVersionName: ${{ parameters.artifactVersionName }}
+    definitionStage: DEV
+    artifactVersion: ${{ parameters.artifactVersion }}
 
 - task: releaseorchestrator@2
   displayName: Create release (artifact tag)
@@ -76,8 +77,8 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: create
-    definitionStageName: DEV
-    artifactTagName: ${{ parameters.artifactTagName }}
+    definitionStage: DEV
+    artifactTag: ${{ parameters.artifactTag }}
 
 - task: releaseorchestrator@2
   displayName: Create release (artifact branch)
@@ -85,8 +86,8 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: create
-    definitionStageName: DEV
-    artifactBranchName: ${{ parameters.artifactBranchName }}
+    definitionStage: DEV
+    artifactBranch: ${{ parameters.artifactBranch }}
 
 - task: releaseorchestrator@2
   displayName: Create release (release variables)
@@ -94,7 +95,7 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: create
-    definitionStageName: DEV
+    definitionStage: DEV
     releaseVariables: |
      Yo-Variable-One=Yo-Updated-Value-One
      Yo-Variable-Two=Yo-Updated-Value-One
@@ -112,7 +113,7 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: latest
-    releaseStageName: ${{ parameters.releaseStageName }}
+    releaseStage: ${{ parameters.releaseStage }}
 
 - task: releaseorchestrator@2
   displayName: Latest release (release tag)
@@ -120,8 +121,8 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: latest
-    releaseStageName: PROD
-    releaseTagName: ${{ parameters.releaseTagName }}
+    releaseStage: PROD
+    releaseTag: ${{ parameters.releaseTag }}
 
 - task: releaseorchestrator@2
   displayName: Latest release (artifact version)
@@ -129,8 +130,8 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: latest
-    releaseStageName: DEV
-    artifactVersionName: ${{ parameters.artifactVersionName }}
+    releaseStage: DEV
+    artifactVersion: ${{ parameters.artifactVersion }}
 
 - task: releaseorchestrator@2
   displayName: Latest release (artifact tag)
@@ -138,8 +139,8 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: latest
-    releaseStageName: PROD
-    artifactTagName: ${{ parameters.artifactTagName }}
+    releaseStage: PROD
+    artifactTag: ${{ parameters.artifactTag }}
 
 - task: releaseorchestrator@2
   displayName: Latest release (artifact branch)
@@ -147,8 +148,8 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: latest
-    releaseStageName: PROD
-    artifactBranchName: ${{ parameters.artifactBranchName }}
+    releaseStage: PROD
+    artifactBranch: ${{ parameters.artifactBranch }}
 
 - task: releaseorchestrator@2
   displayName: Latest release (rejected stage)
@@ -156,8 +157,8 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: latest
-    releaseStageName: TEST
-    stageStatusName: rejected
+    releaseStage: TEST
+    stageStatus: rejected
     ignoreFailure: true
 
 - task: releaseorchestrator@2
@@ -166,5 +167,5 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: latest
-    releaseStageName: TEST
-    stageStatusName: succeeded
+    releaseStage: TEST
+    stageStatus: succeeded

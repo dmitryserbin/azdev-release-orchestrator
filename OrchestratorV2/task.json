@@ -87,10 +87,10 @@
       "visibleRule": "releaseStrategy = specific"
     },
     {
-      "name": "releaseStageName",
+      "name": "releaseStage",
       "type": "pickList",
-      "label": "Release stage name",
-      "helpMarkDown": "Specify target release stage name(s) (comma separated)",
+      "label": "Release stage",
+      "helpMarkDown": "Specify target release stage filter (comma separated)",
       "required": false,
       "properties": {
         "EditableOptions": true
@@ -98,10 +98,10 @@
       "visibleRule": "releaseStrategy != create"
     },
     {
-      "name": "definitionStageName",
+      "name": "definitionStage",
       "type": "pickList",
-      "label": "Definition stage name",
-      "helpMarkDown": "Specify target release definition stage name(s) (comma separated)",
+      "label": "Definition stage",
+      "helpMarkDown": "Specify target release definition stage filter (comma separated)",
       "required": false,
       "properties": {
         "EditableOptions": true
@@ -109,42 +109,42 @@
       "visibleRule": "releaseStrategy = create"
     },
     {
-      "name": "releaseTagName",
+      "name": "releaseTag",
       "type": "string",
-      "label": "Release tag name",
-      "helpMarkDown": "Specify target release tag name(s) (comma separated, last 100 releases)",
+      "label": "Release tag",
+      "helpMarkDown": "Specify target release tag filter (comma separated, last 100 releases)",
       "required": false,
       "visibleRule": "releaseStrategy = latest"
     },
     {
-      "name": "artifactVersionName",
+      "name": "artifactVersion",
       "type": "string",
-      "label": "Artifact version name",
-      "helpMarkDown": "Specify target release primary build type artifact version name (i.e. build number, last 100 builds)",
+      "label": "Artifact version",
+      "helpMarkDown": "Specify target release primary build type artifact version filter (i.e. build number, last 100 builds)",
       "required": false,
       "visibleRule": "releaseStrategy != specific"
     },
     {
-      "name": "artifactTagName",
+      "name": "artifactTag",
       "type": "string",
-      "label": "Artifact tag name",
-      "helpMarkDown": "Specify target release primary build type artifact tag name(s) (comma separated, last 100 builds)",
+      "label": "Artifact tag",
+      "helpMarkDown": "Specify target release primary build type artifact tag filter (comma separated, last 100 builds)",
       "required": false,
       "visibleRule": "releaseStrategy != specific"
     },
     {
-      "name": "artifactBranchName",
+      "name": "artifactBranch",
       "type": "string",
-      "label": "Artifact branch name",
-      "helpMarkDown": "Specify target release primary artifact source branch name. Example = 'refs/heads/master' (build artifact, last 100 builds) or 'master' (Git artifact)",
+      "label": "Artifact branch",
+      "helpMarkDown": "Specify target release primary artifact source branch filter. Example = 'refs/heads/master' (build artifact, last 100 builds) or 'master' (Git artifact)",
       "required": false,
       "visibleRule": "releaseStrategy != specific"
     },
     {
-      "name": "stageStatusName",
+      "name": "stageStatus",
       "type": "pickList",
       "label": "Target stage status",
-      "helpMarkDown": "Specify target release stage status filter name(s) (comma separated). Options: succeeded, partiallySucceeded, notStarted, rejected & canceled",
+      "helpMarkDown": "Specify target release stage status filter (comma separated). Options: succeeded, partiallySucceeded, notStarted, rejected & canceled",
       "properties": {
         "MultiSelectFlatList": true,
         "EditableOptions": false
@@ -224,7 +224,7 @@
       "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
     },
     {
-      "target": "definitionStageName",
+      "target": "definitionStage",
       "endpointId": "tfs:rm",
       "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/release/definitions/?searchText=$(definitionName)&isExactNameMatch=true&$expand=Environments",
       "resultSelector": "jsonpath:$.value[*].environments[*]",
@@ -238,7 +238,7 @@
       "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}} (by {{{createdBy.displayName}}} at {{{createdOn}}})\" }"
     },
     {
-      "target": "releaseStageName",
+      "target": "releaseStage",
       "endpointId": "tfs:rm",
       "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/release/releases?definitionId=$(definitionName)&searchText=$(releaseName)&$expand=Environments",
       "resultSelector": "jsonpath:$.value[*].environments[*]",

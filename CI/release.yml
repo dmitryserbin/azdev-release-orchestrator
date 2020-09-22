@@ -157,11 +157,11 @@ stages:
         releaseName: HelloYo-20190521.1-1
         releasePartialName: HelloYo-20190521.4-27
         releaseFailedName: HelloYo-20190521.4-32
-        releaseStageName: DEV,TEST,PROD
-        artifactVersionName: 20190521.1
-        artifactTagName: Build-Yo
-        releaseTagName: Release-Yo
-        sourceBranchName: refs/heads/working/test
+        releaseStage: DEV,TEST,PROD
+        artifactVersion: 20190521.1
+        artifactTag: Build-Yo
+        artifactBranch: refs/heads/working/test
+        releaseTag: Release-Yo
 
     - task: PowerShell@2
       displayName: Cleanup releases

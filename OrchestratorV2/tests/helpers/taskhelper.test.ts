@@ -30,15 +30,15 @@ describe("TaskHelper", ()  => {
 
     const projectNameMock: string = "My-Project";
     const definitionNameMock: string = "My-Definition";
-    const definitionStageNameMock: string = "DEV,TEST,PROD";
+    const definitionStageMock: string = "DEV,TEST,PROD";
     const releaseNameMock: string = "My-Release";
-    const releaseStageNameMock: string = "DEV,TEST,PROD";
+    const releaseStageMock: string = "DEV,TEST,PROD";
 
-    const releaseTagNameMock: string = "My-Tag-One,My-Tag-Two";
-    const artifactVersionNameMock: string = "My-Build-01";
-    const artifactTagNameMock: string = "My-Artifact-Tag-One,My-Artifact-Tag-Two";
-    const artifactBranchNameMock: string = "My-Branch";
-    const stageStatusNameMock: string = "succeeded,rejected";
+    const releaseTagMock: string = "My-Tag-One,My-Tag-Two";
+    const artifactVersionMock: string = "My-Build-01";
+    const artifactTagMock: string = "My-Artifact-Tag-One,My-Artifact-Tag-Two";
+    const artifactBranchMock: string = "My-Branch";
+    const stageStatusMock: string = "succeeded,rejected";
 
     const releaseVariablesMock: string = "My-Variable-One=My-Value-One"
 
@@ -115,10 +115,10 @@ describe("TaskHelper", ()  => {
         inputs["projectName"] = projectNameMock;
         inputs["definitionName"] = definitionNameMock;
 
-        inputs["definitionStageName"] = definitionStageNameMock;
-        inputs["artifactVersionName"] = artifactVersionNameMock;
-        inputs["artifactTagName"] = artifactTagNameMock;
-        inputs["artifactBranchName"] = artifactBranchNameMock;
+        inputs["definitionStage"] = definitionStageMock;
+        inputs["artifactVersion"] = artifactVersionMock;
+        inputs["artifactTag"] = artifactTagMock;
+        inputs["artifactBranch"] = artifactBranchMock;
         inputs["releaseVariables"] = releaseVariablesMock;
 
         inputs["updateInterval"] = updateIntervalMock;
@@ -143,9 +143,9 @@ describe("TaskHelper", ()  => {
         chai.expect(result.settings.approvalRetry).to.eq(Number(approvalRetryMock));
 
         chai.expect(result.stages).to.eql([ "DEV", "TEST", "PROD" ]);
-        chai.expect(result.filters.artifactVersion).to.eq(artifactVersionNameMock);
+        chai.expect(result.filters.artifactVersion).to.eq(artifactVersionMock);
         chai.expect(result.filters.artifactTags).to.eql([ "My-Artifact-Tag-One", "My-Artifact-Tag-Two" ]);
-        chai.expect(result.filters.artifactBranch).to.eq(artifactBranchNameMock);
+        chai.expect(result.filters.artifactBranch).to.eq(artifactBranchMock);
 
         chai.expect(result.variables.length).to.eq(1);
         chai.expect(result.variables[0].name).to.eq("My-Variable-One");
@@ -163,12 +163,12 @@ describe("TaskHelper", ()  => {
         inputs["projectName"] = projectNameMock;
         inputs["definitionName"] = definitionNameMock;
 
-        inputs["releaseStageName"] = releaseStageNameMock;
-        inputs["releaseTagName"] = releaseTagNameMock;
-        inputs["artifactVersionName"] = artifactVersionNameMock;
-        inputs["artifactTagName"] = artifactTagNameMock;
-        inputs["artifactBranchName"] = artifactBranchNameMock;
-        inputs["stageStatusName"] = stageStatusNameMock;
+        inputs["releaseStage"] = releaseStageMock;
+        inputs["releaseTag"] = releaseTagMock;
+        inputs["artifactVersion"] = artifactVersionMock;
+        inputs["artifactTag"] = artifactTagMock;
+        inputs["artifactBranch"] = artifactBranchMock;
+        inputs["stageStatus"] = stageStatusMock;
 
         inputs["updateInterval"] = updateIntervalMock;
         inputs["approvalRetry"] = approvalRetryMock;
@@ -193,9 +193,9 @@ describe("TaskHelper", ()  => {
 
         chai.expect(result.stages).to.eql([ "DEV", "TEST", "PROD" ]);
         chai.expect(result.filters.releaseTags).to.eql([ "My-Tag-One", "My-Tag-Two" ]);
-        chai.expect(result.filters.artifactVersion).to.eq(artifactVersionNameMock);
+        chai.expect(result.filters.artifactVersion).to.eq(artifactVersionMock);
         chai.expect(result.filters.artifactTags).to.eql([ "My-Artifact-Tag-One", "My-Artifact-Tag-Two" ]);
-        chai.expect(result.filters.artifactBranch).to.eq(artifactBranchNameMock);
+        chai.expect(result.filters.artifactBranch).to.eq(artifactBranchMock);
         chai.expect(result.filters.stageStatuses).to.eql([ "succeeded", "rejected" ]);
 
         //#endregion
@@ -211,7 +211,7 @@ describe("TaskHelper", ()  => {
         inputs["definitionName"] = definitionNameMock;
 
         inputs["releaseName"] = releaseNameMock;
-        inputs["releaseStageName"] = releaseStageNameMock;
+        inputs["releaseStage"] = releaseStageMock;
 
         inputs["updateInterval"] = updateIntervalMock;
         inputs["approvalRetry"] = approvalRetryMock;
