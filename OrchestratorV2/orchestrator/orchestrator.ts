@@ -59,24 +59,18 @@ export class Orchestrator implements IOrchestrator {
                         debug(`Release orchestrated automatically as stages deployment conditions are met`);
 
                         // Monitor automatically started stages deployment progess
-                        const releaseProgress: IReleaseProgress = await deployer.deployAutomated(releaseJob, details);
+                        releaseProgress = await deployer.deployAutomated(releaseJob, details);
 
-                        this.consoleLogger.log(
-                            reporter.getReleaseProgress(releaseProgress));
-
-                        return releaseProgress;
+                        break;
 
                     } case DeploymentType.Manual: {
 
                         debug(`Release orchestrated manually as stages deployment conditions are not met`);
 
                         // Manually trigger stages deployment and monitor progress
-                        const releaseProgress: IReleaseProgress = await deployer.deployManual(releaseJob, details);
+                        releaseProgress = await deployer.deployManual(releaseJob, details);
 
-                        this.consoleLogger.log(
-                            reporter.getReleaseProgress(releaseProgress));
-
-                        return releaseProgress;
+                        break;
 
                     } default: {
 
@@ -86,6 +80,8 @@ export class Orchestrator implements IOrchestrator {
 
                 }
 
+                break;
+
             } default: {
 
                 this.consoleLogger.log(`Re-deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${String.Join("|", releaseJob.stages)}> stage(s) release`);
@@ -94,16 +90,16 @@ export class Orchestrator implements IOrchestrator {
                     reporter.getRelease(releaseJob.release, releaseJob.stages));
 
                 // Manually trigger stages deployment and monitor progress
-                const releaseProgress: IReleaseProgress = await deployer.deployManual(releaseJob, details);
-
-                this.consoleLogger.log(
-                    reporter.getReleaseProgress(releaseProgress));
-
-                return releaseProgress;
+                releaseProgress = await deployer.deployManual(releaseJob, details);
 
             }
 
         }
+
+        this.consoleLogger.log(
+            reporter.getReleaseProgress(releaseProgress));
+
+        return releaseProgress;
 
     }
 
