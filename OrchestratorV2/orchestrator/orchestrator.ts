@@ -59,24 +59,32 @@ export class Orchestrator implements IOrchestrator {
                         debug(`Release orchestrated automatically as stages deployment conditions are met`);
 
                         // Monitor automatically started stages deployment progess
-                        releaseProgress = await deployer.deployAutomated(releaseJob, details);
+                        const releaseProgress: IReleaseProgress = await deployer.deployAutomated(releaseJob, details);
 
-                        break;
+                        this.consoleLogger.log(
+                            reporter.getReleaseProgress(releaseProgress));
+
+                        return releaseProgress;
 
                     } case DeploymentType.Manual: {
 
                         debug(`Release orchestrated manually as stages deployment conditions are not met`);
 
                         // Manually trigger stages deployment and monitor progress
-                        releaseProgress = await deployer.deployManual(releaseJob, details);
+                        const releaseProgress: IReleaseProgress = await deployer.deployManual(releaseJob, details);
 
-                        break;
+                        this.consoleLogger.log(
+                            reporter.getReleaseProgress(releaseProgress));
+
+                        return releaseProgress;
+
+                    } default: {
+
+                        throw new Error(`Deployment type <${releaseJob.type}> not supported`);
 
                     }
 
                 }
-
-                break;
 
             } default: {
 
@@ -86,18 +94,16 @@ export class Orchestrator implements IOrchestrator {
                     reporter.getRelease(releaseJob.release, releaseJob.stages));
 
                 // Manually trigger stages deployment and monitor progress
-                releaseProgress = await deployer.deployManual(releaseJob, details);
+                const releaseProgress: IReleaseProgress = await deployer.deployManual(releaseJob, details);
 
-                break;
+                this.consoleLogger.log(
+                    reporter.getReleaseProgress(releaseProgress));
+
+                return releaseProgress;
 
             }
 
         }
-
-        this.consoleLogger.log(
-            reporter.getReleaseProgress(releaseProgress));
-
-        return releaseProgress;
 
     }
 

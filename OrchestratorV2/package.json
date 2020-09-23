@@ -8,7 +8,7 @@
     "url": "git+https://dev.azure.com/dmitryserbin/Orchestrator/_git/Orchestrator"
   },
   "scripts": {
-    "build": "tsc --build --clean && tsc",
+    "build": "tsc",
     "lint": "eslint . --ext .ts",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --no-timeouts --grep \"@manual\" --invert --reporter mocha-multi-reporters --reporter-options configFile=tests/config.json",
     "manual": "set DEBUG=release-orchestrator:* & mocha -r ts-node/register tests/**/*.test.ts --no-timeouts --grep @manual",

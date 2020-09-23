@@ -276,7 +276,7 @@ export class Reporter implements IReporter {
 
         stage.deployment!.releaseDeployPhases!.forEach(
             (phase) => phase.deploymentJobs!.forEach(
-                (job) => job.tasks?.forEach(
+                (job) => job.tasks!.forEach(
                     (task) => tasks.push(task))));
 
         return tasks.length;
