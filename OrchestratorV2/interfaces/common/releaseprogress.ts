@@ -3,7 +3,7 @@ import { ReleaseStatus } from "./releasestatus";
 
 export interface IReleaseProgress {
 
-    id: number,
+    id: number;
     name: string;
     project: string,
     url: string;
