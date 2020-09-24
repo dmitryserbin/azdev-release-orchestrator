@@ -1,0 +1,171 @@
+parameters:
+  projectName: ""
+  definitionName: ""
+  releaseName: ""
+  releasePartialName: ""
+  releaseFailedName: ""
+  releaseStage: ""
+  artifactVersion: ""
+  artifactTag: ""
+  artifactBranch: ""
+  releaseTag: ""
+
+steps:
+- task: releaseorchestrator@2
+  displayName: Specific release (auto)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: specific
+    releaseName: ${{ parameters.releaseName }}
+
+- task: releaseorchestrator@2
+  displayName: Specific release (manual)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: specific
+    releaseName: ${{ parameters.releaseName }}
+    releaseStage: ${{ parameters.releaseStage }}
+
+- task: releaseorchestrator@2
+  displayName: Specific release (partial)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: specific
+    releaseName: ${{ parameters.releasePartialName }}
+    releaseStage: ${{ parameters.releaseStage }}
+
+- task: releaseorchestrator@2
+  displayName: Specific release (failed)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: specific
+    releaseName: ${{ parameters.releaseFailedName }}
+    releaseStage: ${{ parameters.releaseStage }}
+    ignoreFailure: true
+
+- task: releaseorchestrator@2
+  displayName: Create release (auto)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: create
+
+- task: releaseorchestrator@2
+  displayName: Create release (manual)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: create
+    definitionStage: PROD
+
+- task: releaseorchestrator@2
+  displayName: Create release (artifact version)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: create
+    definitionStage: DEV
+    artifactVersion: ${{ parameters.artifactVersion }}
+
+- task: releaseorchestrator@2
+  displayName: Create release (artifact tag)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: create
+    definitionStage: DEV
+    artifactTag: ${{ parameters.artifactTag }}
+
+- task: releaseorchestrator@2
+  displayName: Create release (artifact branch)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: create
+    definitionStage: DEV
+    artifactBranch: ${{ parameters.artifactBranch }}
+
+- task: releaseorchestrator@2
+  displayName: Create release (release variables)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: create
+    definitionStage: DEV
+    releaseVariables: |
+     Yo-Variable-One=Yo-Updated-Value-One
+     Yo-Variable-Two=Yo-Updated-Value-One
+
+- task: releaseorchestrator@2
+  displayName: Latest release (auto)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: latest
+
+- task: releaseorchestrator@2
+  displayName: Latest release (manual)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: latest
+    releaseStage: ${{ parameters.releaseStage }}
+
+- task: releaseorchestrator@2
+  displayName: Latest release (release tag)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: latest
+    releaseStage: PROD
+    releaseTag: ${{ parameters.releaseTag }}
+
+- task: releaseorchestrator@2
+  displayName: Latest release (artifact version)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: latest
+    releaseStage: DEV
+    artifactVersion: ${{ parameters.artifactVersion }}
+
+- task: releaseorchestrator@2
+  displayName: Latest release (artifact tag)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: latest
+    releaseStage: PROD
+    artifactTag: ${{ parameters.artifactTag }}
+
+- task: releaseorchestrator@2
+  displayName: Latest release (artifact branch)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: latest
+    releaseStage: PROD
+    artifactBranch: ${{ parameters.artifactBranch }}
+
+- task: releaseorchestrator@2
+  displayName: Latest release (rejected stage)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: latest
+    releaseStage: TEST
+    stageStatus: rejected
+    ignoreFailure: true
+
+- task: releaseorchestrator@2
+  displayName: Latest release (succeeded stage)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    releaseStrategy: latest
+    releaseStage: TEST
+    stageStatus: succeeded

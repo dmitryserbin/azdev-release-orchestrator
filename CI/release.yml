@@ -1,0 +1,200 @@
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - OrchestratorV1/*
+    - OrchestratorV2/*
+
+variables:
+  extensionDirectory: $(Build.ArtifactStagingDirectory)
+
+stages:
+- stage: Build
+  jobs:
+  - job: OrchestratorV1
+    pool:
+      name: Default
+    steps:
+    - template: templates/build.yml
+      parameters:
+        name: OrchestratorV1
+        path: OrchestratorV1
+        restore: true
+        build: true
+        test: true
+        clean: true
+        publish: true
+
+  - job: OrchestratorV2
+    pool:
+      name: Default
+    steps:
+    - template: templates/build.yml
+      parameters:
+        name: OrchestratorV2
+        path: OrchestratorV2
+        restore: true
+        lint: true
+        build: true
+        test: true
+        clean: true
+        publish: true
+
+  - job: Extension
+    pool:
+      name: Default
+    dependsOn:
+    - OrchestratorV1
+    - OrchestratorV2
+    steps:
+    - task: TfxInstaller@3
+      displayName: Install TFX CLI
+
+    - task: CopyFiles@2
+      displayName: Copy extension
+      inputs:
+        contents: |
+          Images/**
+          LICENSE
+          *.md
+          *.json
+        targetFolder: ${{ variables.extensionDirectory }}
+
+    - task: DownloadPipelineArtifact@2
+      displayName: Copy tasks
+      inputs:
+        source: current
+        path: ${{ variables.extensionDirectory }}
+
+    - task: PowerShell@2
+      displayName: Version extension
+      inputs:
+        targetType: filePath
+        filePath: CI/scripts/version.ps1
+        arguments: >
+          -Path ${{ variables.extensionDirectory }}
+          -Patch $(Build.BuildId)
+          -UpdateBuildNumber
+        pwsh: true
+
+    - task: PackageAzureDevOpsExtension@3
+      displayName: Package extension
+      inputs:
+        rootFolder: ${{ variables.extensionDirectory }}
+        outputVariable: extensionPath
+
+    - publish: $(extensionPath)
+      displayName: Publish artifact
+      artifact: Extension
+
+- stage: Test
+  dependsOn:
+  - Build
+  jobs:
+  - job: Install
+    pool:
+      name: Default
+    steps:
+    - download: current
+      displayName: Download artifacts
+
+    - task: taskpublisher@1
+      displayName: Install OrchestratorV1
+      inputs:
+        ConnectedService: dmitryserbin.tasks
+        TaskPath: $(Pipeline.Workspace)/OrchestratorV1
+        Replace: true
+
+    - task: taskpublisher@1
+      displayName: Install OrchestratorV2
+      inputs:
+        ConnectedService: dmitryserbin.tasks
+        TaskPath: $(Pipeline.Workspace)/OrchestratorV2
+        Replace: false
+
+  - job: OrchestratorV1
+    pool:
+      name: Default
+    dependsOn:
+    - Install
+    steps:
+    - template: templates/execute.v1.yml
+      parameters:
+        projectId: 761623f0-c4c0-4dab-884b-a428a01c200f
+        definitionId: 1
+        releaseId: 162
+        releasePartialId: 194
+        releaseFailedId: 200
+        releaseStages: DEV,TEST,PROD
+        artifactTagName: Build-Yo
+        releaseTagName: Release-Yo
+        sourceBranchName: refs/heads/working/test
+
+    - task: PowerShell@2
+      displayName: Cleanup releases
+      inputs:
+        targetType: filePath
+        filePath: CI/scripts/cleanup.ps1
+        arguments: >
+          -OrganizationName dmitryserbin
+          -ProjectName HelloYo
+          -DefinitionName HelloYo
+          -AccessToken $(System.AccessToken)
+        pwsh: true
+
+  - job: OrchestratorV2
+    dependsOn:
+    - Install
+    pool:
+      name: Default
+    steps:
+    - template: templates/execute.v2.yml
+      parameters:
+        projectName: HelloYo
+        definitionName: HelloYo
+        releaseName: HelloYo-20190521.1-1
+        releasePartialName: HelloYo-20190521.4-27
+        releaseFailedName: HelloYo-20190521.4-32
+        releaseStage: DEV,TEST,PROD
+        artifactVersion: 20190521.1
+        artifactTag: Build-Yo
+        artifactBranch: refs/heads/working/test
+        releaseTag: Release-Yo
+
+    - task: PowerShell@2
+      displayName: Cleanup releases
+      inputs:
+        targetType: filePath
+        filePath: CI/scripts/cleanup.ps1
+        arguments: >
+          -OrganizationName dmitryserbin
+          -ProjectName HelloYo
+          -DefinitionName HelloYo
+          -AccessToken $(System.AccessToken)
+        pwsh: true
+
+- stage: Release
+  dependsOn:
+  - Build
+  - Test
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  jobs:
+  - deployment: Extension
+    pool:
+      name: Default
+    environment: Marketplace
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: TfxInstaller@3
+            displayName: Install TFX CLI
+
+          - task: PublishAzureDevOpsExtension@3
+            displayName: Publish extension
+            inputs:
+              connectedServiceName: dmitryserbin.marketplace
+              fileType: vsix
+              vsixFile: $(Pipeline.Workspace)/Extension/*.vsix

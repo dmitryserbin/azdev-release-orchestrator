@@ -1,0 +1,37 @@
+trigger: none
+
+pr:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - OrchestratorV1/*
+    - OrchestratorV2/*
+  autoCancel: true
+
+jobs:
+- job: OrchestratorV1
+  pool:
+    name: Default
+  steps:
+  - template: templates/build.yml
+    parameters:
+      name: OrchestratorV1
+      path: OrchestratorV1
+      restore: true
+      build: true
+      test: true
+
+- job: OrchestratorV2
+  pool:
+    name: Default
+  steps:
+  - template: templates/build.yml
+    parameters:
+      name: OrchestratorV2
+      path: OrchestratorV2
+      restore: true
+      lint: true
+      build: true
+      test: true
