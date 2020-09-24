@@ -2,11 +2,12 @@
 
 ## 2.0.*
 
-`TBU`
+`2020-09-25`
 
 - Major code refactoring & improvements
 - Update documentation & add privacy policy
 - Update task to use name parameters ([4](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/4), [43](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/43))
+- Make task parameters optional & update naming
 - Add artifact version filter support ([47](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/47))
 - Add latest & specific optional release stage filter
 - Add latest release stage status filter support ([26](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/26))
