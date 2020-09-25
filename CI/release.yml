@@ -4,8 +4,7 @@ trigger:
     - master
   paths:
     include:
-    - OrchestratorV1/*
-    - OrchestratorV2/*
+    - Tasks/*
 
 variables:
   extensionDirectory: $(Build.ArtifactStagingDirectory)
@@ -16,11 +15,13 @@ stages:
   - job: OrchestratorV1
     pool:
       name: Default
+    workspace:
+      clean: all
     steps:
     - template: templates/build.yml
       parameters:
         name: OrchestratorV1
-        path: OrchestratorV1
+        path: Tasks/OrchestratorV1
         restore: true
         build: true
         test: true
@@ -30,11 +31,13 @@ stages:
   - job: OrchestratorV2
     pool:
       name: Default
+    workspace:
+      clean: all
     steps:
     - template: templates/build.yml
       parameters:
         name: OrchestratorV2
-        path: OrchestratorV2
+        path: Tasks/OrchestratorV2
         restore: true
         lint: true
         build: true
@@ -45,6 +48,8 @@ stages:
   - job: Extension
     pool:
       name: Default
+    workspace:
+      clean: all
     dependsOn:
     - OrchestratorV1
     - OrchestratorV2
@@ -66,7 +71,7 @@ stages:
       displayName: Copy tasks
       inputs:
         source: current
-        path: ${{ variables.extensionDirectory }}
+        path: ${{ variables.extensionDirectory }}/Tasks
 
     - task: PowerShell@2
       displayName: Version extension
@@ -96,6 +101,8 @@ stages:
   - job: Install
     pool:
       name: Default
+    workspace:
+      clean: all
     steps:
     - download: current
       displayName: Download artifacts
@@ -117,6 +124,8 @@ stages:
   - job: OrchestratorV1
     pool:
       name: Default
+    workspace:
+      clean: all
     dependsOn:
     - Install
     steps:
@@ -149,6 +158,8 @@ stages:
     - Install
     pool:
       name: Default
+    workspace:
+      clean: all
     steps:
     - template: templates/execute.v2.yml
       parameters:
@@ -184,6 +195,8 @@ stages:
   - deployment: Extension
     pool:
       name: Default
+    workspace:
+      clean: all
     environment: Marketplace
     strategy:
       runOnce:
