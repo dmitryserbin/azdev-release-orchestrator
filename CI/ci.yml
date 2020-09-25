@@ -13,6 +13,8 @@ jobs:
 - job: OrchestratorV1
   pool:
     name: Default
+  workspace:
+    clean: all
   steps:
   - template: templates/build.yml
     parameters:
@@ -25,6 +27,8 @@ jobs:
 - job: OrchestratorV2
   pool:
     name: Default
+  workspace:
+    clean: all
   steps:
   - template: templates/build.yml
     parameters:
