@@ -79,7 +79,7 @@ stages:
         targetType: filePath
         filePath: CI/scripts/version.ps1
         arguments: >
-          -Path ${{ variables.extensionDirectory }}/Tasks
+          -Path ${{ variables.extensionDirectory }}
           -Patch $(Build.BuildId)
           -UpdateBuildNumber
         pwsh: true

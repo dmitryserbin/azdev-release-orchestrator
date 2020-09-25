@@ -123,38 +123,47 @@ function Update-ExtensionVersion
 			-Force `
 			-ErrorAction Stop
 
-	$ExtensionTasks = $ExtensionDefinition.contributions | `
+	$TaskContributions = $ExtensionDefinition.contributions | `
 		Where-Object { $_.type -eq "ms.vss-distributed-task.task" }
 
-	ForEach ($Task in $ExtensionTasks)
+	ForEach ($Contribution in $TaskContributions)
 	{
-		$TaskPath = Join-Path `
-			-Path (Split-Path -Path $Path -Parent) `
-			-ChildPath $($Task.properties.name)\task.json
+		$Tasks = Get-ChildItem `
+			-Path $Contribution.properties.name `
+			-Directory `
+			-ErrorAction Stop
 
-		if (-not (Test-Path -Path $TaskPath))
+		ForEach ($Task in $Tasks)
 		{
-			throw "File <$TaskPath> not found"
-		}
+			$TaskPath = Join-Path `
+				-Path $Task.FullName `
+				-ChildPath task.json
 
-		$TaskDefinition = Get-Content `
-			-Path $TaskPath `
-			-ErrorAction Stop | ConvertFrom-Json `
-				-Depth 100 `
-				-ErrorAction Stop
+			if (-not (Test-Path -Path $TaskPath))
+			{
+				throw "File <$TaskPath> not found"
+			}
 
-		# Update version
-		$TaskDefinition = Set-TaskVersion `
-			-Definition $TaskDefinition `
-			-Patch $Patch
-
-		# Update JSON file
-		$TaskDefinition | ConvertTo-Json `
-			-Depth 100 `
-			-ErrorAction Stop | Set-Content `
+			$TaskDefinition = Get-Content `
 				-Path $TaskPath `
-				-Force `
-				-ErrorAction Stop
+				-ErrorAction Stop | ConvertFrom-Json `
+					-Depth 100 `
+					-ErrorAction Stop
+
+			# Update version
+			$TaskDefinition = Set-TaskVersion `
+				-Definition $TaskDefinition `
+				-Patch $Patch
+
+			# Update JSON file
+			$TaskDefinition | ConvertTo-Json `
+				-Depth 100 `
+				-ErrorAction Stop | Set-Content `
+					-Path $TaskPath `
+					-Force `
+					-ErrorAction Stop
+
+		}
 	}
 
 	return $ExtensionDefinition
