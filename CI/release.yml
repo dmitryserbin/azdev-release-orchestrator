@@ -90,13 +90,6 @@ stages:
         rootFolder: ${{ variables.extensionDirectory }}
         outputVariable: extensionPath
 
-    - task: IsAzureDevOpsExtensionValid@3
-      displayName: Validate extension
-      inputs:
-        connectedServiceName: dmitryserbin.marketplace
-        method: vsix
-        vsixFile: $(extensionPath)
-
     - publish: $(extensionPath)
       displayName: Publish artifact
       artifact: Extension
