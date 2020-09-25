@@ -6,8 +6,7 @@ pr:
     - master
   paths:
     include:
-    - OrchestratorV1/*
-    - OrchestratorV2/*
+    - Tasks/*
   autoCancel: true
 
 jobs:
@@ -18,7 +17,7 @@ jobs:
   - template: templates/build.yml
     parameters:
       name: OrchestratorV1
-      path: OrchestratorV1
+      path: Tasks/OrchestratorV1
       restore: true
       build: true
       test: true
@@ -30,7 +29,7 @@ jobs:
   - template: templates/build.yml
     parameters:
       name: OrchestratorV2
-      path: OrchestratorV2
+      path: Tasks/OrchestratorV2
       restore: true
       lint: true
       build: true

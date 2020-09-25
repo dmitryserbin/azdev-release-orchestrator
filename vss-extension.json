@@ -57,10 +57,7 @@
   },
   "files": [
     {
-      "path": "OrchestratorV1"
-    },
-    {
-      "path": "OrchestratorV2"
+      "path": "Tasks"
     },
     {
       "path": "Images",
@@ -75,17 +72,7 @@
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "OrchestratorV1"
-      }
-    },
-    {
-      "id": "release-orchestrator-v2",
-      "type": "ms.vss-distributed-task.task",
-      "targets": [
-        "ms.vss-distributed-task.tasks"
-      ],
-      "properties": {
-        "name": "OrchestratorV2"
+        "name": "Tasks"
       }
     }
   ]
