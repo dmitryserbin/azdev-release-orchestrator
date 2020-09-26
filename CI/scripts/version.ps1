@@ -99,6 +99,8 @@ function Update-ExtensionVersion
 		[Int]$Patch
 	)
 
+	Write-Host "Updating <$Path> file"
+
 	if (-not (Test-Path -Path $Path))
 	{
 		throw "File <$Path> not found"
@@ -128,16 +130,27 @@ function Update-ExtensionVersion
 
 	ForEach ($Contribution in $TaskContributions)
 	{
-		$Tasks = Get-ChildItem `
-			-Path $Contribution.properties.name `
+		$ContributionPath = Join-Path `
+			-Path (Split-Path -Path $Path -Parent) `
+			-ChildPath $Contribution.properties.name
+
+		if (-not (Test-Path -Path $ContributionPath))
+		{
+			throw "Directory <$ContributionPath> not found"
+		}
+
+		$ContributionTasks = Get-ChildItem `
+			-Path $ContributionPath `
 			-Directory `
 			-ErrorAction Stop
 
-		ForEach ($Task in $Tasks)
+		ForEach ($Task in $ContributionTasks)
 		{
 			$TaskPath = Join-Path `
 				-Path $Task.FullName `
 				-ChildPath task.json
+
+			Write-Host "Updating <$TaskPath> file"
 
 			if (-not (Test-Path -Path $TaskPath))
 			{
