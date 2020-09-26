@@ -89,6 +89,7 @@ function Find-ExtensionPath
 
 function Update-ExtensionVersion
 {
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "")]
 	[CmdletBinding()]
 	Param
 	(
