@@ -113,6 +113,7 @@ stages:
         ConnectedService: dmitryserbin.tasks
         TaskPath: $(Pipeline.Workspace)/OrchestratorV1
         Replace: true
+        Patch: true
 
     - task: taskpublisher@1
       displayName: Install OrchestratorV2
@@ -120,6 +121,7 @@ stages:
         ConnectedService: dmitryserbin.tasks
         TaskPath: $(Pipeline.Workspace)/OrchestratorV2
         Replace: false
+        Patch: true
 
   - job: OrchestratorV1
     pool:
