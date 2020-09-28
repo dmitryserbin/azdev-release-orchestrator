@@ -179,7 +179,11 @@ export class TaskHelper implements ITaskHelper {
 
             case ReleaseStatus.PartiallySucceeded: {
 
-                setResult(TaskResult.SucceededWithIssues, partialMessage);
+                if (!this.isUnderTest()) {
+
+                    setResult(TaskResult.SucceededWithIssues, partialMessage);
+
+                }
 
                 break;
 
@@ -206,7 +210,11 @@ export class TaskHelper implements ITaskHelper {
 
         debug(result);
 
-        setResult(result, message);
+        if (!this.isUnderTest()) {
+
+            setResult(result, message);
+
+        }
 
     }
 
@@ -352,6 +360,15 @@ export class TaskHelper implements ITaskHelper {
         }
 
         return parameters;
+
+    }
+
+    private async isUnderTest(): Promise<boolean> {
+
+        const underTest: boolean = getVariable("RELEASE_ORCHESTRATOR_CI") == "true"
+            ? true : false;
+
+        return underTest;
 
     }
 

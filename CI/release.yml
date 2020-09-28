@@ -129,6 +129,9 @@ stages:
     dependsOn:
     - Install
     steps:
+    - pwsh: Write-Host "##vso[task.setvariable variable=RELEASE_ORCHESTRATOR_CI]true"
+      displayName: Setup CI
+
     - template: templates/execute.v1.yml
       parameters:
         projectId: 761623f0-c4c0-4dab-884b-a428a01c200f
@@ -161,6 +164,9 @@ stages:
     workspace:
       clean: all
     steps:
+    - pwsh: Write-Host "##vso[task.setvariable variable=RELEASE_ORCHESTRATOR_CI]true"
+      displayName: Setup CI
+
     - template: templates/execute.v2.yml
       parameters:
         projectName: HelloYo
