@@ -6,6 +6,16 @@ trigger:
     include:
     - Tasks/*
 
+parameters:
+- name: testv1
+  displayName: Test V1
+  type: boolean
+  default: true
+- name: testv2
+  displayName: Test V2
+  type: boolean
+  default: true
+
 variables:
   release.orchestator.ci: true
 
@@ -98,6 +108,7 @@ stages:
       clean: all
     dependsOn:
     - Install
+    condition: eq(${{ parameters.testv1 }}, true)
     steps:
     - template: templates/execute.v1.yml
       parameters:
@@ -122,10 +133,12 @@ stages:
           -DefinitionName HelloYo
           -AccessToken $(System.AccessToken)
         pwsh: true
+      condition: always()
 
   - job: OrchestratorV2
     dependsOn:
     - Install
+    condition: eq(${{ parameters.testv2 }}, true)
     pool:
       name: Default
     workspace:
@@ -155,6 +168,7 @@ stages:
           -DefinitionName HelloYo
           -AccessToken $(System.AccessToken)
         pwsh: true
+      condition: always()
 
 - stage: Release
   dependsOn:
