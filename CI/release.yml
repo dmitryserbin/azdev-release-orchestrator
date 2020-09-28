@@ -7,12 +7,12 @@ trigger:
     - Tasks/*
 
 parameters:
-- name: testv1
-  displayName: Test V1
+- name: testOrchestratorV1
+  displayName: Test OrchestratorV1
   type: boolean
   default: true
-- name: testv2
-  displayName: Test V2
+- name: testOrchestratorV2
+  displayName: Test OrchestratorV2
   type: boolean
   default: true
 
@@ -108,7 +108,7 @@ stages:
       clean: all
     dependsOn:
     - Install
-    condition: eq(${{ parameters.testv1 }}, true)
+    condition: eq(${{ parameters.testOrchestratorV1 }}, true)
     steps:
     - template: templates/execute.v1.yml
       parameters:
@@ -122,23 +122,10 @@ stages:
         releaseTagName: Release-Yo
         sourceBranchName: refs/heads/working/test
 
-    - task: PowerShell@2
-      displayName: Cleanup releases
-      inputs:
-        targetType: filePath
-        filePath: CI/scripts/cleanup.ps1
-        arguments: >
-          -OrganizationName dmitryserbin
-          -ProjectName HelloYo
-          -DefinitionName HelloYo
-          -AccessToken $(System.AccessToken)
-        pwsh: true
-      condition: always()
-
   - job: OrchestratorV2
     dependsOn:
     - Install
-    condition: eq(${{ parameters.testv2 }}, true)
+    condition: eq(${{ parameters.testOrchestratorV2 }}, true)
     pool:
       name: Default
     workspace:
@@ -157,6 +144,16 @@ stages:
         artifactBranch: refs/heads/working/test
         releaseTag: Release-Yo
 
+  - job: Cleanup
+    dependsOn:
+    - OrchestratorV1
+    - OrchestratorV2
+    condition: always()
+    pool:
+      name: Default
+    workspace:
+      clean: all
+    steps:
     - task: PowerShell@2
       displayName: Cleanup releases
       inputs:
@@ -168,7 +165,6 @@ stages:
           -DefinitionName HelloYo
           -AccessToken $(System.AccessToken)
         pwsh: true
-      condition: always()
 
 - stage: Release
   dependsOn:
