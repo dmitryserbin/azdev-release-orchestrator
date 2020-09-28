@@ -7,7 +7,6 @@ trigger:
     - Tasks/*
 
 variables:
-  extensionDirectory: $(Build.ArtifactStagingDirectory)
   RELEASE_ORCHESTRATOR_CI: true
 
 stages:
@@ -55,45 +54,15 @@ stages:
     - OrchestratorV1
     - OrchestratorV2
     steps:
-    - task: TfxInstaller@3
-      displayName: Install TFX CLI
-
-    - task: CopyFiles@2
-      displayName: Copy extension
-      inputs:
+    - template: templates/package.yml
+      parameters:
+        path: $(Build.ArtifactStagingDirectory)
         contents: |
           Images/**
           LICENSE
           *.md
           *.json
-        targetFolder: ${{ variables.extensionDirectory }}
-
-    - task: DownloadPipelineArtifact@2
-      displayName: Copy tasks
-      inputs:
-        source: current
-        path: ${{ variables.extensionDirectory }}/Tasks
-
-    - task: PowerShell@2
-      displayName: Version extension
-      inputs:
-        targetType: filePath
-        filePath: CI/scripts/version.ps1
-        arguments: >
-          -Path ${{ variables.extensionDirectory }}
-          -Patch $(Build.BuildId)
-          -UpdateBuildNumber
-        pwsh: true
-
-    - task: PackageAzureDevOpsExtension@3
-      displayName: Package extension
-      inputs:
-        rootFolder: ${{ variables.extensionDirectory }}
-        outputVariable: extensionPath
-
-    - publish: $(extensionPath)
-      displayName: Publish artifact
-      artifact: Extension
+        version: $(Build.BuildId)
 
 - stage: Test
   dependsOn:
