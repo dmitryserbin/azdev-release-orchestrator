@@ -46,11 +46,13 @@ async function run() {
         const underTest: boolean = tl.getVariable("RELEASE_ORCHESTRATOR_CI") == "true"
             ? true : false;
 
-        if (!underTest) {
+        if (taskResult == tl.TaskResult.SucceededWithIssues && underTest) {
 
-            tl.setResult(taskResult, err.message);
+            return;
 
         }
+
+        tl.setResult(taskResult, err.message);
 
     }
 

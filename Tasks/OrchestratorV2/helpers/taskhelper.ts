@@ -179,11 +179,13 @@ export class TaskHelper implements ITaskHelper {
 
             case ReleaseStatus.PartiallySucceeded: {
 
-                if (!this.isUnderTest()) {
+                if (this.isUnderTest()) {
 
-                    setResult(TaskResult.SucceededWithIssues, partialMessage);
+                    break;
 
                 }
+
+                setResult(TaskResult.SucceededWithIssues, partialMessage);
 
                 break;
 
@@ -210,11 +212,13 @@ export class TaskHelper implements ITaskHelper {
 
         debug(result);
 
-        if (!this.isUnderTest()) {
+        if (result == TaskResult.SucceededWithIssues && this.isUnderTest()) {
 
-            setResult(result, message);
+            return;
 
         }
+
+        setResult(result, message);
 
     }
 

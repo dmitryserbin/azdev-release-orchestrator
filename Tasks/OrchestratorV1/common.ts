@@ -164,17 +164,20 @@ export class ReleaseProgress implements IReleaseProgress {
             const underTest: boolean = tl.getVariable("RELEASE_ORCHESTRATOR_CI") == "true"
                 ? true : false;
 
-            if (!underTest) {
+            if (underTest) {
 
-                tl.setResult(tl.TaskResult.SucceededWithIssues, `One or more release stage(s) partially succeeded`);
+                return;
 
             }
 
-        }
-        else if (this.getStatus() === ReleaseStatus.Failed) {
+            tl.setResult(tl.TaskResult.SucceededWithIssues, `One or more release stage(s) partially succeeded`);
+
+        } else if (this.getStatus() === ReleaseStatus.Failed) {
 
             throw new Error(`One or more release stage(s) deployment failed`);
+
         }
+
     }
 
     // Display progress
