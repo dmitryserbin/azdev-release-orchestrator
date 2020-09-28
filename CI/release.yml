@@ -7,7 +7,7 @@ trigger:
     - Tasks/*
 
 variables:
-  RELEASE_ORCHESTRATOR_CI: true
+  release.orchestator.ci: true
 
 stages:
 - stage: Build
