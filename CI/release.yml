@@ -148,7 +148,6 @@ stages:
     dependsOn:
     - OrchestratorV1
     - OrchestratorV2
-    condition: always()
     pool:
       name: Default
     workspace:
