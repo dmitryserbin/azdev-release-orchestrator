@@ -43,10 +43,10 @@ async function run() {
         const taskResult = tl.getBoolInput("IgnoreFailure")
             ? tl.TaskResult.SucceededWithIssues : tl.TaskResult.Failed;
 
-        const underTest: boolean = tl.getVariable("RELEASE_ORCHESTRATOR_CI") == "true"
+        const suppressSucceededWithIssues: boolean = tl.getVariable("RELEASE_ORCHESTRATOR_SUPPRESS_SUCCEEDEDWITHISSUES") === "true"
             ? true : false;
 
-        if (taskResult == tl.TaskResult.SucceededWithIssues && underTest) {
+        if (taskResult === tl.TaskResult.SucceededWithIssues && suppressSucceededWithIssues) {
 
             return;
 

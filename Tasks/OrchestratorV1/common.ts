@@ -155,16 +155,22 @@ export class ReleaseProgress implements IReleaseProgress {
     // Validate progress
     public validate(): void {
 
-        if (this.getStatus() === ReleaseStatus.Succeeded) {
+        const verbose = logger.extend("ReleaseProgress:validate");
+
+        const status: ReleaseStatus = this.getStatus();
+
+        verbose(status);
+
+        if (status === ReleaseStatus.Succeeded) {
 
             console.log(`All release stages deployment completed`);
 
-        } else if (this.getStatus() === ReleaseStatus.PartiallySucceeded) {
+        } else if (status === ReleaseStatus.PartiallySucceeded) {
 
-            const underTest: boolean = tl.getVariable("RELEASE_ORCHESTRATOR_CI") == "true"
+            const suppressSucceededWithIssues: boolean = tl.getVariable("RELEASE_ORCHESTRATOR_SUPPRESS_SUCCEEDEDWITHISSUES") === "true"
                 ? true : false;
 
-            if (underTest) {
+            if (suppressSucceededWithIssues) {
 
                 return;
 
@@ -172,7 +178,7 @@ export class ReleaseProgress implements IReleaseProgress {
 
             tl.setResult(tl.TaskResult.SucceededWithIssues, `One or more release stage(s) partially succeeded`);
 
-        } else if (this.getStatus() === ReleaseStatus.Failed) {
+        } else if (status === ReleaseStatus.Failed) {
 
             throw new Error(`One or more release stage(s) deployment failed`);
 

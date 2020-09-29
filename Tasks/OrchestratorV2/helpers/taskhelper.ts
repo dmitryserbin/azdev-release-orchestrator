@@ -179,7 +179,7 @@ export class TaskHelper implements ITaskHelper {
 
             case ReleaseStatus.PartiallySucceeded: {
 
-                if (this.isUnderTest()) {
+                if (await this.suppressSucceededWithIssues()) {
 
                     break;
 
@@ -212,7 +212,7 @@ export class TaskHelper implements ITaskHelper {
 
         debug(result);
 
-        if (result == TaskResult.SucceededWithIssues && this.isUnderTest()) {
+        if (result === TaskResult.SucceededWithIssues && await this.suppressSucceededWithIssues()) {
 
             return;
 
@@ -367,12 +367,16 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
-    private async isUnderTest(): Promise<boolean> {
+    private async suppressSucceededWithIssues(): Promise<boolean> {
 
-        const underTest: boolean = getVariable("RELEASE_ORCHESTRATOR_CI") == "true"
+        const debug = this.debugLogger.extend(this.suppressSucceededWithIssues.name);
+
+        const result: boolean = getVariable("RELEASE_ORCHESTRATOR_SUPPRESS_SUCCEEDEDWITHISSUES") === "true"
             ? true : false;
 
-        return underTest;
+        debug(result);
+
+        return result;
 
     }
 

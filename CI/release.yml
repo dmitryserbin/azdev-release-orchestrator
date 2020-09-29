@@ -17,7 +17,7 @@ parameters:
   default: true
 
 variables:
-  release.orchestator.ci: true
+  release.orchestrator.suppress.succeededwithissues: true
 
 stages:
 - stage: Build
@@ -108,7 +108,7 @@ stages:
       clean: all
     dependsOn:
     - Install
-    condition: eq(${{ parameters.testOrchestratorV1 }}, true)
+    condition: and(succeeded(), eq(${{ parameters.testOrchestratorV1 }}, true))
     steps:
     - template: templates/execute.v1.yml
       parameters:
@@ -125,7 +125,7 @@ stages:
   - job: OrchestratorV2
     dependsOn:
     - Install
-    condition: eq(${{ parameters.testOrchestratorV2 }}, true)
+    condition: and(succeeded(), eq(${{ parameters.testOrchestratorV2 }}, true))
     pool:
       name: Default
     workspace:
@@ -148,7 +148,6 @@ stages:
     dependsOn:
     - OrchestratorV1
     - OrchestratorV2
-    condition: always()
     pool:
       name: Default
     workspace:
