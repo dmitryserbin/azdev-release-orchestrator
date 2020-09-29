@@ -167,10 +167,10 @@ export class ReleaseProgress implements IReleaseProgress {
 
         } else if (status === ReleaseStatus.PartiallySucceeded) {
 
-            const underTest: boolean = tl.getVariable("RELEASE_ORCHESTRATOR_CI") === "true"
+            const suppressPartial: boolean = tl.getVariable("RELEASE_ORCHESTRATOR_SUPPRESS_PARTIAL") === "true"
                 ? true : false;
 
-            if (underTest) {
+            if (suppressPartial) {
 
                 return;
 
