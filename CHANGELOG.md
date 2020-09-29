@@ -2,6 +2,10 @@
 
 ## 2.0.*
 
+`2020-09-30`
+
+- Add `succeededWithIssues` status suppress support
+
 `2020-09-25`
 
 - Major code refactoring & improvements
