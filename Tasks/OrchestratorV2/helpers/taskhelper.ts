@@ -179,7 +179,7 @@ export class TaskHelper implements ITaskHelper {
 
             case ReleaseStatus.PartiallySucceeded: {
 
-                if (await this.suppressPartial()) {
+                if (await this.suppressSucceededWithIssues()) {
 
                     break;
 
@@ -212,7 +212,7 @@ export class TaskHelper implements ITaskHelper {
 
         debug(result);
 
-        if (result === TaskResult.SucceededWithIssues && await this.suppressPartial()) {
+        if (result === TaskResult.SucceededWithIssues && await this.suppressSucceededWithIssues()) {
 
             return;
 
@@ -367,11 +367,11 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
-    private async suppressPartial(): Promise<boolean> {
+    private async suppressSucceededWithIssues(): Promise<boolean> {
 
-        const debug = this.debugLogger.extend(this.suppressPartial.name);
+        const debug = this.debugLogger.extend(this.suppressSucceededWithIssues.name);
 
-        const result: boolean = getVariable("RELEASE_ORCHESTRATOR_SUPPRESS_PARTIAL") === "true"
+        const result: boolean = getVariable("RELEASE_ORCHESTRATOR_SUPPRESS_SUCCEEDEDWITHISSUES") === "true"
             ? true : false;
 
         debug(result);

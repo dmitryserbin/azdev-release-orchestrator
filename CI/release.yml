@@ -17,7 +17,7 @@ parameters:
   default: true
 
 variables:
-  release.orchestrator.suppress.partial: true
+  release.orchestrator.suppress.succeededwithissues: true
 
 stages:
 - stage: Build
