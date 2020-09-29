@@ -8,11 +8,11 @@ trigger:
 
 parameters:
 - name: testOrchestratorV1
-  displayName: Test OrchestratorV1 task
+  displayName: Test OrchestratorV1
   type: boolean
   default: true
 - name: testOrchestratorV2
-  displayName: Test OrchestratorV2 task
+  displayName: Test OrchestratorV2
   type: boolean
   default: true
 
