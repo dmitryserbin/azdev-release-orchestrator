@@ -17,7 +17,7 @@ parameters:
   default: true
 
 variables:
-  release.orchestator.ci: true
+  release.orchestrator.ci: true
 
 stages:
 - stage: Build
