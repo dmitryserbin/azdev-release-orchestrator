@@ -369,8 +369,12 @@ export class TaskHelper implements ITaskHelper {
 
     private async isUnderTest(): Promise<boolean> {
 
+        const debug = this.debugLogger.extend(this.isUnderTest.name);
+
         const underTest: boolean = getVariable("RELEASE_ORCHESTRATOR_CI") === "true"
             ? true : false;
+
+        debug(underTest);
 
         return underTest;
 
