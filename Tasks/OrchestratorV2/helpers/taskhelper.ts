@@ -369,7 +369,7 @@ export class TaskHelper implements ITaskHelper {
 
     private async isUnderTest(): Promise<boolean> {
 
-        const underTest: boolean = getVariable("RELEASE_ORCHESTRATOR_CI") == "true"
+        const underTest: boolean = getVariable("RELEASE_ORCHESTRATOR_CI") === "true"
             ? true : false;
 
         return underTest;

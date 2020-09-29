@@ -153,7 +153,7 @@ export class ReleaseProgress implements IReleaseProgress {
     }
 
     // Validate progress
-    public validate(): void {
+    public async validate(): Promise<void> {
 
         if (this.getStatus() === ReleaseStatus.Succeeded) {
 
@@ -161,7 +161,7 @@ export class ReleaseProgress implements IReleaseProgress {
 
         } else if (this.getStatus() === ReleaseStatus.PartiallySucceeded) {
 
-            const underTest: boolean = tl.getVariable("RELEASE_ORCHESTRATOR_CI") == "true"
+            const underTest: boolean = tl.getVariable("RELEASE_ORCHESTRATOR_CI") === "true"
                 ? true : false;
 
             if (underTest) {
