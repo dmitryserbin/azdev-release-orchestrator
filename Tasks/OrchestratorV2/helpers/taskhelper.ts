@@ -212,7 +212,7 @@ export class TaskHelper implements ITaskHelper {
 
         debug(result);
 
-        if (result == TaskResult.SucceededWithIssues && this.isUnderTest()) {
+        if (result === TaskResult.SucceededWithIssues && this.isUnderTest()) {
 
             return;
 
