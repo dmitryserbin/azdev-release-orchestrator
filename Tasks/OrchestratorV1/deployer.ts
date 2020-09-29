@@ -114,7 +114,7 @@ export class Deployer implements IDeployer {
             }
 
             // Validate progress
-            await releaseProgress.validate();
+            releaseProgress.validate();
 
         } catch (e) {
 
@@ -184,7 +184,7 @@ export class Deployer implements IDeployer {
             while (releaseProgress.getStatus() === ReleaseStatus.InProgress);
 
             // Validate progress
-            await releaseProgress.validate();
+            releaseProgress.validate();
 
         } catch (e) {
 
