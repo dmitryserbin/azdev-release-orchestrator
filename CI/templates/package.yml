@@ -1,0 +1,41 @@
+parameters:
+  path: ""
+  contents: ""
+  version: ""
+
+steps:
+- task: TfxInstaller@3
+  displayName: Install TFX CLI
+
+- task: CopyFiles@2
+  displayName: Copy extension
+  inputs:
+    contents: ${{ parameters.contents }}
+    targetFolder: ${{ parameters.path }}
+
+- task: DownloadPipelineArtifact@2
+  displayName: Copy tasks
+  inputs:
+    source: current
+    path: ${{ parameters.path }}/Tasks
+
+- task: PowerShell@2
+  displayName: Version extension
+  inputs:
+    targetType: filePath
+    filePath: CI/scripts/version.ps1
+    arguments: >
+      -Path ${{ parameters.path }}
+      -Patch ${{ parameters.version }}
+      -UpdateBuildNumber
+    pwsh: true
+
+- task: PackageAzureDevOpsExtension@3
+  displayName: Package extension
+  inputs:
+    rootFolder: ${{ parameters.path }}
+    outputVariable: extensionPath
+
+- publish: $(extensionPath)
+  displayName: Publish artifact
+  artifact: Extension
