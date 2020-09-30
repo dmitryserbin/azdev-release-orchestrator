@@ -4,6 +4,7 @@
 
 `2020-09-30`
 
+- Address on-prem Azure DevOps task endpoint issue ([53](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/53))
 - Add `succeededWithIssues` status suppress support
 
 `2020-09-25`

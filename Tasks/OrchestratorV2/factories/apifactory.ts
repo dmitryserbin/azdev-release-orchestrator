@@ -13,17 +13,18 @@ import { IReleaseApiRetry } from "../interfaces/extensions/releaseapiretry";
 import { ReleaseApiRetry } from "../extensions/releaseapiretry";
 import { IBuildApiRetry } from "../interfaces/extensions/buildapiretry";
 import { BuildApiRetry } from "../extensions/buildapiretry";
+import { IEndpoint } from "../interfaces/task/endpoint";
 
 export class ApiFactory implements IApiFactory {
 
     private webApi: WebApi;
     private debugLogger: IDebugLogger;
 
-    constructor(accountName: string, token: string, debugCreator: IDebugCreator) {
+    constructor(endpoint: IEndpoint, debugCreator: IDebugCreator) {
 
         this.debugLogger = debugCreator.extend(this.constructor.name);
 
-        const auth: IRequestHandler = getPersonalAccessTokenHandler(token);
+        const auth: IRequestHandler = getPersonalAccessTokenHandler(endpoint.token);
 
         // Use integrated retry mechanism to address
         // Intermittent Azure DevOps connectivity errors
@@ -35,7 +36,11 @@ export class ApiFactory implements IApiFactory {
 
         } as IRequestOptions;
 
-        this.webApi = new WebApi(`https://dev.azure.com/${accountName}`, auth, options);
+        this.debugLogger(options);
+
+        this.webApi = new WebApi(endpoint.url, auth, options);
+
+        this.debugLogger(`Azure DevOps Web API initialized`);
 
     }
 
