@@ -36,7 +36,11 @@ export class ApiFactory implements IApiFactory {
 
         } as IRequestOptions;
 
+        this.debugLogger(options);
+
         this.webApi = new WebApi(endpoint.url, auth, options);
+
+        this.debugLogger(`Azure DevOps Web API initialized`);
 
     }
 
