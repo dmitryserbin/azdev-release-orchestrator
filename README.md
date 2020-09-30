@@ -36,7 +36,7 @@ The task uses either **integrated** (SystemVssConnection) or **specific**  perso
 
 ## Prerequisites
 
-To perform release pipeline orchestration the task requires Azure DevOps service endpoint with specific access to target project pipelines to be able to create and manage releases. There are two types of Azure DevOps [service endoints](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) supported:
+To perform release pipeline orchestration the task requires Azure DevOps service endpoint with specific access to target project pipelines to be able to create and manage releases. There are two types of Azure DevOps [service endpoints](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) supported:
 
 Type | Name | Account
 ---- | ---- | -------
