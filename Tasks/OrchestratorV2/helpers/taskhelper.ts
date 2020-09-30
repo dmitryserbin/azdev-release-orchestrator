@@ -1,4 +1,3 @@
-import url from "url";
 import parseKeyValue from "parse-key-value-pair";
 
 import { getInput, getEndpointUrl, getEndpointAuthorizationParameter, getBoolInput, getDelimitedInput, getVariable, setResult, TaskResult } from "azure-pipelines-task-lib/task";
@@ -45,14 +44,18 @@ export class TaskHelper implements ITaskHelper {
         }
 
         const endpointUrl: string = getEndpointUrl(endpointName, false);
-        const accountName: string = url.parse(endpointUrl).pathname!.replace("/", "");
-        const accountToken: string = getEndpointAuthorizationParameter(endpointName, tokenParameterName, false)!;
-    
+        const endpointToken: string | undefined = getEndpointAuthorizationParameter(endpointName, tokenParameterName, false);
+
+        if (!endpointToken) {
+
+            throw new Error(`Unable to get <${endpointName}> (${tokenParameterName}) endpoint token`);
+
+        }
+
         const endpoint: IEndpoint = {
-    
+
             url: endpointUrl,
-            account: accountName,
-            token: accountToken,
+            token: endpointToken,
 
         };
 

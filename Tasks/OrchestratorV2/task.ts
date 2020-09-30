@@ -28,7 +28,7 @@ async function run() {
         const parameters: IParameters = await taskHelper.getParameters();
         const details: IDetails = await taskHelper.getDetails();
 
-        const apiFactory: IApiFactory = new ApiFactory(endpoint.account, endpoint.token, debugCreator);
+        const apiFactory: IApiFactory = new ApiFactory(endpoint, debugCreator);
         const orchestratorFactory: IOrchestratorFactory = new OrchestratorFactory(apiFactory, debugCreator, consoleLogger);
 
         const orchestrator: IOrchestrator = new Orchestrator(orchestratorFactory, debugCreator, consoleLogger);

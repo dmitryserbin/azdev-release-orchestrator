@@ -19,8 +19,7 @@ describe("TaskHelper", ()  => {
     debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target);
 
     const endpointNameMock: string = "My-Endpoint";
-    const endpointAccountMock: string = "My-Organization";
-    const endpointUrlMock: string = `https://dev.azure.com/${endpointAccountMock}`;
+    const endpointUrlMock: string = `https://dev.azure.com/My-Organization`;
     const endpointTokenMock: string = "My-Token";
 
     const orchestratorProjectNameMock: string = "My-Orchestrator-Project";
@@ -100,7 +99,6 @@ describe("TaskHelper", ()  => {
 
         chai.expect(result).to.not.eq(null);
         chai.expect(result.url).to.eq(endpointUrlMock);
-        chai.expect(result.account).to.eq(endpointAccountMock);
         chai.expect(result.token).to.eq(endpointTokenMock);
 
         //#endregion
