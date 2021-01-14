@@ -278,7 +278,7 @@ export class ReleaseHelper implements IReleaseHelper {
             }
 
             // Use default latest
-            let targetVersion: BuildVersion = artifact.versions![0];
+            let targetVersion: BuildVersion = artifact.defaultVersion || artifact.versions![0];
 
             // Filter primary artifact
             if (artifact.sourceId === primaryId) {
