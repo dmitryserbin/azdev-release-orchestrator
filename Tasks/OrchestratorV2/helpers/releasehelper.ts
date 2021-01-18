@@ -277,7 +277,8 @@ export class ReleaseHelper implements IReleaseHelper {
 
             }
 
-            // Use default latest
+            // Use default artifact version
+            // Or select latest available
             let targetVersion: BuildVersion = artifact.defaultVersion || artifact.versions![0];
 
             // Filter primary artifact
