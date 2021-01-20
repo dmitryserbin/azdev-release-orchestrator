@@ -2,6 +2,10 @@
 
 ## 2.0.*
 
+`2021-01-21`
+
+- Use default release pipeline artifact version ([59](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/59))
+
 `2020-09-30`
 
 - Address on-prem Azure DevOps task endpoint issue ([53](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/53))
