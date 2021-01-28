@@ -125,6 +125,7 @@ stages:
   - job: OrchestratorV2
     dependsOn:
     - Install
+    - OrchestratorV1
     condition: and(succeeded(), eq(${{ parameters.testOrchestratorV2 }}, true))
     pool:
       name: Default
