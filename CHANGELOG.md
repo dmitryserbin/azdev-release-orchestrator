@@ -2,6 +2,10 @@
 
 ## 2.0.*
 
+`TBU`
+
+- Update packages & minor logging improvements ([61](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/61))
+
 `2021-01-21`
 
 - Use default release pipeline artifact version ([59](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/59))
