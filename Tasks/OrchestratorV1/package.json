@@ -19,26 +19,26 @@
   "dependencies": {
     "@types/cli-table": "^0.3.0",
     "@types/debug": "^4.1.5",
-    "azure-devops-node-api": "^10.0.0",
-    "azure-pipelines-task-lib": "^2.9.3",
-    "cli-table": "^0.3.1",
-    "debug": "^4.1.1",
-    "moment": "^2.24.0"
+    "azure-devops-node-api": "^10.2.1",
+    "azure-pipelines-task-lib": "^2.12.1",
+    "cli-table": "^0.3.4",
+    "debug": "^4.3.1",
+    "moment": "^2.29.1"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.8",
-    "@types/chai-as-promised": "^7.1.2",
-    "@types/mocha": "^7.0.1",
-    "@types/node": "^13.5.3",
-    "@types/q": "^1.5.2",
+    "@types/chai": "^4.2.14",
+    "@types/chai-as-promised": "^7.1.3",
+    "@types/mocha": "^8.2.0",
+    "@types/node": "^14.14.22",
+    "@types/q": "^1.5.4",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
-    "mocha": "^7.0.1",
-    "mocha-junit-reporter": "^1.23.3",
-    "mocha-multi-reporters": "^1.1.7",
+    "mocha": "^8.2.1",
+    "mocha-junit-reporter": "^2.0.0",
+    "mocha-multi-reporters": "^1.5.1",
     "sync-request": "^6.1.0",
-    "ts-node": "^8.6.2",
+    "ts-node": "^9.1.1",
     "typemoq": "^2.1.0",
-    "typescript": "^3.7.5"
+    "typescript": "^4.1.3"
   }
 }
