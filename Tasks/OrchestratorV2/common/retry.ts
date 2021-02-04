@@ -9,7 +9,7 @@ import { DebugCreator } from "../loggers/debugcreator";
 const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator");
 const debugLogger: IDebugLogger = debugCreator.extend("Retry");
 
-export function Retryable(attempts: number = 10, timeout: number = 6000): Function {
+export function Retryable(attempts: number = 10, timeout: number = 6000, empty: boolean = false): Function {
 
     const debug = debugLogger.extend("retryable");
 
@@ -23,7 +23,7 @@ export function Retryable(attempts: number = 10, timeout: number = 6000): Functi
 
                 debug(`Executing <${propertyKey}> with <${attempts}> retries`);
 
-                return await retryAsync.apply(this, [originalMethod, args, attempts, timeout]);
+                return await retryAsync.apply(this, [originalMethod, args, attempts, timeout, empty]);
 
             } catch (e) {
 
@@ -40,24 +40,43 @@ export function Retryable(attempts: number = 10, timeout: number = 6000): Functi
 
 }
 
-async function retryAsync(target: Function, args: any[], attempts: number, timeout: number): Promise<any> {
+async function retryAsync(target: Function, args: any[], attempts: number, timeout: number, empty: boolean): Promise<any> {
 
     const debug = debugLogger.extend("retryAsync");
 
     try {
 
         // @ts-ignore
-        return await target.apply(this, args);
+        let result: any = await target.apply(this, args);
+
+        if (!result && empty) {
+
+            if (--attempts <= 0) {
+
+                throw new Error(`Empty result received`);
+
+            }
+
+            debug(`Retrying <${target.name}> (empty) in <${timeout / 1000}> seconds`);
+
+            await new Promise((resolve) => setTimeout(resolve, timeout));
+
+            // @ts-ignore
+            result = retryAsync.apply(this, [target, args, attempts, timeout, empty]);
+
+        }
+
+        return result;
 
     } catch (e) {
 
-        if (--attempts < 0) {
+        if (--attempts <= 0) {
 
             throw new Error(e);
 
         }
 
-        debug(`Retrying <${target.name}> in <${timeout / 1000}> seconds`);
+        debug(`Retrying <${target.name}> (exception) in <${timeout / 1000}> seconds`);
 
         await new Promise((resolve) => setTimeout(resolve, timeout));
 

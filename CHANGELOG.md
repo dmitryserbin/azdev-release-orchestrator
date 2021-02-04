@@ -2,6 +2,10 @@
 
 ## 2.0.*
 
+`TBU`
+
+- Improve release status retry mechanism ([TBU](TBU))
+
 `2021-01-29`
 
 - Update packages & minor logging improvements ([61](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/61))
