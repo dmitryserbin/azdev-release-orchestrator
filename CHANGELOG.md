@@ -4,7 +4,7 @@
 
 `2021-02-09`
 
-- Improve release status retry mechanism ([TBU](TBU))
+- Improve release status retry mechanism ([60]([TBU](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/60)))
 
 `2021-01-29`
 
