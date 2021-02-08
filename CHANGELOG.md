@@ -2,7 +2,7 @@
 
 ## 2.0.*
 
-`TBU`
+`2021-02-09`
 
 - Improve release status retry mechanism ([TBU](TBU))
 
