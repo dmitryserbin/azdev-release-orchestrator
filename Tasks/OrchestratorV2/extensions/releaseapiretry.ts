@@ -46,7 +46,7 @@ export class ReleaseApiRetry implements IReleaseApiRetry {
 
     }
 
-    @Retryable()
+    @Retryable(undefined, undefined, true)
     public async getRelease(project: string, releaseId: number, approvalFilters?: ApprovalFilters, propertyFilters?: string[], expand?: SingleReleaseExpands, topGateRecords?: number): Promise<Release> {
 
         return await this.releaseApi.getRelease(

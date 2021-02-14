@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { Retryable } from "../../common/retry";
 import { IDebugLogger } from "../../interfaces/loggers/debuglogger";
 import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
@@ -5,6 +7,7 @@ import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
 export interface IRetryThis {
 
     retry(failTimes: number): Promise<number>;
+    retryEmpty(failTimes: number): Promise<number>;
 
 }
 
@@ -12,31 +15,49 @@ export class RetryThis implements IRetryThis {
 
     private debugLogger: IDebugLogger;
 
-    private count: number;
+    private attempt: number = 0;
 
-    constructor(count: number, debugCreator: IDebugCreator) {
+    constructor(debugCreator: IDebugCreator) {
 
-        this.count = count;
         this.debugLogger = debugCreator.extend(this.constructor.name);
 
     }
 
     @Retryable(5, 100)
-    public async retry(failTimes: number): Promise<number> {
+    public async retry(failAttempts: number): Promise<number> {
 
         const debug = this.debugLogger.extend("retry");
 
-        this.count++;
+        this.attempt++;
 
-        debug(`Executing <retry> method <${this.count}> time`);
+        debug(`Executing <${this.attempt}/${failAttempts}> attempt`);
 
-        if (this.count < failTimes) {
+        if (this.attempt < failAttempts) {
 
             throw new Error("Ooops!");
 
         }
 
-        return this.count;
+        return this.attempt;
+
+    }
+
+    @Retryable(5, 100, true)
+    public async retryEmpty(failAttempts: number): Promise<any> {
+
+        const debug = this.debugLogger.extend("retryEmpty");
+
+        this.attempt++;
+
+        debug(`Executing <${this.attempt}/${failAttempts}> attempt`);
+
+        if (this.attempt < failAttempts) {
+
+            return null;
+
+        }
+
+        return this.attempt;
 
     }
 
