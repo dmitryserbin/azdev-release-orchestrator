@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "release-orchestrator",
   "name": "Release Orchestrator",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "publisher": "dmitryserbin",
   "public": true,
   "targets": [
@@ -19,9 +19,7 @@
     "Pipeline",
     "Orchestration",
     "Microservices",
-    "Deploy",
-    "DevOps",
-    "Tasks"
+    "Deploy"
   ],
   "icons": {
     "default": "Images/icon.png"
@@ -46,6 +44,9 @@
     },
     "support": {
       "uri": "https://github.com/dmitryserbin/azdev-release-orchestrator/issues"
+    },
+    "license": {
+      "uri": "https://github.com/dmitryserbin/azdev-release-orchestrator/blob/master/LICENSE"
     },
     "privacypolicy": {
       "uri": "https://github.com/dmitryserbin/azdev-release-orchestrator/blob/master/PRIVACY.md"
