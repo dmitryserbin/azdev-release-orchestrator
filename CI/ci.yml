@@ -32,7 +32,7 @@ jobs:
   - template: templates/build.yml
     parameters:
       name: ${{ variables.taskNameV1 }}
-      path: ${{ variables.taskPathV1 }}
+      path: ${{ variables.tasksPath }}
       restore: true
       build: true
       test: true
@@ -47,7 +47,7 @@ jobs:
   - template: templates/build.yml
     parameters:
       name: ${{ variables.taskNameV2 }}
-      path: ${{ variables.taskPathV2 }}
+      path: ${{ variables.tasksPath }}
       restore: true
       lint: true
       build: true
