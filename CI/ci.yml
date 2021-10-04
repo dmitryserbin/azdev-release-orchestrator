@@ -9,16 +9,6 @@ pr:
     - Tasks/*
   autoCancel: true
 
-parameters:
-- name: publishTask
-  displayName: Publish task artifact
-  type: boolean
-  default: false
-- name: publishExtension
-  displayName: Publish extension artifact
-  type: boolean
-  default: false
-
 variables:
 - template: templates/variables.yml
 
@@ -36,7 +26,7 @@ jobs:
       restore: true
       build: true
       test: true
-      publish: ${{ parameters.publishTask }}
+      publish: true
 
 - job: OrchestratorV2
   pool:
@@ -52,7 +42,7 @@ jobs:
       lint: true
       build: true
       test: true
-      publish: ${{ parameters.publishTask }}
+      publish: true
 
 - job: Extension
   pool:
@@ -72,4 +62,4 @@ jobs:
         *.md
         *.json
       version: ${{ variables.extensionVersion }}
-      publish: ${{ parameters.publishExtension }}
+      publish: true
