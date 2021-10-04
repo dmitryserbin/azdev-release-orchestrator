@@ -87,6 +87,7 @@ jobs:
     variables:
     - template: variables.yml
     dependsOn:
+    - Install
     - ${{ if eq(parameters.testV1, true) }}:
       - OrchestratorV1
     - ${{ if eq(parameters.testV2, true) }}:
