@@ -52,8 +52,10 @@ jobs:
     variables:
     - template: variables.yml
     dependsOn:
-    - OrchestratorV1
-    - OrchestratorV2
+    - ${{ if eq(parameters.taskV1, true) }}:
+      - OrchestratorV1
+    - ${{ if eq(parameters.taskV2, true) }}:
+      - OrchestratorV2
     steps:
     - template: steps/package.yml
       parameters:
