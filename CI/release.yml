@@ -21,7 +21,7 @@ parameters:
   default: true
 
 variables:
-  release.orchestrator.suppress.succeededwithissues: true
+- template: templates/variables.yml
 
 stages:
 - stage: Build

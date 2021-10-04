@@ -5,3 +5,4 @@ variables:
   tasksPath: Tasks
   artifactsPath: $(Build.ArtifactStagingDirectory)
   extensionVersion: $(Build.BuildId)
+  release.orchestrator.suppress.succeededwithissues: true
