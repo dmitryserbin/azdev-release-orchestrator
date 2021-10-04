@@ -34,8 +34,8 @@ stages:
     steps:
     - template: templates/build.yml
       parameters:
-        name: OrchestratorV1
-        path: Tasks/OrchestratorV1
+        name: ${{ variables.taskNameV1 }}
+        path: ${{ variables.tasksPath }}
         restore: true
         build: true
         test: true
@@ -50,8 +50,8 @@ stages:
     steps:
     - template: templates/build.yml
       parameters:
-        name: OrchestratorV2
-        path: Tasks/OrchestratorV2
+        name: ${{ variables.taskNameV2 }}
+        path: ${{ variables.tasksPath }}
         restore: true
         lint: true
         build: true
@@ -70,13 +70,14 @@ stages:
     steps:
     - template: templates/package.yml
       parameters:
-        path: $(Build.ArtifactStagingDirectory)
+        path: ${{ variables.artifactsPath }}
         contents: |
           Images/**
           LICENSE
           *.md
           *.json
-        version: $(Build.BuildId)
+        version: ${{ variables.extensionVersion }}
+        publish: true
 
 - stage: Test
   dependsOn:
