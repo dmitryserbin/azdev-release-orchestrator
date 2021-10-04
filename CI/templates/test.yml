@@ -1,6 +1,6 @@
 parameters:
-  testTaskV1: false
-  testTaskV2: false
+  testV1: false
+  testV2: false
   cleanup: false
 
 jobs:
@@ -29,7 +29,7 @@ jobs:
       path: $(Pipeline.Workspace)
       replace: false
 
-- ${{ if eq(parameters.testTaskV1, true) }}:
+- ${{ if eq(parameters.testV1, true) }}:
   - job: OrchestratorV1
     pool:
       name: Default
@@ -52,7 +52,7 @@ jobs:
         releaseTagName: Release-Yo
         sourceBranchName: refs/heads/working/test
 
-- ${{ if eq(parameters.testTaskV2, true) }}:
+- ${{ if eq(parameters.testV2, true) }}:
   - job: OrchestratorV2
     pool:
       name: Default
@@ -62,7 +62,8 @@ jobs:
     - template: variables.yml
     dependsOn:
     - Install
-    - OrchestratorV1
+    ${{ if eq(parameters.testV1, true) }}:
+      - OrchestratorV1
     steps:
     - template: steps/test-v2.yml
       parameters:
@@ -86,8 +87,10 @@ jobs:
     variables:
     - template: variables.yml
     dependsOn:
-    - OrchestratorV1
-    - OrchestratorV2
+      ${{ if eq(parameters.testV1, true) }}:
+        - OrchestratorV1
+      ${{ if eq(parameters.testV2, true) }}:
+        - OrchestratorV2
     steps:
     - task: PowerShell@2
       displayName: Cleanup releases

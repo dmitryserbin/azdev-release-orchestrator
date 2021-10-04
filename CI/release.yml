@@ -31,8 +31,8 @@ stages:
   jobs:
   - template: templates/test.yml
     parameters:
-      testTaskV1: ${{ parameters.testV1 }}
-      testTaskV2: ${{ parameters.testV2 }}
+      testV1: ${{ parameters.testV1 }}
+      testV2: ${{ parameters.testV2 }}
       cleanup: true
 
 - stage: Release
