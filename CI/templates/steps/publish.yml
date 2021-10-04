@@ -1,0 +1,28 @@
+parameters:
+  path: ""
+  endpointName: ""
+  visibility: ""
+  shareWith: ""
+  tag: ""
+
+steps:
+- download: current
+  displayName: Download artifacts
+
+- task: TfxInstaller@3
+  displayName: Install Node CLI
+
+- ${{ if ne(parameters.endpointName, '') }}:
+  - task: PublishAzureDevOpsExtension@3
+    displayName: Publish extension
+    inputs:
+      connectedServiceName: ${{ parameters.endpointName }}
+      fileType: vsix
+      vsixFile: ${{ parameters.path }}
+      updateTasksVersion: false
+      ${{ if ne(parameters.tag, '') }}:
+        extensionTag: -${{ parameters.tag }}
+      ${{ if ne(parameters.visibility, '') }}:
+        extensionVisibility: ${{ parameters.visibility }}
+      ${{ if ne(parameters.shareWith, '') }}:
+        shareWith: ${{ parameters.shareWith }}

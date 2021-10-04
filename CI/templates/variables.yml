@@ -5,5 +5,8 @@ variables:
   tasksPath: Tasks
   artifactsPath: $(Build.ArtifactStagingDirectory)
   tasksEndpoint: dmitryserbin.tasks
+  marketplaceEndpoint: dmitryserbin.marketplace
   extensionVersion: $(Build.BuildId)
+  extensionArtifactPath: $(Pipeline.Workspace)/Extension/*.vsix
+  extensionVisibility: public
   release.orchestrator.suppress.succeededwithissues: true

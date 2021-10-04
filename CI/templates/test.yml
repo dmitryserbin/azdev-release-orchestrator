@@ -1,0 +1,102 @@
+parameters:
+  testTaskV1: false
+  testTaskV2: false
+  cleanup: false
+
+jobs:
+- job: Install
+  pool:
+    name: Default
+  workspace:
+    clean: all
+  variables:
+  - template: variables.yml
+  steps:
+  - download: current
+    displayName: Download artifacts
+
+  - template: steps/install.yml
+    parameters:
+      endpointName: ${{ variables.tasksEndpoint }}
+      name: ${{ variables.taskNameV1 }}
+      path: $(Pipeline.Workspace)
+      replace: true
+
+  - template: steps/install.yml
+    parameters:
+      endpointName: ${{ variables.tasksEndpoint }}
+      name: ${{ variables.taskNameV2 }}
+      path: $(Pipeline.Workspace)
+      replace: false
+
+- ${{ if eq(parameters.testTaskV1, true) }}:
+  - job: OrchestratorV1
+    pool:
+      name: Default
+    workspace:
+      clean: all
+    variables:
+    - template: variables.yml
+    dependsOn:
+    - Install
+    steps:
+    - template: steps/test-v1.yml
+      parameters:
+        projectId: 761623f0-c4c0-4dab-884b-a428a01c200f
+        definitionId: 1
+        releaseId: 162
+        releasePartialId: 194
+        releaseFailedId: 200
+        releaseStages: DEV,TEST,PROD
+        artifactTagName: Build-Yo
+        releaseTagName: Release-Yo
+        sourceBranchName: refs/heads/working/test
+
+- ${{ if eq(parameters.testTaskV2, true) }}:
+  - job: OrchestratorV2
+    pool:
+      name: Default
+    workspace:
+      clean: all
+    variables:
+    - template: variables.yml
+    dependsOn:
+    - Install
+    - OrchestratorV1
+    steps:
+    - template: steps/test-v2.yml
+      parameters:
+        projectName: HelloYo
+        definitionName: HelloYo
+        releaseName: HelloYo-20190521.1-1
+        releasePartialName: HelloYo-20190521.4-27
+        releaseFailedName: HelloYo-20190521.4-32
+        releaseStage: DEV,TEST,PROD
+        artifactVersion: 20190521.1
+        artifactTag: Build-Yo
+        artifactBranch: refs/heads/working/test
+        releaseTag: Release-Yo
+
+- ${{ if eq(parameters.cleanup, true) }}:
+  - job: Cleanup
+    pool:
+      name: Default
+    workspace:
+      clean: all
+    variables:
+    - template: variables.yml
+    dependsOn:
+    - OrchestratorV1
+    - OrchestratorV2
+    steps:
+    - task: PowerShell@2
+      displayName: Cleanup releases
+      inputs:
+        targetType: filePath
+        filePath: CI/scripts/Clear-Releases.ps1
+        arguments: >
+          -OrganizationName dmitryserbin
+          -ProjectName HelloYo
+          -DefinitionName HelloYo
+          -AccessToken $(System.AccessToken)
+        pwsh: true

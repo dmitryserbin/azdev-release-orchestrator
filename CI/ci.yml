@@ -9,59 +9,9 @@ pr:
     - Tasks/*
   autoCancel: true
 
-variables:
-- template: templates/variables.yml
-
 jobs:
-- job: OrchestratorV1
-  pool:
-    name: Default
-  workspace:
-    clean: all
-  steps:
-  - template: templates/build.yml
-    parameters:
-      name: ${{ variables.taskNameV1 }}
-      path: ${{ variables.tasksPath }}
-      restore: true
-      build: true
-      test: true
-      clean: true
-      publish: true
-
-- job: OrchestratorV2
-  pool:
-    name: Default
-  workspace:
-    clean: all
-  steps:
-  - template: templates/build.yml
-    parameters:
-      name: ${{ variables.taskNameV2 }}
-      path: ${{ variables.tasksPath }}
-      restore: true
-      lint: true
-      build: true
-      test: true
-      clean: true
-      publish: true
-
-- job: Extension
-  pool:
-    name: Default
-  workspace:
-    clean: all
-  dependsOn:
-  - OrchestratorV1
-  - OrchestratorV2
-  steps:
-  - template: templates/package.yml
-    parameters:
-      path: ${{ variables.artifactsPath }}
-      contents: |
-        Images/**
-        LICENSE
-        *.md
-        *.json
-      version: ${{ variables.extensionVersion }}
-      publish: true
+- template: templates/build.yml
+  parameters:
+    taskV1: true
+    taskV2: true
+    extension: true
