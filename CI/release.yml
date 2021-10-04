@@ -15,6 +15,10 @@ parameters:
   displayName: Test OrchestratorV2
   type: boolean
   default: true
+- name: testOrchestratorV3
+  displayName: Test OrchestratorV3
+  type: boolean
+  default: true
 
 variables:
   release.orchestrator.suppress.succeededwithissues: true

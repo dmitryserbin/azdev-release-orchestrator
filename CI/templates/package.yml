@@ -2,10 +2,11 @@ parameters:
   path: ""
   contents: ""
   version: ""
+  publish: false
 
 steps:
 - task: TfxInstaller@3
-  displayName: Install TFX CLI
+  displayName: Install Node CLI
 
 - task: CopyFiles@2
   displayName: Copy extension
@@ -19,16 +20,17 @@ steps:
     source: current
     path: ${{ parameters.path }}/Tasks
 
-- task: PowerShell@2
-  displayName: Version extension
-  inputs:
-    targetType: filePath
-    filePath: CI/scripts/version.ps1
-    arguments: >
-      -Path ${{ parameters.path }}
-      -Patch ${{ parameters.version }}
-      -UpdateBuildNumber
-    pwsh: true
+- ${{ if ne(parameters.version, '') }}:
+  - task: PowerShell@2
+    displayName: Version extension
+    inputs:
+      targetType: filePath
+      filePath: CI/scripts/Set-Version.ps1
+      arguments: >
+        -Path ${{ parameters.path }}
+        -Patch ${{ parameters.version }}
+        -UpdateBuildNumber
+      pwsh: true
 
 - task: PackageAzureDevOpsExtension@3
   displayName: Package extension
@@ -36,6 +38,7 @@ steps:
     rootFolder: ${{ parameters.path }}
     outputVariable: extensionPath
 
-- publish: $(extensionPath)
-  displayName: Publish artifact
-  artifact: Extension
+- ${{ if eq(parameters.publish, true) }}:
+  - publish: $(extensionPath)
+    displayName: Publish artifact
+    artifact: Extension

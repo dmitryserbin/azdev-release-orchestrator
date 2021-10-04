@@ -1,0 +1,7 @@
+variables:
+  taskNameV1: OrchestratorV1
+  taskNameV2: OrchestratorV2
+  taskNameV3: OrchestratorV3
+  taskPathV1: Tasks/OrchestratorV1
+  taskPathV2: Tasks/OrchestratorV2
+  taskPathV3: Tasks/OrchestratorV3
