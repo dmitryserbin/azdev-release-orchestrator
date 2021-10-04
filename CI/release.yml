@@ -92,19 +92,19 @@ stages:
     - download: current
       displayName: Download artifacts
 
-    - task: taskpublisher@1
-      displayName: Install OrchestratorV1
-      inputs:
-        ConnectedService: dmitryserbin.tasks
-        TaskPath: $(Pipeline.Workspace)/OrchestratorV1
-        Replace: true
+    - template: templates/install.yml
+      parameters:
+        endpointName: ${{ variables.tasksEndpoint }}
+        name: ${{ variables.taskNameV1 }}
+        path: $(Pipeline.Workspace)
+        replace: true
 
-    - task: taskpublisher@1
-      displayName: Install OrchestratorV2
-      inputs:
-        ConnectedService: dmitryserbin.tasks
-        TaskPath: $(Pipeline.Workspace)/OrchestratorV2
-        Replace: false
+    - template: templates/install.yml
+      parameters:
+        endpointName: ${{ variables.tasksEndpoint }}
+        name: ${{ variables.taskNameV2 }}
+        path: $(Pipeline.Workspace)
+        replace: false
 
   - job: OrchestratorV1
     pool:

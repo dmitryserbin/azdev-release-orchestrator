@@ -4,5 +4,6 @@ variables:
   taskNameV3: OrchestratorV3
   tasksPath: Tasks
   artifactsPath: $(Build.ArtifactStagingDirectory)
+  tasksEndpoint: dmitryserbin.tasks
   extensionVersion: $(Build.BuildId)
   release.orchestrator.suppress.succeededwithissues: true
