@@ -1,6 +1,7 @@
 parameters:
   testV1: false
   testV2: false
+  testV3: false
   cleanup: false
 
 jobs:
