@@ -39,8 +39,8 @@ stages:
   dependsOn:
   - Build
   - Test
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   jobs:
   - template: templates/release.yml
     parameters:
       environmentName: Marketplace
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
