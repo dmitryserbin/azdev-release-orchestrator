@@ -163,7 +163,7 @@ stages:
       displayName: Cleanup releases
       inputs:
         targetType: filePath
-        filePath: CI/scripts/cleanup.ps1
+        filePath: CI/scripts/Clear-Releases.ps1
         arguments: >
           -OrganizationName dmitryserbin
           -ProjectName HelloYo
