@@ -29,6 +29,13 @@ jobs:
       path: $(Pipeline.Workspace)
       replace: false
 
+  - template: steps/install.yml
+    parameters:
+      endpointName: ${{ variables.tasksEndpoint }}
+      name: ${{ variables.taskNameV3 }}
+      path: $(Pipeline.Workspace)
+      replace: false
+
 - ${{ if eq(parameters.testV1, true) }}:
   - job: OrchestratorV1
     pool:
@@ -78,6 +85,27 @@ jobs:
         artifactBranch: refs/heads/working/test
         releaseTag: Release-Yo
 
+- ${{ if eq(parameters.testV3, true) }}:
+  - job: OrchestratorV3
+    pool:
+      name: Default
+    workspace:
+      clean: all
+    variables:
+    - template: variables.yml
+    dependsOn:
+    - Install
+    - ${{ if eq(parameters.testV1, true) }}:
+      - OrchestratorV1
+    - ${{ if eq(parameters.testV2, true) }}:
+      - OrchestratorV2
+    steps:
+    - template: steps/test-v3.yml
+      parameters:
+        projectName: HelloYo
+        definitionName: HelloYo
+        releaseName: HelloYo-20190521.1-1
+
 - ${{ if eq(parameters.cleanup, true) }}:
   - job: Cleanup
     pool:
@@ -92,6 +120,8 @@ jobs:
       - OrchestratorV1
     - ${{ if eq(parameters.testV2, true) }}:
       - OrchestratorV2
+    - ${{ if eq(parameters.testV3, true) }}:
+      - OrchestratorV3
     steps:
     - task: PowerShell@2
       displayName: Cleanup releases

@@ -43,6 +43,26 @@ jobs:
         clean: true
         publish: true
 
+- ${{ if eq(parameters.taskV3, true) }}:
+  - job: OrchestratorV3
+    pool:
+      name: Default
+    workspace:
+      clean: all
+    variables:
+    - template: variables.yml
+    steps:
+    - template: steps/build.yml
+      parameters:
+        name: ${{ variables.taskNameV3 }}
+        path: ${{ variables.tasksPath }}
+        restore: true
+        lint: true
+        build: true
+        test: true
+        clean: true
+        publish: true
+
 - ${{ if eq(parameters.extension, true) }}:
   - job: Extension
     pool:
@@ -56,6 +76,8 @@ jobs:
       - OrchestratorV1
     - ${{ if eq(parameters.taskV2, true) }}:
       - OrchestratorV2
+    - ${{ if eq(parameters.taskV3, true) }}:
+      - OrchestratorV3
     steps:
     - template: steps/package.yml
       parameters:
