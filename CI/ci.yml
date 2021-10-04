@@ -26,6 +26,7 @@ jobs:
       restore: true
       build: true
       test: true
+      clean: true
       publish: true
 
 - job: OrchestratorV2
@@ -42,6 +43,7 @@ jobs:
       lint: true
       build: true
       test: true
+      clean: true
       publish: true
 
 - job: Extension
