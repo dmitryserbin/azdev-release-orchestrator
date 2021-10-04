@@ -5,3 +5,5 @@ variables:
   taskPathV1: Tasks/OrchestratorV1
   taskPathV2: Tasks/OrchestratorV2
   taskPathV3: Tasks/OrchestratorV3
+  artifactsPath: $(Build.ArtifactStagingDirectory)
+  extensionVersion: $(Build.BuildId)

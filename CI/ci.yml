@@ -53,3 +53,23 @@ jobs:
       build: true
       test: true
       publish: ${{ parameters.publishTask }}
+
+- job: Extension
+  pool:
+    name: Default
+  workspace:
+    clean: all
+  dependsOn:
+  - OrchestratorV1
+  - OrchestratorV2
+  steps:
+  - template: templates/package.yml
+    parameters:
+      path: ${{ variables.artifactsPath }}
+      contents: |
+        Images/**
+        LICENSE
+        *.md
+        *.json
+      version: ${{ variables.extensionVersion }}
+      publish: ${{ parameters.publishExtension }}
