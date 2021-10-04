@@ -115,7 +115,7 @@ stages:
     - Install
     condition: and(succeeded(), eq(${{ parameters.testOrchestratorV1 }}, true))
     steps:
-    - template: templates/execute.v1.yml
+    - template: templates/test-v1.yml
       parameters:
         projectId: 761623f0-c4c0-4dab-884b-a428a01c200f
         definitionId: 1
@@ -137,7 +137,7 @@ stages:
     workspace:
       clean: all
     steps:
-    - template: templates/execute.v2.yml
+    - template: templates/test-v2.yml
       parameters:
         projectName: HelloYo
         definitionName: HelloYo
