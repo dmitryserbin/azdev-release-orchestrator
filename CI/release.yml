@@ -27,6 +27,7 @@ stages:
     parameters:
       taskV1: true
       taskV2: true
+      taskV3: true
       extension: true
 
 - stage: Test

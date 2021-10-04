@@ -1,6 +1,7 @@
 parameters:
   taskV1: false
   taskV2: false
+  taskV3: false
   extension: false
 
 jobs:
