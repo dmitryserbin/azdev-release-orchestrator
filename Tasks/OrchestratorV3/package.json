@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "build-exclude-tests": "tsc -p tsconfig-exclude-tests.json",
     "lint": "eslint . --ext .ts",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --no-timeouts --grep @manual --invert --reporter mocha-multi-reporters --reporter-options configFile=tests/config.json",
     "manual": "mocha -r ts-node/register tests/**/*.test.ts --no-timeouts --grep @manual",
