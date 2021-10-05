@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { IEndpoint } from "./interfaces/task/endpoint";
 import { IParameters } from "./interfaces/task/parameters";
 import { ITaskHelper } from "./interfaces/helpers/taskhelper";
@@ -38,7 +40,7 @@ async function run() {
 
         await taskHelper.validate(releaseProgress.status);
 
-    } catch (error) {
+    } catch (error: any) {
 
         await taskHelper.fail(error.message);
 

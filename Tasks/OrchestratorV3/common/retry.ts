@@ -25,7 +25,7 @@ export function Retryable(attempts: number = 10, timeout: number = 10000, empty:
 
                 return await retryAsync.apply(this, [originalMethod, args, attempts, timeout, empty]);
 
-            } catch (e) {
+            } catch (e: any) {
 
                 e.message = `Failed retrying <${propertyKey}> for <${attempts}> times. ${e.message}`;
 
@@ -68,7 +68,7 @@ async function retryAsync(target: Function, args: any[], attempts: number, timeo
 
         return result;
 
-    } catch (e) {
+    } catch (e: any) {
 
         if (--attempts <= 0) {
 
