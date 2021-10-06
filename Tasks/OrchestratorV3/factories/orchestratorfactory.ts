@@ -39,7 +39,9 @@ export class OrchestratorFactory implements IOrchestratorFactory {
         const buildApi: IBuildApiRetry = await this.apiFactory.createBuildApi();
         const buildHelper: IBuildHelper = new BuildHelper(buildApi, this.debugCreator);
 
-        return new Creator(coreHelper, buildHelper, this.debugCreator, this.consoleLogger);
+        const reporter: IReporter = new Reporter(this.debugCreator);
+
+        return new Creator(coreHelper, buildHelper, reporter, this.debugCreator, this.consoleLogger);
 
     }
 

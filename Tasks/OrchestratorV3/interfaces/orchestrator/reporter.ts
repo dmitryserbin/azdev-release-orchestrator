@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-empty-interface */
+import { IBuildParameters } from "../common/buildparameters";
 
 export interface IReporter {
 
-    /* */
+    getParameters(parameters: IBuildParameters): string;
 
 }

@@ -11,6 +11,7 @@ import { IReleaseJob } from "../interfaces/common/releasejob";
 import { ICoreHelper } from "../interfaces/helpers/corehelper";
 import { IBuildHelper } from "../interfaces/helpers/buildhelper";
 import { ReleaseType } from "../interfaces/common/releasetype";
+import { IReporter } from "../interfaces/orchestrator/reporter";
 
 export class Creator implements ICreator {
 
@@ -19,14 +20,16 @@ export class Creator implements ICreator {
 
     private coreHelper: ICoreHelper;
     private buildHelper: IBuildHelper;
+    private reporter: IReporter;
 
-    constructor(coreHelper: ICoreHelper, buildHelper: IBuildHelper, debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
+    constructor(coreHelper: ICoreHelper, buildHelper: IBuildHelper, reporter: IReporter, debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
 
         this.debugLogger = debugCreator.extend(this.constructor.name);
         this.consoleLogger = consoleLogger;
 
         this.coreHelper = coreHelper;
         this.buildHelper = buildHelper;
+        this.reporter = reporter;
 
     }
 
@@ -62,6 +65,16 @@ export class Creator implements ICreator {
             case ReleaseType.New: {
 
                 this.consoleLogger.log(`Creating new <${definition.name}> (${definition.id}) pipeline release`);
+
+                if (parameters.parameters && Object.keys(parameters.parameters).length) {
+
+                    this.consoleLogger.log(`Overridding <${Object.keys(parameters.parameters).length}> pipeline <${definition.name}> parameters(s)`);
+
+                    this.consoleLogger.log(
+                        this.reporter.getParameters(parameters.parameters)
+                    );
+
+                }
 
                 build = await this.buildHelper.createBuild(project.name!, definition, details, parameters.stages, parameters.parameters);
 
