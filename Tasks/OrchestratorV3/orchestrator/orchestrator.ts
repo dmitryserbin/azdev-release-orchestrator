@@ -72,10 +72,6 @@ export class Orchestrator implements IOrchestrator {
 
                         break;
 
-                    } default: {
-
-                        throw new Error(`Deployment type <${releaseJob.type}> not supported`);
-
                     }
 
                 }
