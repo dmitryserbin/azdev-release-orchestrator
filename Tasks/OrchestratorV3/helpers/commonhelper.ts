@@ -1,14 +1,14 @@
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IDebug } from "../interfaces/loggers/debug";
 import { ICommonHelper } from "../interfaces/helpers/commonhelper";
+import { ILogger } from "../interfaces/loggers/logger";
 
 export class CommonHelper implements ICommonHelper {
 
-    private debugLogger: IDebugLogger;
+    private debugLogger: IDebug;
 
-    constructor(debugCreator: IDebugCreator) {
+    constructor(logger: ILogger) {
 
-        this.debugLogger = debugCreator.extend(this.constructor.name);
+        this.debugLogger = logger.extend(this.constructor.name);
 
     }
 

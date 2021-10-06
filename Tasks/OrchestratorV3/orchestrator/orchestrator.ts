@@ -1,13 +1,10 @@
-import { String } from "typescript-string-operations";
-
 import { IOrchestrator } from "../interfaces/orchestrator/orchestrator";
 import { IDeployer } from "../interfaces/orchestrator/deployer";
 import { IParameters } from "../interfaces/task/parameters";
 import { ReleaseType } from "../interfaces/common/releasetype";
 import { IDetails } from "../interfaces/task/details";
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
+import { IDebug } from "../interfaces/loggers/debug";
+import { ILogger } from "../interfaces/loggers/logger";
 import { IOrchestratorFactory } from "../interfaces/factories/orchestratorfactory";
 import { IReleaseJob } from "../interfaces/common/releasejob";
 import { ICreator } from "../interfaces/orchestrator/creator";
@@ -17,15 +14,16 @@ import { IReporter } from "../interfaces/orchestrator/reporter";
 
 export class Orchestrator implements IOrchestrator {
 
-    private debugLogger: IDebugLogger;
-    private consoleLogger: IConsoleLogger;
+    private logger: ILogger;
+    private debugLogger: IDebug;
 
     private orchestratorFactory: IOrchestratorFactory;
 
-    constructor(orchestratorFactory: IOrchestratorFactory, debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
+    constructor(orchestratorFactory: IOrchestratorFactory, logger: ILogger) {
 
-        this.debugLogger = debugCreator.extend(this.constructor.name);
-        this.consoleLogger = consoleLogger;
+        this.logger = logger;
+        this.debugLogger = logger.extend(this.constructor.name);
+
         this.orchestratorFactory = orchestratorFactory; 
 
     }

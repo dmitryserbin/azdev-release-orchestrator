@@ -4,22 +4,23 @@ import { WebApi, getPersonalAccessTokenHandler } from "azure-devops-node-api";
 import { IRequestOptions, IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
 
 import { IApiFactory } from "../interfaces/factories/apifactory";
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IDebug } from "../interfaces/loggers/debug";
 import { ICoreApiRetry } from "../interfaces/extensions/coreapiretry";
 import { CoreApiRetry } from "../extensions/coreapiretry";
 import { IBuildApiRetry } from "../interfaces/extensions/buildapiretry";
 import { BuildApiRetry } from "../extensions/buildapiretry";
 import { IEndpoint } from "../interfaces/task/endpoint";
+import { ILogger } from "../interfaces/loggers/logger";
 
 export class ApiFactory implements IApiFactory {
 
+    private debugLogger: IDebug;
+
     private webApi: WebApi;
-    private debugLogger: IDebugLogger;
 
-    constructor(endpoint: IEndpoint, debugCreator: IDebugCreator) {
+    constructor(endpoint: IEndpoint, logger: ILogger) {
 
-        this.debugLogger = debugCreator.extend(this.constructor.name);
+        this.debugLogger = logger.extend(this.constructor.name);
 
         const auth: IRequestHandler = getPersonalAccessTokenHandler(endpoint.token);
 

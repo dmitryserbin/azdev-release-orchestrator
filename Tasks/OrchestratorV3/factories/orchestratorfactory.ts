@@ -1,7 +1,6 @@
 import { IOrchestratorFactory } from "../interfaces/factories/orchestratorfactory";
 import { IApiFactory } from "../interfaces/factories/apifactory";
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
+import { ILogger } from "../interfaces/loggers/logger";
 import { IDeployer } from "../interfaces/orchestrator/deployer";
 import { Deployer } from "../orchestrator/deployer";
 import { ICreator } from "../interfaces/orchestrator/creator";
@@ -14,18 +13,17 @@ import { ICoreApiRetry } from "../interfaces/extensions/coreapiretry";
 import { IBuildApiRetry } from "../interfaces/extensions/buildapiretry";
 import { IBuildHelper } from "../interfaces/helpers/buildhelper";
 import { BuildHelper } from "../helpers/buildhelper";
+import { IDebug } from "../interfaces/loggers/debug";
 
 export class OrchestratorFactory implements IOrchestratorFactory {
 
-    private debugCreator: IDebugCreator;
-    private consoleLogger: IConsoleLogger;
+    private logger: ILogger;
 
     private apiFactory: IApiFactory;
 
-    constructor(apiFactory: IApiFactory, debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
+    constructor(apiFactory: IApiFactory, logger: ILogger) {
 
-        this.debugCreator = debugCreator;
-        this.consoleLogger = consoleLogger;
+        this.logger = logger;
 
         this.apiFactory = apiFactory;
 
@@ -34,26 +32,26 @@ export class OrchestratorFactory implements IOrchestratorFactory {
     public async createCreator(): Promise<ICreator> {
 
         const coreApi: ICoreApiRetry = await this.apiFactory.createCoreApi();
-        const coreHelper: ICoreHelper = new CoreHelper(coreApi, this.debugCreator);
+        const coreHelper: ICoreHelper = new CoreHelper(coreApi, this.logger);
 
         const buildApi: IBuildApiRetry = await this.apiFactory.createBuildApi();
-        const buildHelper: IBuildHelper = new BuildHelper(buildApi, this.debugCreator);
+        const buildHelper: IBuildHelper = new BuildHelper(buildApi, this.logger);
 
-        const reporter: IReporter = new Reporter(this.debugCreator);
+        const reporter: IReporter = new Reporter(this.logger);
 
-        return new Creator(coreHelper, buildHelper, reporter, this.debugCreator, this.consoleLogger);
+        return new Creator(coreHelper, buildHelper, reporter, this.logger);
 
     }
 
     public async createDeployer(): Promise<IDeployer> {
 
-        return new Deployer(this.debugCreator, this.consoleLogger);
+        return new Deployer(this.logger);
 
     }
 
     public async createReporter(): Promise<IReporter> {
 
-        return new Reporter(this.debugCreator);
+        return new Reporter(this.logger);
 
     }
 

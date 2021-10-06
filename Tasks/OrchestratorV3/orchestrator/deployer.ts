@@ -1,20 +1,19 @@
 import { IDetails } from "../interfaces/task/details";
 import { IDeployer } from "../interfaces/orchestrator/deployer";
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
+import { IDebug } from "../interfaces/loggers/debug";
+import { ILogger } from "../interfaces/loggers/logger";
 import { IReleaseJob } from "../interfaces/common/releasejob";
 import { IReleaseProgress } from "../interfaces/common/releaseprogress";
 
 export class Deployer implements IDeployer {
 
-    private debugLogger: IDebugLogger;
-    private consoleLogger: IConsoleLogger;
+    private logger: ILogger;
+    private debugLogger: IDebug;
 
-    constructor(debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
+    constructor(logger: ILogger) {
 
-        this.debugLogger = debugCreator.extend(this.constructor.name);
-        this.consoleLogger = consoleLogger;
+        this.logger = logger;
+        this.debugLogger = logger.extend(this.constructor.name);
 
     }
 

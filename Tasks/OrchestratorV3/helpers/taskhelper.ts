@@ -6,20 +6,20 @@ import { ITaskHelper } from "../interfaces/helpers/taskhelper";
 import { IEndpoint } from "../interfaces/task/endpoint";
 import { IParameters } from "../interfaces/task/parameters";
 import { ReleaseType } from "../interfaces/common/releasetype";
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IDebug } from "../interfaces/loggers/debug";
 import { IDetails } from "../interfaces/task/details";
 import { ReleaseStatus } from "../interfaces/common/releasestatus";
 import { IFilters } from "../interfaces/task/filters";
 import { ISettings } from "../interfaces/common/settings";
+import { ILogger } from "../interfaces/loggers/logger";
 
 export class TaskHelper implements ITaskHelper {
 
-    private debugLogger: IDebugLogger;
+    private debugLogger: IDebug;
 
-    constructor(debugCreator: IDebugCreator) {
+    constructor(logger: ILogger) {
 
-        this.debugLogger = debugCreator.extend(this.constructor.name);
+        this.debugLogger = logger.extend(this.constructor.name);
 
     }
 

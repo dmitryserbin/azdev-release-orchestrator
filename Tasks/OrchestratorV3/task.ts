@@ -4,10 +4,8 @@ import { IEndpoint } from "./interfaces/task/endpoint";
 import { IParameters } from "./interfaces/task/parameters";
 import { ITaskHelper } from "./interfaces/helpers/taskhelper";
 import { TaskHelper } from "./helpers/taskhelper";
-import { IDebugCreator } from "./interfaces/loggers/debugcreator";
-import { DebugCreator } from "./loggers/debugcreator";
-import { ConsoleLogger } from "./loggers/consolelogger";
-import { IConsoleLogger } from "./interfaces/loggers/consolelogger";
+import { Logger } from "./loggers/logger";
+import { ILogger } from "./interfaces/loggers/logger";
 import { IDetails } from "./interfaces/task/details";
 import { IOrchestrator } from "./interfaces/orchestrator/orchestrator";
 import { Orchestrator } from "./orchestrator/orchestrator";
@@ -19,10 +17,9 @@ import { OrchestratorFactory } from "./factories/orchestratorfactory";
 
 async function run() {
 
-    const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator");
-    const consoleLogger: IConsoleLogger = new ConsoleLogger();
+    const logger: ILogger = new Logger("release-orchestrator");
 
-    const taskHelper: ITaskHelper = new TaskHelper(debugCreator);
+    const taskHelper: ITaskHelper = new TaskHelper(logger);
 
     try {
 
@@ -30,10 +27,10 @@ async function run() {
         const parameters: IParameters = await taskHelper.getParameters();
         const details: IDetails = await taskHelper.getDetails();
 
-        const apiFactory: IApiFactory = new ApiFactory(endpoint, debugCreator);
-        const orchestratorFactory: IOrchestratorFactory = new OrchestratorFactory(apiFactory, debugCreator, consoleLogger);
+        const apiFactory: IApiFactory = new ApiFactory(endpoint, logger);
+        const orchestratorFactory: IOrchestratorFactory = new OrchestratorFactory(apiFactory, logger);
 
-        const orchestrator: IOrchestrator = new Orchestrator(orchestratorFactory, debugCreator, consoleLogger);
+        const orchestrator: IOrchestrator = new Orchestrator(orchestratorFactory, logger);
 
         // Run orchestrator
         const releaseProgress: IReleaseProgress = await orchestrator.orchestrate(parameters, details);

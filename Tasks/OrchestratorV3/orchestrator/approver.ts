@@ -1,17 +1,16 @@
 import { IApprover } from "../interfaces/orchestrator/approver";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
+import { IDebug } from "../interfaces/loggers/debug";
+import { ILogger } from "../interfaces/loggers/logger";
 
 export class Approver implements IApprover {
 
-    private debugLogger: IDebugLogger;
-    private consoleLogger: IConsoleLogger;
+    private logger: ILogger;
+    private debugLogger: IDebug;
 
-    constructor(debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
+    constructor(logger: ILogger) {
 
-        this.debugLogger = debugCreator.extend(this.constructor.name);
-        this.consoleLogger = consoleLogger;
+        this.logger = logger;
+        this.debugLogger = logger.extend(this.constructor.name);
 
     }
 

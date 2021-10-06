@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Retryable } from "../../common/retry";
-import { IDebugLogger } from "../../interfaces/loggers/debuglogger";
-import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
+import { IDebug } from "../../interfaces/loggers/debug";
+import { ILogger } from "../../interfaces/loggers/logger";
 
 export interface IRetryThis {
 
@@ -13,13 +13,13 @@ export interface IRetryThis {
 
 export class RetryThis implements IRetryThis {
 
-    private debugLogger: IDebugLogger;
+    private debugLogger: IDebug;
 
     private attempt: number = 0;
 
-    constructor(debugCreator: IDebugCreator) {
+    constructor(logger: ILogger) {
 
-        this.debugLogger = debugCreator.extend(this.constructor.name);
+        this.debugLogger = logger.extend(this.constructor.name);
 
     }
 

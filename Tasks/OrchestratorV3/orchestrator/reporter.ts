@@ -2,18 +2,18 @@
 
 import Table from "cli-table";
 
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
+import { IDebug } from "../interfaces/loggers/debug";
 import { IReporter } from "../interfaces/orchestrator/reporter";
 import { IBuildParameters } from "../interfaces/common/buildparameters";
+import { ILogger } from "../interfaces/loggers/logger";
 
 export class Reporter implements IReporter {
 
-    private debugLogger: IDebugLogger;
+    private debugLogger: IDebug;
 
-    constructor(debugCreator: IDebugCreator) {
+    constructor(logger: ILogger) {
 
-        this.debugLogger = debugCreator.extend(this.constructor.name);
+        this.debugLogger = logger.extend(this.constructor.name);
 
     }
 

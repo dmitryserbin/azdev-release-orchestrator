@@ -1,14 +1,14 @@
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IDebug } from "../interfaces/loggers/debug";
+import { ILogger } from "../interfaces/loggers/logger";
 import { IFiltrator } from "../interfaces/orchestrator/filtrator";
 
 export class Filtrator implements IFiltrator {
 
-    private debugLogger: IDebugLogger;
+    private debugLogger: IDebug;
 
-    constructor(debugCreator: IDebugCreator) {
+    constructor(logger: ILogger) {
 
-        this.debugLogger = debugCreator.extend(this.constructor.name);
+        this.debugLogger = logger.extend(this.constructor.name);
 
     }
 

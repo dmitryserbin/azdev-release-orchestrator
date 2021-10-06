@@ -2,7 +2,7 @@
 
 import Debug from "debug";
 
-export interface IDebugLogger extends Debug.Debugger {
+export interface IDebug extends Debug.Debugger {
 
     /* */
 

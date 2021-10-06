@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-export interface IConsoleLogger {
+import { IDebug } from "./debug";
+
+export interface ILogger {
 
     log(message: any): void;
     warn(message: any): void;
+    extend(name: string): IDebug;
 
 }

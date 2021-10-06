@@ -2,12 +2,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-types */
 
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { DebugCreator } from "../loggers/debugcreator";
+import { IDebug } from "../interfaces/loggers/debug";
+import { ILogger } from "../interfaces/loggers/logger";
+import { Logger } from "../loggers/logger";
 
-const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator");
-const debugLogger: IDebugLogger = debugCreator.extend("Retry");
+const logger: ILogger = new Logger("release-orchestrator");
+const debugLogger: IDebug = logger.extend("Retry");
 
 export function Retryable(attempts: number = 10, timeout: number = 10000, empty: boolean = false): Function {
 

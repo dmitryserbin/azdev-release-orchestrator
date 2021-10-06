@@ -5,11 +5,11 @@ import "mocha";
 import * as chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 
-import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
-import { DebugCreator } from "../../loggers/debugcreator";
 import { RetryThis, IRetryThis } from "./retrythis";
+import { ILogger } from "../../interfaces/loggers/logger";
+import { Logger } from "../../loggers/logger";
 
-const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator");
+const logger: ILogger = new Logger("release-orchestrator");
 
 describe("Retryable", () => {
 
@@ -20,7 +20,7 @@ describe("Retryable", () => {
         //#region ARRANGE
 
         const retryCount: number = 0;
-        const retryThis: IRetryThis = new RetryThis(debugCreator);
+        const retryThis: IRetryThis = new RetryThis(logger);
 
         //#endregion
 
@@ -37,7 +37,7 @@ describe("Retryable", () => {
         //#region ARRANGE
 
         const retryCount: number = 3;
-        const retryThis: IRetryThis = new RetryThis(debugCreator);
+        const retryThis: IRetryThis = new RetryThis(logger);
 
         //#endregion
 
@@ -54,7 +54,7 @@ describe("Retryable", () => {
         //#region ARRANGE
 
         const retryCount: number = 10;
-        const retryThis: IRetryThis = new RetryThis(debugCreator);
+        const retryThis: IRetryThis = new RetryThis(logger);
 
         //#endregion
 
@@ -71,7 +71,7 @@ describe("Retryable", () => {
         //#region ARRANGE
 
         const retryCount: number = 3;
-        const retryThis: IRetryThis = new RetryThis(debugCreator);
+        const retryThis: IRetryThis = new RetryThis(logger);
 
         //#endregion
 
@@ -91,7 +91,7 @@ describe("Retryable", () => {
         //#region ARRANGE
 
         const retryCount: number = 6;
-        const retryThis: IRetryThis = new RetryThis(debugCreator);
+        const retryThis: IRetryThis = new RetryThis(logger);
 
         //#endregion
 

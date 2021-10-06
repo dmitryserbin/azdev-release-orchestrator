@@ -1,21 +1,21 @@
 import { Build, BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IDebug } from "../interfaces/loggers/debug";
 import { IBuildHelper } from "../interfaces/helpers/buildhelper";
 import { IBuildApiRetry } from "../interfaces/extensions/buildapiretry";
 import { IDetails } from "../interfaces/task/details";
 import { IBuildParameters } from "../interfaces/common/buildparameters";
+import { ILogger } from "../interfaces/loggers/logger";
 
 export class BuildHelper implements IBuildHelper {
 
-    private debugLogger: IDebugLogger;
+    private debugLogger: IDebug;
 
     private buildApi: IBuildApiRetry;
 
-    constructor(buildApi: IBuildApiRetry, debugCreator: IDebugCreator) {
+    constructor(buildApi: IBuildApiRetry, logger: ILogger) {
 
-        this.debugLogger = debugCreator.extend(this.constructor.name);
+        this.debugLogger = logger.extend(this.constructor.name);
 
         this.buildApi = buildApi;
 
