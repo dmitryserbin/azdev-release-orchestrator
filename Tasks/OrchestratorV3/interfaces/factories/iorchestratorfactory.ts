@@ -1,6 +1,6 @@
-import { IDeployer } from "../orchestrator/deployer";
-import { ICreator } from "../orchestrator/creator";
-import { IReporter } from "../orchestrator/reporter";
+import { IDeployer } from "../orchestrator/ideployer";
+import { ICreator } from "../orchestrator/icreator";
+import { IReporter } from "../orchestrator/ireporter";
 
 export interface IOrchestratorFactory {
 

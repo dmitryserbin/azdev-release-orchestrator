@@ -1,11 +1,11 @@
 import { Build, BuildDefinition, BuildReason, BuildStatus } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
-import { ILogger } from "../interfaces/loggers/logger";
-import { IDebug } from "../interfaces/loggers/debug";
-import { IBuildHelper } from "../interfaces/helpers/buildhelper";
-import { IBuildApiRetry } from "../interfaces/extensions/buildapiretry";
-import { IBuildParameters } from "../interfaces/common/buildparameters";
-import { IBuildFilter } from "../interfaces/common/buildfilter";
+import { ILogger } from "../interfaces/loggers/ilogger";
+import { IDebug } from "../interfaces/loggers/idebug";
+import { IBuildHelper } from "../interfaces/helpers/ibuildhelper";
+import { IBuildApiRetry } from "../interfaces/extensions/ibuildapiretry";
+import { IBuildParameters } from "../interfaces/common/ibuildparameters";
+import { IBuildFilter } from "../interfaces/common/ibuildfilter";
 
 export class BuildHelper implements IBuildHelper {
 

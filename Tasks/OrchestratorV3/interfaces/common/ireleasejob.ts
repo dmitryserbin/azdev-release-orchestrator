@@ -1,8 +1,8 @@
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { Build, BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
-import { ISettings } from "./settings";
-import { DeploymentType } from "./deploymenttype";
+import { ISettings } from "./isettings";
+import { DeploymentType } from "./ideploymenttype";
 
 export interface IReleaseJob {
 

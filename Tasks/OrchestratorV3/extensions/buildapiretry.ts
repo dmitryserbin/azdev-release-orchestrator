@@ -1,7 +1,7 @@
 import { IBuildApi } from "azure-devops-node-api/BuildApi";
 import { Build, BuildReason, BuildStatus, BuildResult, QueryDeletedOption, BuildQueryOrder, BuildDefinition, DefinitionQueryOrder, BuildDefinitionReference } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
-import { IBuildApiRetry } from "../interfaces/extensions/buildapiretry";
+import { IBuildApiRetry } from "../interfaces/extensions/ibuildapiretry";
 import { Retryable } from "../common/retry";
 
 export class BuildApiRetry implements IBuildApiRetry {

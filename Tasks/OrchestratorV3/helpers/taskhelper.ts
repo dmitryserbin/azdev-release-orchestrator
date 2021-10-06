@@ -2,16 +2,16 @@ import parseKeyValue from "parse-key-value-pair";
 
 import { getInput, getEndpointUrl, getEndpointAuthorizationParameter, getBoolInput, getDelimitedInput, getVariable, setResult, TaskResult } from "azure-pipelines-task-lib/task";
 
-import { ITaskHelper } from "../interfaces/helpers/taskhelper";
-import { IEndpoint } from "../interfaces/task/endpoint";
-import { IParameters } from "../interfaces/task/parameters";
-import { ReleaseType } from "../interfaces/common/releasetype";
-import { IDebug } from "../interfaces/loggers/debug";
-import { IDetails } from "../interfaces/task/details";
-import { ReleaseStatus } from "../interfaces/common/releasestatus";
-import { IFilters } from "../interfaces/task/filters";
-import { ISettings } from "../interfaces/common/settings";
-import { ILogger } from "../interfaces/loggers/logger";
+import { ITaskHelper } from "../interfaces/helpers/itaskhelper";
+import { IEndpoint } from "../interfaces/task/iendpoint";
+import { IParameters } from "../interfaces/task/iparameters";
+import { ReleaseType } from "../interfaces/common/ireleasetype";
+import { IDebug } from "../interfaces/loggers/idebug";
+import { IDetails } from "../interfaces/task/idetails";
+import { ReleaseStatus } from "../interfaces/common/ireleasestatus";
+import { IFilters } from "../interfaces/task/ifilters";
+import { ISettings } from "../interfaces/common/isettings";
+import { ILogger } from "../interfaces/loggers/ilogger";
 
 export class TaskHelper implements ITaskHelper {
 

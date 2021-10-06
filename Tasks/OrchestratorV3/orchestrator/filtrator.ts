@@ -1,6 +1,6 @@
-import { IDebug } from "../interfaces/loggers/debug";
-import { ILogger } from "../interfaces/loggers/logger";
-import { IFiltrator } from "../interfaces/orchestrator/filtrator";
+import { IDebug } from "../interfaces/loggers/idebug";
+import { ILogger } from "../interfaces/loggers/ilogger";
+import { IFiltrator } from "../interfaces/orchestrator/ifiltrator";
 
 export class Filtrator implements IFiltrator {
 

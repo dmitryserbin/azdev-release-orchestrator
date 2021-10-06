@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import Debug from "debug";
-import { IDebug } from "../interfaces/loggers/debug";
+import { IDebug } from "../interfaces/loggers/idebug";
 
-import { ILogger } from "../interfaces/loggers/logger";
+import { ILogger } from "../interfaces/loggers/ilogger";
 
 export class Logger implements ILogger {
 

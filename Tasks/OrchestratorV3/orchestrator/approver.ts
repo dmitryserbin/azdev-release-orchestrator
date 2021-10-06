@@ -1,6 +1,6 @@
-import { IApprover } from "../interfaces/orchestrator/approver";
-import { IDebug } from "../interfaces/loggers/debug";
-import { ILogger } from "../interfaces/loggers/logger";
+import { IApprover } from "../interfaces/orchestrator/iapprover";
+import { IDebug } from "../interfaces/loggers/idebug";
+import { ILogger } from "../interfaces/loggers/ilogger";
 
 export class Approver implements IApprover {
 

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { IDebug } from "./debug";
+import { IDebug } from "./idebug";
 
 export interface ILogger {
 

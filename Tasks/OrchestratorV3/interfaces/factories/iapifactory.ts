@@ -1,5 +1,5 @@
-import { ICoreApiRetry } from "../extensions/coreapiretry";
-import { IBuildApiRetry } from "../extensions/buildapiretry";
+import { ICoreApiRetry } from "../extensions/icoreapiretry";
+import { IBuildApiRetry } from "../extensions/ibuildapiretry";
 
 export interface IApiFactory {
 

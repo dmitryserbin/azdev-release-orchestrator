@@ -1,5 +1,5 @@
-import { IStageProgress } from "./stageprogress";
-import { ReleaseStatus } from "./releasestatus";
+import { IStageProgress } from "./istageprogress";
+import { ReleaseStatus } from "./ireleasestatus";
 
 export interface IReleaseProgress {
 

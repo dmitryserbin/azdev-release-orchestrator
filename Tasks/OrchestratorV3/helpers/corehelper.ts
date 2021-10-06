@@ -1,9 +1,9 @@
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 
-import { IDebug } from "../interfaces/loggers/debug";
-import { ICoreHelper } from "../interfaces/helpers/corehelper";
-import { ICoreApiRetry } from "../interfaces/extensions/coreapiretry";
-import { ILogger } from "../interfaces/loggers/logger";
+import { IDebug } from "../interfaces/loggers/idebug";
+import { ICoreHelper } from "../interfaces/helpers/icorehelper";
+import { ICoreApiRetry } from "../interfaces/extensions/icoreapiretry";
+import { ILogger } from "../interfaces/loggers/ilogger";
 
 export class CoreHelper implements ICoreHelper {
 

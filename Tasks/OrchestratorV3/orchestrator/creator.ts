@@ -1,17 +1,17 @@
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { Build, BuildDefinition, BuildStatus } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
-import { IParameters } from "../interfaces/task/parameters";
-import { IDetails } from "../interfaces/task/details";
-import { IDebug } from "../interfaces/loggers/debug";
-import { ILogger } from "../interfaces/loggers/logger";
-import { ICreator } from "../interfaces/orchestrator/creator";
-import { IReleaseJob } from "../interfaces/common/releasejob";
-import { ICoreHelper } from "../interfaces/helpers/corehelper";
-import { IBuildHelper } from "../interfaces/helpers/buildhelper";
-import { ReleaseType } from "../interfaces/common/releasetype";
-import { IReporter } from "../interfaces/orchestrator/reporter";
-import { IBuildFilter } from "../interfaces/common/buildfilter";
+import { IParameters } from "../interfaces/task/iparameters";
+import { IDetails } from "../interfaces/task/idetails";
+import { IDebug } from "../interfaces/loggers/idebug";
+import { ILogger } from "../interfaces/loggers/ilogger";
+import { ICreator } from "../interfaces/orchestrator/icreator";
+import { IReleaseJob } from "../interfaces/common/ireleasejob";
+import { ICoreHelper } from "../interfaces/helpers/icorehelper";
+import { IBuildHelper } from "../interfaces/helpers/ibuildhelper";
+import { ReleaseType } from "../interfaces/common/ireleasetype";
+import { IReporter } from "../interfaces/orchestrator/ireporter";
+import { IBuildFilter } from "../interfaces/common/ibuildfilter";
 
 export class Creator implements ICreator {
 

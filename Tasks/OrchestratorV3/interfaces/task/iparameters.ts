@@ -1,7 +1,7 @@
-import { IFilters } from "./filters";
-import { ReleaseType } from "../common/releasetype";
-import { ISettings } from "../common/settings";
-import { IBuildParameters } from "../common/buildparameters";
+import { IFilters } from "./ifilters";
+import { ReleaseType } from "../common/ireleasetype";
+import { ISettings } from "../common/isettings";
+import { IBuildParameters } from "../common/ibuildparameters";
 
 export interface IParameters {
 

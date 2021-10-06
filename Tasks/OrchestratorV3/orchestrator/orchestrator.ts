@@ -1,16 +1,16 @@
-import { IOrchestrator } from "../interfaces/orchestrator/orchestrator";
-import { IDeployer } from "../interfaces/orchestrator/deployer";
-import { IParameters } from "../interfaces/task/parameters";
-import { ReleaseType } from "../interfaces/common/releasetype";
-import { IDetails } from "../interfaces/task/details";
-import { IDebug } from "../interfaces/loggers/debug";
-import { ILogger } from "../interfaces/loggers/logger";
-import { IOrchestratorFactory } from "../interfaces/factories/orchestratorfactory";
-import { IReleaseJob } from "../interfaces/common/releasejob";
-import { ICreator } from "../interfaces/orchestrator/creator";
-import { IReleaseProgress } from "../interfaces/common/releaseprogress";
-import { DeploymentType } from "../interfaces/common/deploymenttype";
-import { IReporter } from "../interfaces/orchestrator/reporter";
+import { IOrchestrator } from "../interfaces/orchestrator/iorchestrator";
+import { IDeployer } from "../interfaces/orchestrator/ideployer";
+import { IParameters } from "../interfaces/task/iparameters";
+import { ReleaseType } from "../interfaces/common/ireleasetype";
+import { IDetails } from "../interfaces/task/idetails";
+import { IDebug } from "../interfaces/loggers/idebug";
+import { ILogger } from "../interfaces/loggers/ilogger";
+import { IOrchestratorFactory } from "../interfaces/factories/iorchestratorfactory";
+import { IReleaseJob } from "../interfaces/common/ireleasejob";
+import { ICreator } from "../interfaces/orchestrator/icreator";
+import { IReleaseProgress } from "../interfaces/common/ireleaseprogress";
+import { DeploymentType } from "../interfaces/common/ideploymenttype";
+import { IReporter } from "../interfaces/orchestrator/ireporter";
 
 export class Orchestrator implements IOrchestrator {
 

@@ -1,6 +1,6 @@
-import { IMonitor } from "../interfaces/orchestrator/monitor";
-import { IDebug } from "../interfaces/loggers/debug";
-import { ILogger } from "../interfaces/loggers/logger";
+import { IMonitor } from "../interfaces/orchestrator/imonitor";
+import { IDebug } from "../interfaces/loggers/idebug";
+import { ILogger } from "../interfaces/loggers/ilogger";
 
 export class Monitor implements IMonitor {
 

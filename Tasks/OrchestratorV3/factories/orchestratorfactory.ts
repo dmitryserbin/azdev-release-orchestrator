@@ -1,19 +1,19 @@
-import { IOrchestratorFactory } from "../interfaces/factories/orchestratorfactory";
-import { IApiFactory } from "../interfaces/factories/apifactory";
-import { ILogger } from "../interfaces/loggers/logger";
-import { IDeployer } from "../interfaces/orchestrator/deployer";
+import { IOrchestratorFactory } from "../interfaces/factories/iorchestratorfactory";
+import { IApiFactory } from "../interfaces/factories/iapifactory";
+import { ILogger } from "../interfaces/loggers/ilogger";
+import { IDeployer } from "../interfaces/orchestrator/ideployer";
 import { Deployer } from "../orchestrator/deployer";
-import { ICreator } from "../interfaces/orchestrator/creator";
+import { ICreator } from "../interfaces/orchestrator/icreator";
 import { Creator } from "../orchestrator/creator";
-import { IReporter } from "../interfaces/orchestrator/reporter";
+import { IReporter } from "../interfaces/orchestrator/ireporter";
 import { Reporter } from "../orchestrator/reporter";
-import { ICoreHelper } from "../interfaces/helpers/corehelper";
+import { ICoreHelper } from "../interfaces/helpers/icorehelper";
 import { CoreHelper } from "../helpers/corehelper";
-import { ICoreApiRetry } from "../interfaces/extensions/coreapiretry";
-import { IBuildApiRetry } from "../interfaces/extensions/buildapiretry";
-import { IBuildHelper } from "../interfaces/helpers/buildhelper";
+import { ICoreApiRetry } from "../interfaces/extensions/icoreapiretry";
+import { IBuildApiRetry } from "../interfaces/extensions/ibuildapiretry";
+import { IBuildHelper } from "../interfaces/helpers/ibuildhelper";
 import { BuildHelper } from "../helpers/buildhelper";
-import { IDebug } from "../interfaces/loggers/debug";
+import { IDebug } from "../interfaces/loggers/idebug";
 
 export class OrchestratorFactory implements IOrchestratorFactory {
 

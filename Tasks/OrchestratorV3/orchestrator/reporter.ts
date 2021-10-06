@@ -2,10 +2,10 @@
 
 import Table from "cli-table";
 
-import { IDebug } from "../interfaces/loggers/debug";
-import { IReporter } from "../interfaces/orchestrator/reporter";
-import { IBuildParameters } from "../interfaces/common/buildparameters";
-import { ILogger } from "../interfaces/loggers/logger";
+import { IDebug } from "../interfaces/loggers/idebug";
+import { IReporter } from "../interfaces/orchestrator/ireporter";
+import { IBuildParameters } from "../interfaces/common/ibuildparameters";
+import { ILogger } from "../interfaces/loggers/ilogger";
 
 export class Reporter implements IReporter {
 

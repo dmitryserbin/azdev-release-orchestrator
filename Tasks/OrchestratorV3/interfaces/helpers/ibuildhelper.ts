@@ -1,7 +1,7 @@
 import { Build, BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
-import { IBuildFilter } from "../common/buildfilter";
+import { IBuildFilter } from "../common/ibuildfilter";
 
-import { IBuildParameters } from "../common/buildparameters";
+import { IBuildParameters } from "../common/ibuildparameters";
 
 export interface IBuildHelper {
 

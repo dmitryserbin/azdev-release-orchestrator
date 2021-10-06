@@ -3,14 +3,14 @@ import { BuildApi } from "azure-devops-node-api/BuildApi";
 import { WebApi, getPersonalAccessTokenHandler } from "azure-devops-node-api";
 import { IRequestOptions, IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
 
-import { IApiFactory } from "../interfaces/factories/apifactory";
-import { IDebug } from "../interfaces/loggers/debug";
-import { ICoreApiRetry } from "../interfaces/extensions/coreapiretry";
+import { IApiFactory } from "../interfaces/factories/iapifactory";
+import { IDebug } from "../interfaces/loggers/idebug";
+import { ICoreApiRetry } from "../interfaces/extensions/icoreapiretry";
 import { CoreApiRetry } from "../extensions/coreapiretry";
-import { IBuildApiRetry } from "../interfaces/extensions/buildapiretry";
+import { IBuildApiRetry } from "../interfaces/extensions/ibuildapiretry";
 import { BuildApiRetry } from "../extensions/buildapiretry";
-import { IEndpoint } from "../interfaces/task/endpoint";
-import { ILogger } from "../interfaces/loggers/logger";
+import { IEndpoint } from "../interfaces/task/iendpoint";
+import { ILogger } from "../interfaces/loggers/ilogger";
 
 export class ApiFactory implements IApiFactory {
 

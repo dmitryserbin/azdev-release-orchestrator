@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { IEndpoint } from "./interfaces/task/endpoint";
-import { IParameters } from "./interfaces/task/parameters";
-import { ITaskHelper } from "./interfaces/helpers/taskhelper";
+import { IEndpoint } from "./interfaces/task/iendpoint";
+import { IParameters } from "./interfaces/task/iparameters";
+import { ITaskHelper } from "./interfaces/helpers/itaskhelper";
 import { TaskHelper } from "./helpers/taskhelper";
 import { Logger } from "./loggers/logger";
-import { ILogger } from "./interfaces/loggers/logger";
-import { IDetails } from "./interfaces/task/details";
-import { IOrchestrator } from "./interfaces/orchestrator/orchestrator";
+import { ILogger } from "./interfaces/loggers/ilogger";
+import { IDetails } from "./interfaces/task/idetails";
+import { IOrchestrator } from "./interfaces/orchestrator/iorchestrator";
 import { Orchestrator } from "./orchestrator/orchestrator";
-import { IReleaseProgress } from "./interfaces/common/releaseprogress";
-import { IApiFactory } from "./interfaces/factories/apifactory";
+import { IReleaseProgress } from "./interfaces/common/ireleaseprogress";
+import { IApiFactory } from "./interfaces/factories/iapifactory";
 import { ApiFactory } from "./factories/apifactory";
-import { IOrchestratorFactory } from "./interfaces/factories/orchestratorfactory";
+import { IOrchestratorFactory } from "./interfaces/factories/iorchestratorfactory";
 import { OrchestratorFactory } from "./factories/orchestratorfactory";
 
 async function run() {

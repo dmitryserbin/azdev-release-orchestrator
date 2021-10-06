@@ -1,9 +1,9 @@
-import { IDetails } from "../interfaces/task/details";
-import { IDeployer } from "../interfaces/orchestrator/deployer";
-import { IDebug } from "../interfaces/loggers/debug";
-import { ILogger } from "../interfaces/loggers/logger";
-import { IReleaseJob } from "../interfaces/common/releasejob";
-import { IReleaseProgress } from "../interfaces/common/releaseprogress";
+import { IDetails } from "../interfaces/task/idetails";
+import { IDeployer } from "../interfaces/orchestrator/ideployer";
+import { IDebug } from "../interfaces/loggers/idebug";
+import { ILogger } from "../interfaces/loggers/ilogger";
+import { IReleaseJob } from "../interfaces/common/ireleasejob";
+import { IReleaseProgress } from "../interfaces/common/ireleaseprogress";
 
 export class Deployer implements IDeployer {
 
