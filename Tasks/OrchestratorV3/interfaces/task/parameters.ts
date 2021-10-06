@@ -1,7 +1,7 @@
 import { IFilters } from "./filters";
-import { IReleaseVariable } from "../common/releasevariable";
 import { ReleaseType } from "../common/releasetype";
 import { ISettings } from "../common/settings";
+import { IBuildParameters } from "../common/buildparameters";
 
 export interface IParameters {
 
@@ -10,7 +10,7 @@ export interface IParameters {
     definitionName: string;
     releaseName: string;
     stages: string[];
-    variables: IReleaseVariable[];
+    parameters: IBuildParameters;
     filters: IFilters;
     settings: ISettings;
 

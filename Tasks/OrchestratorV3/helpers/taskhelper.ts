@@ -11,7 +11,6 @@ import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IDetails } from "../interfaces/task/details";
 import { ReleaseStatus } from "../interfaces/common/releasestatus";
 import { IFilters } from "../interfaces/task/filters";
-import { IReleaseVariable } from "../interfaces/common/releasevariable";
 import { ISettings } from "../interfaces/common/settings";
 
 export class TaskHelper implements ITaskHelper {
@@ -110,7 +109,7 @@ export class TaskHelper implements ITaskHelper {
             definitionName: definitionName,
             releaseName: "",
             stages: [],
-            variables: [],
+            parameters: {},
             filters,
             settings,
 
@@ -239,7 +238,7 @@ export class TaskHelper implements ITaskHelper {
         const artifactVersion: string | undefined = getInput("artifactVersion", false);
         const artifactTags: string[] = getDelimitedInput("artifactTag", ",", false);
         const artifactBranch: string | undefined = getInput("artifactBranch", false);
-        const releaseVariables: string[] = getDelimitedInput("releaseVariables", "\n", false);
+        const buildParameters: string[] = getDelimitedInput("buildParameters", "\n", false);
 
         // Get definition stages filter
         if (definitionStages.length) {
@@ -269,23 +268,16 @@ export class TaskHelper implements ITaskHelper {
 
         }
 
-        // Get release variables
-        if (releaseVariables.length) {
+        // Get build parameters
+        if (buildParameters.length) {
 
-            for (const variable of releaseVariables) {
+            for (const variable of buildParameters) {
 
                 const value: [string, string] | null = parseKeyValue(variable);
 
                 if (value) {
 
-                    const releaseVariable: IReleaseVariable = {
-
-                        name: value[0],
-                        value: value[1],
-
-                    };
-
-                    parameters.variables.push(releaseVariable);
+                    parameters.parameters[value[0]] = value[1];
 
                 }
 

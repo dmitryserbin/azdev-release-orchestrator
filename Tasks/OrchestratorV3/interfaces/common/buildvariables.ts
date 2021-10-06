@@ -1,4 +1,4 @@
-export interface IReleaseVariable {
+export interface IBuildVariable {
 
     name: string;
     value: string;

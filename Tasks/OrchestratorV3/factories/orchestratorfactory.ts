@@ -8,6 +8,12 @@ import { ICreator } from "../interfaces/orchestrator/creator";
 import { Creator } from "../orchestrator/creator";
 import { IReporter } from "../interfaces/orchestrator/reporter";
 import { Reporter } from "../orchestrator/reporter";
+import { ICoreHelper } from "../interfaces/helpers/corehelper";
+import { CoreHelper } from "../helpers/corehelper";
+import { ICoreApiRetry } from "../interfaces/extensions/coreapiretry";
+import { IBuildApiRetry } from "../interfaces/extensions/buildapiretry";
+import { IBuildHelper } from "../interfaces/helpers/buildhelper";
+import { BuildHelper } from "../helpers/buildhelper";
 
 export class OrchestratorFactory implements IOrchestratorFactory {
 
@@ -27,7 +33,13 @@ export class OrchestratorFactory implements IOrchestratorFactory {
 
     public async createCreator(): Promise<ICreator> {
 
-        return new Creator(this.debugCreator, this.consoleLogger);
+        const coreApi: ICoreApiRetry = await this.apiFactory.createCoreApi();
+        const coreHelper: ICoreHelper = new CoreHelper(coreApi, this.debugCreator);
+
+        const buildApi: IBuildApiRetry = await this.apiFactory.createBuildApi();
+        const buildHelper: IBuildHelper = new BuildHelper(buildApi, this.debugCreator);
+
+        return new Creator(coreHelper, buildHelper, this.debugCreator, this.consoleLogger);
 
     }
 

@@ -1,7 +1,11 @@
-import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
+
+import { IBuildParameters } from "../common/buildparameters";
+import { IDetails } from "../task/details";
 
 export interface IBuildHelper {
 
-    findBuild(projectName: string, definitionName: string, definitionId: number, buildNumber: string, tags: string[], top: number): Promise<Build>;
+    getDefinition(projectName: string, definitionName: string): Promise<BuildDefinition>;
+    createBuild(projectName: string, definition: BuildDefinition, details: IDetails, stages?: string[], parameters?: IBuildParameters): Promise<Build>;
 
 }
