@@ -67,7 +67,7 @@ export class Creator implements ICreator {
 
                 if (parameters.parameters && Object.keys(parameters.parameters).length) {
 
-                    this.logger.log(`Overridding <${Object.keys(parameters.parameters).length}> pipeline <${definition.name}> parameters(s)`);
+                    this.logger.log(`Overridding <${Object.keys(parameters.parameters).length}> pipeline <${definition.name}> parameters`);
 
                     this.logger.log(
                         this.reporter.getParameters(parameters.parameters)
