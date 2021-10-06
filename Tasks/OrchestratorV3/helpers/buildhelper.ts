@@ -1,11 +1,11 @@
-import { Build, BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, BuildDefinition, BuildReason, BuildStatus } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
+import { ILogger } from "../interfaces/loggers/logger";
 import { IDebug } from "../interfaces/loggers/debug";
 import { IBuildHelper } from "../interfaces/helpers/buildhelper";
 import { IBuildApiRetry } from "../interfaces/extensions/buildapiretry";
-import { IDetails } from "../interfaces/task/details";
 import { IBuildParameters } from "../interfaces/common/buildparameters";
-import { ILogger } from "../interfaces/loggers/logger";
+import { IBuildFilter } from "../interfaces/common/buildfilter";
 
 export class BuildHelper implements IBuildHelper {
 
@@ -46,7 +46,7 @@ export class BuildHelper implements IBuildHelper {
 
     }
 
-    public async createBuild(projectName: string, definition: BuildDefinition, details: IDetails, stages?: string[], parameters?: IBuildParameters): Promise<Build> {
+    public async createBuild(projectName: string, definition: BuildDefinition, parameters?: IBuildParameters): Promise<Build> {
 
         const debug = this.debugLogger.extend(this.createBuild.name);
 
@@ -57,6 +57,7 @@ export class BuildHelper implements IBuildHelper {
                 id: definition.id!,
 
             },
+            reason: BuildReason.Triggered,
 
         };
 
@@ -66,6 +67,67 @@ export class BuildHelper implements IBuildHelper {
         }
 
         const build: Build = await this.buildApi.queueBuild(request, projectName);
+
+        debug(build);
+
+        return build;
+
+    }
+
+    public async findBuilds(projectName: string, definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build[]> {
+
+        const debug = this.debugLogger.extend(this.findBuilds.name);
+
+        debug(filter);
+
+        const builds: Build[] = await this.buildApi.getBuilds(
+            projectName,
+            [ definition.id! ],
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            filter.buildStatus,
+            undefined,
+            undefined,
+            undefined,
+            top,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined);
+
+        if (!builds.length) {
+
+            throw new Error(`No definition <${definition.name}> (${definition.id}) builds matching filter found`);
+
+        }
+
+        debug(`Found <${builds.length}> (${BuildStatus[filter.buildStatus]}) build(s) matching filter`);
+
+        debug(builds.map(
+            (build) => `${build.buildNumber} (${build.id})`));
+
+        return builds;
+
+    }
+
+    public async getLatestBuild(projectName: string, definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build> {
+
+        const debug = this.debugLogger.extend(this.getLatestBuild.name);
+
+        const filteredBuilds: Build[] = await this.findBuilds(projectName, definition, filter, top);
+
+        const latestBuild: Build = filteredBuilds.sort(
+            (left, right) => left.id! - right.id!).reverse()[0];
+
+        const build: Build = await this.buildApi.getBuild(projectName, latestBuild.id!);
 
         debug(build);
 

@@ -1,5 +1,5 @@
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
-import { Build, BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, BuildDefinition, BuildStatus } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IParameters } from "../interfaces/task/parameters";
 import { IDetails } from "../interfaces/task/details";
@@ -11,6 +11,7 @@ import { ICoreHelper } from "../interfaces/helpers/corehelper";
 import { IBuildHelper } from "../interfaces/helpers/buildhelper";
 import { ReleaseType } from "../interfaces/common/releasetype";
 import { IReporter } from "../interfaces/orchestrator/reporter";
+import { IBuildFilter } from "../interfaces/common/buildfilter";
 
 export class Creator implements ICreator {
 
@@ -41,7 +42,7 @@ export class Creator implements ICreator {
 
         this.logger.log(`Starting <${project.name}> project <${definition.name}> (${definition.id}) pipeline deployment`);
 
-        const build: Build = await this.createBuild(project, definition, parameters, details);
+        const build: Build = await this.createBuild(project, definition, parameters);
 
         return {
 
@@ -53,7 +54,7 @@ export class Creator implements ICreator {
 
     }
 
-    private async createBuild(project: TeamProject, definition: BuildDefinition, parameters: IParameters, details: IDetails): Promise<Build> {
+    private async createBuild(project: TeamProject, definition: BuildDefinition, parameters: IParameters): Promise<Build> {
 
         const debug = this.debugLogger.extend(this.createBuild.name);
 
@@ -75,7 +76,7 @@ export class Creator implements ICreator {
 
                 }
 
-                build = await this.buildHelper.createBuild(project.name!, definition, details, parameters.stages, parameters.parameters);
+                build = await this.buildHelper.createBuild(project.name!, definition, parameters.parameters);
 
                 break;
 
@@ -83,9 +84,13 @@ export class Creator implements ICreator {
 
                 this.logger.log(`Targeting latest <${definition.name}> (${definition.id}) pipeline release`);
 
-                // build = await this.releaseHelper.getLastRelease(project.name!, definition.name!, definition.id!, parameters.stages, releaseFilter, 100);
+                const buildFilter: IBuildFilter = {
 
-                build = {};
+                    buildStatus: BuildStatus.Completed,
+        
+                };
+
+                build = await this.buildHelper.getLatestBuild(project.name!, definition, buildFilter, 100);
 
                 break;
 

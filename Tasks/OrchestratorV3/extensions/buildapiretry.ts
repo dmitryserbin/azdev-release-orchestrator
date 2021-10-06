@@ -15,6 +15,16 @@ export class BuildApiRetry implements IBuildApiRetry {
     }
 
     @Retryable()
+    public async getBuild(project: string, buildId: number, propertyFilters?: string): Promise<Build> {
+
+        return await this.buildApi.getBuild(
+            project,
+            buildId,
+            propertyFilters);
+
+    }
+
+    @Retryable()
     public async getBuilds(project: string, definitions?: number[], queues?: number[], buildNumber?: string, minTime?: Date, maxTime?: Date, requestedFor?: string, reasonFilter?: BuildReason, statusFilter?: BuildStatus, resultFilter?: BuildResult, tagFilters?: string[], properties?: string[], top?: number, continuationToken?: string, maxBuildsPerDefinition?: number, deletedFilter?: QueryDeletedOption, queryOrder?: BuildQueryOrder, branchName?: string, buildIds?: number[], repositoryId?: string, repositoryType?: string): Promise<Build[]> {
 
         return await this.buildApi.getBuilds(
