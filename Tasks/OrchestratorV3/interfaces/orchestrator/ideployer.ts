@@ -1,10 +1,10 @@
 import { IDetails } from "../task/idetails";
-import { IReleaseJob } from "../common/ireleasejob";
+import { IJob } from "../common/ijob";
 import { IReleaseProgress } from "../common/ireleaseprogress";
 
 export interface IDeployer {
 
-    deployManual(releaseJob: IReleaseJob, details: IDetails): Promise<IReleaseProgress>;
-    deployAutomated(releaseJob: IReleaseJob, details: IDetails): Promise<IReleaseProgress>;
+    deployManual(job: IJob, details: IDetails): Promise<IReleaseProgress>;
+    deployAutomated(job: IJob, details: IDetails): Promise<IReleaseProgress>;
 
 }

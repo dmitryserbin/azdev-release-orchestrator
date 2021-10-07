@@ -6,13 +6,14 @@ import { IDetails } from "../interfaces/task/idetails";
 import { IDebug } from "../interfaces/loggers/idebug";
 import { ILogger } from "../interfaces/loggers/ilogger";
 import { ICreator } from "../interfaces/orchestrator/icreator";
-import { IReleaseJob } from "../interfaces/common/ireleasejob";
+import { IJob } from "../interfaces/common/ijob";
 import { ICoreHelper } from "../interfaces/helpers/icorehelper";
 import { IBuildHelper } from "../interfaces/helpers/ibuildhelper";
 import { ReleaseType } from "../interfaces/common/ireleasetype";
 import { IReporter } from "../interfaces/orchestrator/ireporter";
 import { IBuildFilter } from "../interfaces/common/ibuildfilter";
 import { IFiltrator } from "../interfaces/orchestrator/ifiltrator";
+import { JobType } from "../interfaces/common/ijobtype";
 
 export class Creator implements ICreator {
 
@@ -36,7 +37,7 @@ export class Creator implements ICreator {
 
     }
 
-    public async createJob(parameters: IParameters, details: IDetails): Promise<IReleaseJob> {
+    public async createJob(parameters: IParameters, details: IDetails): Promise<IJob> {
 
         const debug = this.debugLogger.extend(this.createJob.name);
 
@@ -44,22 +45,6 @@ export class Creator implements ICreator {
         const definition: BuildDefinition = await this.buildHelper.getDefinition(parameters.projectName, parameters.definitionName);
 
         this.logger.log(`Starting <${project.name}> project <${definition.name}> (${definition.id}) pipeline deployment`);
-
-        const build: Build = await this.createBuild(project, definition, parameters);
-
-        return {
-
-            project: project,
-            definition: definition,
-            build: build,
-
-        } as IReleaseJob;
-
-    }
-
-    private async createBuild(project: TeamProject, definition: BuildDefinition, parameters: IParameters): Promise<Build> {
-
-        const debug = this.debugLogger.extend(this.createBuild.name);
 
         let build: Build;
 
@@ -107,7 +92,23 @@ export class Creator implements ICreator {
 
         debug(`Build <${build.buildNumber}> type <${ReleaseType[parameters.releaseType]}> created`);
 
-        return build;
+        const stages: string[] = [];
+        const jobType: JobType = JobType.Automated;
+
+        const job: IJob = {
+
+            project: project,
+            definition: definition,
+            build: build,
+            stages: stages,
+            type: jobType,
+            settings: parameters.settings,
+
+        };
+
+        debug(`Job <${build.buildNumber}> type <${JobType[jobType]}> created`);
+
+        return job;
 
     }
 

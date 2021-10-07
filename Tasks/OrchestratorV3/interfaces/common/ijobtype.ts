@@ -1,4 +1,4 @@
-export enum DeploymentType {
+export enum JobType {
 
     Automated = "Automated",
     Manual = "Manual",

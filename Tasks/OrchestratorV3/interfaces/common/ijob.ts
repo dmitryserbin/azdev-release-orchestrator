@@ -2,15 +2,15 @@ import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { Build, BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { ISettings } from "./isettings";
-import { DeploymentType } from "./ideploymenttype";
+import { JobType } from "./ijobtype";
 
-export interface IReleaseJob {
+export interface IJob {
 
     project: TeamProject;
     definition: BuildDefinition
     build: Build;
     stages: string[];
-    type: DeploymentType,
+    type: JobType,
     settings: ISettings;
 
 }

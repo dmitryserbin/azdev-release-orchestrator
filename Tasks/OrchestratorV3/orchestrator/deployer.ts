@@ -2,7 +2,7 @@ import { IDetails } from "../interfaces/task/idetails";
 import { IDeployer } from "../interfaces/orchestrator/ideployer";
 import { IDebug } from "../interfaces/loggers/idebug";
 import { ILogger } from "../interfaces/loggers/ilogger";
-import { IReleaseJob } from "../interfaces/common/ireleasejob";
+import { IJob } from "../interfaces/common/ijob";
 import { IReleaseProgress } from "../interfaces/common/ireleaseprogress";
 
 export class Deployer implements IDeployer {
@@ -17,7 +17,7 @@ export class Deployer implements IDeployer {
 
     }
 
-    public async deployManual(releaseJob: IReleaseJob, details: IDetails): Promise<IReleaseProgress> {
+    public async deployManual(job: IJob, details: IDetails): Promise<IReleaseProgress> {
 
         const debug = this.debugLogger.extend(this.deployManual.name);
 
@@ -25,7 +25,7 @@ export class Deployer implements IDeployer {
 
     }
 
-    public async deployAutomated(releaseJob: IReleaseJob, details: IDetails): Promise<IReleaseProgress> {
+    public async deployAutomated(job: IJob, details: IDetails): Promise<IReleaseProgress> {
 
         const debug = this.debugLogger.extend(this.deployAutomated.name);
 
