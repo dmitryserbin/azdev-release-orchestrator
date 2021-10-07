@@ -84,10 +84,10 @@ export class TaskHelper implements ITaskHelper {
 
         const filters: IFilters = {
 
+            sourceBranch: "",
             releaseTags: [],
             artifactTags: [],
             artifactVersion: "",
-            artifactBranch: "",
             stageStatuses: [],
 
         };
@@ -240,7 +240,7 @@ export class TaskHelper implements ITaskHelper {
         const definitionStages: string[] = getDelimitedInput("definitionStage", ",", false);
         const artifactVersion: string | undefined = getInput("artifactVersion", false);
         const artifactTags: string[] = getDelimitedInput("artifactTag", ",", false);
-        const artifactBranch: string | undefined = getInput("artifactBranch", false);
+        const sourceBranch: string | undefined = getInput("sourceBranch", false);
         const buildParameters: string[] = getDelimitedInput("buildParameters", "\n", false);
 
         // Get definition stages filter
@@ -264,10 +264,10 @@ export class TaskHelper implements ITaskHelper {
 
         }
 
-        // Get artifacts source branch filter
-        if (artifactBranch) {
+        // Get source branch filter
+        if (sourceBranch) {
 
-            parameters.filters.artifactBranch = artifactBranch;
+            parameters.filters.sourceBranch = sourceBranch;
 
         }
 
@@ -301,7 +301,7 @@ export class TaskHelper implements ITaskHelper {
         const releaseTags: string[] = getDelimitedInput("releaseTag", ",", false);
         const artifactVersion: string | undefined = getInput("artifactVersion", false);
         const artifactTags: string[] = getDelimitedInput("artifactTag", ",", false);
-        const artifactBranch: string | undefined = getInput("artifactBranch", false);
+        const sourceBranch: string | undefined = getInput("sourceBranch", false);
         const stageStatuses: string[] = getDelimitedInput("stageStatus", ",", false);
 
         // Get release stages filter
@@ -332,10 +332,10 @@ export class TaskHelper implements ITaskHelper {
 
         }
 
-        // Get artifacts source branch filter
-        if (artifactBranch) {
+        // Get source branch filter
+        if (sourceBranch) {
 
-            parameters.filters.artifactBranch = artifactBranch;
+            parameters.filters.sourceBranch = sourceBranch;
 
         }
 

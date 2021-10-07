@@ -133,10 +133,10 @@
       "visibleRule": "releaseStrategy != specific"
     },
     {
-      "name": "artifactBranch",
+      "name": "sourceBranch",
       "type": "string",
-      "label": "Artifact branch",
-      "helpMarkDown": "Specify target release primary artifact source branch filter. Example = 'refs/heads/master' (build artifact, last 100 builds) or 'master' (Git artifact)",
+      "label": "Source branch",
+      "helpMarkDown": "Specify target release source branch filter. Example = 'refs/heads/master' (build artifact, last 100 builds) or 'master' (Git artifact)",
       "required": false,
       "visibleRule": "releaseStrategy != specific"
     },
