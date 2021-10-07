@@ -6,7 +6,6 @@ import { ITaskHelper } from "./helpers/taskhelper/itaskhelper";
 import { TaskHelper } from "./helpers/taskhelper/taskhelper";
 import { Logger } from "./loggers/logger";
 import { ILogger } from "./loggers/ilogger";
-import { IDetails } from "./helpers/taskhelper/idetails";
 import { IOrchestrator } from "./workers/orchestrator/iorchestrator";
 import { Orchestrator } from "./workers/orchestrator/orchestrator";
 import { IRunProgress } from "./workers/orchestrator/irunprogress";
@@ -25,14 +24,13 @@ async function run() {
 
         const endpoint: IEndpoint = await taskHelper.getEndpoint();
         const parameters: IParameters = await taskHelper.getParameters();
-        const details: IDetails = await taskHelper.getDetails();
 
         const apiFactory: IApiFactory = new ApiFactory(endpoint, logger);
         const workerFactory: IWorkerFactory = new WorkerFactory(apiFactory, logger);
         const orchestrator: IOrchestrator = new Orchestrator(workerFactory, logger);
 
         // Run orchestrator
-        const releaseProgress: IRunProgress = await orchestrator.orchestrate(parameters, details);
+        const releaseProgress: IRunProgress = await orchestrator.orchestrate(parameters);
 
         await taskHelper.validate(releaseProgress.status);
 

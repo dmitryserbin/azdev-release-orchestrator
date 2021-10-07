@@ -2,7 +2,6 @@ import { IOrchestrator } from "./iorchestrator";
 import { IRunDeployer } from "../rundeployer/irundeployer";
 import { IParameters } from "../../helpers/taskhelper/iparameters";
 import { ReleaseType } from "../../helpers/taskhelper/releasetype";
-import { IDetails } from "../../helpers/taskhelper/idetails";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
 import { IWorkerFactory } from "../../factories/workerfactory/iworkerfactory";
@@ -28,7 +27,7 @@ export class Orchestrator implements IOrchestrator {
 
     }
 
-    public async orchestrate(parameters: IParameters, details: IDetails): Promise<IRunProgress> {
+    public async orchestrate(parameters: IParameters): Promise<IRunProgress> {
 
         const debug = this.debugLogger.extend(this.orchestrate.name);
 
@@ -48,13 +47,13 @@ export class Orchestrator implements IOrchestrator {
 
                     case RunType.Automated: {
 
-                        runProgress = await runDeployer.deployAutomated(run, details);
+                        runProgress = await runDeployer.deployAutomated(run, parameters.details);
 
                         break;
 
                     } case RunType.Manual: {
 
-                        runProgress = await runDeployer.deployManual(run, details);
+                        runProgress = await runDeployer.deployManual(run, parameters.details);
 
                         break;
 
@@ -66,13 +65,13 @@ export class Orchestrator implements IOrchestrator {
 
             } case ReleaseType.Latest: {
 
-                runProgress = await runDeployer.deployManual(run, details);
+                runProgress = await runDeployer.deployManual(run, parameters.details);
 
                 break;
 
             } case ReleaseType.Specific: {
 
-                runProgress = await runDeployer.deployManual(run, details);
+                runProgress = await runDeployer.deployManual(run, parameters.details);
 
                 break;
 

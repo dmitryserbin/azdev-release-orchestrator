@@ -102,6 +102,8 @@ export class TaskHelper implements ITaskHelper {
 
         };
 
+        const details: IDetails = await this.getDetails();
+
         let parameters: IParameters = {
 
             releaseType: ReleaseType.New,
@@ -112,6 +114,7 @@ export class TaskHelper implements ITaskHelper {
             parameters: {},
             filters,
             settings,
+            details,
 
         };
 
@@ -146,32 +149,6 @@ export class TaskHelper implements ITaskHelper {
         debug(parameters);
 
         return parameters;
-
-    }
-
-    public async getDetails(): Promise<IDetails> {
-
-        const debug = this.debugLogger.extend(this.getDetails.name);
-
-        const endpointName: string | undefined = getInput("endpointName", false);
-        const projectName: string | undefined = getVariable("SYSTEM_TEAMPROJECT");
-        const releaseName: string | undefined = getVariable("RELEASE_RELEASENAME") ? getVariable("RELEASE_RELEASENAME") : getVariable("BUILD_BUILDNUMBER");
-        const requesterName: string | undefined = getVariable("RELEASE_DEPLOYMENT_REQUESTEDFOR") ? getVariable("RELEASE_DEPLOYMENT_REQUESTEDFOR") : getVariable("BUILD_REQUESTEDFOR");
-        const requesterId: string | undefined = getVariable("RELEASE_DEPLOYMENT_REQUESTEDFORID") ? getVariable("RELEASE_DEPLOYMENT_REQUESTEDFORID") : getVariable("BUILD_REQUESTEDFORID");
-
-        const details: IDetails = {
-
-            endpointName: endpointName ? endpointName : "Project Collection Build Service",
-            projectName: projectName ? projectName : "Unknown",
-            releaseName: releaseName ? releaseName : "Unknown",
-            requesterName: requesterName ? requesterName : "Release Orchestrator",
-            requesterId: requesterId ? requesterId : "Unknown",
-
-        }
-
-        debug(details);
-
-        return details;
 
     }
 
@@ -226,6 +203,32 @@ export class TaskHelper implements ITaskHelper {
         }
 
         setResult(result, message);
+
+    }
+
+    private async getDetails(): Promise<IDetails> {
+
+        const debug = this.debugLogger.extend(this.getDetails.name);
+
+        const endpointName: string | undefined = getInput("endpointName", false);
+        const projectName: string | undefined = getVariable("SYSTEM_TEAMPROJECT");
+        const releaseName: string | undefined = getVariable("RELEASE_RELEASENAME") ? getVariable("RELEASE_RELEASENAME") : getVariable("BUILD_BUILDNUMBER");
+        const requesterName: string | undefined = getVariable("RELEASE_DEPLOYMENT_REQUESTEDFOR") ? getVariable("RELEASE_DEPLOYMENT_REQUESTEDFOR") : getVariable("BUILD_REQUESTEDFOR");
+        const requesterId: string | undefined = getVariable("RELEASE_DEPLOYMENT_REQUESTEDFORID") ? getVariable("RELEASE_DEPLOYMENT_REQUESTEDFORID") : getVariable("BUILD_REQUESTEDFORID");
+
+        const details: IDetails = {
+
+            endpointName: endpointName ? endpointName : "Project Collection Build Service",
+            projectName: projectName ? projectName : "Unknown",
+            releaseName: releaseName ? releaseName : "Unknown",
+            requesterName: requesterName ? requesterName : "Release Orchestrator",
+            requesterId: requesterId ? requesterId : "Unknown",
+
+        }
+
+        debug(details);
+
+        return details;
 
     }
 
