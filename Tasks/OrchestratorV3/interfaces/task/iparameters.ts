@@ -8,7 +8,7 @@ export interface IParameters {
     releaseType: ReleaseType;
     projectName: string;
     definitionName: string;
-    releaseName: string;
+    buildNumber: string;
     stages: string[];
     parameters: IBuildParameters;
     filters: IFilters;

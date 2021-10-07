@@ -107,7 +107,7 @@ export class TaskHelper implements ITaskHelper {
             releaseType: ReleaseType.New,
             projectName: projectName,
             definitionName: definitionName,
-            releaseName: "",
+            buildNumber: "",
             stages: [],
             parameters: {},
             filters,
@@ -353,8 +353,8 @@ export class TaskHelper implements ITaskHelper {
 
         const releaseStages: string[] = getDelimitedInput("releaseStage", ",", false);
 
-        // Get release name
-        parameters.releaseName = getInput("releaseName", true)!;
+        // Get build number
+        parameters.buildNumber = getInput("buildNumber", true)!;
 
         // Get release stages filter
         if (releaseStages.length) {

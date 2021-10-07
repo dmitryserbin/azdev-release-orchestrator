@@ -118,6 +118,34 @@ export class BuildHelper implements IBuildHelper {
 
     }
 
+    public async getBuild(projectName: string, definition: BuildDefinition, buildNumber: string): Promise<Build> {
+
+        const debug = this.debugLogger.extend(this.getBuild.name);
+
+        const matchingBuilds: Build[] = await this.buildApi.getBuilds(
+            projectName,
+            [ definition.id! ],
+            undefined,
+            buildNumber
+        );
+
+        debug(matchingBuilds.map(
+            (build) => `${build.buildNumber} (${build.id})`));
+
+        if (matchingBuilds.length <= 0) {
+
+            throw new Error(`Build <${buildNumber}> not found`);
+
+        }
+
+        const build: Build = await this.buildApi.getBuild(projectName, matchingBuilds[0].id!);
+
+        debug(build);
+
+        return build;
+
+    }
+
     public async getLatestBuild(projectName: string, definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build> {
 
         const debug = this.debugLogger.extend(this.getLatestBuild.name);

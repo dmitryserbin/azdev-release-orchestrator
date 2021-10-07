@@ -97,9 +97,7 @@ export class Creator implements ICreator {
 
                 this.logger.log(`Targeting specific <${definition.name}> (${definition.id}) pipeline release`);
 
-                // build = await this.releaseHelper.getRelease(project.name!, definition.id!, parameters.releaseName, parameters.stages);
-
-                build = {};
+                build = await this.buildHelper.getBuild(project.name!, definition, parameters.buildNumber);
 
                 break;
 
