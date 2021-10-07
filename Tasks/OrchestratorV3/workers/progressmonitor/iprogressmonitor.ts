@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-export interface IMonitor {
+export interface IProgressMonitor {
 
     /* */
 

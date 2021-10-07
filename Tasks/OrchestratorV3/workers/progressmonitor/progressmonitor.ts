@@ -1,8 +1,8 @@
-import { IMonitor } from "./imonitor";
+import { IProgressMonitor } from "./iprogressmonitor";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
 
-export class Monitor implements IMonitor {
+export class ProgressMonitor implements IProgressMonitor {
 
     private debugLogger: IDebug;
 
