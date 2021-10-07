@@ -1,4 +1,4 @@
-export enum ReleaseStatus {
+export enum RunStatus {
 
     InProgress = "InProgress",
     Succeeded = "Succeeded",

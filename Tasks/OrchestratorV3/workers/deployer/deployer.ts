@@ -2,8 +2,8 @@ import { IDetails } from "../../helpers/taskhelper/idetails";
 import { IDeployer } from "./ideployer";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
-import { IJob } from "../creator/ijob";
-import { IReleaseProgress } from "../orchestrator/ireleaseprogress";
+import { IRun } from "../runcreator/irun";
+import { IRunProgress } from "../orchestrator/irunprogress";
 
 export class Deployer implements IDeployer {
 
@@ -17,19 +17,19 @@ export class Deployer implements IDeployer {
 
     }
 
-    public async deployManual(job: IJob, details: IDetails): Promise<IReleaseProgress> {
+    public async deployManual(job: IRun, details: IDetails): Promise<IRunProgress> {
 
         const debug = this.debugLogger.extend(this.deployManual.name);
 
-        return {} as IReleaseProgress;
+        return {} as IRunProgress;
 
     }
 
-    public async deployAutomated(job: IJob, details: IDetails): Promise<IReleaseProgress> {
+    public async deployAutomated(job: IRun, details: IDetails): Promise<IRunProgress> {
 
         const debug = this.debugLogger.extend(this.deployAutomated.name);
 
-        return {} as IReleaseProgress;
+        return {} as IRunProgress;
 
     }
 

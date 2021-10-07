@@ -5,17 +5,17 @@ import { IParameters } from "../../helpers/taskhelper/iparameters";
 import { IDetails } from "../../helpers/taskhelper/idetails";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
-import { ICreator } from "./icreator";
-import { IJob } from "./ijob";
+import { IRunCreator } from "./iruncreator";
+import { IRun } from "./irun";
 import { ICoreHelper } from "../../helpers/corehelper/icorehelper";
 import { IBuildHelper } from "../../helpers/buildhelper/ibuildhelper";
 import { ReleaseType } from "../../helpers/taskhelper/releasetype";
 import { IReporter } from "../reporter/ireporter";
 import { IBuildFilter } from "../filtrator/ibuildfilter";
 import { IFiltrator } from "../filtrator/ifiltrator";
-import { JobType } from "./jobtype";
+import { RunType } from "../orchestrator/runtype";
 
-export class Creator implements ICreator {
+export class RunCreator implements IRunCreator {
 
     private logger: ILogger;
     private debugLogger: IDebug;
@@ -37,9 +37,9 @@ export class Creator implements ICreator {
 
     }
 
-    public async createJob(parameters: IParameters, details: IDetails): Promise<IJob> {
+    public async create(parameters: IParameters, details: IDetails): Promise<IRun> {
 
-        const debug = this.debugLogger.extend(this.createJob.name);
+        const debug = this.debugLogger.extend(this.create.name);
 
         const project: TeamProject = await this.coreHelper.getProject(parameters.projectName);
         const definition: BuildDefinition = await this.buildHelper.getDefinition(parameters.projectName, parameters.definitionName);
@@ -93,9 +93,9 @@ export class Creator implements ICreator {
         debug(`Build <${build.buildNumber}> type <${ReleaseType[parameters.releaseType]}> created`);
 
         const stages: string[] = [];
-        const jobType: JobType = JobType.Automated;
+        const jobType: RunType = RunType.Automated;
 
-        const job: IJob = {
+        const run: IRun = {
 
             project: project,
             definition: definition,
@@ -106,9 +106,9 @@ export class Creator implements ICreator {
 
         };
 
-        debug(`Job <${build.buildNumber}> type <${JobType[jobType]}> created`);
+        debug(`Run <${build.buildNumber}> type <${RunType[jobType]}> created`);
 
-        return job;
+        return run;
 
     }
 

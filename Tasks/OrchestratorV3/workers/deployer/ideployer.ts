@@ -1,10 +1,10 @@
 import { IDetails } from "../../helpers/taskhelper/idetails";
-import { IJob } from "../creator/ijob";
-import { IReleaseProgress } from "../orchestrator/ireleaseprogress";
+import { IRun } from "../runcreator/irun";
+import { IRunProgress } from "../orchestrator/irunprogress";
 
 export interface IDeployer {
 
-    deployManual(job: IJob, details: IDetails): Promise<IReleaseProgress>;
-    deployAutomated(job: IJob, details: IDetails): Promise<IReleaseProgress>;
+    deployManual(job: IRun, details: IDetails): Promise<IRunProgress>;
+    deployAutomated(job: IRun, details: IDetails): Promise<IRunProgress>;
 
 }

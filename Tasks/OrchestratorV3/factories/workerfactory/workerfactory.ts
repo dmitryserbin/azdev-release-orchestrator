@@ -3,8 +3,8 @@ import { IApiFactory } from "../apifactory/iapifactory";
 import { ILogger } from "../../loggers/ilogger";
 import { IDeployer } from "../../workers/deployer/ideployer";
 import { Deployer } from "../../workers/deployer/deployer";
-import { ICreator } from "../../workers/creator/icreator";
-import { Creator } from "../../workers/creator/creator";
+import { IRunCreator } from "../../workers/runcreator/iruncreator";
+import { RunCreator } from "../../workers/runcreator/runcreator";
 import { IReporter } from "../../workers/reporter/ireporter";
 import { Reporter } from "../../workers/reporter/reporter";
 import { ICoreHelper } from "../../helpers/corehelper/icorehelper";
@@ -30,7 +30,7 @@ export class WorkerFactory implements IWorkerFactory {
 
     }
 
-    public async createCreator(): Promise<ICreator> {
+    public async createRunCreator(): Promise<IRunCreator> {
 
         const coreApi: ICoreApiRetry = await this.apiFactory.createCoreApi();
         const coreHelper: ICoreHelper = new CoreHelper(coreApi, this.logger);
@@ -41,7 +41,7 @@ export class WorkerFactory implements IWorkerFactory {
         const filtrator: IFiltrator = new Filtrator(this.logger);
         const reporter: IReporter = new Reporter(this.logger);
 
-        return new Creator(coreHelper, buildHelper, filtrator, reporter, this.logger);
+        return new RunCreator(coreHelper, buildHelper, filtrator, reporter, this.logger);
 
     }
 

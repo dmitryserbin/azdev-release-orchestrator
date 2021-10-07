@@ -1,9 +1,9 @@
 import { IParameters } from "../../helpers/taskhelper/iparameters";
 import { IDetails } from "../../helpers/taskhelper/idetails";
-import { IJob } from "./ijob";
+import { IRun } from "./irun";
 
-export interface ICreator {
+export interface IRunCreator {
 
-    createJob(parameters: IParameters, details: IDetails): Promise<IJob>;
+    create(parameters: IParameters, details: IDetails): Promise<IRun>;
 
 }

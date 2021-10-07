@@ -9,7 +9,7 @@ import { ILogger } from "./loggers/ilogger";
 import { IDetails } from "./helpers/taskhelper/idetails";
 import { IOrchestrator } from "./workers/orchestrator/iorchestrator";
 import { Orchestrator } from "./workers/orchestrator/orchestrator";
-import { IReleaseProgress } from "./workers/orchestrator/ireleaseprogress";
+import { IRunProgress } from "./workers/orchestrator/irunprogress";
 import { IApiFactory } from "./factories/apifactory/iapifactory";
 import { ApiFactory } from "./factories/apifactory/apifactory";
 import { IWorkerFactory } from "./factories/workerfactory/iworkerfactory";
@@ -32,7 +32,7 @@ async function run() {
         const orchestrator: IOrchestrator = new Orchestrator(workerFactory, logger);
 
         // Run orchestrator
-        const releaseProgress: IReleaseProgress = await orchestrator.orchestrate(parameters, details);
+        const releaseProgress: IRunProgress = await orchestrator.orchestrate(parameters, details);
 
         await taskHelper.validate(releaseProgress.status);
 

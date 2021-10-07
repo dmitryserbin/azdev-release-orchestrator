@@ -6,10 +6,10 @@ import { IDetails } from "../../helpers/taskhelper/idetails";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
 import { IWorkerFactory } from "../../factories/workerfactory/iworkerfactory";
-import { IJob } from "../creator/ijob";
-import { ICreator } from "../creator/icreator";
-import { IReleaseProgress } from "./ireleaseprogress";
-import { JobType } from "../creator/jobtype";
+import { IRun } from "../runcreator/irun";
+import { IRunCreator } from "../runcreator/iruncreator";
+import { IRunProgress } from "./irunprogress";
+import { RunType } from "./runtype";
 import { IReporter } from "../reporter/ireporter";
 
 export class Orchestrator implements IOrchestrator {
@@ -28,33 +28,33 @@ export class Orchestrator implements IOrchestrator {
 
     }
 
-    public async orchestrate(parameters: IParameters, details: IDetails): Promise<IReleaseProgress> {
+    public async orchestrate(parameters: IParameters, details: IDetails): Promise<IRunProgress> {
 
         const debug = this.debugLogger.extend(this.orchestrate.name);
 
-        let releaseProgress: IReleaseProgress;
+        let runProgress: IRunProgress;
 
-        const creator: ICreator = await this.workerFactory.createCreator();
+        const runCreator: IRunCreator = await this.workerFactory.createRunCreator();
         const deployer: IDeployer = await this.workerFactory.createDeployer();
         const reporter: IReporter = await this.workerFactory.createReporter();
 
-        const job: IJob = await creator.createJob(parameters, details);
+        const run: IRun = await runCreator.create(parameters, details);
 
         switch (parameters.releaseType) {
 
             case ReleaseType.New: {
 
-                switch (job.type) {
+                switch (run.type) {
 
-                    case JobType.Automated: {
+                    case RunType.Automated: {
 
-                        releaseProgress = await deployer.deployAutomated(job, details);
+                        runProgress = await deployer.deployAutomated(run, details);
 
                         break;
 
-                    } case JobType.Manual: {
+                    } case RunType.Manual: {
 
-                        releaseProgress = await deployer.deployManual(job, details);
+                        runProgress = await deployer.deployManual(run, details);
 
                         break;
 
@@ -66,13 +66,13 @@ export class Orchestrator implements IOrchestrator {
 
             } case ReleaseType.Latest: {
 
-                releaseProgress = await deployer.deployManual(job, details);
+                runProgress = await deployer.deployManual(run, details);
 
                 break;
 
             } case ReleaseType.Specific: {
 
-                releaseProgress = await deployer.deployManual(job, details);
+                runProgress = await deployer.deployManual(run, details);
 
                 break;
 
@@ -80,7 +80,7 @@ export class Orchestrator implements IOrchestrator {
 
         }
 
-        return releaseProgress;
+        return runProgress;
 
     }
 

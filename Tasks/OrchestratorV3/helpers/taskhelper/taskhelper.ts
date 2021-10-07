@@ -8,7 +8,7 @@ import { IParameters } from "./iparameters";
 import { ReleaseType } from "./releasetype";
 import { IDebug } from "../../loggers/idebug";
 import { IDetails } from "./idetails";
-import { ReleaseStatus } from "../../workers/orchestrator/releasestatus";
+import { RunStatus } from "../../workers/orchestrator/runstatus";
 import { IFilters } from "./ifilters";
 import { ISettings } from "./isettings";
 import { ILogger } from "../../loggers/ilogger";
@@ -175,7 +175,7 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
-    public async validate(status: ReleaseStatus): Promise<void> {
+    public async validate(status: RunStatus): Promise<void> {
 
         const debug = this.debugLogger.extend(this.validate.name);
 
@@ -186,7 +186,7 @@ export class TaskHelper implements ITaskHelper {
 
         switch (status) {
 
-            case ReleaseStatus.PartiallySucceeded: {
+            case RunStatus.PartiallySucceeded: {
 
                 if (await this.suppressSucceededWithIssues()) {
 
@@ -198,7 +198,7 @@ export class TaskHelper implements ITaskHelper {
 
                 break;
 
-            } case ReleaseStatus.Failed: {
+            } case RunStatus.Failed: {
 
                 throw new Error(failedMessage);
 

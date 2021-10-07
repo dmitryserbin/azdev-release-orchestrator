@@ -1,13 +1,13 @@
 import { IStageProgress } from "./istageprogress";
-import { ReleaseStatus } from "./releasestatus";
+import { RunStatus } from "./runstatus";
 
-export interface IReleaseProgress {
+export interface IRunProgress {
 
     id: number;
     name: string;
     project: string,
     url: string;
     stages: IStageProgress[];
-    status: ReleaseStatus;
+    status: RunStatus;
 
 }

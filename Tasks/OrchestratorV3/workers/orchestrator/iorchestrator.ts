@@ -1,9 +1,9 @@
 import { IParameters } from "../../helpers/taskhelper/iparameters";
 import { IDetails } from "../../helpers/taskhelper/idetails";
-import { IReleaseProgress } from "./ireleaseprogress";
+import { IRunProgress } from "./irunprogress";
 
 export interface IOrchestrator {
 
-    orchestrate(parameters: IParameters, details: IDetails): Promise<IReleaseProgress>;
+    orchestrate(parameters: IParameters, details: IDetails): Promise<IRunProgress>;
 
 }
