@@ -3,9 +3,9 @@ import { BuildStatus } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import { IBuildFilter } from "./ibuildfilter";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
-import { IFiltrator } from "./ifiltrator";
+import { IFilterCreator } from "./ifiltercreator";
 
-export class Filtrator implements IFiltrator {
+export class FilterCreator implements IFilterCreator {
 
     private debugLogger: IDebug;
 

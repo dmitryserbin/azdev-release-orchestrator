@@ -1,6 +1,6 @@
 import { IBuildFilter } from "./ibuildfilter";
 
-export interface IFiltrator {
+export interface IFilterCreator {
 
     createBuildFilter(): Promise<IBuildFilter>
 

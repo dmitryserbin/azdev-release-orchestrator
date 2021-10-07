@@ -5,7 +5,7 @@ import { IDebug } from "../../loggers/idebug";
 import { IBuildHelper } from "./ibuildhelper";
 import { IBuildApiRetry } from "../../extensions/buildapiretry/ibuildapiretry";
 import { IBuildParameters } from "../taskhelper/ibuildparameters";
-import { IBuildFilter } from "../../workers/filtrator/ibuildfilter";
+import { IBuildFilter } from "../../workers/filtercreator/ibuildfilter";
 
 export class BuildHelper implements IBuildHelper {
 

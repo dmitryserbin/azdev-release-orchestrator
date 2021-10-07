@@ -1,6 +1,6 @@
 import { EnvironmentStatus, DeploymentAttempt } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { IStageApproval } from "../approver/istageapproval";
+import { IStageApproval } from "../stageapprover/istageapproval";
 
 export interface IStageProgress {
 

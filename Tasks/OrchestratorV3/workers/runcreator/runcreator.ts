@@ -11,8 +11,8 @@ import { ICoreHelper } from "../../helpers/corehelper/icorehelper";
 import { IBuildHelper } from "../../helpers/buildhelper/ibuildhelper";
 import { ReleaseType } from "../../helpers/taskhelper/releasetype";
 import { IProgressReporter } from "../progressreporter/iprogressreporter";
-import { IBuildFilter } from "../filtrator/ibuildfilter";
-import { IFiltrator } from "../filtrator/ifiltrator";
+import { IBuildFilter } from "../filtercreator/ibuildfilter";
+import { IFilterCreator } from "../filtercreator/ifiltercreator";
 import { RunType } from "../orchestrator/runtype";
 
 export class RunCreator implements IRunCreator {
@@ -22,17 +22,17 @@ export class RunCreator implements IRunCreator {
 
     private coreHelper: ICoreHelper;
     private buildHelper: IBuildHelper;
-    private filtrator: IFiltrator;
+    private filterCreator: IFilterCreator;
     private progressReporter: IProgressReporter;
 
-    constructor(coreHelper: ICoreHelper, buildHelper: IBuildHelper, filtrator: IFiltrator, progressReporter: IProgressReporter, logger: ILogger) {
+    constructor(coreHelper: ICoreHelper, buildHelper: IBuildHelper, filterCreator: IFilterCreator, progressReporter: IProgressReporter, logger: ILogger) {
 
         this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
 
         this.coreHelper = coreHelper;
         this.buildHelper = buildHelper;
-        this.filtrator = filtrator;
+        this.filterCreator = filterCreator;
         this.progressReporter = progressReporter;
 
     }
@@ -72,7 +72,7 @@ export class RunCreator implements IRunCreator {
 
                 this.logger.log(`Targeting latest <${definition.name}> (${definition.id}) pipeline release`);
 
-                const buildFilter: IBuildFilter = await this.filtrator.createBuildFilter();
+                const buildFilter: IBuildFilter = await this.filterCreator.createBuildFilter();
 
                 build = await this.buildHelper.getLatestBuild(project.name!, definition, buildFilter, 100);
 

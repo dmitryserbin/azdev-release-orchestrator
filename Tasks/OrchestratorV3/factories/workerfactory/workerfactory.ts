@@ -13,8 +13,8 @@ import { ICoreApiRetry } from "../../extensions/coreapiretry/icoreapiretry";
 import { IBuildApiRetry } from "../../extensions/buildapiretry/ibuildapiretry";
 import { IBuildHelper } from "../../helpers/buildhelper/ibuildhelper";
 import { BuildHelper } from "../../helpers/buildhelper/buildhelper";
-import { IFiltrator } from "../../workers/filtrator/ifiltrator";
-import { Filtrator } from "../../workers/filtrator/filtrator";
+import { IFilterCreator } from "../../workers/filtercreator/ifiltercreator";
+import { FilterCreator } from "../../workers/filtercreator/filtercreator";
 
 export class WorkerFactory implements IWorkerFactory {
 
@@ -38,10 +38,10 @@ export class WorkerFactory implements IWorkerFactory {
         const buildApi: IBuildApiRetry = await this.apiFactory.createBuildApi();
         const buildHelper: IBuildHelper = new BuildHelper(buildApi, this.logger);
 
-        const filtrator: IFiltrator = new Filtrator(this.logger);
+        const filterCreator: IFilterCreator = new FilterCreator(this.logger);
         const progressReporter: IProgressReporter = new ProgressReporter(this.logger);
 
-        return new RunCreator(coreHelper, buildHelper, filtrator, progressReporter, this.logger);
+        return new RunCreator(coreHelper, buildHelper, filterCreator, progressReporter, this.logger);
 
     }
 

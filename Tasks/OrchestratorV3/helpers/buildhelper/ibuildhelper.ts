@@ -1,5 +1,5 @@
 import { Build, BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
-import { IBuildFilter } from "../../workers/filtrator/ibuildfilter";
+import { IBuildFilter } from "../../workers/filtercreator/ibuildfilter";
 
 import { IBuildParameters } from "../taskhelper/ibuildparameters";
 
