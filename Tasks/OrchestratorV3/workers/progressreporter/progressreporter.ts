@@ -2,22 +2,27 @@
 
 import Table from "cli-table";
 
+import { String } from "typescript-string-operations";
+
 import { IDebug } from "../../loggers/idebug";
 import { IProgressReporter } from "./iprogressreporter";
 import { IBuildParameters } from "../../helpers/taskhelper/ibuildparameters";
 import { ILogger } from "../../loggers/ilogger";
+import { IFilters } from "../../helpers/taskhelper/ifilters";
 
 export class ProgressReporter implements IProgressReporter {
 
+    private logger: ILogger;
     private debugLogger: IDebug;
 
     constructor(logger: ILogger) {
 
+        this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
 
     }
 
-    public getParameters(parameters: IBuildParameters): string {
+    public logParameters(parameters: IBuildParameters): void {
 
         const table: Table = this.newTable([
 
@@ -41,7 +46,35 @@ export class ProgressReporter implements IProgressReporter {
 
         }
 
-        return table.toString();
+        this.logger.log(table.toString());
+
+    }
+
+    public logFilters(filters: IFilters): void {
+
+        const table: Table = this.newTable([
+
+            "Source branch",
+            "Release tag",
+            "Artifact version",
+            "Artifact tag",
+            "Stage status",
+
+        ]);
+
+        const result: any[] = [
+
+            filters.sourceBranch ? filters.sourceBranch : "-",
+            filters.releaseTags.length ? String.Join("|", filters.releaseTags) : "-",
+            filters.artifactVersion ? filters.artifactVersion : "-",
+            filters.artifactTags.length ? String.Join("|", filters.artifactTags) : "-",
+            filters.stageStatuses.length ? String.Join("|", filters.stageStatuses) : "-",
+
+        ];
+
+        table.push(result);
+
+        this.logger.log(table.toString());
 
     }
 

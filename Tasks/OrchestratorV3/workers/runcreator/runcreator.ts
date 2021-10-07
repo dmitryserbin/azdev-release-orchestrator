@@ -56,23 +56,25 @@ export class RunCreator implements IRunCreator {
 
                 this.logger.log(`Creating new <${definition.name}> (${definition.id}) pipeline release`);
 
+                this.progressReporter.logFilters(parameters.filters);
+
                 if (parameters.parameters && Object.keys(parameters.parameters).length) {
 
                     this.logger.log(`Overridding <${Object.keys(parameters.parameters).length}> pipeline <${definition.name}> parameters`);
 
-                    this.logger.log(
-                        this.progressReporter.getParameters(parameters.parameters)
-                    );
+                    this.progressReporter.logParameters(parameters.parameters);
 
                 }
 
-                build = await this.buildSelector.createBuild(project.name!, definition, parameters.stages, parameters.parameters);
+                build = await this.buildSelector.createBuild(project.name!, definition, parameters.filters, parameters.stages, parameters.parameters);
 
                 break;
 
             } case ReleaseType.Latest: {
 
                 this.logger.log(`Targeting latest <${definition.name}> (${definition.id}) pipeline release`);
+
+                this.progressReporter.logFilters(parameters.filters);
 
                 const buildFilter: IBuildFilter = await this.filterCreator.createBuildFilter();
 

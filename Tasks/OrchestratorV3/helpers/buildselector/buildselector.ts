@@ -6,6 +6,7 @@ import { IBuildSelector } from "./ibuildselector";
 import { IBuildApiRetry } from "../../extensions/buildapiretry/ibuildapiretry";
 import { IBuildParameters } from "../taskhelper/ibuildparameters";
 import { IBuildFilter } from "../../workers/filtercreator/ibuildfilter";
+import { IFilters } from "../taskhelper/ifilters";
 
 export class BuildSelector implements IBuildSelector {
 
@@ -21,7 +22,7 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
-    public async createBuild(projectName: string, definition: BuildDefinition, stages?: string[], parameters?: IBuildParameters): Promise<Build> {
+    public async createBuild(projectName: string, definition: BuildDefinition, filters: IFilters, stages?: string[], parameters?: IBuildParameters): Promise<Build> {
 
         const debug = this.debugLogger.extend(this.createBuild.name);
 
@@ -35,6 +36,12 @@ export class BuildSelector implements IBuildSelector {
             reason: BuildReason.Triggered,
 
         };
+
+        if (filters.sourceBranch) {
+
+            request.sourceBranch = `refs/heads/${filters.sourceBranch}`;
+
+        }
 
         if (parameters && Object.keys(parameters).length) {
 
