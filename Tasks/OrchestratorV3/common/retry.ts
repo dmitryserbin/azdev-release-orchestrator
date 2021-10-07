@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-types */
 
-import { IDebug } from "../interfaces/loggers/idebug";
-import { ILogger } from "../interfaces/loggers/ilogger";
+import { IDebug } from "../loggers/idebug";
+import { ILogger } from "../loggers/ilogger";
 import { Logger } from "../loggers/logger";
 
 const logger: ILogger = new Logger("release-orchestrator");

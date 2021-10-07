@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { IEndpoint } from "./interfaces/task/iendpoint";
-import { IParameters } from "./interfaces/task/iparameters";
-import { ITaskHelper } from "./interfaces/helpers/itaskhelper";
-import { TaskHelper } from "./helpers/taskhelper";
+import { IEndpoint } from "./helpers/taskhelper/iendpoint";
+import { IParameters } from "./helpers/taskhelper/iparameters";
+import { ITaskHelper } from "./helpers/taskhelper/itaskhelper";
+import { TaskHelper } from "./helpers/taskhelper/taskhelper";
 import { Logger } from "./loggers/logger";
-import { ILogger } from "./interfaces/loggers/ilogger";
-import { IDetails } from "./interfaces/task/idetails";
-import { IOrchestrator } from "./interfaces/orchestrator/iorchestrator";
-import { Orchestrator } from "./orchestrator/orchestrator";
-import { IReleaseProgress } from "./interfaces/common/ireleaseprogress";
-import { IApiFactory } from "./interfaces/factories/iapifactory";
-import { ApiFactory } from "./factories/apifactory";
-import { IOrchestratorFactory } from "./interfaces/factories/iorchestratorfactory";
-import { OrchestratorFactory } from "./factories/orchestratorfactory";
+import { ILogger } from "./loggers/ilogger";
+import { IDetails } from "./helpers/taskhelper/idetails";
+import { IOrchestrator } from "./workers/orchestrator/iorchestrator";
+import { Orchestrator } from "./workers/orchestrator/orchestrator";
+import { IReleaseProgress } from "./workers/orchestrator/ireleaseprogress";
+import { IApiFactory } from "./factories/apifactory/iapifactory";
+import { ApiFactory } from "./factories/apifactory/apifactory";
+import { IWorkerFactory } from "./factories/workerfactory/iworkerfactory";
+import { WorkerFactory } from "./factories/workerfactory/workerfactory";
 
 async function run() {
 
@@ -28,9 +28,8 @@ async function run() {
         const details: IDetails = await taskHelper.getDetails();
 
         const apiFactory: IApiFactory = new ApiFactory(endpoint, logger);
-        const orchestratorFactory: IOrchestratorFactory = new OrchestratorFactory(apiFactory, logger);
-
-        const orchestrator: IOrchestrator = new Orchestrator(orchestratorFactory, logger);
+        const workerFactory: IWorkerFactory = new WorkerFactory(apiFactory, logger);
+        const orchestrator: IOrchestrator = new Orchestrator(workerFactory, logger);
 
         // Run orchestrator
         const releaseProgress: IReleaseProgress = await orchestrator.orchestrate(parameters, details);

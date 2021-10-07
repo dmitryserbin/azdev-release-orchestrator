@@ -6,7 +6,7 @@ import * as chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 
 import { RetryThis, IRetryThis } from "./retrythis";
-import { ILogger } from "../../interfaces/loggers/ilogger";
+import { ILogger } from "../../loggers/ilogger";
 import { Logger } from "../../loggers/logger";
 
 const logger: ILogger = new Logger("release-orchestrator");
