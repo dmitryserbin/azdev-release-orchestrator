@@ -46,7 +46,7 @@ export class BuildHelper implements IBuildHelper {
 
     }
 
-    public async createBuild(projectName: string, definition: BuildDefinition, parameters?: IBuildParameters): Promise<Build> {
+    public async createBuild(projectName: string, definition: BuildDefinition, stages?: string[], parameters?: IBuildParameters): Promise<Build> {
 
         const debug = this.debugLogger.extend(this.createBuild.name);
 

@@ -79,7 +79,7 @@ export class Creator implements ICreator {
 
                 }
 
-                build = await this.buildHelper.createBuild(project.name!, definition, parameters.parameters);
+                build = await this.buildHelper.createBuild(project.name!, definition, parameters.stages, parameters.parameters);
 
                 break;
 
