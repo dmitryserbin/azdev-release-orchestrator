@@ -38,7 +38,7 @@ export class Orchestrator implements IOrchestrator {
         const runDeployer: IRunDeployer = await this.workerFactory.createRunDeployer();
         const progressReporter: IProgressReporter = await this.workerFactory.createProgressReporter();
 
-        const run: IRun = await runCreator.create(parameters, details);
+        const run: IRun = await runCreator.create(parameters);
 
         switch (parameters.releaseType) {
 

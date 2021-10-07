@@ -2,47 +2,49 @@ import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { Build, BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IParameters } from "../../helpers/taskhelper/iparameters";
-import { IDetails } from "../../helpers/taskhelper/idetails";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
 import { IRunCreator } from "./iruncreator";
 import { IRun } from "./irun";
-import { ICoreHelper } from "../../helpers/corehelper/icorehelper";
-import { IBuildHelper } from "../../helpers/buildhelper/ibuildhelper";
 import { ReleaseType } from "../../helpers/taskhelper/releasetype";
 import { IProgressReporter } from "../progressreporter/iprogressreporter";
 import { IBuildFilter } from "../filtercreator/ibuildfilter";
 import { IFilterCreator } from "../filtercreator/ifiltercreator";
 import { RunType } from "../orchestrator/runtype";
+import { IBuildSelector } from "../../helpers/buildselector/ibuildselector";
+import { IProjectSelector } from "../../helpers/projectselector/iprojectselector";
+import { IDefinitionSelector } from "../../helpers/definitionselector/idefinitionselector";
 
 export class RunCreator implements IRunCreator {
 
     private logger: ILogger;
     private debugLogger: IDebug;
 
-    private coreHelper: ICoreHelper;
-    private buildHelper: IBuildHelper;
+    private projectSelector: IProjectSelector;
+    private definitionSelector: IDefinitionSelector;
+    private buildSelector: IBuildSelector;
     private filterCreator: IFilterCreator;
     private progressReporter: IProgressReporter;
 
-    constructor(coreHelper: ICoreHelper, buildHelper: IBuildHelper, filterCreator: IFilterCreator, progressReporter: IProgressReporter, logger: ILogger) {
+    constructor(projectSelector: IProjectSelector, definitionSelector: IDefinitionSelector, buildSelector: IBuildSelector, filterCreator: IFilterCreator, progressReporter: IProgressReporter, logger: ILogger) {
 
         this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
 
-        this.coreHelper = coreHelper;
-        this.buildHelper = buildHelper;
+        this.projectSelector = projectSelector;
+        this.definitionSelector = definitionSelector;
+        this.buildSelector = buildSelector;
         this.filterCreator = filterCreator;
         this.progressReporter = progressReporter;
 
     }
 
-    public async create(parameters: IParameters, details: IDetails): Promise<IRun> {
+    public async create(parameters: IParameters): Promise<IRun> {
 
         const debug = this.debugLogger.extend(this.create.name);
 
-        const project: TeamProject = await this.coreHelper.getProject(parameters.projectName);
-        const definition: BuildDefinition = await this.buildHelper.getDefinition(parameters.projectName, parameters.definitionName);
+        const project: TeamProject = await this.projectSelector.getProject(parameters.projectName);
+        const definition: BuildDefinition = await this.definitionSelector.getDefinition(parameters.projectName, parameters.definitionName);
 
         this.logger.log(`Starting <${project.name}> project <${definition.name}> (${definition.id}) pipeline deployment`);
 
@@ -64,7 +66,7 @@ export class RunCreator implements IRunCreator {
 
                 }
 
-                build = await this.buildHelper.createBuild(project.name!, definition, parameters.stages, parameters.parameters);
+                build = await this.buildSelector.createBuild(project.name!, definition, parameters.stages, parameters.parameters);
 
                 break;
 
@@ -74,7 +76,7 @@ export class RunCreator implements IRunCreator {
 
                 const buildFilter: IBuildFilter = await this.filterCreator.createBuildFilter();
 
-                build = await this.buildHelper.getLatestBuild(project.name!, definition, buildFilter, 100);
+                build = await this.buildSelector.getLatestBuild(project.name!, definition, buildFilter, 100);
 
                 break;
 
@@ -82,7 +84,7 @@ export class RunCreator implements IRunCreator {
 
                 this.logger.log(`Targeting specific <${definition.name}> (${definition.id}) pipeline release`);
 
-                build = await this.buildHelper.getBuild(project.name!, definition, parameters.buildNumber);
+                build = await this.buildSelector.getSpecificBuild(project.name!, definition, parameters.buildNumber);
 
                 break;
 

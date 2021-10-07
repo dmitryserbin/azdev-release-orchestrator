@@ -7,14 +7,16 @@ import { IRunCreator } from "../../workers/runcreator/iruncreator";
 import { RunCreator } from "../../workers/runcreator/runcreator";
 import { IProgressReporter } from "../../workers/progressreporter/iprogressreporter";
 import { ProgressReporter } from "../../workers/progressreporter/progressreporter";
-import { ICoreHelper } from "../../helpers/corehelper/icorehelper";
-import { CoreHelper } from "../../helpers/corehelper/corehelper";
 import { ICoreApiRetry } from "../../extensions/coreapiretry/icoreapiretry";
 import { IBuildApiRetry } from "../../extensions/buildapiretry/ibuildapiretry";
-import { IBuildHelper } from "../../helpers/buildhelper/ibuildhelper";
-import { BuildHelper } from "../../helpers/buildhelper/buildhelper";
 import { IFilterCreator } from "../../workers/filtercreator/ifiltercreator";
 import { FilterCreator } from "../../workers/filtercreator/filtercreator";
+import { IProjectSelector } from "../../helpers/projectselector/iprojectselector";
+import { ProjectSelector } from "../../helpers/projectselector/projectselector";
+import { IDefinitionSelector } from "../../helpers/definitionselector/idefinitionselector";
+import { DefinitionSelector } from "../../helpers/definitionselector/definitionselector";
+import { IBuildSelector } from "../../helpers/buildselector/ibuildselector";
+import { BuildSelector } from "../../helpers/buildselector/buildselector";
 
 export class WorkerFactory implements IWorkerFactory {
 
@@ -33,15 +35,16 @@ export class WorkerFactory implements IWorkerFactory {
     public async createRunCreator(): Promise<IRunCreator> {
 
         const coreApi: ICoreApiRetry = await this.apiFactory.createCoreApi();
-        const coreHelper: ICoreHelper = new CoreHelper(coreApi, this.logger);
+        const projectSelector: IProjectSelector = new ProjectSelector(coreApi, this.logger);
 
         const buildApi: IBuildApiRetry = await this.apiFactory.createBuildApi();
-        const buildHelper: IBuildHelper = new BuildHelper(buildApi, this.logger);
+        const definitionSelector: IDefinitionSelector = new DefinitionSelector(buildApi, this.logger);
+        const buildSelector: IBuildSelector = new BuildSelector(buildApi, this.logger);
 
         const filterCreator: IFilterCreator = new FilterCreator(this.logger);
         const progressReporter: IProgressReporter = new ProgressReporter(this.logger);
 
-        return new RunCreator(coreHelper, buildHelper, filterCreator, progressReporter, this.logger);
+        return new RunCreator(projectSelector, definitionSelector, buildSelector, filterCreator, progressReporter, this.logger);
 
     }
 

@@ -1,11 +1,11 @@
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 
 import { IDebug } from "../../loggers/idebug";
-import { ICoreHelper } from "./icorehelper";
+import { IProjectSelector } from "./iprojectselector";
 import { ICoreApiRetry } from "../../extensions/coreapiretry/icoreapiretry";
 import { ILogger } from "../../loggers/ilogger";
 
-export class CoreHelper implements ICoreHelper {
+export class ProjectSelector implements IProjectSelector {
 
     private debugLogger: IDebug;
 
