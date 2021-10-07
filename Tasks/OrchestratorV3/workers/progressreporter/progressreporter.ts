@@ -3,11 +3,11 @@
 import Table from "cli-table";
 
 import { IDebug } from "../../loggers/idebug";
-import { IReporter } from "./ireporter";
+import { IProgressReporter } from "./iprogressreporter";
 import { IBuildParameters } from "../../helpers/taskhelper/ibuildparameters";
 import { ILogger } from "../../loggers/ilogger";
 
-export class Reporter implements IReporter {
+export class ProgressReporter implements IProgressReporter {
 
     private debugLogger: IDebug;
 

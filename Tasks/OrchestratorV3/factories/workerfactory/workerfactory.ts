@@ -5,8 +5,8 @@ import { IRunDeployer } from "../../workers/rundeployer/irundeployer";
 import { RunDeployer } from "../../workers/rundeployer/rundeployer";
 import { IRunCreator } from "../../workers/runcreator/iruncreator";
 import { RunCreator } from "../../workers/runcreator/runcreator";
-import { IReporter } from "../../workers/reporter/ireporter";
-import { Reporter } from "../../workers/reporter/reporter";
+import { IProgressReporter } from "../../workers/progressreporter/iprogressreporter";
+import { ProgressReporter } from "../../workers/progressreporter/progressreporter";
 import { ICoreHelper } from "../../helpers/corehelper/icorehelper";
 import { CoreHelper } from "../../helpers/corehelper/corehelper";
 import { ICoreApiRetry } from "../../extensions/coreapiretry/icoreapiretry";
@@ -39,9 +39,9 @@ export class WorkerFactory implements IWorkerFactory {
         const buildHelper: IBuildHelper = new BuildHelper(buildApi, this.logger);
 
         const filtrator: IFiltrator = new Filtrator(this.logger);
-        const reporter: IReporter = new Reporter(this.logger);
+        const progressReporter: IProgressReporter = new ProgressReporter(this.logger);
 
-        return new RunCreator(coreHelper, buildHelper, filtrator, reporter, this.logger);
+        return new RunCreator(coreHelper, buildHelper, filtrator, progressReporter, this.logger);
 
     }
 
@@ -51,9 +51,9 @@ export class WorkerFactory implements IWorkerFactory {
 
     }
 
-    public async createReporter(): Promise<IReporter> {
+    public async createProgressReporter(): Promise<IProgressReporter> {
 
-        return new Reporter(this.logger);
+        return new ProgressReporter(this.logger);
 
     }
 

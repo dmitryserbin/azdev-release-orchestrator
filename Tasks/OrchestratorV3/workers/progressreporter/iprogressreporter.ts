@@ -1,6 +1,6 @@
 import { IBuildParameters } from "../../helpers/taskhelper/ibuildparameters";
 
-export interface IReporter {
+export interface IProgressReporter {
 
     getParameters(parameters: IBuildParameters): string;
 

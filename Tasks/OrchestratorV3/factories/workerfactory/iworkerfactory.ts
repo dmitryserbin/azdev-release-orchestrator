@@ -1,11 +1,11 @@
 import { IRunDeployer } from "../../workers/rundeployer/irundeployer";
 import { IRunCreator } from "../../workers/runcreator/iruncreator";
-import { IReporter } from "../../workers/reporter/ireporter";
+import { IProgressReporter } from "../../workers/progressreporter/iprogressreporter";
 
 export interface IWorkerFactory {
 
     createRunCreator(): Promise<IRunCreator>;
     createRunDeployer(): Promise<IRunDeployer>;
-    createReporter(): Promise<IReporter>;
+    createProgressReporter(): Promise<IProgressReporter>;
 
 }

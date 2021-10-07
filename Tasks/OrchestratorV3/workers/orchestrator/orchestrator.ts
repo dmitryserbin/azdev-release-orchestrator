@@ -10,7 +10,7 @@ import { IRun } from "../runcreator/irun";
 import { IRunCreator } from "../runcreator/iruncreator";
 import { IRunProgress } from "./irunprogress";
 import { RunType } from "./runtype";
-import { IReporter } from "../reporter/ireporter";
+import { IProgressReporter } from "../progressreporter/iprogressreporter";
 
 export class Orchestrator implements IOrchestrator {
 
@@ -36,7 +36,7 @@ export class Orchestrator implements IOrchestrator {
 
         const runCreator: IRunCreator = await this.workerFactory.createRunCreator();
         const runDeployer: IRunDeployer = await this.workerFactory.createRunDeployer();
-        const reporter: IReporter = await this.workerFactory.createReporter();
+        const progressReporter: IProgressReporter = await this.workerFactory.createProgressReporter();
 
         const run: IRun = await runCreator.create(parameters, details);
 

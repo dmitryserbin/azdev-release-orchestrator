@@ -10,7 +10,7 @@ import { IRun } from "./irun";
 import { ICoreHelper } from "../../helpers/corehelper/icorehelper";
 import { IBuildHelper } from "../../helpers/buildhelper/ibuildhelper";
 import { ReleaseType } from "../../helpers/taskhelper/releasetype";
-import { IReporter } from "../reporter/ireporter";
+import { IProgressReporter } from "../progressreporter/iprogressreporter";
 import { IBuildFilter } from "../filtrator/ibuildfilter";
 import { IFiltrator } from "../filtrator/ifiltrator";
 import { RunType } from "../orchestrator/runtype";
@@ -23,9 +23,9 @@ export class RunCreator implements IRunCreator {
     private coreHelper: ICoreHelper;
     private buildHelper: IBuildHelper;
     private filtrator: IFiltrator;
-    private reporter: IReporter;
+    private progressReporter: IProgressReporter;
 
-    constructor(coreHelper: ICoreHelper, buildHelper: IBuildHelper, filtrator: IFiltrator, reporter: IReporter, logger: ILogger) {
+    constructor(coreHelper: ICoreHelper, buildHelper: IBuildHelper, filtrator: IFiltrator, progressReporter: IProgressReporter, logger: ILogger) {
 
         this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
@@ -33,7 +33,7 @@ export class RunCreator implements IRunCreator {
         this.coreHelper = coreHelper;
         this.buildHelper = buildHelper;
         this.filtrator = filtrator;
-        this.reporter = reporter;
+        this.progressReporter = progressReporter;
 
     }
 
@@ -59,7 +59,7 @@ export class RunCreator implements IRunCreator {
                     this.logger.log(`Overridding <${Object.keys(parameters.parameters).length}> pipeline <${definition.name}> parameters`);
 
                     this.logger.log(
-                        this.reporter.getParameters(parameters.parameters)
+                        this.progressReporter.getParameters(parameters.parameters)
                     );
 
                 }
