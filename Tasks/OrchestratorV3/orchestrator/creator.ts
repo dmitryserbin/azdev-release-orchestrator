@@ -1,5 +1,5 @@
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
-import { Build, BuildDefinition, BuildStatus } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IParameters } from "../interfaces/task/iparameters";
 import { IDetails } from "../interfaces/task/idetails";
@@ -12,6 +12,7 @@ import { IBuildHelper } from "../interfaces/helpers/ibuildhelper";
 import { ReleaseType } from "../interfaces/common/ireleasetype";
 import { IReporter } from "../interfaces/orchestrator/ireporter";
 import { IBuildFilter } from "../interfaces/common/ibuildfilter";
+import { IFiltrator } from "../interfaces/orchestrator/ifiltrator";
 
 export class Creator implements ICreator {
 
@@ -20,15 +21,17 @@ export class Creator implements ICreator {
 
     private coreHelper: ICoreHelper;
     private buildHelper: IBuildHelper;
+    private filtrator: IFiltrator;
     private reporter: IReporter;
 
-    constructor(coreHelper: ICoreHelper, buildHelper: IBuildHelper, reporter: IReporter, logger: ILogger) {
+    constructor(coreHelper: ICoreHelper, buildHelper: IBuildHelper, filtrator: IFiltrator, reporter: IReporter, logger: ILogger) {
 
         this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
 
         this.coreHelper = coreHelper;
         this.buildHelper = buildHelper;
+        this.filtrator = filtrator;
         this.reporter = reporter;
 
     }
@@ -84,11 +87,7 @@ export class Creator implements ICreator {
 
                 this.logger.log(`Targeting latest <${definition.name}> (${definition.id}) pipeline release`);
 
-                const buildFilter: IBuildFilter = {
-
-                    buildStatus: BuildStatus.Completed,
-        
-                };
+                const buildFilter: IBuildFilter = await this.filtrator.createBuildFilter();
 
                 build = await this.buildHelper.getLatestBuild(project.name!, definition, buildFilter, 100);
 

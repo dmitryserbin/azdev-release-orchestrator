@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-empty-interface */
+import { IBuildFilter } from "../common/ibuildfilter";
 
 export interface IFiltrator {
 
-    /* */
+    createBuildFilter(): Promise<IBuildFilter>
 
 }

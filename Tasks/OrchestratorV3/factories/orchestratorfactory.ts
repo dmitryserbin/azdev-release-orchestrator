@@ -13,7 +13,8 @@ import { ICoreApiRetry } from "../interfaces/extensions/icoreapiretry";
 import { IBuildApiRetry } from "../interfaces/extensions/ibuildapiretry";
 import { IBuildHelper } from "../interfaces/helpers/ibuildhelper";
 import { BuildHelper } from "../helpers/buildhelper";
-import { IDebug } from "../interfaces/loggers/idebug";
+import { IFiltrator } from "../interfaces/orchestrator/ifiltrator";
+import { Filtrator } from "../orchestrator/filtrator";
 
 export class OrchestratorFactory implements IOrchestratorFactory {
 
@@ -37,9 +38,10 @@ export class OrchestratorFactory implements IOrchestratorFactory {
         const buildApi: IBuildApiRetry = await this.apiFactory.createBuildApi();
         const buildHelper: IBuildHelper = new BuildHelper(buildApi, this.logger);
 
+        const filtrator: IFiltrator = new Filtrator(this.logger);
         const reporter: IReporter = new Reporter(this.logger);
 
-        return new Creator(coreHelper, buildHelper, reporter, this.logger);
+        return new Creator(coreHelper, buildHelper, filtrator, reporter, this.logger);
 
     }
 
