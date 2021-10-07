@@ -1,8 +1,8 @@
 import { IWorkerFactory } from "./iworkerfactory";
 import { IApiFactory } from "../apifactory/iapifactory";
 import { ILogger } from "../../loggers/ilogger";
-import { IDeployer } from "../../workers/deployer/ideployer";
-import { Deployer } from "../../workers/deployer/deployer";
+import { IRunDeployer } from "../../workers/rundeployer/irundeployer";
+import { RunDeployer } from "../../workers/rundeployer/rundeployer";
 import { IRunCreator } from "../../workers/runcreator/iruncreator";
 import { RunCreator } from "../../workers/runcreator/runcreator";
 import { IReporter } from "../../workers/reporter/ireporter";
@@ -45,9 +45,9 @@ export class WorkerFactory implements IWorkerFactory {
 
     }
 
-    public async createDeployer(): Promise<IDeployer> {
+    public async createRunDeployer(): Promise<IRunDeployer> {
 
-        return new Deployer(this.logger);
+        return new RunDeployer(this.logger);
 
     }
 
