@@ -96,8 +96,8 @@ export class RunCreator implements IRunCreator {
 
         debug(`Build <${build.buildNumber}> (${build.id}) type <${ReleaseType[parameters.releaseType]}> created`);
 
-        const stages: string[] = [];
-        const jobType: RunType = RunType.Automated;
+        const stages: string[] = parameters.stages; // TBU
+        const jobType: RunType = RunType.Automated; // TBU
 
         const run: IRun = {
 

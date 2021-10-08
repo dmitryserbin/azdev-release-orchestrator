@@ -9,6 +9,7 @@ import { IProgressReporter } from "./iprogressreporter";
 import { IBuildParameters } from "../../helpers/taskhelper/ibuildparameters";
 import { ILogger } from "../../loggers/ilogger";
 import { IFilters } from "../../helpers/taskhelper/ifilters";
+import { IRun } from "../runcreator/irun";
 
 export class ProgressReporter implements IProgressReporter {
 
@@ -19,6 +20,47 @@ export class ProgressReporter implements IProgressReporter {
 
         this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
+
+    }
+
+    public logRun(run: IRun): void {
+
+        const table: Table = this.newTable([
+
+            "ID",
+            "Name",
+            "Stages",
+            "Created By",
+            "Created On",
+
+        ]);
+
+        // // Highlight target stages in the release stages
+        // const releaseStages: (string | undefined)[] = release.environments!.map(
+        //     (stage) => {
+
+        //         const targetStage: boolean = targetStages.includes(stage.name!);
+
+        //         return (targetStage ? `${stage.name}*` : stage.name);
+
+        //     });
+
+        const releaseStages: string[] = run.stages; // TBU
+
+        const releaseDate: Date | undefined = run.build.queueTime ?
+            new Date(run.build.queueTime!) : undefined;
+
+        table.push([
+
+            run.build.id,
+            run.build.buildNumber,
+            releaseStages ? String.Join("|", releaseStages) : "-",
+            run.build.requestedBy ? run.build.requestedBy.displayName : "-",
+            releaseDate ? `${releaseDate.toLocaleDateString()} at ${releaseDate.toLocaleTimeString()}` : "-",
+
+        ]);
+
+        this.logger.log(table.toString());
 
     }
 
