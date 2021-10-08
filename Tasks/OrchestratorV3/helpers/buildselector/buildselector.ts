@@ -49,6 +49,17 @@ export class BuildSelector implements IBuildSelector {
         if (parameters && Object.keys(parameters).length) {
 
             request.templateParameters = parameters;
+
+        }
+
+        if (Array.isArray(stages) && stages.length) {
+
+            const definitionStages: string[] = await this.getStages(definition, request.sourceBranch, request.templateParameters);
+
+            await this.confirmStages(definition, definitionStages, stages);
+
+            const stagesToSkip: string[] = await this.getStagesToSkip(definitionStages, stages);
+
         }
 
         const build: Build = await this.buildApi.queueBuild(request, projectName);
@@ -145,6 +156,104 @@ export class BuildSelector implements IBuildSelector {
             (build) => `${build.buildNumber} (${build.id})`));
 
         return builds;
+
+    }
+
+    private async getStages(definition: BuildDefinition, sourceBranch?: string, parameters?: IBuildParameters): Promise<string[]> {
+
+        const debug = this.debugLogger.extend(this.getStages.name);
+
+        const body: unknown = {
+
+            contributionIds: [
+                "ms.vss-build-web.pipeline-run-parameters-data-provider",
+            ],
+            dataProviderContext: {
+                properties: {
+                    onlyFetchTemplateParameters: false,
+                    pipelineId: definition.id,
+                    sourceBranch: sourceBranch ? sourceBranch : "",
+                    sourceVersion: "",
+                    sourcePage: {
+                        routeId: "ms.vss-build-web.pipeline-details-route",
+                        routeValues: {
+                            project: definition.project?.name,
+                        },
+                    },
+                    templateParameters: (parameters && Object.keys(parameters).length) ? parameters : {},
+                },
+            },
+
+        };
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${definition.project?.id}`, `5.0-preview.1`, body);
+
+        const definitionStages: unknown[] = result.dataProviders["ms.vss-build-web.pipeline-run-parameters-data-provider"].stages;
+
+        if (!Array.isArray(definitionStages) || !definitionStages.length) {
+
+            throw new Error(`Unable to detect <${definition.name}> (${definition.id}) definition stages`);
+
+        }
+
+        const stages: string[] = definitionStages.map(
+            (i) => i.name);
+
+        debug(stages);
+
+        return stages;
+
+    }
+
+    private async confirmStages(definition: BuildDefinition, stages: string[], required: string[]): Promise<void> {
+
+        const debug = this.debugLogger.extend(this.confirmStages.name);
+
+        if (!stages.length) {
+
+            throw new Error(`No stages found in <${definition.name}> (${definition.id}) definition`);
+
+        }
+
+        for (const stage of required) {
+
+            const match: string | undefined = stages.find(
+                (i) => i.toLowerCase() === stage.toLowerCase());
+
+            if (!match) {
+
+                throw new Error(`Definition <${definition.name}> (${definition.id}) does not contain <${stage}> stage`);
+
+            }
+
+        }
+
+    }
+
+    private async getStagesToSkip(stages: string[], required: string[]): Promise<string[]> {
+
+        const debug = this.debugLogger.extend(this.getStagesToSkip.name);
+
+        const stagesToSkip: string[] = [];
+
+        for (const stage of stages) {
+
+            const match: string | undefined = required.find(
+                (i) => i.toLowerCase() === stage.toLowerCase());
+
+            if (!match) {
+
+                stagesToSkip.push(stage);
+
+            }
+
+        }
+
+
+        debug(stagesToSkip);
+
+        return stagesToSkip;
 
     }
 
