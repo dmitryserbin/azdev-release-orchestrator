@@ -1,6 +1,6 @@
 import { IEndpoint } from "./iendpoint";
 import { IParameters } from "./iparameters";
-import { RunStatus } from "../../workers/orchestrator/runstatus";
+import { RunStatus } from "../../orchestrator/runstatus";
 
 export interface ITaskHelper {
 

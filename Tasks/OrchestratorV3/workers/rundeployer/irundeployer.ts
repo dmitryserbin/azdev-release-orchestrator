@@ -1,6 +1,6 @@
 import { IDetails } from "../../helpers/taskhelper/idetails";
 import { IRun } from "../runcreator/irun";
-import { IRunProgress } from "../orchestrator/irunprogress";
+import { IRunProgress } from "../../orchestrator/irunprogress";
 
 export interface IRunDeployer {
 

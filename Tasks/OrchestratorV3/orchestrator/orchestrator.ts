@@ -1,17 +1,17 @@
 import { String } from "typescript-string-operations";
 
 import { IOrchestrator } from "./iorchestrator";
-import { IRunDeployer } from "../rundeployer/irundeployer";
-import { IParameters } from "../../helpers/taskhelper/iparameters";
-import { ReleaseType } from "../../helpers/taskhelper/releasetype";
-import { IDebug } from "../../loggers/idebug";
-import { ILogger } from "../../loggers/ilogger";
-import { IWorkerFactory } from "../../factories/workerfactory/iworkerfactory";
-import { IRun } from "../runcreator/irun";
-import { IRunCreator } from "../runcreator/iruncreator";
+import { IRunDeployer } from "../workers/rundeployer/irundeployer";
+import { IParameters } from "../helpers/taskhelper/iparameters";
+import { ReleaseType } from "../helpers/taskhelper/releasetype";
+import { IDebug } from "../loggers/idebug";
+import { ILogger } from "../loggers/ilogger";
+import { IWorkerFactory } from "../factories/workerfactory/iworkerfactory";
+import { IRun } from "../workers/runcreator/irun";
+import { IRunCreator } from "../workers/runcreator/iruncreator";
 import { IRunProgress } from "./irunprogress";
+import { IProgressReporter } from "../workers/progressreporter/iprogressreporter";
 import { RunType } from "./runtype";
-import { IProgressReporter } from "../progressreporter/iprogressreporter";
 
 export class Orchestrator implements IOrchestrator {
 

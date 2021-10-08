@@ -8,7 +8,7 @@ import { IParameters } from "./iparameters";
 import { ReleaseType } from "./releasetype";
 import { IDebug } from "../../loggers/idebug";
 import { IDetails } from "./idetails";
-import { RunStatus } from "../../workers/orchestrator/runstatus";
+import { RunStatus } from "../../orchestrator/runstatus";
 import { IFilters } from "./ifilters";
 import { ISettings } from "./isettings";
 import { ILogger } from "../../loggers/ilogger";

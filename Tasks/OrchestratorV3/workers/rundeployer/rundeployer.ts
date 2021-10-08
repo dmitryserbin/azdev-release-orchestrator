@@ -3,7 +3,7 @@ import { IRunDeployer } from "./irundeployer";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
 import { IRun } from "../runcreator/irun";
-import { IRunProgress } from "../orchestrator/irunprogress";
+import { IRunProgress } from "../../orchestrator/irunprogress";
 
 export class RunDeployer implements IRunDeployer {
 
