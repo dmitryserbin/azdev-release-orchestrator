@@ -17,6 +17,7 @@ import { IDefinitionSelector } from "../../helpers/definitionselector/idefinitio
 import { DefinitionSelector } from "../../helpers/definitionselector/definitionselector";
 import { IBuildSelector } from "../../helpers/buildselector/ibuildselector";
 import { BuildSelector } from "../../helpers/buildselector/buildselector";
+import { IApiClient } from "../../common/iapiclient";
 
 export class WorkerFactory implements IWorkerFactory {
 
@@ -39,7 +40,9 @@ export class WorkerFactory implements IWorkerFactory {
 
         const buildApi: IBuildApiRetry = await this.apiFactory.createBuildApi();
         const definitionSelector: IDefinitionSelector = new DefinitionSelector(buildApi, this.logger);
-        const buildSelector: IBuildSelector = new BuildSelector(buildApi, this.logger);
+
+        const apiClient: IApiClient = await this.apiFactory.createApiClient();
+        const buildSelector: IBuildSelector = new BuildSelector(apiClient, buildApi, this.logger);
 
         const filterCreator: IFilterCreator = new FilterCreator(this.logger);
         const progressReporter: IProgressReporter = new ProgressReporter(this.logger);

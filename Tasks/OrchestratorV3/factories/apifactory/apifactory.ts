@@ -11,34 +11,35 @@ import { IBuildApiRetry } from "../../extensions/buildapiretry/ibuildapiretry";
 import { BuildApiRetry } from "../../extensions/buildapiretry/buildapiretry";
 import { IEndpoint } from "../../helpers/taskhelper/iendpoint";
 import { ILogger } from "../../loggers/ilogger";
+import { ApiClient } from "../../common/apiclient";
+import { IApiClient } from "../../common/iapiclient";
 
 export class ApiFactory implements IApiFactory {
 
+    private logger: ILogger;
     private debugLogger: IDebug;
 
     private webApi: WebApi;
 
     constructor(endpoint: IEndpoint, logger: ILogger) {
 
+        this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
 
-        const auth: IRequestHandler = getPersonalAccessTokenHandler(endpoint.token);
-
-        // Use integrated retry mechanism to address
-        // Intermittent Azure DevOps connectivity errors
-        const options = {
+        const requestOptions: IRequestOptions = {
 
             allowRetries: true,
             maxRetries: 100,
             socketTimeout: 30000,
 
-        } as IRequestOptions;
+        };
 
-        this.debugLogger(options);
+        this.debugLogger(requestOptions);
 
-        this.webApi = new WebApi(endpoint.url, auth, options);
+        this.debugLogger(`Initializing Azure DevOps Web API`);
 
-        this.debugLogger(`Azure DevOps Web API initialized`);
+        const auth: IRequestHandler = getPersonalAccessTokenHandler(endpoint.token);
+        this.webApi = new WebApi(endpoint.url, auth, requestOptions);
 
     }
 
@@ -65,6 +66,18 @@ export class ApiFactory implements IApiFactory {
         debug(`Azure DevOps Build API initialized`);
 
         return buildApiRetry;
+
+    }
+
+    public async createApiClient(): Promise<IApiClient> {
+
+        const debug = this.debugLogger.extend(this.createApiClient.name);
+
+        debug(`Azure DevOps API client initialized`);
+
+        const apiClient: IApiClient = new ApiClient(this.webApi.vsoClient, this.logger);
+
+        return apiClient;
 
     }
 

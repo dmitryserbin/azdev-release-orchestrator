@@ -7,17 +7,20 @@ import { IBuildApiRetry } from "../../extensions/buildapiretry/ibuildapiretry";
 import { IBuildParameters } from "../taskhelper/ibuildparameters";
 import { IBuildFilter } from "../../workers/filtercreator/ibuildfilter";
 import { IFilters } from "../taskhelper/ifilters";
+import { IApiClient } from "../../common/iapiclient";
 
 export class BuildSelector implements IBuildSelector {
 
     private debugLogger: IDebug;
 
+    private apiClient: IApiClient;
     private buildApi: IBuildApiRetry;
 
-    constructor(buildApi: IBuildApiRetry, logger: ILogger) {
+    constructor(apiClient: IApiClient, buildApi: IBuildApiRetry, logger: ILogger) {
 
         this.debugLogger = logger.extend(this.constructor.name);
 
+        this.apiClient = apiClient;
         this.buildApi = buildApi;
 
     }
