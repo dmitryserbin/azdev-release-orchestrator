@@ -1,5 +1,3 @@
-import { String } from "typescript-string-operations";
-
 import { IOrchestrator } from "./iorchestrator";
 import { IRunDeployer } from "../workers/rundeployer/irundeployer";
 import { IParameters } from "../helpers/taskhelper/iparameters";
@@ -45,7 +43,7 @@ export class Orchestrator implements IOrchestrator {
 
             case ReleaseType.New: {
 
-                this.logger.log(`Deploying new <${run.build.buildNumber}> (${run.build.id}) pipeline <${String.Join("|", run.stages)}> stage(s) run`);
+                this.logger.log(`Deploying new <${run.definition.name}-${run.build.buildNumber}> (${run.build.id}) pipeline run`);
 
                 progressReporter.logRun(run);
 
@@ -71,7 +69,7 @@ export class Orchestrator implements IOrchestrator {
 
             } case ReleaseType.Latest: {
 
-                this.logger.log(`Re-deploying latest <${run.build.buildNumber}> (${run.build.id}) pipeline <${String.Join("|", run.stages)}> stage(s) run`);
+                this.logger.log(`Re-deploying latest <${run.definition.name}-${run.build.buildNumber}> (${run.build.id}) pipeline run`);
 
                 progressReporter.logRun(run);
 
@@ -81,7 +79,7 @@ export class Orchestrator implements IOrchestrator {
 
             } case ReleaseType.Specific: {
 
-                this.logger.log(`Re-deploying specific <${run.build.buildNumber}> (${run.build.id}) pipeline <${String.Join("|", run.stages)}> stage(s) run`);
+                this.logger.log(`Re-deploying specific <${run.definition.name}-${run.build.buildNumber}> (${run.build.id}) pipeline run`);
 
                 progressReporter.logRun(run);
 
