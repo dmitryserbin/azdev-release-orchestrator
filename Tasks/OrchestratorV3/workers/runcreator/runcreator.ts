@@ -94,7 +94,7 @@ export class RunCreator implements IRunCreator {
 
         }
 
-        debug(`Build <${build.buildNumber}> type <${ReleaseType[parameters.releaseType]}> created`);
+        debug(`Build <${build.buildNumber}> (${build.id}) type <${ReleaseType[parameters.releaseType]}> created`);
 
         const stages: string[] = [];
         const jobType: RunType = RunType.Automated;
@@ -110,7 +110,7 @@ export class RunCreator implements IRunCreator {
 
         };
 
-        debug(`Run <${build.buildNumber}> type <${RunType[jobType]}> created`);
+        debug(`Run <${build.buildNumber}> (${build.id}) type <${RunType[jobType]}> created`);
 
         return run;
 

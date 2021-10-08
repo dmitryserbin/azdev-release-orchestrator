@@ -1,4 +1,6 @@
-import { Build, BuildDefinition, BuildReason, BuildStatus } from "azure-devops-node-api/interfaces/BuildInterfaces";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { Build, BuildDefinition, BuildStatus } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { ILogger } from "../../loggers/ilogger";
 import { IDebug } from "../../loggers/idebug";
@@ -29,20 +31,23 @@ export class BuildSelector implements IBuildSelector {
 
         const debug = this.debugLogger.extend(this.createBuild.name);
 
-        const request: Build = {
+        const request: any = {
 
-            definition: {
-
-                id: definition.id!,
-
+            resources: {
+                repositories: {
+                    self: {
+                        refName: `refs/heads/master`,
+                    },
+                },
             },
-            reason: BuildReason.Triggered,
+            templateParameters: {},
+            stagesToSkip: [],
 
         };
 
         if (filters.sourceBranch) {
 
-            request.sourceBranch = `refs/heads/${filters.sourceBranch}`;
+            request.resources.repositories.self.refName = `refs/heads/${filters.sourceBranch}`;
 
         }
 
@@ -60,9 +65,19 @@ export class BuildSelector implements IBuildSelector {
 
             const stagesToSkip: string[] = await this.getStagesToSkip(definitionStages, stages);
 
+            request.stagesToSkip = stagesToSkip;
+
         }
 
-        const build: Build = await this.buildApi.queueBuild(request, projectName);
+        const run: any = await this.apiClient.post(`${projectName}/_apis/pipelines/${definition.id}/runs`, `5.1-preview.1`, request);
+
+        if (!run) {
+
+            throw new Error(`Unable to create <${definition.name}> (${definition.id}) definition run`);
+
+        }
+
+        const build: Build = await this.buildApi.getBuild(projectName, run.id);
 
         debug(build);
 
@@ -186,7 +201,6 @@ export class BuildSelector implements IBuildSelector {
 
         };
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${definition.project?.id}`, `5.0-preview.1`, body);
 
         const definitionStages: unknown[] = result.dataProviders["ms.vss-build-web.pipeline-run-parameters-data-provider"].stages;
