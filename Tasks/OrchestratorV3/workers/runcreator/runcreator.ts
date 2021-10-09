@@ -14,6 +14,7 @@ import { RunType } from "../../orchestrator/runtype";
 import { IBuildSelector } from "../../helpers/buildselector/ibuildselector";
 import { IProjectSelector } from "../../helpers/projectselector/iprojectselector";
 import { IDefinitionSelector } from "../../helpers/definitionselector/idefinitionselector";
+import { IResourcesFilter } from "../filtercreator/iresourcesfilter";
 
 export class RunCreator implements IRunCreator {
 
@@ -66,7 +67,9 @@ export class RunCreator implements IRunCreator {
 
                 }
 
-                build = await this.buildSelector.createBuild(project.name!, definition, parameters.filters, parameters.stages, parameters.parameters);
+                const resourcesFilter: IResourcesFilter = await this.filterCreator.createResourcesFilter(parameters.filters);
+
+                build = await this.buildSelector.createBuild(project.name!, definition, resourcesFilter, parameters.stages, parameters.parameters);
 
                 break;
 

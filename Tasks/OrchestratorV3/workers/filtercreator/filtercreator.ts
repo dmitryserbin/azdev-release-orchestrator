@@ -4,6 +4,8 @@ import { IBuildFilter } from "./ibuildfilter";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
 import { IFilterCreator } from "./ifiltercreator";
+import { IResourcesFilter } from "./iresourcesfilter";
+import { IFilters } from "../../helpers/taskhelper/ifilters";
 
 export class FilterCreator implements IFilterCreator {
 
@@ -12,6 +14,29 @@ export class FilterCreator implements IFilterCreator {
     constructor(logger: ILogger) {
 
         this.debugLogger = logger.extend(this.constructor.name);
+
+    }
+
+    public async createResourcesFilter(filters: IFilters): Promise<IResourcesFilter> {
+
+        const resourcesFilter: IResourcesFilter = {
+
+            repositories: {
+                self: {
+                    refName: `refs/heads/master`,
+                },
+            },
+            pipelines: {},
+
+        }
+
+        if (filters.sourceBranch) {
+
+            resourcesFilter.repositories.self.refName = `refs/heads/${filters.sourceBranch}`;
+
+        }
+
+        return resourcesFilter;
 
     }
 

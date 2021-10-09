@@ -75,13 +75,23 @@ export class ProgressReporter implements IProgressReporter {
 
         for (const parameter of Object.keys(parameters)) {
 
-            const maskedValue = this.maskString(parameters[parameter]);
+            let value: any;
+
+            if (typeof parameters[parameter] === "string") {
+
+                value = this.maskString(parameters[parameter] as string);
+
+            } else {
+
+                value = parameters[parameter];
+
+            }
 
             const result: any[] = [
 
                 parameter,
-                maskedValue,
-    
+                value,
+
             ];
 
             table.push(result);

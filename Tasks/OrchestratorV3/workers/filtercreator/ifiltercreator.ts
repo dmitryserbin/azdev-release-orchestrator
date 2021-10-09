@@ -1,7 +1,10 @@
+import { IFilters } from "../../helpers/taskhelper/ifilters";
 import { IBuildFilter } from "./ibuildfilter";
+import { IResourcesFilter } from "./iresourcesfilter";
 
 export interface IFilterCreator {
 
-    createBuildFilter(): Promise<IBuildFilter>
+    createResourcesFilter(filters: IFilters): Promise<IResourcesFilter>;
+    createBuildFilter(): Promise<IBuildFilter>;
 
 }

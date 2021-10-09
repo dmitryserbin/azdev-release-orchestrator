@@ -1,5 +1,5 @@
 export interface IBuildParameters {
 
-    [key: string]: string;
+    [key: string]: string | boolean;
 
 }

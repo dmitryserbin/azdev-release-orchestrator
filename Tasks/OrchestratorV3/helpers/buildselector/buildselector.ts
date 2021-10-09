@@ -8,8 +8,8 @@ import { IBuildSelector } from "./ibuildselector";
 import { IBuildApiRetry } from "../../extensions/buildapiretry/ibuildapiretry";
 import { IBuildParameters } from "../taskhelper/ibuildparameters";
 import { IBuildFilter } from "../../workers/filtercreator/ibuildfilter";
-import { IFilters } from "../taskhelper/ifilters";
 import { IApiClient } from "../../common/iapiclient";
+import { IResourcesFilter } from "../../workers/filtercreator/iresourcesfilter";
 
 export class BuildSelector implements IBuildSelector {
 
@@ -27,35 +27,17 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
-    public async createBuild(projectName: string, definition: BuildDefinition, filters: IFilters, stages?: string[], parameters?: IBuildParameters): Promise<Build> {
+    public async createBuild(projectName: string, definition: BuildDefinition, resourcesFilter: IResourcesFilter, stages?: string[], parameters?: IBuildParameters): Promise<Build> {
 
         const debug = this.debugLogger.extend(this.createBuild.name);
 
         const request: any = {
 
-            resources: {
-                repositories: {
-                    self: {
-                        refName: `refs/heads/master`,
-                    },
-                },
-            },
-            templateParameters: {},
+            resources: resourcesFilter,
             stagesToSkip: [],
+            templateParameters: {},
 
         };
-
-        if (filters.sourceBranch) {
-
-            request.resources.repositories.self.refName = `refs/heads/${filters.sourceBranch}`;
-
-        }
-
-        if (parameters && Object.keys(parameters).length) {
-
-            request.templateParameters = parameters;
-
-        }
 
         if (Array.isArray(stages) && stages.length) {
 
@@ -66,6 +48,12 @@ export class BuildSelector implements IBuildSelector {
             const stagesToSkip: string[] = await this.getStagesToSkip(definitionStages, stages);
 
             request.stagesToSkip = stagesToSkip;
+
+        }
+
+        if (parameters && Object.keys(parameters).length) {
+
+            request.templateParameters = parameters;
 
         }
 
