@@ -38,6 +38,20 @@ export class FilterCreator implements IFilterCreator {
 
         }
 
+        if (Object.keys(filters.resourcePipelines).length) {
+
+            for (const pipeline of Object.keys(filters.resourcePipelines)) {
+
+                resourcesFilter.pipelines[pipeline] = {
+
+                    version: filters.resourcePipelines[pipeline],
+
+                };
+
+            }
+
+        }
+
         debug(resourcesFilter);
 
         return resourcesFilter;

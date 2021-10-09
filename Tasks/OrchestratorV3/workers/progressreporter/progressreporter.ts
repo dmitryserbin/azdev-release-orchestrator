@@ -107,6 +107,7 @@ export class ProgressReporter implements IProgressReporter {
         const table: Table = this.newTable([
 
             "Source branch",
+            "Resource pipelines",
             "Release tag",
             "Artifact version",
             "Artifact tag",
@@ -114,9 +115,13 @@ export class ProgressReporter implements IProgressReporter {
 
         ]);
 
+        const resourcePipelines: string[] = Object.keys(filters.resourcePipelines).map(
+            (i) => `${i}|${filters.resourcePipelines[i]}`);
+
         const result: any[] = [
 
             filters.sourceBranch ? filters.sourceBranch : "-",
+            resourcePipelines.length ? String.Join("\n", resourcePipelines) : "-",
             filters.releaseTags.length ? String.Join("|", filters.releaseTags) : "-",
             filters.artifactVersion ? filters.artifactVersion : "-",
             filters.artifactTags.length ? String.Join("|", filters.artifactTags) : "-",
