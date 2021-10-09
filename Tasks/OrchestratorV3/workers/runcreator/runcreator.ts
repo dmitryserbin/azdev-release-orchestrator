@@ -100,7 +100,7 @@ export class RunCreator implements IRunCreator {
         debug(`Build <${build.buildNumber}> (${build.id}) type <${ReleaseType[parameters.releaseType]}> created`);
 
         const stages: string[] = parameters.stages; // TBU
-        const jobType: RunType = RunType.Automated; // TBU
+        const runType: RunType = RunType.Automated; // TBU
 
         const run: IRun = {
 
@@ -108,12 +108,12 @@ export class RunCreator implements IRunCreator {
             definition: definition,
             build: build,
             stages: stages,
-            type: jobType,
+            type: runType,
             settings: parameters.settings,
 
         };
 
-        debug(`Run <${build.buildNumber}> (${build.id}) type <${RunType[jobType]}> created`);
+        debug(`Run <${build.buildNumber}> (${build.id}) type <${RunType[runType]}> created`);
 
         return run;
 
