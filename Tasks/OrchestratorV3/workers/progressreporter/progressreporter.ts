@@ -109,9 +109,6 @@ export class ProgressReporter implements IProgressReporter {
             "Source branch",
             "Pipeline resource",
             "Repository resources",
-            "Release tag",
-            "Artifact version",
-            "Artifact tag",
             "Stage status",
 
         ]);
@@ -127,9 +124,6 @@ export class ProgressReporter implements IProgressReporter {
             filters.sourceBranch ? filters.sourceBranch : "-",
             pipelineResources.length ? String.Join("\n", pipelineResources) : "-",
             repositoryResources.length ? String.Join("\n", repositoryResources) : "-",
-            filters.releaseTags.length ? String.Join("|", filters.releaseTags) : "-",
-            filters.artifactVersion ? filters.artifactVersion : "-",
-            filters.artifactTags.length ? String.Join("|", filters.artifactTags) : "-",
             filters.stageStatuses.length ? String.Join("|", filters.stageStatuses) : "-",
 
         ];

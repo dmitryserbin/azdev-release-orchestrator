@@ -87,9 +87,6 @@ export class TaskHelper implements ITaskHelper {
             sourceBranch: "",
             pipelineResources: {},
             repositoryResources: {},
-            releaseTags: [],
-            artifactTags: [],
-            artifactVersion: "",
             stageStatuses: [],
 
         };
@@ -240,8 +237,6 @@ export class TaskHelper implements ITaskHelper {
 
         // Optional to support variable input
         const definitionStages: string[] = getDelimitedInput("definitionStage", ",", false);
-        const artifactVersion: string | undefined = getInput("artifactVersion", false);
-        const artifactTags: string[] = getDelimitedInput("artifactTag", ",", false);
         const sourceBranch: string | undefined = getInput("sourceBranch", false);
         const buildParameters: string[] = getDelimitedInput("buildParameters", "\n", false);
 
@@ -249,20 +244,6 @@ export class TaskHelper implements ITaskHelper {
         if (definitionStages.length) {
 
             parameters.stages = definitionStages;
-
-        }
-
-        // Get artifact version name filter
-        if (artifactVersion) {
-
-            parameters.filters.artifactVersion = artifactVersion;
-
-        }
-
-        // Get artifact tag name filter
-        if (artifactTags.length) {
-
-            parameters.filters.artifactTags = artifactTags;
 
         }
 
@@ -300,9 +281,6 @@ export class TaskHelper implements ITaskHelper {
 
         // Optional to support variable input
         const releaseStages: string[] = getDelimitedInput("releaseStage", ",", false);
-        const releaseTags: string[] = getDelimitedInput("releaseTag", ",", false);
-        const artifactVersion: string | undefined = getInput("artifactVersion", false);
-        const artifactTags: string[] = getDelimitedInput("artifactTag", ",", false);
         const sourceBranch: string | undefined = getInput("sourceBranch", false);
         const stageStatuses: string[] = getDelimitedInput("stageStatus", ",", false);
 
@@ -310,27 +288,6 @@ export class TaskHelper implements ITaskHelper {
         if (releaseStages.length) {
 
             parameters.stages = releaseStages;
-
-        }
-
-        // Get release tag filter
-        if (releaseTags.length) {
-
-            parameters.filters.releaseTags = releaseTags;
-
-        }
-
-        // Get artifact version filter
-        if (artifactVersion) {
-
-            parameters.filters.artifactVersion = artifactVersion;
-
-        }
-
-        // Get artifact tag filter
-        if (artifactTags.length) {
-
-            parameters.filters.artifactTags = artifactTags;
 
         }
 

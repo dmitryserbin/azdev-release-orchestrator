@@ -109,30 +109,6 @@
       "visibleRule": "releaseStrategy = create"
     },
     {
-      "name": "releaseTag",
-      "type": "string",
-      "label": "Release tag",
-      "helpMarkDown": "Specify target release tag filter (comma separated, last 100 releases)",
-      "required": false,
-      "visibleRule": "releaseStrategy = latest"
-    },
-    {
-      "name": "artifactVersion",
-      "type": "string",
-      "label": "Artifact version",
-      "helpMarkDown": "Specify target release primary build type artifact version filter (i.e. build number, last 100 builds)",
-      "required": false,
-      "visibleRule": "releaseStrategy != specific"
-    },
-    {
-      "name": "artifactTag",
-      "type": "string",
-      "label": "Artifact tag",
-      "helpMarkDown": "Specify target release primary build type artifact tag filter (comma separated, last 100 builds)",
-      "required": false,
-      "visibleRule": "releaseStrategy != specific"
-    },
-    {
       "name": "sourceBranch",
       "type": "string",
       "label": "Source branch",

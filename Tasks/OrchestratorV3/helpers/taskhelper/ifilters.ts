@@ -7,9 +7,6 @@ export interface IFilters {
     repositoryResources: {
         [key: string]: string,
     },
-    releaseTags: string[];
-    artifactTags: string[];
-    artifactVersion: string;
     stageStatuses: string[];
 
 }
