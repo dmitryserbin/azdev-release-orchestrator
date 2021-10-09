@@ -6,8 +6,8 @@ import { IBuildParameters } from "../taskhelper/ibuildparameters";
 
 export interface IBuildSelector {
 
-    createBuild(projectName: string, definition: BuildDefinition, resourcesFilter: IResourcesFilter, stages?: string[], parameters?: IBuildParameters): Promise<Build>;
-    getLatestBuild(projectName: string, definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build>;
-    getSpecificBuild(projectName: string, definition: BuildDefinition, buildNumber: string): Promise<Build>;
+    createBuild(definition: BuildDefinition, resourcesFilter: IResourcesFilter, stages?: string[], parameters?: IBuildParameters): Promise<Build>;
+    getLatestBuild(definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build>;
+    getSpecificBuild(definition: BuildDefinition, buildNumber: string): Promise<Build>;
 
 }

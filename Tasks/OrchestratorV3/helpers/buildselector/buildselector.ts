@@ -27,7 +27,7 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
-    public async createBuild(projectName: string, definition: BuildDefinition, resourcesFilter: IResourcesFilter, stages?: string[], parameters?: IBuildParameters): Promise<Build> {
+    public async createBuild(definition: BuildDefinition, resourcesFilter: IResourcesFilter, stages?: string[], parameters?: IBuildParameters): Promise<Build> {
 
         const debug = this.debugLogger.extend(this.createBuild.name);
 
@@ -57,7 +57,7 @@ export class BuildSelector implements IBuildSelector {
 
         }
 
-        const run: any = await this.apiClient.post(`${projectName}/_apis/pipelines/${definition.id}/runs`, `5.1-preview.1`, request);
+        const run: any = await this.apiClient.post(`${definition.project?.name}/_apis/pipelines/${definition.id}/runs`, `5.1-preview.1`, request);
 
         if (!run) {
 
@@ -65,7 +65,7 @@ export class BuildSelector implements IBuildSelector {
 
         }
 
-        const build: Build = await this.buildApi.getBuild(projectName, run.id);
+        const build: Build = await this.buildApi.getBuild(definition.project!.name!, run.id);
 
         debug(build);
 
@@ -73,16 +73,16 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
-    public async getLatestBuild(projectName: string, definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build> {
+    public async getLatestBuild(definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build> {
 
         const debug = this.debugLogger.extend(this.getLatestBuild.name);
 
-        const filteredBuilds: Build[] = await this.findBuilds(projectName, definition, filter, top);
+        const filteredBuilds: Build[] = await this.findBuilds(definition, filter, top);
 
         const latestBuild: Build = filteredBuilds.sort(
             (left, right) => left.id! - right.id!).reverse()[0];
 
-        const build: Build = await this.buildApi.getBuild(projectName, latestBuild.id!);
+        const build: Build = await this.buildApi.getBuild(definition.project!.name!, latestBuild.id!);
 
         debug(build);
 
@@ -90,12 +90,12 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
-    public async getSpecificBuild(projectName: string, definition: BuildDefinition, buildNumber: string): Promise<Build> {
+    public async getSpecificBuild(definition: BuildDefinition, buildNumber: string): Promise<Build> {
 
         const debug = this.debugLogger.extend(this.getSpecificBuild.name);
 
         const matchingBuilds: Build[] = await this.buildApi.getBuilds(
-            projectName,
+            definition.project!.name!,
             [ definition.id! ],
             undefined,
             buildNumber
@@ -110,7 +110,7 @@ export class BuildSelector implements IBuildSelector {
 
         }
 
-        const build: Build = await this.buildApi.getBuild(projectName, matchingBuilds[0].id!);
+        const build: Build = await this.buildApi.getBuild(definition.project!.name!, matchingBuilds[0].id!);
 
         debug(build);
 
@@ -118,14 +118,14 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
-    private async findBuilds(projectName: string, definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build[]> {
+    private async findBuilds(definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build[]> {
 
         const debug = this.debugLogger.extend(this.findBuilds.name);
 
         debug(filter);
 
         const builds: Build[] = await this.buildApi.getBuilds(
-            projectName,
+            definition.project!.name!,
             [ definition.id! ],
             undefined,
             undefined,

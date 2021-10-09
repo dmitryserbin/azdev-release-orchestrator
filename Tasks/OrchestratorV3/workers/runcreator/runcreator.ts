@@ -69,7 +69,7 @@ export class RunCreator implements IRunCreator {
 
                 const resourcesFilter: IResourcesFilter = await this.filterCreator.createResourcesFilter(parameters.filters);
 
-                build = await this.buildSelector.createBuild(project.name!, definition, resourcesFilter, parameters.stages, parameters.parameters);
+                build = await this.buildSelector.createBuild(definition, resourcesFilter, parameters.stages, parameters.parameters);
 
                 break;
 
@@ -81,7 +81,7 @@ export class RunCreator implements IRunCreator {
 
                 const buildFilter: IBuildFilter = await this.filterCreator.createBuildFilter();
 
-                build = await this.buildSelector.getLatestBuild(project.name!, definition, buildFilter, 100);
+                build = await this.buildSelector.getLatestBuild(definition, buildFilter, 100);
 
                 break;
 
@@ -89,7 +89,7 @@ export class RunCreator implements IRunCreator {
 
                 this.logger.log(`Targeting specific <${definition.name}> (${definition.id}) pipeline release`);
 
-                build = await this.buildSelector.getSpecificBuild(project.name!, definition, parameters.buildNumber);
+                build = await this.buildSelector.getSpecificBuild(definition, parameters.buildNumber);
 
                 break;
 
