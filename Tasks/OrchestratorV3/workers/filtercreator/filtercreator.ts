@@ -6,6 +6,8 @@ import { ILogger } from "../../loggers/ilogger";
 import { IFilterCreator } from "./ifiltercreator";
 import { IResourcesFilter } from "./iresourcesfilter";
 import { IFilters } from "../../helpers/taskhelper/ifilters";
+import { IRepositoryFilter } from "./irepositoryfilter";
+import { IPipelineFilter } from "./ipipelinefilter";
 
 export class FilterCreator implements IFilterCreator {
 
@@ -30,11 +32,14 @@ export class FilterCreator implements IFilterCreator {
 
         if (filters.sourceBranch) {
 
-            resourcesFilter.repositories["self"] = {
+            const self: IRepositoryFilter = {
 
                 refName: `refs/heads/${filters.sourceBranch}`,
+                version: ``,
 
             };
+
+            resourcesFilter.repositories["self"] = self;
 
         }
 
@@ -42,11 +47,13 @@ export class FilterCreator implements IFilterCreator {
 
             for (const resource of Object.keys(filters.pipelineResources)) {
 
-                resourcesFilter.pipelines[resource] = {
+                const pipelineFilter: IPipelineFilter = {
 
                     version: filters.pipelineResources[resource],
 
                 };
+
+                resourcesFilter.pipelines[resource] = pipelineFilter;
 
             }
 
@@ -56,12 +63,14 @@ export class FilterCreator implements IFilterCreator {
 
             for (const resource of Object.keys(filters.repositoryResources)) {
 
-                resourcesFilter.repositories[resource] = {
+                const repositoryFilter: IRepositoryFilter = {
 
                     refName: `refs/heads/${filters.repositoryResources[resource]}`,
                     version: ``,
 
                 };
+
+                resourcesFilter.repositories[resource] = repositoryFilter;
 
             }
 

@@ -1,12 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { IPipelineFilter } from "./ipipelinefilter";
+import { IRepositoryFilter } from "./irepositoryfilter";
 
 export interface IResourcesFilter {
 
     repositories: {
-        [key: string]: any;
+        [key: string]: IRepositoryFilter;
     },
     pipelines: {
-        [key: string]: any;
+        [key: string]: IPipelineFilter;
     },
 
 }

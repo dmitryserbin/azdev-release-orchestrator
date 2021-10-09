@@ -10,6 +10,7 @@ import { IBuildParameters } from "../taskhelper/ibuildparameters";
 import { IBuildFilter } from "../../workers/filtercreator/ibuildfilter";
 import { IApiClient } from "../../common/iapiclient";
 import { IResourcesFilter } from "../../workers/filtercreator/iresourcesfilter";
+import { IRepositoryFilter } from "../../workers/filtercreator/irepositoryfilter";
 
 export class BuildSelector implements IBuildSelector {
 
@@ -41,7 +42,7 @@ export class BuildSelector implements IBuildSelector {
 
         if (Array.isArray(stages) && stages.length) {
 
-            const definitionStages: string[] = await this.getStages(definition, resourcesFilter.repositories.self.refName, parameters);
+            const definitionStages: string[] = await this.getStages(definition, resourcesFilter.repositories.self, parameters);
 
             await this.confirmStages(definition, definitionStages, stages);
 
@@ -162,23 +163,23 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
-    private async getStages(definition: BuildDefinition, sourceBranch?: string, parameters?: IBuildParameters): Promise<string[]> {
+    private async getStages(definition: BuildDefinition, repository?: IRepositoryFilter, parameters?: IBuildParameters): Promise<string[]> {
 
         const debug = this.debugLogger.extend(this.getStages.name);
 
         const body: unknown = {
 
             contributionIds: [
-                "ms.vss-build-web.pipeline-run-parameters-data-provider",
+                `ms.vss-build-web.pipeline-run-parameters-data-provider`,
             ],
             dataProviderContext: {
                 properties: {
                     onlyFetchTemplateParameters: false,
                     pipelineId: definition.id,
-                    sourceBranch: sourceBranch ? sourceBranch : "",
-                    sourceVersion: "",
+                    sourceBranch: repository ? repository.refName : ``,
+                    sourceVersion: repository ? repository.version : ``,
                     sourcePage: {
-                        routeId: "ms.vss-build-web.pipeline-details-route",
+                        routeId: `ms.vss-build-web.pipeline-details-route`,
                         routeValues: {
                             project: definition.project?.name,
                         },
@@ -191,7 +192,7 @@ export class BuildSelector implements IBuildSelector {
 
         const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${definition.project?.id}`, `5.0-preview.1`, body);
 
-        const definitionStages: unknown[] = result.dataProviders["ms.vss-build-web.pipeline-run-parameters-data-provider"].stages;
+        const definitionStages: unknown[] = result.dataProviders[`ms.vss-build-web.pipeline-run-parameters-data-provider`].stages;
 
         if (!Array.isArray(definitionStages) || !definitionStages.length) {
 
