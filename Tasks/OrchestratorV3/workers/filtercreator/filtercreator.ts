@@ -38,13 +38,28 @@ export class FilterCreator implements IFilterCreator {
 
         }
 
-        if (Object.keys(filters.resourcePipelines).length) {
+        if (Object.keys(filters.pipelineResources).length) {
 
-            for (const pipeline of Object.keys(filters.resourcePipelines)) {
+            for (const resource of Object.keys(filters.pipelineResources)) {
 
-                resourcesFilter.pipelines[pipeline] = {
+                resourcesFilter.pipelines[resource] = {
 
-                    version: filters.resourcePipelines[pipeline],
+                    version: filters.pipelineResources[resource],
+
+                };
+
+            }
+
+        }
+
+        if (Object.keys(filters.repositoryResources).length) {
+
+            for (const resource of Object.keys(filters.repositoryResources)) {
+
+                resourcesFilter.repositories[resource] = {
+
+                    refName: `refs/heads/${filters.repositoryResources[resource]}`,
+                    version: ``,
 
                 };
 

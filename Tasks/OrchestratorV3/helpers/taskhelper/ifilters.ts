@@ -1,8 +1,11 @@
 export interface IFilters {
 
     sourceBranch: string;
-    resourcePipelines: {
-        [key: string]: string;
+    pipelineResources: {
+        [key: string]: string,
+    },
+    repositoryResources: {
+        [key: string]: string,
     },
     releaseTags: string[];
     artifactTags: string[];

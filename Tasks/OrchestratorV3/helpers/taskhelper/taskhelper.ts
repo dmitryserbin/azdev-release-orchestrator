@@ -85,7 +85,8 @@ export class TaskHelper implements ITaskHelper {
         const filters: IFilters = {
 
             sourceBranch: "",
-            resourcePipelines: {},
+            pipelineResources: {},
+            repositoryResources: {},
             releaseTags: [],
             artifactTags: [],
             artifactVersion: "",
