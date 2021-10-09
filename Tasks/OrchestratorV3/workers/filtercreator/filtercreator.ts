@@ -19,22 +19,26 @@ export class FilterCreator implements IFilterCreator {
 
     public async createResourcesFilter(filters: IFilters): Promise<IResourcesFilter> {
 
+        const debug = this.debugLogger.extend(this.createResourcesFilter.name);
+
         const resourcesFilter: IResourcesFilter = {
 
-            repositories: {
-                self: {
-                    refName: `refs/heads/master`,
-                },
-            },
+            repositories: {},
             pipelines: {},
 
         }
 
         if (filters.sourceBranch) {
 
-            resourcesFilter.repositories.self.refName = `refs/heads/${filters.sourceBranch}`;
+            resourcesFilter.repositories["self"] = {
+
+                refName: `refs/heads/${filters.sourceBranch}`,
+
+            };
 
         }
+
+        debug(resourcesFilter);
 
         return resourcesFilter;
 

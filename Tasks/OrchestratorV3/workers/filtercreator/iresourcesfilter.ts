@@ -2,7 +2,11 @@
 
 export interface IResourcesFilter {
 
-    repositories: any,
-    pipelines: any,
+    repositories: {
+        [key: string]: any;
+    },
+    pipelines: {
+        [key: string]: any;
+    },
 
 }
