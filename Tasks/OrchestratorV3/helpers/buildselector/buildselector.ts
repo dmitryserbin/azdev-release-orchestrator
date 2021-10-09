@@ -41,7 +41,7 @@ export class BuildSelector implements IBuildSelector {
 
         if (Array.isArray(stages) && stages.length) {
 
-            const definitionStages: string[] = await this.getStages(definition, request.sourceBranch, request.templateParameters);
+            const definitionStages: string[] = await this.getStages(definition, resourcesFilter.repositories.self.refName, parameters);
 
             await this.confirmStages(definition, definitionStages, stages);
 
