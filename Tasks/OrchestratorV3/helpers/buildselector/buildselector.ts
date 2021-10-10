@@ -8,23 +8,23 @@ import { IBuildSelector } from "./ibuildselector";
 import { IBuildApiRetry } from "../../extensions/buildapiretry/ibuildapiretry";
 import { IBuildParameters } from "../taskhelper/ibuildparameters";
 import { IBuildFilter } from "../../workers/filtercreator/ibuildfilter";
-import { IApiClient } from "../../common/iapiclient";
 import { IResourcesFilter } from "../../workers/filtercreator/iresourcesfilter";
 import { IRepositoryFilter } from "../../workers/filtercreator/irepositoryfilter";
+import { IRunApiRetry } from "../../extensions/runapiretry/irunapiretry";
 
 export class BuildSelector implements IBuildSelector {
 
     private debugLogger: IDebug;
 
-    private apiClient: IApiClient;
     private buildApi: IBuildApiRetry;
+    private runApi: IRunApiRetry;
 
-    constructor(apiClient: IApiClient, buildApi: IBuildApiRetry, logger: ILogger) {
+    constructor(buildApi: IBuildApiRetry, runApi: IRunApiRetry, logger: ILogger) {
 
         this.debugLogger = logger.extend(this.constructor.name);
 
-        this.apiClient = apiClient;
         this.buildApi = buildApi;
+        this.runApi = runApi;
 
     }
 
@@ -35,8 +35,8 @@ export class BuildSelector implements IBuildSelector {
         const request: any = {
 
             resources: resourcesFilter,
+            templateParameters: (parameters && Object.keys(parameters).length) ? parameters : {},
             stagesToSkip: [],
-            templateParameters: {},
 
         };
 
@@ -52,19 +52,7 @@ export class BuildSelector implements IBuildSelector {
 
         }
 
-        if (parameters && Object.keys(parameters).length) {
-
-            request.templateParameters = parameters;
-
-        }
-
-        const run: any = await this.apiClient.post(`${definition.project?.name}/_apis/pipelines/${definition.id}/runs`, `5.1-preview.1`, request);
-
-        if (!run) {
-
-            throw new Error(`Unable to create <${definition.name}> (${definition.id}) definition run`);
-
-        }
+        const run: any = await this.runApi.queueRun(definition, request);
 
         const build: Build = await this.buildApi.getBuild(definition.project!.name!, run.id);
 
@@ -119,45 +107,6 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
-    private async getRunDetails(build: Build): Promise<any> {
-
-        const debug = this.debugLogger.extend(this.getRunDetails.name);
-
-        const body: unknown = {
-
-            contributionIds: [
-                `ms.vss-build-web.run-details-data-provider`,
-            ],
-            dataProviderContext: {
-                properties: {
-                    buildId: `${build.id}`,
-                    sourcePage: {
-                        routeId: `ms.vss-build-web.ci-results-hub-route`,
-                        routeValues: {
-                            project: build.project?.name,
-                        }
-                    }
-                },
-            },
-
-        };
-
-        const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${build.project?.id}`, `5.0-preview.1`, body);
-
-        if (result.dataProviderExceptions) {
-
-            debug(result);
-
-            throw new Error(`Unable to retrieve <${build.buildNumber}> (${build.id}) run details`);
-
-        }
-
-        const runDetails: any = result.dataProviders[`ms.vss-build-web.run-details-data-provider`];
-
-        return runDetails;
-
-    }
-
     private async findBuilds(definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build[]> {
 
         const debug = this.debugLogger.extend(this.findBuilds.name);
@@ -206,40 +155,9 @@ export class BuildSelector implements IBuildSelector {
 
         const debug = this.debugLogger.extend(this.getStages.name);
 
-        const body: unknown = {
+        const result: any = await this.runApi.getRunParameters(definition, repository, parameters);
 
-            contributionIds: [
-                `ms.vss-build-web.pipeline-run-parameters-data-provider`,
-            ],
-            dataProviderContext: {
-                properties: {
-                    onlyFetchTemplateParameters: false,
-                    pipelineId: definition.id,
-                    sourceBranch: repository ? repository.refName : ``,
-                    sourceVersion: repository ? repository.version : ``,
-                    sourcePage: {
-                        routeId: `ms.vss-build-web.pipeline-details-route`,
-                        routeValues: {
-                            project: definition.project?.name,
-                        },
-                    },
-                    templateParameters: (parameters && Object.keys(parameters).length) ? parameters : {},
-                },
-            },
-
-        };
-
-        const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${definition.project?.id}`, `5.0-preview.1`, body);
-
-        if (result.dataProviderExceptions) {
-
-            debug(result);
-
-            throw new Error(`Unable to retrieve <${definition.name}> (${definition.id}) run parameters`);
-
-        }
-
-        const definitionStages: unknown[] = result.dataProviders[`ms.vss-build-web.pipeline-run-parameters-data-provider`].stages;
+        const definitionStages: unknown[] = result.stages;
 
         if (!Array.isArray(definitionStages) || !definitionStages.length) {
 

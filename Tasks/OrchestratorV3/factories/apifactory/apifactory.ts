@@ -13,6 +13,8 @@ import { IEndpoint } from "../../helpers/taskhelper/iendpoint";
 import { ILogger } from "../../loggers/ilogger";
 import { ApiClient } from "../../common/apiclient";
 import { IApiClient } from "../../common/iapiclient";
+import { IRunApiRetry } from "../../extensions/runapiretry/irunapiretry";
+import { RunApiRetry } from "../../extensions/runapiretry/runapiretry";
 
 export class ApiFactory implements IApiFactory {
 
@@ -47,10 +49,10 @@ export class ApiFactory implements IApiFactory {
 
         const debug = this.debugLogger.extend(this.createCoreApi.name);
 
+        debug(`Initializing Azure DevOps Core API`);
+
         const coreApi: CoreApi = await this.webApi.getCoreApi();
         const coreApiRetry: ICoreApiRetry = new CoreApiRetry(coreApi);
-
-        debug(`Azure DevOps Core API initialized`);
 
         return coreApiRetry;
 
@@ -60,20 +62,33 @@ export class ApiFactory implements IApiFactory {
 
         const debug = this.debugLogger.extend(this.createBuildApi.name);
 
+        debug(`Initializing Azure DevOps Build API`);
+
         const buildApi: BuildApi = await this.webApi.getBuildApi();
         const buildApiRetry: IBuildApiRetry = new BuildApiRetry(buildApi);
-
-        debug(`Azure DevOps Build API initialized`);
 
         return buildApiRetry;
 
     }
 
-    public async createApiClient(): Promise<IApiClient> {
+    public async createRunApi(): Promise<IRunApiRetry> {
+
+        const debug = this.debugLogger.extend(this.createRunApi.name);
+
+        debug(`Initializing Azure DevOps Run API`);
+
+        const apiClient: IApiClient = await this.createApiClient();
+        const runApi: IRunApiRetry = new RunApiRetry(apiClient, this.logger);
+
+        return runApi;
+
+    }
+
+    private async createApiClient(): Promise<IApiClient> {
 
         const debug = this.debugLogger.extend(this.createApiClient.name);
 
-        debug(`Azure DevOps API client initialized`);
+        debug(`Initializing Azure DevOps API client`);
 
         const apiClient: IApiClient = new ApiClient(this.webApi.vsoClient, this.logger);
 
