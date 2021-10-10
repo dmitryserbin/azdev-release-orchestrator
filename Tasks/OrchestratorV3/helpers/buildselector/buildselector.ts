@@ -117,12 +117,12 @@ export class BuildSelector implements IBuildSelector {
 
         if (Array.isArray(runDetails.stages) && runDetails.stages.length) {
 
+            debug(runDetails.stages);
+
             buildStages = runDetails.stages!.map(
                 (stage: any) => stage.name!);
 
         }
-
-        debug(buildStages);
 
         const targetStages: { [key: string]: boolean } = {};
 
