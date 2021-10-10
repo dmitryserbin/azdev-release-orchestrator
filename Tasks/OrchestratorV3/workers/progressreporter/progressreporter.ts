@@ -35,17 +35,9 @@ export class ProgressReporter implements IProgressReporter {
 
         ]);
 
-        // // Highlight target stages in the release stages
-        // const releaseStages: (string | undefined)[] = release.environments!.map(
-        //     (stage) => {
-
-        //         const targetStage: boolean = targetStages.includes(stage.name!);
-
-        //         return (targetStage ? `${stage.name}*` : stage.name);
-
-        //     });
-
-        const releaseStages: string[] = run.stages; // TBU
+        // Highlight target stages
+        const buildStages = Object.keys(run.stages).map(
+            (stage) => run.stages[stage] === true ? `${stage}*` : stage);
 
         const releaseDate: Date | undefined = run.build.queueTime ?
             new Date(run.build.queueTime!) : undefined;
@@ -54,7 +46,7 @@ export class ProgressReporter implements IProgressReporter {
 
             run.build.id,
             run.build.buildNumber,
-            releaseStages.length ? String.Join("|", releaseStages) : "-",
+            buildStages.length ? String.Join("|", buildStages) : "-",
             run.build.requestedBy ? run.build.requestedBy.displayName : "-",
             releaseDate ? `${releaseDate.toLocaleDateString()} at ${releaseDate.toLocaleTimeString()}` : "-",
 

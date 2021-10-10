@@ -107,24 +107,50 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
-    public async getBuildStages(build: Build): Promise<string[]> {
+    public async getBuildStages(build: Build, stages: string[]): Promise<{ [key: string]: boolean }> {
 
         const debug = this.debugLogger.extend(this.getBuildStages.name);
 
-        let stages: string[] = [];
+        let buildStages: string[] = [];
 
         const runDetails: any = await this.runApi.getRunDetails(build);
 
         if (Array.isArray(runDetails.stages) && runDetails.stages.length) {
 
-            stages = runDetails.stages!.map(
+            buildStages = runDetails.stages!.map(
                 (stage: any) => stage.name!);
 
         }
 
-        debug(stages);
+        debug(buildStages);
 
-        return stages;
+        const targetStages: { [key: string]: boolean } = {};
+
+        buildStages.map((stage) => {
+
+            let target: boolean = true;
+
+            // Detect non-target stages
+            if (stages.length) {
+
+                const match: string | undefined = stages.find(
+                    (i) => i.toLowerCase() === stage.toLowerCase());
+
+                if (!match) {
+
+                    target = false;
+
+                }
+
+            }
+
+            targetStages[stage] = target;
+
+        });
+
+        debug(targetStages);
+
+        return targetStages;
 
     }
 

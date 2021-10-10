@@ -96,14 +96,14 @@ export class RunCreator implements IRunCreator {
 
         }
 
-        const stages: string[] = parameters.stages.length ? parameters.stages : await this.buildSelector.getBuildStages(build);
+        const stages: { [key: string]: boolean } = await this.buildSelector.getBuildStages(build, parameters.stages);
 
         const run: IRun = {
 
-            project: project,
-            definition: definition,
-            build: build,
-            stages: stages,
+            project,
+            definition,
+            build,
+            stages,
             settings: parameters.settings,
 
         };

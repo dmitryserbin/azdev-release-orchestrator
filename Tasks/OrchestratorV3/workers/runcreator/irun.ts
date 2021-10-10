@@ -8,7 +8,9 @@ export interface IRun {
     project: TeamProject;
     definition: BuildDefinition
     build: Build;
-    stages: string[];
+    stages: {
+        [key: string]: boolean;
+    };
     settings: ISettings;
 
 }

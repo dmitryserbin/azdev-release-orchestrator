@@ -9,6 +9,6 @@ export interface IBuildSelector {
     createBuild(definition: BuildDefinition, resourcesFilter: IResourcesFilter, stages?: string[], parameters?: IBuildParameters): Promise<Build>;
     getLatestBuild(definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build>;
     getSpecificBuild(definition: BuildDefinition, buildNumber: string): Promise<Build>;
-    getBuildStages(build: Build): Promise<string[]>;
+    getBuildStages(build: Build, stages: string[]): Promise<{ [key: string]: boolean }>;
 
 }
