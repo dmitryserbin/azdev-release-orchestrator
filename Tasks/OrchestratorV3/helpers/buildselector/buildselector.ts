@@ -107,6 +107,27 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
+    public async getBuildStages(build: Build): Promise<string[]> {
+
+        const debug = this.debugLogger.extend(this.getBuildStages.name);
+
+        let stages: string[] = [];
+
+        const runDetails: any = await this.runApi.getRunDetails(build);
+
+        if (Array.isArray(runDetails.stages) && runDetails.stages.length) {
+
+            stages = runDetails.stages!.map(
+                (stage: any) => stage.name!);
+
+        }
+
+        debug(stages);
+
+        return stages;
+
+    }
+
     private async findBuilds(definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build[]> {
 
         const debug = this.debugLogger.extend(this.findBuilds.name);

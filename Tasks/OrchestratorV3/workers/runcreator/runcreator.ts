@@ -96,7 +96,7 @@ export class RunCreator implements IRunCreator {
 
         }
 
-        const stages: string[] = parameters.stages; // TBU
+        const stages: string[] = parameters.stages.length ? parameters.stages : await this.buildSelector.getBuildStages(build);
 
         const run: IRun = {
 
