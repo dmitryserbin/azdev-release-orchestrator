@@ -119,6 +119,45 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
+    private async getRunDetails(build: Build): Promise<any> {
+
+        const debug = this.debugLogger.extend(this.getRunDetails.name);
+
+        const body: unknown = {
+
+            contributionIds: [
+                `ms.vss-build-web.run-details-data-provider`,
+            ],
+            dataProviderContext: {
+                properties: {
+                    buildId: `${build.id}`,
+                    sourcePage: {
+                        routeId: `ms.vss-build-web.ci-results-hub-route`,
+                        routeValues: {
+                            project: build.project?.name,
+                        }
+                    }
+                },
+            },
+
+        };
+
+        const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${build.project?.id}`, `5.0-preview.1`, body);
+
+        if (result.dataProviderExceptions) {
+
+            debug(result);
+
+            throw new Error(`Unable to retrieve <${build.buildNumber}> (${build.id}) run details`);
+
+        }
+
+        const runDetails: any = result.dataProviders[`ms.vss-build-web.run-details-data-provider`];
+
+        return runDetails;
+
+    }
+
     private async findBuilds(definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build[]> {
 
         const debug = this.debugLogger.extend(this.findBuilds.name);
@@ -191,6 +230,14 @@ export class BuildSelector implements IBuildSelector {
         };
 
         const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${definition.project?.id}`, `5.0-preview.1`, body);
+
+        if (result.dataProviderExceptions) {
+
+            debug(result);
+
+            throw new Error(`Unable to retrieve <${definition.name}> (${definition.id}) run parameters`);
+
+        }
 
         const definitionStages: unknown[] = result.dataProviders[`ms.vss-build-web.pipeline-run-parameters-data-provider`].stages;
 

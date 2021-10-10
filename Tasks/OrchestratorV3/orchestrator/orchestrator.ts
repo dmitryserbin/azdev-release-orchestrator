@@ -9,7 +9,6 @@ import { IRun } from "../workers/runcreator/irun";
 import { IRunCreator } from "../workers/runcreator/iruncreator";
 import { IRunProgress } from "./irunprogress";
 import { IProgressReporter } from "../workers/progressreporter/iprogressreporter";
-import { RunType } from "./runtype";
 
 export class Orchestrator implements IOrchestrator {
 
@@ -47,23 +46,7 @@ export class Orchestrator implements IOrchestrator {
 
                 progressReporter.logRun(run);
 
-                switch (run.type) {
-
-                    case RunType.Automated: {
-
-                        runProgress = await runDeployer.deployAutomated(run, parameters.details);
-
-                        break;
-
-                    } case RunType.Manual: {
-
-                        runProgress = await runDeployer.deployManual(run, parameters.details);
-
-                        break;
-
-                    }
-
-                }
+                runProgress = await runDeployer.deployAutomated(run, parameters.details);
 
                 break;
 

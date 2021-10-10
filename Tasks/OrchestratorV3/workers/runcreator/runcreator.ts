@@ -10,7 +10,6 @@ import { ReleaseType } from "../../helpers/taskhelper/releasetype";
 import { IProgressReporter } from "../progressreporter/iprogressreporter";
 import { IBuildFilter } from "../filtercreator/ibuildfilter";
 import { IFilterCreator } from "../filtercreator/ifiltercreator";
-import { RunType } from "../../orchestrator/runtype";
 import { IBuildSelector } from "../../helpers/buildselector/ibuildselector";
 import { IProjectSelector } from "../../helpers/projectselector/iprojectselector";
 import { IDefinitionSelector } from "../../helpers/definitionselector/idefinitionselector";
@@ -97,10 +96,7 @@ export class RunCreator implements IRunCreator {
 
         }
 
-        debug(`Build <${build.buildNumber}> (${build.id}) type <${ReleaseType[parameters.releaseType]}> created`);
-
         const stages: string[] = parameters.stages; // TBU
-        const runType: RunType = RunType.Automated; // TBU
 
         const run: IRun = {
 
@@ -108,12 +104,11 @@ export class RunCreator implements IRunCreator {
             definition: definition,
             build: build,
             stages: stages,
-            type: runType,
             settings: parameters.settings,
 
         };
 
-        debug(`Run <${build.buildNumber}> (${build.id}) type <${RunType[runType]}> created`);
+        debug(`Run <${build.buildNumber}> (${build.id}) type <${ReleaseType[parameters.releaseType]}> created`);
 
         return run;
 
