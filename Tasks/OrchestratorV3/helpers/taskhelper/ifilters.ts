@@ -1,5 +1,6 @@
 export interface IFilters {
 
+    buildNumber: string;
     sourceBranch: string;
     pipelineResources: {
         [key: string]: string,

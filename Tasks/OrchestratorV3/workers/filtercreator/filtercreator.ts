@@ -82,7 +82,7 @@ export class FilterCreator implements IFilterCreator {
 
     }
 
-    public async createBuildFilter(): Promise<IBuildFilter> {
+    public async createBuildFilter(filters: IFilters): Promise<IBuildFilter> {
 
         const debug = this.debugLogger.extend(this.createBuildFilter.name);
 

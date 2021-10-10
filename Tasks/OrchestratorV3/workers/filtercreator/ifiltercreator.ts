@@ -5,6 +5,6 @@ import { IResourcesFilter } from "./iresourcesfilter";
 export interface IFilterCreator {
 
     createResourcesFilter(filters: IFilters): Promise<IResourcesFilter>;
-    createBuildFilter(): Promise<IBuildFilter>;
+    createBuildFilter(filters: IFilters): Promise<IBuildFilter>;
 
 }

@@ -78,7 +78,7 @@ export class RunCreator implements IRunCreator {
 
                 this.progressReporter.logFilters(parameters.filters);
 
-                const buildFilter: IBuildFilter = await this.filterCreator.createBuildFilter();
+                const buildFilter: IBuildFilter = await this.filterCreator.createBuildFilter(parameters.filters);
 
                 build = await this.buildSelector.getLatestBuild(definition, buildFilter, 100);
 
@@ -88,7 +88,7 @@ export class RunCreator implements IRunCreator {
 
                 this.logger.log(`Targeting specific <${definition.name}> (${definition.id}) pipeline release`);
 
-                build = await this.buildSelector.getSpecificBuild(definition, parameters.buildNumber);
+                build = await this.buildSelector.getSpecificBuild(definition, parameters.filters.buildNumber);
 
                 break;
 
