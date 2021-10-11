@@ -109,31 +109,12 @@
       "visibleRule": "releaseStrategy = create"
     },
     {
-      "name": "sourceBranch",
+      "name": "branchName",
       "type": "string",
       "label": "Source branch",
       "helpMarkDown": "Specify target release source branch filter. Example = 'refs/heads/master' (build artifact, last 100 builds) or 'master' (Git artifact)",
       "required": false,
       "visibleRule": "releaseStrategy != specific"
-    },
-    {
-      "name": "stageStatus",
-      "type": "pickList",
-      "label": "Target stage status",
-      "helpMarkDown": "Specify target release stage status filter (comma separated). Options: succeeded, partiallySucceeded, notStarted, rejected & canceled",
-      "properties": {
-        "MultiSelectFlatList": true,
-        "EditableOptions": false
-      },
-      "options": {
-        "succeeded": "Succeeded",
-        "partiallySucceeded": "Partially succeeded",
-        "notStarted": "Not started",
-        "rejected": "Rejected",
-        "canceled": "Canceled"
-      },
-      "required": false,
-      "visibleRule": "releaseStrategy = latest"
     },
     {
       "name": "releaseVariables",

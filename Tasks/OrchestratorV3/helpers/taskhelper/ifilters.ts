@@ -1,13 +1,14 @@
 export interface IFilters {
 
     buildNumber: string;
-    sourceBranch: string;
+    branchName: string;
+    buildResult: string;
+    buildTags: string[];
     pipelineResources: {
-        [key: string]: string,
-    },
+        [key: string]: string;
+    };
     repositoryResources: {
-        [key: string]: string,
-    },
-    stageStatuses: string[];
+        [key: string]: string;
+    };
 
 }

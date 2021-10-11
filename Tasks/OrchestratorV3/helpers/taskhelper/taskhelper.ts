@@ -85,10 +85,11 @@ export class TaskHelper implements ITaskHelper {
         const filters: IFilters = {
 
             buildNumber: "",
-            sourceBranch: "",
+            branchName: "",
+            buildResult: "",
+            buildTags: [],
             pipelineResources: {},
             repositoryResources: {},
-            stageStatuses: [],
 
         };
 
@@ -237,7 +238,7 @@ export class TaskHelper implements ITaskHelper {
 
         // Optional to support variable input
         const definitionStages: string[] = getDelimitedInput("definitionStage", ",", false);
-        const sourceBranch: string | undefined = getInput("sourceBranch", false);
+        const branchName: string | undefined = getInput("branchName", false);
         const buildParameters: string[] = getDelimitedInput("buildParameters", "\n", false);
 
         // Get definition stages filter
@@ -247,10 +248,10 @@ export class TaskHelper implements ITaskHelper {
 
         }
 
-        // Get source branch filter
-        if (sourceBranch) {
+        // Get branch filter
+        if (branchName) {
 
-            parameters.filters.sourceBranch = sourceBranch;
+            parameters.filters.branchName = branchName;
 
         }
 
@@ -281,8 +282,7 @@ export class TaskHelper implements ITaskHelper {
 
         // Optional to support variable input
         const releaseStages: string[] = getDelimitedInput("releaseStage", ",", false);
-        const sourceBranch: string | undefined = getInput("sourceBranch", false);
-        const stageStatuses: string[] = getDelimitedInput("stageStatus", ",", false);
+        const branchName: string | undefined = getInput("branchName", false);
 
         // Get release stages filter
         if (releaseStages.length) {
@@ -291,17 +291,10 @@ export class TaskHelper implements ITaskHelper {
 
         }
 
-        // Get source branch filter
-        if (sourceBranch) {
+        // Get branch filter
+        if (branchName) {
 
-            parameters.filters.sourceBranch = sourceBranch;
-
-        }
-
-        // Get release stage status filter
-        if (stageStatuses.length) {
-
-            parameters.filters.stageStatuses = stageStatuses;
+            parameters.filters.branchName = branchName;
 
         }
 

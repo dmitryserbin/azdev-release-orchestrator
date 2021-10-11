@@ -1,4 +1,4 @@
-import { BuildStatus } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { BuildResult, BuildStatus } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IBuildFilter } from "./ibuildfilter";
 import { IDebug } from "../../loggers/idebug";
@@ -30,11 +30,11 @@ export class FilterCreator implements IFilterCreator {
 
         }
 
-        if (filters.sourceBranch) {
+        if (filters.branchName) {
 
             const self: IRepositoryFilter = {
 
-                refName: `refs/heads/${filters.sourceBranch}`,
+                refName: `refs/heads/${filters.branchName}`,
                 version: ``,
 
             };
@@ -89,6 +89,9 @@ export class FilterCreator implements IFilterCreator {
         const buildFilter: IBuildFilter = {
 
             buildStatus: BuildStatus.Completed,
+            buildResult: filters.buildResult ? (<never>BuildResult)[filters.buildResult] : undefined,
+            tagFilters: filters.buildTags,
+            branchName: filters.branchName ? `refs/heads/${filters.branchName}` : "",
 
         };
 

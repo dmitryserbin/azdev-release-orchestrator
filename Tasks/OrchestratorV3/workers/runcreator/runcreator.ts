@@ -56,7 +56,7 @@ export class RunCreator implements IRunCreator {
 
                 this.logger.log(`Creating new <${definition.name}> (${definition.id}) pipeline release`);
 
-                this.progressReporter.logFilters(parameters.filters);
+                this.progressReporter.logFilters(parameters.filters, parameters.releaseType);
 
                 if (parameters.parameters && Object.keys(parameters.parameters).length) {
 
@@ -76,7 +76,7 @@ export class RunCreator implements IRunCreator {
 
                 this.logger.log(`Targeting latest <${definition.name}> (${definition.id}) pipeline release`);
 
-                this.progressReporter.logFilters(parameters.filters);
+                this.progressReporter.logFilters(parameters.filters, parameters.releaseType);
 
                 const buildFilter: IBuildFilter = await this.filterCreator.createBuildFilter(parameters.filters);
 

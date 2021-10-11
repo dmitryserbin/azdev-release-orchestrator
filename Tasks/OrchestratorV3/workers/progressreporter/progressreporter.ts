@@ -10,6 +10,7 @@ import { IBuildParameters } from "../../helpers/taskhelper/ibuildparameters";
 import { ILogger } from "../../loggers/ilogger";
 import { IFilters } from "../../helpers/taskhelper/ifilters";
 import { IRun } from "../runcreator/irun";
+import { ReleaseType } from "../../helpers/taskhelper/releasetype";
 
 export class ProgressReporter implements IProgressReporter {
 
@@ -94,31 +95,52 @@ export class ProgressReporter implements IProgressReporter {
 
     }
 
-    public logFilters(filters: IFilters): void {
+    public logFilters(filters: IFilters, type: ReleaseType): void {
 
-        const table: Table = this.newTable([
+        const columns: string[] = [];
 
-            "Source branch",
-            "Pipeline resource",
-            "Repository resources",
-            "Stage status",
+        const result: any[] = [];
 
-        ]);
+        switch (type) {
 
-        const pipelineResources: string[] = Object.keys(filters.pipelineResources).map(
-            (i) => `${i}|${filters.pipelineResources[i]}`);
+            case ReleaseType.New: {
 
-        const repositoryResources: string[] = Object.keys(filters.repositoryResources).map(
-            (i) => `${i}|${filters.repositoryResources[i]}`);
+                columns.push("Branch name");
+                columns.push("Pipeline resource");
+                columns.push("Repository resources");
 
-        const result: any[] = [
+                const pipelineResources: string[] = Object.keys(filters.pipelineResources).map(
+                    (i) => `${i}|${filters.pipelineResources[i]}`);
+        
+                const repositoryResources: string[] = Object.keys(filters.repositoryResources).map(
+                    (i) => `${i}|${filters.repositoryResources[i]}`);
 
-            filters.sourceBranch ? filters.sourceBranch : "-",
-            pipelineResources.length ? String.Join("\n", pipelineResources) : "-",
-            repositoryResources.length ? String.Join("\n", repositoryResources) : "-",
-            filters.stageStatuses.length ? String.Join("|", filters.stageStatuses) : "-",
+                result.push(filters.branchName ? filters.branchName : "-");
+                result.push(pipelineResources.length ? String.Join("\n", pipelineResources) : "-");
+                result.push(repositoryResources.length ? String.Join("\n", repositoryResources) : "-");
 
-        ];
+                break;
+
+            } case ReleaseType.Latest: {
+
+                columns.push("Branch name");
+                columns.push("Build result");
+                columns.push("Build tags");
+
+                result.push(filters.branchName ? filters.branchName : "-");
+                result.push(filters.buildResult ? filters.buildResult : "-");
+                result.push(filters.buildTags.length ? String.Join("|", filters.buildTags) : "-");
+
+                break;
+
+            } default: {
+
+                throw new Error(`Type <${ReleaseType[type]}> not implemented`);
+
+            }
+        }
+
+        const table: Table = this.newTable(columns);
 
         table.push(result);
 
