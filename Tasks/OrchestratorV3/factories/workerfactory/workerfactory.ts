@@ -18,6 +18,8 @@ import { DefinitionSelector } from "../../helpers/definitionselector/definitions
 import { IBuildSelector } from "../../helpers/buildselector/ibuildselector";
 import { BuildSelector } from "../../helpers/buildselector/buildselector";
 import { IRunApiRetry } from "../../extensions/runapiretry/irunapiretry";
+import { IProgressMonitor } from "../../workers/progressmonitor/iprogressmonitor";
+import { ProgressMonitor } from "../../workers/progressmonitor/progressmonitor";
 
 export class WorkerFactory implements IWorkerFactory {
 
@@ -53,7 +55,9 @@ export class WorkerFactory implements IWorkerFactory {
 
     public async createRunDeployer(): Promise<IRunDeployer> {
 
-        return new RunDeployer(this.logger);
+        const progressMonitor: IProgressMonitor = new ProgressMonitor(this.logger);
+
+        return new RunDeployer(progressMonitor, this.logger);
 
     }
 

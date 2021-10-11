@@ -4,7 +4,7 @@ import { IRunProgress } from "../../orchestrator/irunprogress";
 
 export interface IRunDeployer {
 
-    deployManual(job: IRun, details: IDetails): Promise<IRunProgress>;
-    deployAutomated(job: IRun, details: IDetails): Promise<IRunProgress>;
+    deployManual(run: IRun, details: IDetails): Promise<IRunProgress>;
+    deployAutomated(run: IRun, details: IDetails): Promise<IRunProgress>;
 
 }
