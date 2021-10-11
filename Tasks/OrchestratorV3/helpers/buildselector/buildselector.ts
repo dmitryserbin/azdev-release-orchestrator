@@ -122,21 +122,26 @@ export class BuildSelector implements IBuildSelector {
 
             for (const stage of runDetails.stages) {
 
+                // Do not auto target never started stages
+                // Applicable to existing builds only
                 const buildStage: IRunStage = {
 
                     name: stage.name!,
                     id: stage.id!,
-                    target: true,
+                    target: stage.result !== 4 ? true : false,
 
                 };
 
-                // Detect non-target stages
                 if (stages.length) {
 
                     const match: string | undefined = stages.find(
                         (targetStage) => targetStage.toLowerCase() === buildStage.name.toLowerCase());
 
-                    if (!match) {
+                    if (match) {
+
+                        buildStage.target = true;
+
+                    } else {
 
                         buildStage.target = false;
 
