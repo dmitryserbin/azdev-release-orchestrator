@@ -1,10 +1,10 @@
-import { IDetails } from "../../helpers/taskhelper/idetails";
 import { IRunDeployer } from "./irundeployer";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
 import { IRun } from "../runcreator/irun";
 import { IRunProgress } from "../../orchestrator/irunprogress";
 import { IProgressMonitor } from "../progressmonitor/iprogressmonitor";
+import { RunStatus } from "../../orchestrator/runstatus";
 
 export class RunDeployer implements IRunDeployer {
 
@@ -22,21 +22,25 @@ export class RunDeployer implements IRunDeployer {
 
     }
 
-    public async deployManual(run: IRun, details: IDetails): Promise<IRunProgress> {
+    public async deployManual(run: IRun): Promise<IRunProgress> {
 
         const debug = this.debugLogger.extend(this.deployManual.name);
 
         const runProgress: IRunProgress = this.progressMonitor.createProgress(run);
 
+        debug(`Starting <${runProgress.name}> (${runProgress.id}) run <${RunStatus[runProgress.status]}> progress tracking`);
+
         return runProgress;
 
     }
 
-    public async deployAutomated(run: IRun, details: IDetails): Promise<IRunProgress> {
+    public async deployAutomated(run: IRun): Promise<IRunProgress> {
 
         const debug = this.debugLogger.extend(this.deployAutomated.name);
 
         const runProgress: IRunProgress = this.progressMonitor.createProgress(run);
+
+        debug(`Starting <${runProgress.name}> (${runProgress.id}) run <${RunStatus[runProgress.status]}> progress tracking`);
 
         return runProgress;
 

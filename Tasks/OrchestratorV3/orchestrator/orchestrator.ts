@@ -38,6 +38,8 @@ export class Orchestrator implements IOrchestrator {
 
         const run: IRun = await runCreator.create(parameters);
 
+        debug(`Starting <${ReleaseType[parameters.releaseType]}> pipeline orchestration type`);
+
         switch (parameters.releaseType) {
 
             case ReleaseType.New: {
@@ -46,7 +48,7 @@ export class Orchestrator implements IOrchestrator {
 
                 progressReporter.logRun(run);
 
-                runProgress = await runDeployer.deployAutomated(run, parameters.details);
+                runProgress = await runDeployer.deployAutomated(run);
 
                 break;
 
@@ -56,7 +58,7 @@ export class Orchestrator implements IOrchestrator {
 
                 progressReporter.logRun(run);
 
-                runProgress = await runDeployer.deployManual(run, parameters.details);
+                runProgress = await runDeployer.deployManual(run);
 
                 break;
 
@@ -66,7 +68,7 @@ export class Orchestrator implements IOrchestrator {
 
                 progressReporter.logRun(run);
 
-                runProgress = await runDeployer.deployManual(run, parameters.details);
+                runProgress = await runDeployer.deployManual(run);
 
                 break;
 
