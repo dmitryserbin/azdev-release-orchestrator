@@ -11,6 +11,7 @@ import { IBuildFilter } from "../../workers/filtercreator/ibuildfilter";
 import { IResourcesFilter } from "../../workers/filtercreator/iresourcesfilter";
 import { IRepositoryFilter } from "../../workers/filtercreator/irepositoryfilter";
 import { IRunApiRetry } from "../../extensions/runapiretry/irunapiretry";
+import { IRunStage } from "../../workers/runcreator/irunstage";
 
 export class BuildSelector implements IBuildSelector {
 
@@ -107,11 +108,11 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
-    public async getBuildStages(build: Build, stages: string[]): Promise<{ [key: string]: boolean }> {
+    public async getBuildStages(build: Build, stages: string[]): Promise<IRunStage[]> {
 
         const debug = this.debugLogger.extend(this.getBuildStages.name);
 
-        let buildStages: string[] = [];
+        const buildStages: IRunStage[] = [];
 
         const runDetails: any = await this.runApi.getRunDetails(build);
 
@@ -119,38 +120,39 @@ export class BuildSelector implements IBuildSelector {
 
             debug(runDetails.stages);
 
-            buildStages = runDetails.stages!.map(
-                (stage: any) => stage.name!);
+            for (const stage of runDetails.stages) {
 
-        }
+                const buildStage: IRunStage = {
 
-        const targetStages: { [key: string]: boolean } = {};
+                    name: stage.name!,
+                    id: stage.id!,
+                    target: true,
 
-        buildStages.map((stage) => {
+                };
 
-            let target: boolean = true;
+                // Detect non-target stages
+                if (stages.length) {
 
-            // Detect non-target stages
-            if (stages.length) {
+                    const match: string | undefined = stages.find(
+                        (targetStage) => targetStage.toLowerCase() === buildStage.name.toLowerCase());
 
-                const match: string | undefined = stages.find(
-                    (i) => i.toLowerCase() === stage.toLowerCase());
+                    if (!match) {
 
-                if (!match) {
+                        buildStage.target = false;
 
-                    target = false;
+                    }
 
                 }
 
+                buildStages.push(buildStage);
+
             }
 
-            targetStages[stage] = target;
+        }
 
-        });
+        debug(buildStages);
 
-        debug(targetStages);
-
-        return targetStages;
+        return buildStages;
 
     }
 

@@ -5,10 +5,10 @@ import { IStageApproval } from "../workers/stageapprover/istageapproval";
 export interface IStageProgress {
 
     name: string;
+    id: string;
     approval: IStageApproval;
     status: EnvironmentStatus;
-    id?: number;
-    release?: string;
+    build?: string;
     deployment?: DeploymentAttempt;
     duration?: string;
 

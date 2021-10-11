@@ -37,8 +37,8 @@ export class ProgressReporter implements IProgressReporter {
         ]);
 
         // Highlight target stages
-        const buildStages = Object.keys(run.stages).map(
-            (stage) => run.stages[stage] === true ? `${stage}*` : stage);
+        const stages: string[] = run.stages.map(
+            (stage) => stage.target === true ? `${stage.name}*` : stage.name);
 
         const releaseDate: Date | undefined = run.build.queueTime ?
             new Date(run.build.queueTime!) : undefined;
@@ -47,7 +47,7 @@ export class ProgressReporter implements IProgressReporter {
 
             run.build.id,
             run.build.buildNumber,
-            buildStages.length ? String.Join("|", buildStages) : "-",
+            stages.length ? String.Join("|", stages) : "-",
             run.build.requestedBy ? run.build.requestedBy.displayName : "-",
             releaseDate ? `${releaseDate.toLocaleDateString()} at ${releaseDate.toLocaleTimeString()}` : "-",
 

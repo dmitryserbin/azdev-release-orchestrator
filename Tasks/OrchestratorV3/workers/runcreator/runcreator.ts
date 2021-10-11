@@ -14,6 +14,7 @@ import { IBuildSelector } from "../../helpers/buildselector/ibuildselector";
 import { IProjectSelector } from "../../helpers/projectselector/iprojectselector";
 import { IDefinitionSelector } from "../../helpers/definitionselector/idefinitionselector";
 import { IResourcesFilter } from "../filtercreator/iresourcesfilter";
+import { IRunStage } from "./irunstage";
 
 export class RunCreator implements IRunCreator {
 
@@ -96,7 +97,7 @@ export class RunCreator implements IRunCreator {
 
         }
 
-        const stages: { [key: string]: boolean } = await this.buildSelector.getBuildStages(build, parameters.stages);
+        const stages: IRunStage[] = await this.buildSelector.getBuildStages(build, parameters.stages);
 
         const run: IRun = {
 
