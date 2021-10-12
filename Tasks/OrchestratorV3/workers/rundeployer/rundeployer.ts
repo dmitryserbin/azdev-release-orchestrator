@@ -54,7 +54,7 @@ export class RunDeployer implements IRunDeployer {
 
         let runProgress: IRunProgress = this.progressMonitor.createRunProgress(run);
 
-        debug(`Starting <${runProgress.name}> (${runProgress.id}) run <${RunStatus[runProgress.status]}> progress tracking`);
+        this.logger.log(`Starting <${runProgress.name}> (${runProgress.id}) run <${RunStatus[runProgress.status]}> progress tracking`);
 
         let inProgress: boolean = true;
 

@@ -139,7 +139,11 @@ export class ProgressMonitor implements IProgressMonitor {
 
         const status: boolean = stageProgress.state === StageState.Completed;
 
-        debug(`Stage <${stageProgress.name}> (${StageState[stageProgress.state]}) status <${status}>`);
+        if (status) {
+
+            debug(`Stage <${stageProgress.name}> (${StageState[stageProgress.state]}) is completed`);
+
+        }
 
         return status;
 
@@ -151,7 +155,11 @@ export class ProgressMonitor implements IProgressMonitor {
 
         const status: boolean = stageProgress.state !== StageState.Completed;
 
-        debug(`Stage <${stageProgress.name}> (${StageState[stageProgress.state]}) status <${status}>`);
+        if (status) {
+
+            debug(`Stage <${stageProgress.name}> (${StageState[stageProgress.state]}) is active`);
+
+        }
 
         return status;
 
