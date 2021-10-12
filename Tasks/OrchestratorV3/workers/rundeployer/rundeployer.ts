@@ -60,7 +60,7 @@ export class RunDeployer implements IRunDeployer {
 
         while (inProgress) {
 
-            debug(`Monitoring <${String.Join("|", runProgress.stages.map((stage) => stage.name))}> stage(s) progress`);
+            debug(`Updating <${String.Join("|", runProgress.stages.map((stage) => stage.name))}> active stage(s) progress`);
 
             const activeStages: IStageProgress[] = this.progressMonitor.getActiveStages(runProgress);
 
