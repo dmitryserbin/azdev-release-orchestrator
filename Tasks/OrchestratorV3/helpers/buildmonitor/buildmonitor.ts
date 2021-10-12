@@ -7,6 +7,7 @@ import { IDebug } from "../../loggers/idebug";
 import { IRunApiRetry } from "../../extensions/runapiretry/irunapiretry";
 import { IBuildMonitor } from "./ibuildmonitor";
 import { IBuildStage } from "../../workers/progressmonitor/ibuildstage";
+import { IBuildJob } from "../../workers/progressmonitor/ibuildjob";
 
 export class BuildMonitor implements IBuildMonitor {
 
@@ -52,6 +53,15 @@ export class BuildMonitor implements IBuildMonitor {
         if (!stageStatus) {
 
             throw new Error(`Unable to get <${build.buildNumber}> (${build.id}) build stage <${name}> status`);
+
+        }
+
+        const stageJobs: IBuildJob[] = buildStatus.jobs.filter(
+            (job: IBuildJob) => job.stageId === stageStatus.id);
+
+        if (stageJobs.length) {
+
+            stageStatus.jobs = stageJobs;
 
         }
 
