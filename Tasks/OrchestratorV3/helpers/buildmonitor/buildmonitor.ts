@@ -22,14 +22,38 @@ export class BuildMonitor implements IBuildMonitor {
 
     }
 
+    public async getBuildStatus(build: Build): Promise<unknown> {
+
+        const debug = this.debugLogger.extend(this.getBuildStatus.name);
+
+        const buildStatus: any = await this.runApi.getRunDetails(build);
+
+        if (!buildStatus) {
+
+            throw new Error(`Unable to get <${build.buildNumber}> (${build.id}) build status`);
+
+        }
+
+        debug(`Build <${build.buildNumber}> (${build.id}) status <${buildStatus.status}> retrieved`);
+
+        return buildStatus;
+
+    }
+
     public async getStageStatus(build: Build, name: string): Promise<IBuildStage> {
 
         const debug = this.debugLogger.extend(this.getStageStatus.name);
 
-        const runDetails: any = await this.runApi.getRunDetails(build);
+        const buildStatus: any = await this.runApi.getRunDetails(build);
 
-        const stageStatus: IBuildStage = runDetails.stages.find(
+        const stageStatus: IBuildStage = buildStatus.stages.find(
             (stage: IBuildStage) => stage.name === name);
+
+        if (!stageStatus) {
+
+            throw new Error(`Unable to get <${build.buildNumber}> (${build.id}) build stage <${name}> status`);
+
+        }
 
         debug(stageStatus);
 
