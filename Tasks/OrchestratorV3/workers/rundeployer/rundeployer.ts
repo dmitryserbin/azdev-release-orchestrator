@@ -8,24 +8,28 @@ import { IRunProgress } from "../../orchestrator/irunprogress";
 import { IProgressMonitor } from "../progressmonitor/iprogressmonitor";
 import { RunStatus } from "../../orchestrator/runstatus";
 import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper";
-import { EnvironmentStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { IProgressReporter } from "../progressreporter/iprogressreporter";
 import { IStageProgress } from "../../orchestrator/istageprogress";
+import { IBuildStage } from "../progressmonitor/ibuildstage";
+import { StageState } from "../progressmonitor/stagestate";
+import { IBuildMonitor } from "../../helpers/buildmonitor/ibuildmonitor";
 
 export class RunDeployer implements IRunDeployer {
 
     private logger: ILogger;
     private debugLogger: IDebug;
 
+    private buildMonitor: IBuildMonitor;
     private commonHelper: ICommonHelper;
     private progressMonitor: IProgressMonitor;
     private progressReporter: IProgressReporter;
 
-    constructor(commonHelper: ICommonHelper, progressMonitor: IProgressMonitor, progressReporter: IProgressReporter, logger: ILogger) {
+    constructor(buildMonitor: IBuildMonitor, commonHelper: ICommonHelper, progressMonitor: IProgressMonitor, progressReporter: IProgressReporter, logger: ILogger) {
 
         this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
 
+        this.buildMonitor = buildMonitor;
         this.commonHelper = commonHelper;
         this.progressMonitor = progressMonitor;
         this.progressReporter = progressReporter;
@@ -36,7 +40,7 @@ export class RunDeployer implements IRunDeployer {
 
         const debug = this.debugLogger.extend(this.deployManual.name);
 
-        const runProgress: IRunProgress = this.progressMonitor.createProgress(run);
+        const runProgress: IRunProgress = this.progressMonitor.createRunProgress(run);
 
         debug(`Starting <${runProgress.name}> (${runProgress.id}) run <${RunStatus[runProgress.status]}> progress tracking`);
 
@@ -48,7 +52,7 @@ export class RunDeployer implements IRunDeployer {
 
         const debug = this.debugLogger.extend(this.deployAutomated.name);
 
-        const runProgress: IRunProgress = this.progressMonitor.createProgress(run);
+        let runProgress: IRunProgress = this.progressMonitor.createRunProgress(run);
 
         debug(`Starting <${runProgress.name}> (${runProgress.id}) run <${RunStatus[runProgress.status]}> progress tracking`);
 
@@ -58,17 +62,19 @@ export class RunDeployer implements IRunDeployer {
 
             debug(`Monitoring <${String.Join("|", runProgress.stages.map((stage) => stage.name))}> stage(s) progress`);
 
-            const activeStages: IStageProgress[] = [];
+            const activeStages: IStageProgress[] = this.progressMonitor.getActiveStages(runProgress);
 
-            for (const stage of activeStages) {
+            for (let stage of activeStages) {
 
-                debug(`Updating <${stage.name}> (${stage.id}) stage <${EnvironmentStatus[stage.status]}> status`);
+                debug(`Updating <${stage.name}> (${stage.id}) stage <${StageState[stage.state]}> progress`);
 
-                const stageCompleted: boolean = true;
+                const stageStatus: IBuildStage = await this.buildMonitor.getStageStatus(run.build, stage.name);
 
-                if (stageCompleted) {
+                stage = this.progressMonitor.updateStageProgress(stage, stageStatus);
 
-                    this.logger.log(`Stage <${stage.name}> (${stage.id}) reported <${EnvironmentStatus[stage.status]}> status`);
+                if (stage.state === StageState.Completed) {
+
+                    this.logger.log(`Stage <${stage.name}> (${stage.id}) reported <${StageState[stage.state]}> state`);
 
                     this.progressReporter.logStageProgress(stage);
 
@@ -78,12 +84,16 @@ export class RunDeployer implements IRunDeployer {
 
             }
 
-            inProgress = false;
+            runProgress = this.progressMonitor.updateRunProgress(runProgress);
 
             if (runProgress.status === RunStatus.InProgress) {
 
                 // Wait before next status update
                 await this.commonHelper.wait(run.settings.sleep);
+
+            } else {
+
+                inProgress = false;
 
             }
 
