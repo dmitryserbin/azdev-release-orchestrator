@@ -11,6 +11,7 @@ import { ILogger } from "../../loggers/ilogger";
 import { IFilters } from "../../helpers/taskhelper/ifilters";
 import { IRun } from "../runcreator/irun";
 import { ReleaseType } from "../../helpers/taskhelper/releasetype";
+import { IStageProgress } from "../../orchestrator/istageprogress";
 
 export class ProgressReporter implements IProgressReporter {
 
@@ -143,6 +144,46 @@ export class ProgressReporter implements IProgressReporter {
         const table: Table = this.newTable(columns);
 
         table.push(result);
+
+        this.logger.log(table.toString());
+
+    }
+
+    public logStageProgress(stageProgress: IStageProgress): void {
+
+        const table: Table = this.newTable([
+
+            "Agent",
+            "Phase",
+            "Task",
+            "Status",
+            "Duration",
+
+        ]);
+
+        // TBU
+
+        this.logger.log(table.toString());
+
+    }
+
+    public logStagesProgress(stagesProgress: IStageProgress[]): void {
+
+        const table: Table = this.newTable([
+
+            "ID",
+            "Name",
+            "Type",
+            "Build",
+            "Tasks",
+            "Attempt",
+            "Approval",
+            "Status",
+            "Duration",
+
+        ]);
+
+        // TBU
 
         this.logger.log(table.toString());
 

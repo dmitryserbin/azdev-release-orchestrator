@@ -20,6 +20,8 @@ import { BuildSelector } from "../../helpers/buildselector/buildselector";
 import { IRunApiRetry } from "../../extensions/runapiretry/irunapiretry";
 import { IProgressMonitor } from "../../workers/progressmonitor/iprogressmonitor";
 import { ProgressMonitor } from "../../workers/progressmonitor/progressmonitor";
+import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper";
+import { CommonHelper } from "../../helpers/commonhelper/commonhelper";
 
 export class WorkerFactory implements IWorkerFactory {
 
@@ -55,9 +57,11 @@ export class WorkerFactory implements IWorkerFactory {
 
     public async createRunDeployer(): Promise<IRunDeployer> {
 
+        const commonHelper: ICommonHelper = new CommonHelper(this.logger);
         const progressMonitor: IProgressMonitor = new ProgressMonitor(this.logger);
+        const progressReporter: IProgressReporter = new ProgressReporter(this.logger);
 
-        return new RunDeployer(progressMonitor, this.logger);
+        return new RunDeployer(commonHelper, progressMonitor, progressReporter, this.logger);
 
     }
 
