@@ -76,6 +76,8 @@ export class Orchestrator implements IOrchestrator {
 
         }
 
+        this.logger.log(progressReporter.logRunProgress(runProgress));
+
         return runProgress;
 
     }

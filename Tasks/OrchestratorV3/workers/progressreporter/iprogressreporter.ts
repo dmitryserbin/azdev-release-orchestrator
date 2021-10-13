@@ -1,6 +1,7 @@
 import { IBuildParameters } from "../../helpers/taskhelper/ibuildparameters";
 import { IFilters } from "../../helpers/taskhelper/ifilters";
 import { ReleaseType } from "../../helpers/taskhelper/releasetype";
+import { IRunProgress } from "../../orchestrator/irunprogress";
 import { IStageProgress } from "../../orchestrator/istageprogress";
 import { IRun } from "../runcreator/irun";
 
@@ -11,5 +12,6 @@ export interface IProgressReporter {
     logFilters(filters: IFilters, type: ReleaseType): void;
     logStageProgress(stageProgress: IStageProgress): void;
     logStagesProgress(stagesProgress: IStageProgress[]): void;
+    logRunProgress(runProgress: IRunProgress): void;
 
 }

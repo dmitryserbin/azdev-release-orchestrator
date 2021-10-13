@@ -15,6 +15,8 @@ import { IFilters } from "../../helpers/taskhelper/ifilters";
 import { IRun } from "../runcreator/irun";
 import { ReleaseType } from "../../helpers/taskhelper/releasetype";
 import { IStageProgress } from "../../orchestrator/istageprogress";
+import { IRunProgress } from "../../orchestrator/irunprogress";
+import { RunStatus } from "../../orchestrator/runstatus";
 
 export class ProgressReporter implements IProgressReporter {
 
@@ -227,6 +229,32 @@ export class ProgressReporter implements IProgressReporter {
             table.push(result);
 
         }
+
+        this.logger.log(table.toString());
+
+    }
+
+    public logRunProgress(runProgress: IRunProgress): void {
+
+        const table: Table = this.newTable([
+
+            "ID",
+            "Release",
+            "Status",
+            "Summary",
+
+        ]);
+
+        const result: any[] = [
+
+            runProgress.id ? runProgress.id : "-",
+            runProgress.name ? runProgress.name : "-",
+            runProgress.status ? RunStatus[runProgress.status] : "-",
+            runProgress.url ? runProgress.url : "-",
+
+        ];
+
+        table.push(result);
 
         this.logger.log(table.toString());
 
