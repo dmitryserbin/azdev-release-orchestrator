@@ -1,5 +1,5 @@
 import { IBuildApi } from "azure-devops-node-api/BuildApi";
-import { Build, BuildReason, BuildStatus, BuildResult, QueryDeletedOption, BuildQueryOrder, BuildDefinition, DefinitionQueryOrder, BuildDefinitionReference } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, BuildReason, BuildStatus, BuildResult, QueryDeletedOption, BuildQueryOrder, BuildDefinition, DefinitionQueryOrder, BuildDefinitionReference, Timeline } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IBuildApiRetry } from "./ibuildapiretry";
 import { Retryable } from "../../common/retry";
@@ -49,6 +49,18 @@ export class BuildApiRetry implements IBuildApiRetry {
             buildIds,
             repositoryId,
             repositoryType);
+
+    }
+
+    @Retryable()
+    public async getBuildTimeline(project: string, buildId: number, timelineId?: string, changeId?: number, planId?: string): Promise<Timeline> {
+
+        return await this.buildApi.getBuildTimeline(
+            project,
+            buildId,
+            timelineId,
+            changeId,
+            planId);
 
     }
 
