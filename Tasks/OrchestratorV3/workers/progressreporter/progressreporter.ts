@@ -32,6 +32,8 @@ export class ProgressReporter implements IProgressReporter {
 
     public logRun(run: IRun): void {
 
+        const debug = this.debugLogger.extend(this.logRun.name);
+
         const table: Table = this.newTable([
 
             "ID",
@@ -58,6 +60,17 @@ export class ProgressReporter implements IProgressReporter {
             releaseDate ? `${releaseDate.toLocaleDateString()} at ${releaseDate.toLocaleTimeString()}` : "-",
 
         ]);
+
+        const urls: unknown = {
+            project: run.project?.url ? run.project?.url : "-",
+            definition: run.definition.url ? run.definition.url : "-",
+            build: run.build.url ? run.build.url : "-",
+            timeline: (run.build.url && run.build.orchestrationPlan?.planId) ? `${run.build.url}/timeline/${run.build.orchestrationPlan.planId}` : "-",
+            logs: run.build.logs?.url ? run.build.logs.url : "-",
+
+        };
+
+        debug(urls);
 
         this.logger.log(table.toString());
 
