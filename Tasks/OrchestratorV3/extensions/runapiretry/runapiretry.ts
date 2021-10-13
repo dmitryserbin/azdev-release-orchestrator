@@ -25,8 +25,6 @@ export class RunApiRetry implements IRunApiRetry {
 
     public async queueRun(definition: BuildDefinition, request: unknown): Promise<unknown> {
 
-        const debug = this.debugLogger.extend(this.queueRun.name);
-
         const run: unknown = await this.apiClient.post(`${definition.project?.name}/_apis/pipelines/${definition.id}/runs`, `5.1-preview.1`, request);
 
         if (!run) {

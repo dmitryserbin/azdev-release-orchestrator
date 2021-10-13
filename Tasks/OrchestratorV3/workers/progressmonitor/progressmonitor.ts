@@ -104,8 +104,6 @@ export class ProgressMonitor implements IProgressMonitor {
 
     public updateStageProgress(stageProgress: IStageProgress, stageStatus: IBuildStage): IStageProgress {
 
-        const debug = this.debugLogger.extend(this.updateStageProgress.name);
-
         stageProgress.startTime = stageStatus.startTime;
         stageProgress.finishTime = stageStatus.finishTime;
         stageProgress.state = stageStatus.state;

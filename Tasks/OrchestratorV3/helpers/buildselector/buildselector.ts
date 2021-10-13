@@ -88,8 +88,7 @@ export class BuildSelector implements IBuildSelector {
             definition.project!.name!,
             [ definition.id! ],
             undefined,
-            buildNumber
-        );
+            buildNumber);
 
         debug(matchingBuilds.map(
             (build) => `${build.buildNumber} (${build.id})`));
@@ -229,8 +228,6 @@ export class BuildSelector implements IBuildSelector {
     }
 
     private async confirmStages(definition: BuildDefinition, stages: string[], required: string[]): Promise<void> {
-
-        const debug = this.debugLogger.extend(this.confirmStages.name);
 
         if (!stages.length) {
 
