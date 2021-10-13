@@ -239,7 +239,7 @@ export class ProgressReporter implements IProgressReporter {
 
             "ID",
             "Build",
-            "Status",
+            "Result",
             "Summary",
 
         ]);
