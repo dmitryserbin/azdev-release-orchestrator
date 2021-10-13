@@ -2,7 +2,7 @@
 
 import { String } from "typescript-string-operations";
 
-import { TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { TaskResult, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IProgressMonitor } from "./iprogressmonitor";
 import { IDebug } from "../../loggers/idebug";
@@ -85,10 +85,31 @@ export class ProgressMonitor implements IProgressMonitor {
 
             debug(`All run stages <${String.Join("|", completedStages)}> completed`);
 
-            // TBU
+            // Get canceled or abandoned stages
+            const failedStages: boolean = runProgress.stages.filter(
+                (stage) => stage.result === TaskResult.Canceled || stage.result === TaskResult.Abandoned).length > 0;
 
-            runProgress.status = RunStatus.Succeeded;
+            if (failedStages) {
 
+                runProgress.status = RunStatus.Failed;
+
+            } else {
+
+                // Get succeeded with issues stages
+                const issuesStages: boolean = runProgress.stages.filter(
+                    (stage) => stage.result === TaskResult.SucceededWithIssues).length > 0;
+
+                if (issuesStages) {
+
+                    runProgress.status = RunStatus.PartiallySucceeded;
+
+                } else {
+
+                    runProgress.status = RunStatus.Succeeded;
+
+                }
+
+            }
 
         } else {
 
