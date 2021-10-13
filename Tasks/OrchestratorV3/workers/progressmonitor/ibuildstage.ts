@@ -1,20 +1,15 @@
+import { TaskResult, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
+
 import { IBuildJob } from "./ibuildjob";
-import { StageResult } from "./stageresult";
-import { StageState } from "./stagestate";
 
 export interface IBuildStage {
 
     id: string,
     name: string,
-    refName:string,
-    startTime: string,
-    finishTime: string,
-    state: StageState,
-    result: StageResult,
-    stateData: {
-        pendingDependencies: boolean,
-        pendingChecks: boolean,
-    },
+    startTime: Date,
+    finishTime: Date,
+    state: TimelineRecordState,
+    result: TaskResult | undefined,
     jobs: IBuildJob[],
 
 }

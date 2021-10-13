@@ -2,7 +2,7 @@
 
 import { String } from "typescript-string-operations";
 
-import { ApprovalStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IProgressMonitor } from "./iprogressmonitor";
 import { IDebug } from "../../loggers/idebug";
@@ -10,12 +10,9 @@ import { ILogger } from "../../loggers/ilogger";
 import { IRun } from "../runcreator/irun";
 import { IRunProgress } from "../../orchestrator/irunprogress";
 import { RunStatus } from "../../orchestrator/runstatus";
-import { IStageApproval } from "../stageapprover/istageapproval";
 import { IStageProgress } from "../../orchestrator/istageprogress";
 import { IRunStage } from "../runcreator/irunstage";
 import { IBuildStage } from "./ibuildstage";
-import { StageState } from "./stagestate";
-import { StageResult } from "./stageresult";
 
 export class ProgressMonitor implements IProgressMonitor {
 
@@ -46,20 +43,15 @@ export class ProgressMonitor implements IProgressMonitor {
 
         for (const stage of targetStages) {
 
-            const approvalStatus: IStageApproval = {
-
-                status: ApprovalStatus.Pending,
-                retry: 0,
-
-            };
-
             const stageProgress: IStageProgress = {
 
                 name: stage.name,
                 id: stage.id,
-                approval: approvalStatus,
-                state: StageState.NotStarted,
-                result: StageResult.Zero,
+                startTime: undefined,
+                finishTime: undefined,
+                state: TimelineRecordState.Pending,
+                result: undefined,
+                jobs: [],
 
             };
 
@@ -114,7 +106,11 @@ export class ProgressMonitor implements IProgressMonitor {
 
         const debug = this.debugLogger.extend(this.updateStageProgress.name);
 
+        stageProgress.startTime = stageStatus.startTime;
+        stageProgress.finishTime = stageStatus.finishTime;
         stageProgress.state = stageStatus.state;
+        stageProgress.result = stageStatus.result;
+        stageProgress.jobs = stageStatus.jobs;
 
         return stageProgress;
 
@@ -137,11 +133,11 @@ export class ProgressMonitor implements IProgressMonitor {
 
         const debug = this.debugLogger.extend(this.isStageCompleted.name);
 
-        const status: boolean = stageProgress.state === StageState.Completed;
+        const status: boolean = stageProgress.state === TimelineRecordState.Completed;
 
         if (status) {
 
-            debug(`Stage <${stageProgress.name}> (${StageState[stageProgress.state]}) is completed`);
+            debug(`Stage <${stageProgress.name}> (${TimelineRecordState[stageProgress.state!]}) is completed`);
 
         }
 
@@ -153,11 +149,11 @@ export class ProgressMonitor implements IProgressMonitor {
 
         const debug = this.debugLogger.extend(this.isStageActive.name);
 
-        const status: boolean = stageProgress.state !== StageState.Completed;
+        const status: boolean = stageProgress.state !== TimelineRecordState.Completed;
 
         if (status) {
 
-            debug(`Stage <${stageProgress.name}> (${StageState[stageProgress.state]}) is active`);
+            debug(`Stage <${stageProgress.name}> (${TimelineRecordState[stageProgress.state!]}) is active`);
 
         }
 

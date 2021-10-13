@@ -1,14 +1,15 @@
-import { StageResult } from "../workers/progressmonitor/stageresult";
-import { StageState } from "../workers/progressmonitor/stagestate";
-import { IStageApproval } from "../workers/stageapprover/istageapproval";
+import { TaskResult, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
+
+import { IBuildJob } from "../workers/progressmonitor/ibuildjob";
 
 export interface IStageProgress {
 
-    id: string;
-    name: string;
-    approval: IStageApproval;
-    state: StageState;
-    result: StageResult;
-    duration?: string;
+    id: string,
+    name: string,
+    startTime: Date | undefined,
+    finishTime: Date | undefined,
+    state: TimelineRecordState,
+    result: TaskResult | undefined,
+    jobs: IBuildJob[],
 
 }

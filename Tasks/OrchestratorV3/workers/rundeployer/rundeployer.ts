@@ -1,5 +1,7 @@
 import { String } from "typescript-string-operations";
 
+import { TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
+
 import { IRunDeployer } from "./irundeployer";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
@@ -11,7 +13,6 @@ import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper";
 import { IProgressReporter } from "../progressreporter/iprogressreporter";
 import { IStageProgress } from "../../orchestrator/istageprogress";
 import { IBuildStage } from "../progressmonitor/ibuildstage";
-import { StageState } from "../progressmonitor/stagestate";
 import { IBuildMonitor } from "../../helpers/buildmonitor/ibuildmonitor";
 
 export class RunDeployer implements IRunDeployer {
@@ -66,15 +67,15 @@ export class RunDeployer implements IRunDeployer {
 
             for (let stage of activeStages) {
 
-                debug(`Updating <${stage.name}> (${stage.id}) stage <${StageState[stage.state]}> progress`);
+                debug(`Updating <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state!]}> progress`);
 
                 const stageStatus: IBuildStage = await this.buildMonitor.getStageStatus(run.build, stage.name);
 
                 stage = this.progressMonitor.updateStageProgress(stage, stageStatus);
 
-                if (stage.state === StageState.Completed) {
+                if (stage.state === TimelineRecordState.Completed) {
 
-                    this.logger.log(`Stage <${stage.name}> (${stage.id}) reported <${StageState[stage.state]}> state`);
+                    this.logger.log(`Stage <${stage.name}> (${stage.id}) reported <${TimelineRecordState[stage.state!]}> state`);
 
                     this.progressReporter.logStageProgress(stage);
 

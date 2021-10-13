@@ -59,8 +59,9 @@ export class WorkerFactory implements IWorkerFactory {
 
     public async createRunDeployer(): Promise<IRunDeployer> {
 
-        const runApi: IRunApiRetry = await this.apiFactory.createRunApi();
-        const buildMonitor: IBuildMonitor = new BuildMonitor(runApi, this.logger);
+        const buildApi: IBuildApiRetry = await this.apiFactory.createBuildApi();
+        const buildMonitor: IBuildMonitor = new BuildMonitor(buildApi, this.logger);
+
         const commonHelper: ICommonHelper = new CommonHelper(this.logger);
         const progressMonitor: IProgressMonitor = new ProgressMonitor(this.logger);
         const progressReporter: IProgressReporter = new ProgressReporter(this.logger);

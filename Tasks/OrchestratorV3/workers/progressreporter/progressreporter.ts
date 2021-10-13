@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import Table from "cli-table";
+import Moment from "moment";
 
 import { String } from "typescript-string-operations";
+
+import { TaskResult } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IDebug } from "../../loggers/idebug";
 import { IProgressReporter } from "./iprogressreporter";
@@ -154,14 +157,35 @@ export class ProgressReporter implements IProgressReporter {
         const table: Table = this.newTable([
 
             "Agent",
-            "Phase",
+            "Job",
             "Task",
-            "Status",
+            "Result",
             "Duration",
 
         ]);
 
-        // TBU
+        for (const job of stageProgress.jobs) {
+
+            for (const task of job.tasks) {
+
+                const duration: string | undefined = (task.startTime && task.finishTime) ?
+                    Moment.duration(new Date(task.startTime).getTime() - new Date (task.finishTime).getTime()).humanize() : undefined;
+
+                const result: any[] = [
+
+                    job.workerName ? job.workerName : "-",
+                    job.name,
+                    task.name,
+                    task.result !== undefined ? TaskResult[task.result] : "-",
+                    duration ? duration : "-",
+
+                ];
+
+                table.push(result);
+
+            }
+
+        }
 
         this.logger.log(table.toString());
 
@@ -171,8 +195,7 @@ export class ProgressReporter implements IProgressReporter {
 
         const table: Table = this.newTable([
 
-            "ID",
-            "Name",
+            "Stage",
             "Type",
             "Build",
             "Tasks",
@@ -183,7 +206,27 @@ export class ProgressReporter implements IProgressReporter {
 
         ]);
 
-        // TBU
+        for (const stage of stagesProgress) {
+
+            const duration: string | undefined = (stage.startTime && stage.finishTime) ?
+                Moment.duration(new Date(stage.startTime).getTime() - new Date (stage.finishTime).getTime()).humanize() : undefined;
+
+            const result: any[] = [
+
+                stage.name ? stage.name : "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                "-",
+                duration ? duration : "",
+
+            ];
+
+            table.push(result);
+
+        }
 
         this.logger.log(table.toString());
 
