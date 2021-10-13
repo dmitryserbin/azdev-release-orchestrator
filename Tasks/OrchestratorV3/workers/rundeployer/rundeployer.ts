@@ -100,6 +100,8 @@ export class RunDeployer implements IRunDeployer {
 
         }
 
+        this.logger.log(`All stages <${String.Join("|", run.stages)}> execution completed`);
+
         this.progressReporter.logStagesProgress(runProgress.stages)
 
         return runProgress;
