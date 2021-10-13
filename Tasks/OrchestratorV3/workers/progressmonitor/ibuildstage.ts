@@ -8,6 +8,7 @@ export interface IBuildStage {
     name: string,
     startTime: Date,
     finishTime: Date,
+    attempt: number,
     state: TimelineRecordState,
     result: TaskResult | undefined,
     jobs: IBuildJob[],

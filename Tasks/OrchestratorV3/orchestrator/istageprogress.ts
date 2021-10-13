@@ -8,8 +8,10 @@ export interface IStageProgress {
     name: string,
     startTime: Date | undefined,
     finishTime: Date | undefined,
+    attempt: number,
     state: TimelineRecordState,
     result: TaskResult | undefined,
+    approval: string,
     jobs: IBuildJob[],
 
 }

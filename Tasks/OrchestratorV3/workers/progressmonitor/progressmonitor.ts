@@ -49,8 +49,10 @@ export class ProgressMonitor implements IProgressMonitor {
                 id: stage.id,
                 startTime: undefined,
                 finishTime: undefined,
+                attempt: 0,
                 state: TimelineRecordState.Pending,
                 result: undefined,
+                approval: "Skipped",
                 jobs: [],
 
             };
@@ -106,6 +108,7 @@ export class ProgressMonitor implements IProgressMonitor {
 
         stageProgress.startTime = stageStatus.startTime;
         stageProgress.finishTime = stageStatus.finishTime;
+        stageProgress.attempt = stageStatus.attempt;
         stageProgress.state = stageStatus.state;
         stageProgress.result = stageStatus.result;
         stageProgress.jobs = stageStatus.jobs;

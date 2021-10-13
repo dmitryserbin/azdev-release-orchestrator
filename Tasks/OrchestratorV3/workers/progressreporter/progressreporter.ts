@@ -198,17 +198,18 @@ export class ProgressReporter implements IProgressReporter {
         const table: Table = this.newTable([
 
             "Stage",
-            "Type",
-            "Build",
             "Tasks",
             "Attempt",
             "Approval",
-            "Status",
+            "Result",
             "Duration",
 
         ]);
 
         for (const stage of stagesProgress) {
+
+            const tasksCount: number = stage.jobs.map(
+                (job) => job.tasks.length).reduce((a, b) => a + b, 0);
 
             const duration: string | undefined = (stage.startTime && stage.finishTime) ?
                 Moment.duration(new Date(stage.startTime).getTime() - new Date (stage.finishTime).getTime()).humanize() : undefined;
@@ -216,12 +217,10 @@ export class ProgressReporter implements IProgressReporter {
             const result: any[] = [
 
                 stage.name ? stage.name : "-",
-                "-",
-                "-",
-                "-",
-                "-",
-                "-",
-                "-",
+                tasksCount ? tasksCount : "-",
+                stage.attempt ? stage.attempt : "-",
+                stage.approval,
+                stage.result !== undefined ? TaskResult[stage.result] : "-",
                 duration ? duration : "",
 
             ];
@@ -239,7 +238,7 @@ export class ProgressReporter implements IProgressReporter {
         const table: Table = this.newTable([
 
             "ID",
-            "Release",
+            "Build",
             "Status",
             "Summary",
 

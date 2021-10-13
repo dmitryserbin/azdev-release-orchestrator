@@ -51,6 +51,7 @@ export class BuildMonitor implements IBuildMonitor {
             name: stageRecord.name!,
             startTime: stageRecord.startTime!,
             finishTime: stageRecord.finishTime!,
+            attempt: stageRecord.attempt!,
             state: stageRecord.state!,
             result: stageRecord.result!,
             jobs: [],
