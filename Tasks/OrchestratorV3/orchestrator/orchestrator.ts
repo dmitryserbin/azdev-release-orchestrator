@@ -64,7 +64,7 @@ export class Orchestrator implements IOrchestrator {
 
             } case ReleaseType.Specific: {
 
-                this.logger.log(`Re-deploying specific <${run.definition.name}> pipeline <${run.build.buildNumber}> run`);
+                this.logger.log(`Re-deploying specific <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`);
 
                 progressReporter.logRun(run);
 
