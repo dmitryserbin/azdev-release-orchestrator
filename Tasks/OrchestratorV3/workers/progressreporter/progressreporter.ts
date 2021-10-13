@@ -239,15 +239,20 @@ export class ProgressReporter implements IProgressReporter {
 
             "ID",
             "Build",
+            "Stages",
             "Result",
             "Summary",
 
         ]);
 
+        const stages: string[] = runProgress.stages.map(
+            (stage) => stage.name);
+
         const result: any[] = [
 
             runProgress.id ? runProgress.id : "-",
             runProgress.name ? runProgress.name : "-",
+            stages.length ? String.Join("|", stages) : "-",
             runProgress.status ? RunStatus[runProgress.status] : "-",
             runProgress.url ? runProgress.url : "-",
 

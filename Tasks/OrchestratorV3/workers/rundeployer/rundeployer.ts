@@ -100,7 +100,7 @@ export class RunDeployer implements IRunDeployer {
 
         }
 
-        this.logger.log(`All target <${String.Join("|", run.stages.filter((stage) => stage.target === true).map((stage) => stage.name))}> stages execution completed`);
+        this.logger.log(`Run <${runProgress.name}> (${runProgress.id}) progress <${RunStatus[runProgress.status]}> tracking completed`);
 
         this.progressReporter.logStagesProgress(runProgress.stages)
 
