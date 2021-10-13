@@ -6,11 +6,11 @@ export interface IStageProgress {
 
     id: string,
     name: string,
-    startTime: Date | undefined,
-    finishTime: Date | undefined,
+    startTime: Date | null,
+    finishTime: Date | null,
     attempt: number,
     state: TimelineRecordState,
-    result: TaskResult | undefined,
+    result: TaskResult | null,
     approval: string,
     jobs: IBuildJob[],
 

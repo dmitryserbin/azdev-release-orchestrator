@@ -7,10 +7,10 @@ export interface IBuildJob {
     id: string,
     name: string,
     workerName: string,
-    startTime: Date | undefined,
-    finishTime: Date | undefined,
+    startTime: Date | null,
+    finishTime: Date | null,
     state: TimelineRecordState,
-    result: TaskResult | undefined,
+    result: TaskResult | null,
     tasks: IBuildTask[],
 
 }

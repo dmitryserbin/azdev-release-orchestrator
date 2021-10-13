@@ -48,8 +48,8 @@ export class ProgressReporter implements IProgressReporter {
         const stages: string[] = run.stages.map(
             (stage) => stage.target === true ? `${stage.name}*` : stage.name);
 
-        const releaseDate: Date | undefined = run.build.queueTime ?
-            new Date(run.build.queueTime!) : undefined;
+        const releaseDate: Date | null = run.build.queueTime ?
+            new Date(run.build.queueTime!) : null;
 
         table.push([
 
@@ -183,15 +183,15 @@ export class ProgressReporter implements IProgressReporter {
 
             for (const task of job.tasks) {
 
-                const duration: string | undefined = (task.startTime && task.finishTime) ?
-                    Moment.duration(new Date(task.startTime).getTime() - new Date (task.finishTime).getTime()).humanize() : undefined;
+                const duration: string | null = (task.startTime && task.finishTime) ?
+                    Moment.duration(new Date(task.startTime).getTime() - new Date (task.finishTime).getTime()).humanize() : null;
 
                 const result: any[] = [
 
                     job.workerName ? job.workerName : "-",
                     job.name,
                     task.name,
-                    task.result !== undefined ? TaskResult[task.result] : "-",
+                    task.result !== null ? TaskResult[task.result] : "-",
                     duration ? duration : "-",
 
                 ];
@@ -211,6 +211,7 @@ export class ProgressReporter implements IProgressReporter {
         const table: Table = this.newTable([
 
             "Stage",
+            "Jobs",
             "Tasks",
             "Attempt",
             "Approval",
@@ -224,16 +225,17 @@ export class ProgressReporter implements IProgressReporter {
             const tasksCount: number = stage.jobs.map(
                 (job) => job.tasks.length).reduce((a, b) => a + b, 0);
 
-            const duration: string | undefined = (stage.startTime && stage.finishTime) ?
-                Moment.duration(new Date(stage.startTime).getTime() - new Date (stage.finishTime).getTime()).humanize() : undefined;
+            const duration: string | null = (stage.startTime && stage.finishTime) ?
+                Moment.duration(new Date(stage.startTime).getTime() - new Date (stage.finishTime).getTime()).humanize() : null;
 
             const result: any[] = [
 
                 stage.name ? stage.name : "-",
+                stage.jobs.length ? stage.jobs.length : "-",
                 tasksCount ? tasksCount : "-",
                 stage.attempt ? stage.attempt : "-",
                 stage.approval,
-                stage.result !== undefined ? TaskResult[stage.result] : "-",
+                stage.result !== null ? TaskResult[stage.result] : "-",
                 duration ? duration : "",
 
             ];

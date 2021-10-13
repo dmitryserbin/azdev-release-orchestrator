@@ -6,11 +6,11 @@ export interface IBuildStage {
 
     id: string,
     name: string,
-    startTime: Date,
-    finishTime: Date,
+    startTime: Date | null,
+    finishTime: Date | null,
     attempt: number,
     state: TimelineRecordState,
-    result: TaskResult | undefined,
+    result: TaskResult | null,
     jobs: IBuildJob[],
 
 }
