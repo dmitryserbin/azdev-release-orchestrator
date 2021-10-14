@@ -78,8 +78,6 @@ export class RunApiRetry implements IRunApiRetry {
 
     public async getRunStages(build: Build): Promise<unknown[]> {
 
-        const debug = this.debugLogger.extend(this.getRunStages.name);
-
         let stages: unknown[] = [];
 
         const runDetails: any = await this.getRunDetails(build);
@@ -89,8 +87,6 @@ export class RunApiRetry implements IRunApiRetry {
             stages = runDetails.stages;
 
         }
-
-        debug(stages);
 
         return stages;
 
