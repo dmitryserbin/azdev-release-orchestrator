@@ -78,6 +78,8 @@ async function retryAsync(target: Function, args: any[], attempts: number, timeo
 
         debug(`Retrying <${target.name}> (exception) in <${timeout / 1000}> seconds`);
 
+        debug(e);
+
         await new Promise((resolve) => setTimeout(resolve, timeout));
 
         // @ts-ignore

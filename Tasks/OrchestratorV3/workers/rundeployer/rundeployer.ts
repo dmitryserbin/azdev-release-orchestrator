@@ -74,9 +74,7 @@ export class RunDeployer implements IRunDeployer {
 
                 const stageStatus: IBuildStage = await this.buildMonitor.getStageStatus(run.build, stage.name);
 
-                const stageApproved: boolean = await this.stageApprover.isStageApproved(run.build, stage, stageStatus);
-
-                if (!stageApproved) {
+                if (stageStatus.checks) {
 
                     // Approve stage deployment and validate outcome
                     // Use retry mechanism to check manual approval status

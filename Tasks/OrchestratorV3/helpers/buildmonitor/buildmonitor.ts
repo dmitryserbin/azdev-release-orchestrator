@@ -9,18 +9,21 @@ import { IBuildStage } from "../../workers/progressmonitor/ibuildstage";
 import { IBuildJob } from "../../workers/progressmonitor/ibuildjob";
 import { IBuildApiRetry } from "../../extensions/buildapiretry/ibuildapiretry";
 import { IBuildTask } from "../../workers/progressmonitor/ibuildtask";
+import { IRunApiRetry } from "../../extensions/runapiretry/irunapiretry";
 
 export class BuildMonitor implements IBuildMonitor {
 
     private debugLogger: IDebug;
 
     private buildApi: IBuildApiRetry;
+    private runApi: IRunApiRetry;
 
-    constructor(buildApi: IBuildApiRetry, logger: ILogger) {
+    constructor(buildApi: IBuildApiRetry, runApi: IRunApiRetry, logger: ILogger) {
 
         this.debugLogger = logger.extend(this.constructor.name);
 
         this.buildApi = buildApi;
+        this.runApi = runApi;
 
     }
 
@@ -36,69 +39,49 @@ export class BuildMonitor implements IBuildMonitor {
 
         }
 
-        const stageRecord: TimelineRecord | undefined = buildTimeline.records!.find(
+        const stageTimeline: TimelineRecord | undefined = buildTimeline.records!.find(
             (record: TimelineRecord) => record.name === name && record.type === "Stage");
 
-        if (!stageRecord) {
+        if (!stageTimeline) {
 
-            throw new Error(`Unable to get <${build.buildNumber}> (${build.id}) build stage <${name}> record`);
+            throw new Error(`Unable to get <${build.buildNumber}> (${build.id}) build stage <${name}> timeline`);
 
         }
 
-        const stageStatus: IBuildStage = {
+        const buildStages: unknown[] = await this.runApi.getRunStages(build);
 
-            id: stageRecord.id!,
-            name: stageRecord.name!,
-            startTime: stageRecord.startTime!,
-            finishTime: stageRecord.finishTime!,
-            attempt: stageRecord.attempt!,
-            state: stageRecord.state!,
-            result: stageRecord.result!,
-            jobs: [],
+        if (!buildStages.length) {
 
-        };
+            throw new Error(`Unable to get <${build.buildNumber}> (${build.id}) build stages`);
 
-        const phases: TimelineRecord[] = buildTimeline.records!.filter(
-            (record: TimelineRecord) => record.parentId === stageStatus.id && record.type === "Phase").sort(
-                (left, right) => left.order! - right.order!);
+        }
 
-        for (const phase of phases) {
+        const buildStage: any = buildStages.find(
+            (stage: any) => stage.name === name);
 
-            const jobs: TimelineRecord[] = buildTimeline.records!.filter(
-                (record: TimelineRecord) => record.parentId === phase.id && record.type === "Job").sort(
-                    (left, right) => left.order! - right.order!);
+        if (!buildStage) {
 
-            for (const job of jobs) {
+            throw new Error(`Unable to get <${build.buildNumber}> (${build.id}) build stage <${name}> status`);
 
-                const jobStatus: IBuildJob = {
+        }
 
-                    id: job.id!,
-                    name: job.name!,
-                    workerName: job.workerName!,
-                    startTime: job.startTime!,
-                    finishTime: job.finishTime!,
-                    state: job.state!,
-                    result: job.result!,
-                    tasks: [],
+        const stageStatus: IBuildStage = this.newBuildStage(stageTimeline, buildStage);
 
-                };
+        const stagePhases: TimelineRecord[] = this.filterTimelineRecords(buildTimeline, stageTimeline.id!, "Phase");
 
-                const tasks: TimelineRecord[] = buildTimeline.records!.filter(
-                    (record: TimelineRecord) => record.parentId === job.id && record.type === "Task").sort(
-                        (left, right) => left.order! - right.order!);
+        for (const phase of stagePhases) {
 
-                for (const task of tasks) {
+            const phaseJobs: TimelineRecord[] = this.filterTimelineRecords(buildTimeline, phase.id!, "Job");
 
-                    const taskStatus: IBuildTask = {
+            for (const job of phaseJobs) {
 
-                        id: task.id!,
-                        name: task.name!,
-                        startTime: task.startTime!,
-                        finishTime: task.finishTime!,
-                        state: task.state!,
-                        result: task.result!,
+                const jobStatus: IBuildJob = this.newBuildJob(job);
 
-                    };
+                const jobTasks: TimelineRecord[] = this.filterTimelineRecords(buildTimeline, job.id!, "Task");
+
+                for (const task of jobTasks) {
+
+                    const taskStatus: IBuildTask = this.newBuildTask(task);
 
                     jobStatus.tasks.push(taskStatus);
 
@@ -113,6 +96,72 @@ export class BuildMonitor implements IBuildMonitor {
         debug(stageStatus);
 
         return stageStatus;
+
+    }
+
+    private filterTimelineRecords(timeline: Timeline, parentId: string, type: string): TimelineRecord[] {
+
+        const timelineRecords: TimelineRecord[] = timeline.records!.filter(
+            (record: TimelineRecord) => record.parentId === parentId && record.type === type).sort(
+                (left, right) => left.order! - right.order!);
+
+        return timelineRecords;
+
+    }
+
+    private newBuildStage(timelineRecord: TimelineRecord, stage: any): IBuildStage {
+
+        const buildStage: IBuildStage = {
+
+            id: timelineRecord.id!,
+            name: timelineRecord.name!,
+            startTime: timelineRecord.startTime!,
+            finishTime: timelineRecord.finishTime!,
+            attempt: timelineRecord.attempt!,
+            state: timelineRecord.state!,
+            result: timelineRecord.result!,
+            checks: stage.stateData!.pendingChecks ? true : false,
+            jobs: [],
+
+        };
+
+        return buildStage;
+
+    }
+
+    private newBuildJob(timelineRecord: TimelineRecord): IBuildJob {
+
+        const buildJob: IBuildJob = {
+
+            id: timelineRecord.id!,
+            name: timelineRecord.name!,
+            workerName: timelineRecord.workerName!,
+            startTime: timelineRecord.startTime!,
+            finishTime: timelineRecord.finishTime!,
+            state: timelineRecord.state!,
+            result: timelineRecord.result!,
+            tasks: [],
+
+        };
+
+        return buildJob;
+
+    }
+
+    private newBuildTask(timelineRecord: TimelineRecord): IBuildTask {
+
+        const buildTask: IBuildTask = {
+
+            id: timelineRecord.id!,
+            name: timelineRecord.name!,
+            startTime: timelineRecord.startTime!,
+            finishTime: timelineRecord.finishTime!,
+            state: timelineRecord.state!,
+            result: timelineRecord.result!,
+
+        };
+
+        return buildTask;
 
     }
 

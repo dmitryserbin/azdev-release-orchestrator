@@ -11,10 +11,7 @@ export interface IBuildStage {
     attempt: number,
     state: TimelineRecordState,
     result: TaskResult | null,
-    stateData: {
-        pendingDependencies: boolean,
-        pendingChecks: boolean,
-    },
+    checks: boolean,
     jobs: IBuildJob[],
 
 }
