@@ -14,23 +14,26 @@ import { IProgressReporter } from "../progressreporter/iprogressreporter";
 import { IStageProgress } from "../../orchestrator/istageprogress";
 import { IBuildStage } from "../progressmonitor/ibuildstage";
 import { IBuildMonitor } from "../../helpers/buildmonitor/ibuildmonitor";
+import { IStageApprover } from "../stageapprover/istageapprover";
 
 export class RunDeployer implements IRunDeployer {
 
     private logger: ILogger;
     private debugLogger: IDebug;
 
-    private buildMonitor: IBuildMonitor;
     private commonHelper: ICommonHelper;
+    private buildMonitor: IBuildMonitor;
+    private stageApprover: IStageApprover;
     private progressMonitor: IProgressMonitor;
     private progressReporter: IProgressReporter;
 
-    constructor(buildMonitor: IBuildMonitor, commonHelper: ICommonHelper, progressMonitor: IProgressMonitor, progressReporter: IProgressReporter, logger: ILogger) {
+    constructor(commonHelper: ICommonHelper, buildMonitor: IBuildMonitor, stageApprover: IStageApprover, progressMonitor: IProgressMonitor, progressReporter: IProgressReporter, logger: ILogger) {
 
         this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
 
         this.buildMonitor = buildMonitor;
+        this.stageApprover = stageApprover;
         this.commonHelper = commonHelper;
         this.progressMonitor = progressMonitor;
         this.progressReporter = progressReporter;
@@ -70,6 +73,17 @@ export class RunDeployer implements IRunDeployer {
                 debug(`Updating <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state!]}> progress`);
 
                 const stageStatus: IBuildStage = await this.buildMonitor.getStageStatus(run.build, stage.name);
+
+                const stageApproved: boolean = await this.stageApprover.isStageApproved(run.build, stage, stageStatus);
+
+                if (!stageApproved) {
+
+                    // Approve stage deployment and validate outcome
+                    // Use retry mechanism to check manual approval status
+                    // Cancel stage deployment when retry count exceeded
+                    await this.stageApprover.approveStage(stage);
+
+                }
 
                 stage = this.progressMonitor.updateStageProgress(stage, stageStatus);
 

@@ -11,6 +11,10 @@ export interface IBuildJob {
     finishTime: Date | null,
     state: TimelineRecordState,
     result: TaskResult | null,
+    stateData: {
+        pendingDependencies: boolean,
+        pendingChecks: boolean,
+    },
     tasks: IBuildTask[],
 
 }

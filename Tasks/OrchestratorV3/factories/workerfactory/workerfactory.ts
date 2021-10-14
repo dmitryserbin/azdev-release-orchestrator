@@ -24,6 +24,8 @@ import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper";
 import { CommonHelper } from "../../helpers/commonhelper/commonhelper";
 import { IBuildMonitor } from "../../helpers/buildmonitor/ibuildmonitor";
 import { BuildMonitor } from "../../helpers/buildmonitor/buildmonitor";
+import { IStageApprover } from "../../workers/stageapprover/istageapprover";
+import { StageApprover } from "../../workers/stageapprover/stageapprover";
 
 export class WorkerFactory implements IWorkerFactory {
 
@@ -59,14 +61,18 @@ export class WorkerFactory implements IWorkerFactory {
 
     public async createRunDeployer(): Promise<IRunDeployer> {
 
+        const commonHelper: ICommonHelper = new CommonHelper(this.logger);
+
+        const runApi: IRunApiRetry = await this.apiFactory.createRunApi();
+        const stageApprover: IStageApprover = new StageApprover(runApi, this.logger);
+
         const buildApi: IBuildApiRetry = await this.apiFactory.createBuildApi();
         const buildMonitor: IBuildMonitor = new BuildMonitor(buildApi, this.logger);
 
-        const commonHelper: ICommonHelper = new CommonHelper(this.logger);
         const progressMonitor: IProgressMonitor = new ProgressMonitor(this.logger);
         const progressReporter: IProgressReporter = new ProgressReporter(this.logger);
 
-        return new RunDeployer(buildMonitor, commonHelper, progressMonitor, progressReporter, this.logger);
+        return new RunDeployer(commonHelper, buildMonitor, stageApprover, progressMonitor, progressReporter, this.logger);
 
     }
 
