@@ -2,6 +2,7 @@ import { Build, BuildDefinition } from "azure-devops-node-api/interfaces/BuildIn
 
 import { IBuildParameters } from "../../helpers/taskhelper/ibuildparameters";
 import { IRepositoryFilter } from "../../workers/filtercreator/irepositoryfilter";
+import { IBuildStage } from "../../workers/progressmonitor/ibuildstage";
 
 export interface IRunApiRetry {
 
@@ -9,5 +10,6 @@ export interface IRunApiRetry {
     getRunDetails(build: Build): Promise<unknown>;
     getRunStages(build: Build): Promise<unknown[]>;
     getRunParameters(definition: BuildDefinition, repository?: IRepositoryFilter, parameters?: IBuildParameters): Promise<unknown>;
+    getRunStageChecks(build: Build, stage: IBuildStage): Promise<unknown>;
 
 }

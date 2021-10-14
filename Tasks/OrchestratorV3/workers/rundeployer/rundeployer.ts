@@ -76,10 +76,20 @@ export class RunDeployer implements IRunDeployer {
 
                 if (stageStatus.checks) {
 
-                    // Approve stage deployment and validate outcome
-                    // Use retry mechanism to check manual approval status
-                    // Cancel stage deployment when retry count exceeded
-                    await this.stageApprover.approveStage(stage);
+                    const pendingApproval: boolean = await this.stageApprover.isPeding(run.build, stageStatus);
+
+                    if (pendingApproval) {
+
+                        // Approve stage prgoress and validate outcome
+                        // Use retry mechanism to check manual approval status
+                        // Cancel stage progress when retry count exceeded
+                        stage = await this.stageApprover.approve(stage);
+
+                    } else {
+
+                        this.logger.log(`Stage <${stage.name}> is waiting for checks`);
+
+                    }
 
                 }
 

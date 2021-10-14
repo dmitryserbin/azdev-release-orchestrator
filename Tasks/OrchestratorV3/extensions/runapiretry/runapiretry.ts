@@ -7,6 +7,7 @@ import { IBuildParameters } from "../../helpers/taskhelper/ibuildparameters";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
 import { IRepositoryFilter } from "../../workers/filtercreator/irepositoryfilter";
+import { IBuildStage } from "../../workers/progressmonitor/ibuildstage";
 import { IRunApiRetry } from "./irunapiretry";
 
 export class RunApiRetry implements IRunApiRetry {
@@ -132,6 +133,47 @@ export class RunApiRetry implements IRunApiRetry {
         const runParameters: unknown = result.dataProviders[`ms.vss-build-web.pipeline-run-parameters-data-provider`];
 
         return runParameters;
+
+    }
+
+    public async getRunStageChecks(build: Build, stage: IBuildStage): Promise<unknown> {
+
+        const debug = this.debugLogger.extend(this.getRunStageChecks.name);
+
+        const body: unknown = {
+
+            contributionIds: [
+                `ms.vss-build-web.checks-panel-data-provider`,
+            ],
+            dataProviderContext: {
+                properties: {
+                    buildId: `${build.id}`,
+                    stageIds: stage.id,
+                    checkListItemType: 3,
+                    sourcePage: {
+                        routeId: `ms.vss-build-web.ci-results-hub-route`,
+                        routeValues: {
+                            project: build.project?.name,
+                        }
+                    }
+                },
+            },
+
+        };
+
+        const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${build.project?.id}`, `5.0-preview.1`, body);
+
+        if (result.dataProviderExceptions) {
+
+            debug(result);
+
+            throw new Error(`Unable to retrieve <${build.buildNumber}> (${build.id}) run stage <${stage.name}> (${stage.id}) checks`);
+
+        }
+
+        const runStageChecks: unknown = result.dataProviders[`ms.vss-build-web.checks-panel-data-provider`][0];
+
+        return runStageChecks;
 
     }
 
