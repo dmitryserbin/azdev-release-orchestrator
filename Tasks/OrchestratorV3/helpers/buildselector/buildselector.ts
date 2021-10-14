@@ -36,7 +36,7 @@ export class BuildSelector implements IBuildSelector {
         const request: any = {
 
             resources: resourcesFilter,
-            templateParameters: (parameters && Object.keys(parameters).length) ? parameters : {},
+            templateParameters: {},
             stagesToSkip: [],
 
         };
@@ -50,6 +50,16 @@ export class BuildSelector implements IBuildSelector {
             const stagesToSkip: string[] = await this.getStagesToSkip(definitionStages, stages);
 
             request.stagesToSkip = stagesToSkip;
+
+        }
+
+        if (parameters && Object.keys(parameters).length) {
+
+            const definitionParameters: string[] = await this.getParameters(definition, resourcesFilter.repositories.self);
+
+            await this.confirmParameters(definition, definitionParameters, parameters);
+
+            request.templateParameters = parameters;
 
         }
 
@@ -273,6 +283,52 @@ export class BuildSelector implements IBuildSelector {
         debug(stagesToSkip);
 
         return stagesToSkip;
+
+    }
+
+    private async getParameters(definition: BuildDefinition, repository?: IRepositoryFilter): Promise<string[]> {
+
+        const debug = this.debugLogger.extend(this.getParameters.name);
+
+        const result: any = await this.runApi.getRunParameters(definition, repository);
+
+        const templateParameters: unknown[] = result.templateParameters;
+
+        if (!Array.isArray(templateParameters) || !templateParameters.length) {
+
+            throw new Error(`Unable to detect <${definition.name}> (${definition.id}) definition template parameters`);
+
+        }
+
+        const parameters: string[] = templateParameters.map(
+            (parameter) => parameter.name);
+
+        debug(parameters);
+
+        return parameters;
+
+    }
+
+    private async confirmParameters(definition: BuildDefinition, definitionParameters: string[], parameters: IBuildParameters): Promise<void> {
+
+        if (!definitionParameters.length) {
+
+            throw new Error(`No template parameters found in <${definition.name}> (${definition.id}) definition`);
+
+        }
+
+        for (const parameter of Object.keys(parameters)) {
+
+            const match: string | undefined = definitionParameters.find(
+                (i) => i.toLowerCase() === parameter.toLowerCase());
+
+            if (!match) {
+
+                throw new Error(`Definition <${definition.name}> (${definition.id}) does not contain <${parameter}> parameter`);
+
+            }
+
+        }
 
     }
 
