@@ -28,23 +28,33 @@ export class StageApprover implements IStageApprover {
 
         debug(`Approving <${stageProgress.name}> (${stageProgress.id}) stage progress`);
 
+        stageProgress.approval = "Pending"
+
         return stageProgress;
 
     }
 
-    public async isPeding(build: Build, stage: IBuildStage): Promise<boolean> {
+    public async getChecks(build: Build, stage: IBuildStage): Promise<unknown> {
 
-        const debug = this.debugLogger.extend(this.isPeding.name);
+        const debug = this.debugLogger.extend(this.getChecks.name);
+
+        const checks: any = await this.runApi.getRunStageChecks(build, stage);
+
+        debug(checks);
+
+        return checks;
+
+    }
+
+    public isApprovalPeding(stageChecks: any): boolean {
+
+        const debug = this.debugLogger.extend(this.isApprovalPeding.name);
 
         let isPending: boolean = false;
 
-        const stageChecks: any = await this.runApi.getRunStageChecks(build, stage);
+        const approvals: any[] = stageChecks.approvals;
 
-        debug(stageChecks);
-
-        if (stageChecks.approvals && Object.keys(stageChecks.approvals).length) {
-
-            // TBU
+        if (Array.isArray(approvals) && approvals.length) {
 
             isPending = true;
 
@@ -52,7 +62,34 @@ export class StageApprover implements IStageApprover {
 
         if (isPending) {
 
-            debug(`Stage <${stage.name}> (${stage.id}) is pending approval`);
+            debug(`Stage <${stageChecks.stageName}> (${stageChecks.stageId}) is pending <${approvals.length}> approval`);
+
+        }
+
+        return isPending;
+
+    }
+
+    public isCheckPeding(stageChecks: any): boolean {
+
+        const debug = this.debugLogger.extend(this.isCheckPeding.name);
+
+        let isPending: boolean = false;
+
+        const taskChecks: any[] = stageChecks.taskChecks;
+
+        if (Array.isArray(taskChecks) && taskChecks.length) {
+
+            const pendingTaskChecks: any[] = taskChecks.filter(
+                (check) => check.status !== 4);
+
+            if (pendingTaskChecks.length) {
+
+                debug(`Stage <${stageChecks.stageName}> (${stageChecks.stageId}) is pending <${pendingTaskChecks.length}> task checks`);
+
+                isPending = true;
+
+            }
 
         }
 
