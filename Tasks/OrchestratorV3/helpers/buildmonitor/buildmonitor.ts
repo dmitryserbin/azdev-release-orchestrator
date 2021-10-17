@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Build, Timeline, TimelineRecord } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, Timeline, TimelineRecord, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { ILogger } from "../../loggers/ilogger";
 import { IDebug } from "../../loggers/idebug";
@@ -9,21 +9,18 @@ import { IBuildStage } from "../../workers/progressmonitor/ibuildstage";
 import { IBuildJob } from "../../workers/progressmonitor/ibuildjob";
 import { IBuildApiRetry } from "../../extensions/buildapiretry/ibuildapiretry";
 import { IBuildTask } from "../../workers/progressmonitor/ibuildtask";
-import { IRunApiRetry } from "../../extensions/runapiretry/irunapiretry";
 
 export class BuildMonitor implements IBuildMonitor {
 
     private debugLogger: IDebug;
 
     private buildApi: IBuildApiRetry;
-    private runApi: IRunApiRetry;
 
-    constructor(buildApi: IBuildApiRetry, runApi: IRunApiRetry, logger: ILogger) {
+    constructor(buildApi: IBuildApiRetry, logger: ILogger) {
 
         this.debugLogger = logger.extend(this.constructor.name);
 
         this.buildApi = buildApi;
-        this.runApi = runApi;
 
     }
 
@@ -31,53 +28,39 @@ export class BuildMonitor implements IBuildMonitor {
 
         const debug = this.debugLogger.extend(this.getStageStatus.name);
 
-        const buildTimeline: Timeline = await this.buildApi.getBuildTimeline(build.project!.name!, build.id!, build.orchestrationPlan!.planId);
+        const timeline: Timeline = await this.buildApi.getBuildTimeline(build.project!.name!, build.id!, build.orchestrationPlan!.planId);
 
-        if (!buildTimeline) {
+        if (!timeline) {
 
             throw new Error(`Unable to get <${build.buildNumber}> (${build.id}) build timeline`);
 
         }
 
-        const stageTimeline: TimelineRecord | undefined = buildTimeline.records!.find(
+        const stage: TimelineRecord | undefined = timeline.records!.find(
             (record: TimelineRecord) => record.name === name && record.type === "Stage");
 
-        if (!stageTimeline) {
+        if (!stage) {
 
             throw new Error(`Unable to get <${build.buildNumber}> (${build.id}) build stage <${name}> timeline`);
 
         }
 
-        const buildStages: unknown[] = await this.runApi.getRunStages(build);
+        const stageCheckpoint: TimelineRecord | undefined = timeline.records!.find(
+            (record: TimelineRecord) => record.parentId === stage.id && record.type === "Checkpoint");
 
-        if (!buildStages.length) {
+        const stageStatus: IBuildStage = this.newBuildStage(stage, stageCheckpoint);
 
-            throw new Error(`Unable to get <${build.buildNumber}> (${build.id}) build stages`);
-
-        }
-
-        const buildStage: any = buildStages.find(
-            (stage: any) => stage.name === name);
-
-        if (!buildStage) {
-
-            throw new Error(`Unable to get <${build.buildNumber}> (${build.id}) build stage <${name}> status`);
-
-        }
-
-        const stageStatus: IBuildStage = this.newBuildStage(stageTimeline, buildStage);
-
-        const stagePhases: TimelineRecord[] = this.filterTimelineRecords(buildTimeline, stageTimeline.id!, "Phase");
+        const stagePhases: TimelineRecord[] = this.filterTimelineRecords(timeline, stage.id!, "Phase");
 
         for (const phase of stagePhases) {
 
-            const phaseJobs: TimelineRecord[] = this.filterTimelineRecords(buildTimeline, phase.id!, "Job");
+            const phaseJobs: TimelineRecord[] = this.filterTimelineRecords(timeline, phase.id!, "Job");
 
             for (const job of phaseJobs) {
 
                 const jobStatus: IBuildJob = this.newBuildJob(job);
 
-                const jobTasks: TimelineRecord[] = this.filterTimelineRecords(buildTimeline, job.id!, "Task");
+                const jobTasks: TimelineRecord[] = this.filterTimelineRecords(timeline, job.id!, "Task");
 
                 for (const task of jobTasks) {
 
@@ -109,7 +92,7 @@ export class BuildMonitor implements IBuildMonitor {
 
     }
 
-    private newBuildStage(timelineRecord: TimelineRecord, stage: any): IBuildStage {
+    private newBuildStage(timelineRecord: TimelineRecord, stageCheckpoint?: TimelineRecord): IBuildStage {
 
         const buildStage: IBuildStage = {
 
@@ -120,7 +103,7 @@ export class BuildMonitor implements IBuildMonitor {
             attempt: timelineRecord.attempt!,
             state: timelineRecord.state!,
             result: timelineRecord.result!,
-            checks: stage.stateData!.pendingChecks ? true : false,
+            checks: (stageCheckpoint && stageCheckpoint.state !== TimelineRecordState.Completed) ? true : false,
             jobs: [],
 
         };
