@@ -1,9 +1,10 @@
+import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
+
 import { IStageApprover } from "./istageapprover";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
 import { IStageProgress } from "../../orchestrator/istageprogress";
 import { IRunApiRetry } from "../../extensions/runapiretry/irunapiretry";
-import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import { IBuildStage } from "../progressmonitor/ibuildstage";
 
 export class StageApprover implements IStageApprover {
@@ -38,7 +39,7 @@ export class StageApprover implements IStageApprover {
 
         const debug = this.debugLogger.extend(this.getChecks.name);
 
-        const checks: any = await this.runApi.getRunStageChecks(build, stage);
+        const checks: unknown = await this.runApi.getRunStageChecks(build, stage);
 
         debug(checks);
 
