@@ -101,7 +101,13 @@ export class RunDeployer implements IRunDeployer {
 
                     this.logger.log(`Stage <${stage.name}> (${stage.id}) reported <${TimelineRecordState[stage.state!]}> state`);
 
-                    this.progressReporter.logStageProgress(stage);
+                    // Do not print empty stage job progress
+                    // Rejected stages do not contain any jobs
+                    if (stage.jobs.length) {
+
+                        this.progressReporter.logStageProgress(stage);
+
+                    }
 
                     break;
 
