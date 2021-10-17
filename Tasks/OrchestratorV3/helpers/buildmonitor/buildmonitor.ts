@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Build, Timeline, TimelineRecord, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, Timeline, TimelineRecord } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { ILogger } from "../../loggers/ilogger";
 import { IDebug } from "../../loggers/idebug";
@@ -9,6 +9,9 @@ import { IBuildStage } from "../../workers/progressmonitor/ibuildstage";
 import { IBuildJob } from "../../workers/progressmonitor/ibuildjob";
 import { IBuildApiRetry } from "../../extensions/buildapiretry/ibuildapiretry";
 import { IBuildTask } from "../../workers/progressmonitor/ibuildtask";
+import { IBuildApproval } from "../../workers/progressmonitor/ibuildapproval";
+import { IBuildCheck } from "../../workers/progressmonitor/ibuildcheck";
+import { IBuildCheckpoint } from "../../workers/progressmonitor/ibuildcheckpoint";
 
 export class BuildMonitor implements IBuildMonitor {
 
@@ -36,8 +39,7 @@ export class BuildMonitor implements IBuildMonitor {
 
         }
 
-        const stage: TimelineRecord | undefined = timeline.records!.find(
-            (record: TimelineRecord) => record.name === name && record.type === "Stage");
+        const stage: TimelineRecord | undefined = this.getTimelineRecord(timeline, name, `Stage`);
 
         if (!stage) {
 
@@ -45,22 +47,47 @@ export class BuildMonitor implements IBuildMonitor {
 
         }
 
-        const stageCheckpoint: TimelineRecord | undefined = timeline.records!.find(
-            (record: TimelineRecord) => record.parentId === stage.id && record.type === "Checkpoint");
+        const stageStatus: IBuildStage = this.newBuildStage(stage);
 
-        const stageStatus: IBuildStage = this.newBuildStage(stage, stageCheckpoint);
+        const stageCheckpoint: TimelineRecord | undefined = this.getChildTimelineRecord(timeline, stage.id!, `Checkpoint`);
 
-        const stagePhases: TimelineRecord[] = this.filterTimelineRecords(timeline, stage.id!, "Phase");
+        if (stageCheckpoint) {
+
+            stageStatus.checkpoint = this.newBuildCheckpoint(stageCheckpoint);
+
+            const stageApprovals: TimelineRecord[] = this.getChildTimelineRecords(timeline, stageCheckpoint.id!, "Checkpoint.Approval");
+
+            for (const approval of stageApprovals) {
+
+                const buildApproval: IBuildApproval = this.newBuildApproval(approval);
+
+                stageStatus.approvals.push(buildApproval);
+
+            }
+
+            const stageChecks: TimelineRecord[] = this.getChildTimelineRecords(timeline, stageCheckpoint.id!, "Checkpoint.TaskCheck");
+
+            for (const check of stageChecks) {
+
+                const buildCheck: IBuildCheck = this.newBuildCheck(check);
+
+                stageStatus.checks.push(buildCheck);
+
+            }
+
+        }
+
+        const stagePhases: TimelineRecord[] = this.getChildTimelineRecords(timeline, stage.id!, "Phase");
 
         for (const phase of stagePhases) {
 
-            const phaseJobs: TimelineRecord[] = this.filterTimelineRecords(timeline, phase.id!, "Job");
+            const phaseJobs: TimelineRecord[] = this.getChildTimelineRecords(timeline, phase.id!, "Job");
 
             for (const job of phaseJobs) {
 
                 const jobStatus: IBuildJob = this.newBuildJob(job);
 
-                const jobTasks: TimelineRecord[] = this.filterTimelineRecords(timeline, job.id!, "Task");
+                const jobTasks: TimelineRecord[] = this.getChildTimelineRecords(timeline, job.id!, "Task");
 
                 for (const task of jobTasks) {
 
@@ -82,7 +109,25 @@ export class BuildMonitor implements IBuildMonitor {
 
     }
 
-    private filterTimelineRecords(timeline: Timeline, parentId: string, type: string): TimelineRecord[] {
+    private getTimelineRecord(timeline: Timeline, name: string, type: string): TimelineRecord | undefined {
+
+        const timelineRecord: TimelineRecord | undefined = timeline.records!.find(
+            (record: TimelineRecord) => record.name === name && record.type === type);
+
+        return timelineRecord;
+
+    }
+
+    private getChildTimelineRecord(timeline: Timeline, parrentId: string, type: string): TimelineRecord | undefined {
+
+        const timelineRecord: TimelineRecord | undefined = timeline.records!.find(
+            (record: TimelineRecord) => record.parentId === parrentId && record.type === type);
+
+        return timelineRecord;
+
+    }
+
+    private getChildTimelineRecords(timeline: Timeline, parentId: string, type: string): TimelineRecord[] {
 
         const timelineRecords: TimelineRecord[] = timeline.records!.filter(
             (record: TimelineRecord) => record.parentId === parentId && record.type === type).sort(
@@ -92,7 +137,7 @@ export class BuildMonitor implements IBuildMonitor {
 
     }
 
-    private newBuildStage(timelineRecord: TimelineRecord, stageCheckpoint?: TimelineRecord): IBuildStage {
+    private newBuildStage(timelineRecord: TimelineRecord): IBuildStage {
 
         const buildStage: IBuildStage = {
 
@@ -103,7 +148,9 @@ export class BuildMonitor implements IBuildMonitor {
             attempt: timelineRecord.attempt!,
             state: timelineRecord.state!,
             result: timelineRecord.result!,
-            checks: (stageCheckpoint && stageCheckpoint.state !== TimelineRecordState.Completed) ? true : false,
+            checkpoint: null,
+            approvals: [],
+            checks: [],
             jobs: [],
 
         };
@@ -145,6 +192,48 @@ export class BuildMonitor implements IBuildMonitor {
         };
 
         return buildTask;
+
+    }
+
+    private newBuildCheckpoint(timelineRecord: TimelineRecord): IBuildCheckpoint {
+
+        const buildCheckpoint: IBuildCheckpoint = {
+
+            id: timelineRecord.id!,
+            state: timelineRecord.state!,
+            result: timelineRecord.result!,
+
+        };
+
+        return buildCheckpoint;
+
+    }
+
+    private newBuildApproval(timelineRecord: TimelineRecord): IBuildApproval {
+
+        const buildApproval: IBuildApproval = {
+
+            id: timelineRecord.id!,
+            state: timelineRecord.state!,
+            result: timelineRecord.result!,
+
+        };
+
+        return buildApproval;
+
+    }
+
+    private newBuildCheck(timelineRecord: TimelineRecord): IBuildCheck {
+
+        const buildCheck: IBuildCheck = {
+
+            id: timelineRecord.id!,
+            state: timelineRecord.state!,
+            result: timelineRecord.result!,
+
+        };
+
+        return buildCheck;
 
     }
 

@@ -74,7 +74,7 @@ export class RunDeployer implements IRunDeployer {
 
                 const stageStatus: IBuildStage = await this.buildMonitor.getStageStatus(run.build, stage.name);
 
-                if (stageStatus.checks) {
+                if (stageStatus.checkpoint && stageStatus.checkpoint.state !== TimelineRecordState.Completed) {
 
                     const stageChecks: unknown = await this.stageApprover.getChecks(run.build, stageStatus);
 
