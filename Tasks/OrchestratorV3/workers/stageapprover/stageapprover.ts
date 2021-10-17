@@ -3,7 +3,6 @@ import { TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInter
 import { IStageApprover } from "./istageapprover";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
-import { IStageProgress } from "../../orchestrator/istageprogress";
 import { IRunApiRetry } from "../../extensions/runapiretry/irunapiretry";
 import { IBuildStage } from "../progressmonitor/ibuildstage";
 import { IBuildApproval } from "../progressmonitor/ibuildapproval";
@@ -25,15 +24,13 @@ export class StageApprover implements IStageApprover {
 
     }
 
-    public async approve(stageProgress: IStageProgress): Promise<IStageProgress> {
+    public async approve(stage: IBuildStage): Promise<IBuildStage> {
 
         const debug = this.debugLogger.extend(this.approve.name);
 
-        debug(`Approving <${stageProgress.name}> (${stageProgress.id}) stage progress`);
+        debug(`Approving <${stage.name}> (${stage.id}) stage progress`);
 
-        stageProgress.approval = "Pending"
-
-        return stageProgress;
+        return stage;
 
     }
 

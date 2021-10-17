@@ -11,7 +11,6 @@ import { IProgressMonitor } from "../progressmonitor/iprogressmonitor";
 import { RunStatus } from "../../orchestrator/runstatus";
 import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper";
 import { IProgressReporter } from "../progressreporter/iprogressreporter";
-import { IStageProgress } from "../../orchestrator/istageprogress";
 import { IBuildStage } from "../progressmonitor/ibuildstage";
 import { IBuildMonitor } from "../../helpers/buildmonitor/ibuildmonitor";
 import { IStageApprover } from "../stageapprover/istageapprover";
@@ -66,17 +65,17 @@ export class RunDeployer implements IRunDeployer {
 
             debug(`Updating <${String.Join("|", runProgress.stages.map((stage) => stage.name))}> active stage(s) progress`);
 
-            const activeStages: IStageProgress[] = this.progressMonitor.getActiveStages(runProgress);
+            const activeStages: IBuildStage[] = this.progressMonitor.getActiveStages(runProgress);
 
             for (let stage of activeStages) {
 
                 debug(`Updating <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state!]}> progress`);
 
-                const stageStatus: IBuildStage = await this.buildMonitor.getStageStatus(run.build, stage.name);
+                stage = await this.buildMonitor.getStageStatus(run.build, stage);
 
-                if (stageStatus.checkpoint && stageStatus.checkpoint.state !== TimelineRecordState.Completed) {
+                if (stage.checkpoint && stage.checkpoint.state !== TimelineRecordState.Completed) {
 
-                    if (this.stageApprover.isApprovalPeding(stageStatus)) {
+                    if (this.stageApprover.isApprovalPeding(stage)) {
 
                         // Approve stage prgoress and validate outcome
                         // Use retry mechanism to check manual approval status
@@ -85,15 +84,13 @@ export class RunDeployer implements IRunDeployer {
 
                     }
 
-                    if (this.stageApprover.isCheckPeding(stageStatus)) {
+                    if (this.stageApprover.isCheckPeding(stage)) {
 
                         this.logger.log(`Stage <${stage.name}> is waiting for checks`);
 
                     }
 
                 }
-
-                stage = this.progressMonitor.updateStageProgress(stage, stageStatus);
 
                 if (stage.state === TimelineRecordState.Completed) {
 

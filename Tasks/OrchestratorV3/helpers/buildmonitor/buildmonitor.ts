@@ -27,67 +27,67 @@ export class BuildMonitor implements IBuildMonitor {
 
     }
 
-    public async getStageStatus(build: Build, name: string): Promise<IBuildStage> {
+    public async getStageStatus(build: Build, stage: IBuildStage): Promise<IBuildStage> {
 
         const debug = this.debugLogger.extend(this.getStageStatus.name);
 
-        const timeline: Timeline = await this.buildApi.getBuildTimeline(build.project!.name!, build.id!, build.orchestrationPlan!.planId);
+        const buildTimeline: Timeline = await this.buildApi.getBuildTimeline(build.project!.name!, build.id!, build.orchestrationPlan!.planId);
 
-        if (!timeline) {
+        if (!buildTimeline) {
 
             throw new Error(`Unable to get <${build.buildNumber}> (${build.id}) build timeline`);
 
         }
 
-        const stage: TimelineRecord | undefined = this.getTimelineRecord(timeline, name, `Stage`);
+        const stageTimeline: TimelineRecord | undefined = this.getTimelineRecord(buildTimeline, stage.name, `Stage`);
 
-        if (!stage) {
+        if (!stageTimeline) {
 
             throw new Error(`Unable to get <${build.buildNumber}> (${build.id}) build stage <${name}> timeline`);
 
         }
 
-        const stageStatus: IBuildStage = this.newBuildStage(stage);
+        stage = this.updateBuildStage(stageTimeline, stage);
 
-        const stageCheckpoint: TimelineRecord | undefined = this.getChildTimelineRecord(timeline, stage.id!, `Checkpoint`);
+        const stageCheckpoint: TimelineRecord | undefined = this.getChildTimelineRecord(buildTimeline, stage.id!, `Checkpoint`);
 
         if (stageCheckpoint) {
 
-            stageStatus.checkpoint = this.newBuildCheckpoint(stageCheckpoint);
+            stage.checkpoint = this.newBuildCheckpoint(stageCheckpoint);
 
-            const stageApprovals: TimelineRecord[] = this.getChildTimelineRecords(timeline, stageCheckpoint.id!, "Checkpoint.Approval");
+            const stageApprovals: TimelineRecord[] = this.getChildTimelineRecords(buildTimeline, stageCheckpoint.id!, "Checkpoint.Approval");
 
             for (const approval of stageApprovals) {
 
                 const buildApproval: IBuildApproval = this.newBuildApproval(approval);
 
-                stageStatus.approvals.push(buildApproval);
+                stage.approvals.push(buildApproval);
 
             }
 
-            const stageChecks: TimelineRecord[] = this.getChildTimelineRecords(timeline, stageCheckpoint.id!, "Checkpoint.TaskCheck");
+            const stageChecks: TimelineRecord[] = this.getChildTimelineRecords(buildTimeline, stageCheckpoint.id!, "Checkpoint.TaskCheck");
 
             for (const check of stageChecks) {
 
                 const buildCheck: IBuildCheck = this.newBuildCheck(check);
 
-                stageStatus.checks.push(buildCheck);
+                stage.checks.push(buildCheck);
 
             }
 
         }
 
-        const stagePhases: TimelineRecord[] = this.getChildTimelineRecords(timeline, stage.id!, "Phase");
+        const stagePhases: TimelineRecord[] = this.getChildTimelineRecords(buildTimeline, stage.id!, "Phase");
 
         for (const phase of stagePhases) {
 
-            const phaseJobs: TimelineRecord[] = this.getChildTimelineRecords(timeline, phase.id!, "Job");
+            const phaseJobs: TimelineRecord[] = this.getChildTimelineRecords(buildTimeline, phase.id!, "Job");
 
             for (const job of phaseJobs) {
 
                 const jobStatus: IBuildJob = this.newBuildJob(job);
 
-                const jobTasks: TimelineRecord[] = this.getChildTimelineRecords(timeline, job.id!, "Task");
+                const jobTasks: TimelineRecord[] = this.getChildTimelineRecords(buildTimeline, job.id!, "Task");
 
                 for (const task of jobTasks) {
 
@@ -97,15 +97,15 @@ export class BuildMonitor implements IBuildMonitor {
 
                 }
 
-                stageStatus.jobs.push(jobStatus);
+                stage.jobs.push(jobStatus);
 
             }
 
         }
 
-        debug(stageStatus);
+        debug(stage);
 
-        return stageStatus;
+        return stage;
 
     }
 
@@ -137,25 +137,18 @@ export class BuildMonitor implements IBuildMonitor {
 
     }
 
-    private newBuildStage(timelineRecord: TimelineRecord): IBuildStage {
+    private updateBuildStage(timelineRecord: TimelineRecord, stage: IBuildStage): IBuildStage {
 
-        const buildStage: IBuildStage = {
+        stage.startTime = timelineRecord.startTime!;
+        stage.finishTime = timelineRecord.finishTime!;
+        stage.attempt = timelineRecord.attempt!;
+        stage.state = timelineRecord.state!;
+        stage.result = timelineRecord.result!;
+        stage.approvals = [];
+        stage.checks = [];
+        stage.jobs = [];
 
-            id: timelineRecord.id!,
-            name: timelineRecord.name!,
-            startTime: timelineRecord.startTime!,
-            finishTime: timelineRecord.finishTime!,
-            attempt: timelineRecord.attempt!,
-            state: timelineRecord.state!,
-            result: timelineRecord.result!,
-            checkpoint: null,
-            approvals: [],
-            checks: [],
-            jobs: [],
-
-        };
-
-        return buildStage;
+        return stage;
 
     }
 

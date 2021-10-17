@@ -1,4 +1,4 @@
-import { IStageProgress } from "./istageprogress";
+import { IBuildStage } from "../workers/progressmonitor/ibuildstage";
 import { RunStatus } from "./runstatus";
 
 export interface IRunProgress {
@@ -7,7 +7,7 @@ export interface IRunProgress {
     name: string;
     project: string,
     url: string;
-    stages: IStageProgress[];
+    stages: IBuildStage[];
     status: RunStatus;
 
 }

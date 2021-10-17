@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { String } from "typescript-string-operations";
 
 import { TaskResult, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
@@ -10,7 +8,6 @@ import { ILogger } from "../../loggers/ilogger";
 import { IRun } from "../runcreator/irun";
 import { IRunProgress } from "../../orchestrator/irunprogress";
 import { RunStatus } from "../../orchestrator/runstatus";
-import { IStageProgress } from "../../orchestrator/istageprogress";
 import { IRunStage } from "../runcreator/irunstage";
 import { IBuildStage } from "./ibuildstage";
 
@@ -43,22 +40,23 @@ export class ProgressMonitor implements IProgressMonitor {
 
         for (const stage of targetStages) {
 
-            const stageProgress: IStageProgress = {
+            const buildStage: IBuildStage = {
 
-                name: stage.name,
                 id: stage.id,
+                name: stage.name,
                 startTime: null,
                 finishTime: null,
                 attempt: 0,
                 state: TimelineRecordState.Pending,
                 result: null,
-                approval: "Skipped",
-                checks: "Skipped",
+                checkpoint: null,
+                approvals: [],
+                checks: [],
                 jobs: [],
 
             };
 
-            runProgress.stages.push(stageProgress);
+            runProgress.stages.push(buildStage);
 
         }
 
@@ -126,24 +124,11 @@ export class ProgressMonitor implements IProgressMonitor {
 
     }
 
-    public updateStageProgress(stageProgress: IStageProgress, stageStatus: IBuildStage): IStageProgress {
-
-        stageProgress.startTime = stageStatus.startTime;
-        stageProgress.finishTime = stageStatus.finishTime;
-        stageProgress.attempt = stageStatus.attempt;
-        stageProgress.state = stageStatus.state;
-        stageProgress.result = stageStatus.result;
-        stageProgress.jobs = stageStatus.jobs;
-
-        return stageProgress;
-
-    }
-
-    public getActiveStages(runProgress: IRunProgress): IStageProgress[] {
+    public getActiveStages(runProgress: IRunProgress): IBuildStage[] {
 
         const debug = this.debugLogger.extend(this.getActiveStages.name);
 
-        const activeStages: IStageProgress[] = runProgress.stages.filter(
+        const activeStages: IBuildStage[] = runProgress.stages.filter(
             (stage) => !this.isStageCompleted(stage));
 
         debug(activeStages);
@@ -152,15 +137,15 @@ export class ProgressMonitor implements IProgressMonitor {
 
     }
 
-    private isStageCompleted(stageProgress: IStageProgress): boolean {
+    private isStageCompleted(stage: IBuildStage): boolean {
 
         const debug = this.debugLogger.extend(this.isStageCompleted.name);
 
-        const status: boolean = stageProgress.state === TimelineRecordState.Completed;
+        const status: boolean = stage.state === TimelineRecordState.Completed;
 
         if (status) {
 
-            debug(`Stage <${stageProgress.name}> (${TimelineRecordState[stageProgress.state!]}) is completed`);
+            debug(`Stage <${stage.name}> (${TimelineRecordState[stage.state!]}) is completed`);
 
         }
 
@@ -168,15 +153,15 @@ export class ProgressMonitor implements IProgressMonitor {
 
     }
 
-    private isStageActive(stageProgress: IStageProgress): boolean {
+    private isStageActive(stage: IBuildStage): boolean {
 
         const debug = this.debugLogger.extend(this.isStageActive.name);
 
-        const status: boolean = stageProgress.state !== TimelineRecordState.Completed;
+        const status: boolean = stage.state !== TimelineRecordState.Completed;
 
         if (status) {
 
-            debug(`Stage <${stageProgress.name}> (${TimelineRecordState[stageProgress.state!]}) is active`);
+            debug(`Stage <${stage.name}> (${TimelineRecordState[stage.state!]}) is active`);
 
         }
 

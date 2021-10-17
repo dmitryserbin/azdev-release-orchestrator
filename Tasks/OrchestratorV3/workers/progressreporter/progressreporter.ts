@@ -5,7 +5,7 @@ import Moment from "moment";
 
 import { String } from "typescript-string-operations";
 
-import { TaskResult } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { TaskResult, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IDebug } from "../../loggers/idebug";
 import { IProgressReporter } from "./iprogressreporter";
@@ -14,9 +14,9 @@ import { ILogger } from "../../loggers/ilogger";
 import { IFilters } from "../../helpers/taskhelper/ifilters";
 import { IRun } from "../runcreator/irun";
 import { ReleaseType } from "../../helpers/taskhelper/releasetype";
-import { IStageProgress } from "../../orchestrator/istageprogress";
 import { IRunProgress } from "../../orchestrator/irunprogress";
 import { RunStatus } from "../../orchestrator/runstatus";
+import { IBuildStage } from "../progressmonitor/ibuildstage";
 
 export class ProgressReporter implements IProgressReporter {
 
@@ -167,7 +167,7 @@ export class ProgressReporter implements IProgressReporter {
 
     }
 
-    public logStageProgress(stageProgress: IStageProgress): void {
+    public logStageProgress(stage: IBuildStage): void {
 
         const table: Table = this.newTable([
 
@@ -179,7 +179,7 @@ export class ProgressReporter implements IProgressReporter {
 
         ]);
 
-        for (const job of stageProgress.jobs) {
+        for (const job of stage.jobs) {
 
             for (const task of job.tasks) {
 
@@ -206,7 +206,7 @@ export class ProgressReporter implements IProgressReporter {
 
     }
 
-    public logStagesProgress(stagesProgress: IStageProgress[]): void {
+    public logStagesProgress(stages: IBuildStage[]): void {
 
         const table: Table = this.newTable([
 
@@ -214,14 +214,13 @@ export class ProgressReporter implements IProgressReporter {
             "Jobs",
             "Tasks",
             "Attempt",
-            "Approval",
-            "Checks",
+            "Checkpoint",
             "Result",
             "Duration",
 
         ]);
 
-        for (const stage of stagesProgress) {
+        for (const stage of stages) {
 
             const tasksCount: number = stage.jobs.map(
                 (job) => job.tasks.length).reduce((a, b) => a + b, 0);
@@ -235,8 +234,7 @@ export class ProgressReporter implements IProgressReporter {
                 stage.jobs.length ? stage.jobs.length : "-",
                 tasksCount ? tasksCount : "-",
                 stage.attempt ? stage.attempt : "-",
-                stage.approval,
-                stage.checks,
+                stage.checkpoint ? TimelineRecordState[stage.checkpoint.state] : "-",
                 stage.result !== null ? TaskResult[stage.result] : "-",
                 duration ? duration : "",
 
