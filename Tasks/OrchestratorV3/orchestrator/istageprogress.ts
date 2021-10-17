@@ -12,6 +12,7 @@ export interface IStageProgress {
     state: TimelineRecordState,
     result: TaskResult | null,
     approval: string,
+    checks: string,
     jobs: IBuildJob[],
 
 }

@@ -215,6 +215,7 @@ export class ProgressReporter implements IProgressReporter {
             "Tasks",
             "Attempt",
             "Approval",
+            "Checks",
             "Result",
             "Duration",
 
@@ -235,6 +236,7 @@ export class ProgressReporter implements IProgressReporter {
                 tasksCount ? tasksCount : "-",
                 stage.attempt ? stage.attempt : "-",
                 stage.approval,
+                stage.checks,
                 stage.result !== null ? TaskResult[stage.result] : "-",
                 duration ? duration : "",
 

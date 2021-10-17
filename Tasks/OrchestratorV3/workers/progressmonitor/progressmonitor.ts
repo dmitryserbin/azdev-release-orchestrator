@@ -53,6 +53,7 @@ export class ProgressMonitor implements IProgressMonitor {
                 state: TimelineRecordState.Pending,
                 result: null,
                 approval: "Skipped",
+                checks: "Skipped",
                 jobs: [],
 
             };
