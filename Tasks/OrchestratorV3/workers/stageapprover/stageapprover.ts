@@ -1,4 +1,4 @@
-import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IStageApprover } from "./istageapprover";
 import { IDebug } from "../../loggers/idebug";
@@ -6,6 +6,8 @@ import { ILogger } from "../../loggers/ilogger";
 import { IStageProgress } from "../../orchestrator/istageprogress";
 import { IRunApiRetry } from "../../extensions/runapiretry/irunapiretry";
 import { IBuildStage } from "../progressmonitor/ibuildstage";
+import { IBuildApproval } from "../progressmonitor/ibuildapproval";
+import { IBuildCheck } from "../progressmonitor/ibuildcheck";
 
 export class StageApprover implements IStageApprover {
 
@@ -35,27 +37,16 @@ export class StageApprover implements IStageApprover {
 
     }
 
-    public async getChecks(build: Build, stage: IBuildStage): Promise<unknown> {
-
-        const debug = this.debugLogger.extend(this.getChecks.name);
-
-        const checks: unknown = await this.runApi.getRunStageChecks(build, stage);
-
-        debug(checks);
-
-        return checks;
-
-    }
-
-    public isApprovalPeding(stageChecks: any): boolean {
+    public isApprovalPeding(stage: IBuildStage): boolean {
 
         const debug = this.debugLogger.extend(this.isApprovalPeding.name);
 
         let isPending: boolean = false;
 
-        const approvals: any[] = stageChecks.approvals;
+        const pendingApprovals: IBuildApproval[] = stage.approvals.filter(
+            (approval) => approval.state !== TimelineRecordState.Completed);
 
-        if (Array.isArray(approvals) && approvals.length) {
+        if (pendingApprovals.length) {
 
             isPending = true;
 
@@ -63,7 +54,7 @@ export class StageApprover implements IStageApprover {
 
         if (isPending) {
 
-            debug(`Stage <${stageChecks.stageName}> (${stageChecks.stageId}) is pending <${approvals.length}> approval`);
+            debug(`Stage <${stage.name}> (${stage.id}) is pending <${pendingApprovals.length}> approval`);
 
         }
 
@@ -71,26 +62,24 @@ export class StageApprover implements IStageApprover {
 
     }
 
-    public isCheckPeding(stageChecks: any): boolean {
+    public isCheckPeding(stage: IBuildStage): boolean {
 
         const debug = this.debugLogger.extend(this.isCheckPeding.name);
 
         let isPending: boolean = false;
 
-        const taskChecks: any[] = stageChecks.taskChecks;
+        const pendingChecks: IBuildCheck[] = stage.checks.filter(
+            (check) => check.state !== TimelineRecordState.Completed);
 
-        if (Array.isArray(taskChecks) && taskChecks.length) {
+        if (pendingChecks.length) {
 
-            const pendingTaskChecks: any[] = taskChecks.filter(
-                (check) => check.status !== 4);
+            isPending = true;
 
-            if (pendingTaskChecks.length) {
+        }
 
-                debug(`Stage <${stageChecks.stageName}> (${stageChecks.stageId}) is pending <${pendingTaskChecks.length}> task checks`);
+        if (isPending) {
 
-                isPending = true;
-
-            }
+            debug(`Stage <${stage.name}> (${stage.id}) is pending <${pendingChecks.length}> task checks`);
 
         }
 

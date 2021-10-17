@@ -76,9 +76,7 @@ export class RunDeployer implements IRunDeployer {
 
                 if (stageStatus.checkpoint && stageStatus.checkpoint.state !== TimelineRecordState.Completed) {
 
-                    const stageChecks: unknown = await this.stageApprover.getChecks(run.build, stageStatus);
-
-                    if (this.stageApprover.isApprovalPeding(stageChecks)) {
+                    if (this.stageApprover.isApprovalPeding(stageStatus)) {
 
                         // Approve stage prgoress and validate outcome
                         // Use retry mechanism to check manual approval status
@@ -87,7 +85,7 @@ export class RunDeployer implements IRunDeployer {
 
                     }
 
-                    if (this.stageApprover.isCheckPeding(stageChecks)) {
+                    if (this.stageApprover.isCheckPeding(stageStatus)) {
 
                         this.logger.log(`Stage <${stage.name}> is waiting for checks`);
 
