@@ -10,22 +10,22 @@ import { IBuildApproval } from "../progressmonitor/ibuildapproval";
 import { IBuildCheck } from "../progressmonitor/ibuildcheck";
 import { ISettings } from "../../helpers/taskhelper/isettings";
 import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper";
-import { IBuildMonitor } from "../../helpers/buildmonitor/ibuildmonitor";
+import { IStageSelector } from "../../helpers/stageselector/istageselector";
 
 export class StageApprover implements IStageApprover {
 
     private logger: ILogger;
     private debugLogger: IDebug;
 
-    private buildMonitor: IBuildMonitor;
+    private stageSelector: IStageSelector;
     private commonHelper: ICommonHelper;
 
-    constructor(buildMonitor: IBuildMonitor, commonHelper: ICommonHelper, logger: ILogger) {
+    constructor(stageSelector: IStageSelector, commonHelper: ICommonHelper, logger: ILogger) {
 
         this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
 
-        this.buildMonitor = buildMonitor;
+        this.stageSelector = stageSelector;
         this.commonHelper = commonHelper;
 
     }
@@ -46,7 +46,7 @@ export class StageApprover implements IStageApprover {
 
                 debug(`Requesting <${approval.id}> approval <${TimelineRecordState[approval.state]}> update`);
 
-                const approvalResult: any = await this.buildMonitor.approveStage(build, approval, comment);
+                const approvalResult: any = await this.stageSelector.approveStage(build, approval, comment);
 
                 // No need to approve following request
                 // When at least one approval succeeded

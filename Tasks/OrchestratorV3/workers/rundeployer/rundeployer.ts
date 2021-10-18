@@ -12,7 +12,7 @@ import { RunStatus } from "../../orchestrator/runstatus";
 import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper";
 import { IProgressReporter } from "../progressreporter/iprogressreporter";
 import { IBuildStage } from "../progressmonitor/ibuildstage";
-import { IBuildMonitor } from "../../helpers/buildmonitor/ibuildmonitor";
+import { IStageSelector } from "../../helpers/stageselector/istageselector";
 import { IStageApprover } from "../stageapprover/istageapprover";
 
 export class RunDeployer implements IRunDeployer {
@@ -21,17 +21,17 @@ export class RunDeployer implements IRunDeployer {
     private debugLogger: IDebug;
 
     private commonHelper: ICommonHelper;
-    private buildMonitor: IBuildMonitor;
+    private stageSelector: IStageSelector;
     private stageApprover: IStageApprover;
     private progressMonitor: IProgressMonitor;
     private progressReporter: IProgressReporter;
 
-    constructor(commonHelper: ICommonHelper, buildMonitor: IBuildMonitor, stageApprover: IStageApprover, progressMonitor: IProgressMonitor, progressReporter: IProgressReporter, logger: ILogger) {
+    constructor(commonHelper: ICommonHelper, stageSelector: IStageSelector, stageApprover: IStageApprover, progressMonitor: IProgressMonitor, progressReporter: IProgressReporter, logger: ILogger) {
 
         this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
 
-        this.buildMonitor = buildMonitor;
+        this.stageSelector = stageSelector;
         this.stageApprover = stageApprover;
         this.commonHelper = commonHelper;
         this.progressMonitor = progressMonitor;
@@ -71,7 +71,7 @@ export class RunDeployer implements IRunDeployer {
 
                 debug(`Updating <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state!]}> progress`);
 
-                stage = await this.buildMonitor.getStageStatus(run.build, stage);
+                stage = await this.stageSelector.getStage(run.build, stage);
 
                 if (stage.checkpoint && stage.checkpoint.state !== TimelineRecordState.Completed) {
 

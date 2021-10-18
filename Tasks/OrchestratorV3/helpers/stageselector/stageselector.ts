@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { Build, Timeline, TimelineRecord } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { ILogger } from "../../loggers/ilogger";
 import { IDebug } from "../../loggers/idebug";
-import { IBuildMonitor } from "./ibuildmonitor";
+import { IStageSelector } from "./istageselector";
 import { IBuildStage } from "../../workers/progressmonitor/ibuildstage";
 import { IBuildJob } from "../../workers/progressmonitor/ibuildjob";
 import { IBuildApiRetry } from "../../extensions/buildapiretry/ibuildapiretry";
@@ -14,7 +12,7 @@ import { IBuildCheck } from "../../workers/progressmonitor/ibuildcheck";
 import { IBuildCheckpoint } from "../../workers/progressmonitor/ibuildcheckpoint";
 import { IPipelinesApiRetry } from "../../extensions/pipelinesapiretry/ipipelineapiretry";
 
-export class BuildMonitor implements IBuildMonitor {
+export class StageSelector implements IStageSelector {
 
     private debugLogger: IDebug;
 
@@ -30,9 +28,9 @@ export class BuildMonitor implements IBuildMonitor {
 
     }
 
-    public async getStageStatus(build: Build, stage: IBuildStage): Promise<IBuildStage> {
+    public async getStage(build: Build, stage: IBuildStage): Promise<IBuildStage> {
 
-        const debug = this.debugLogger.extend(this.getStageStatus.name);
+        const debug = this.debugLogger.extend(this.getStage.name);
 
         const buildTimeline: Timeline = await this.buildApi.getBuildTimeline(build.project!.name!, build.id!, build.orchestrationPlan!.planId);
 

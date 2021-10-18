@@ -22,8 +22,8 @@ import { IProgressMonitor } from "../../workers/progressmonitor/iprogressmonitor
 import { ProgressMonitor } from "../../workers/progressmonitor/progressmonitor";
 import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper";
 import { CommonHelper } from "../../helpers/commonhelper/commonhelper";
-import { IBuildMonitor } from "../../helpers/buildmonitor/ibuildmonitor";
-import { BuildMonitor } from "../../helpers/buildmonitor/buildmonitor";
+import { IStageSelector } from "../../helpers/stageselector/istageselector";
+import { StageSelector } from "../../helpers/stageselector/stageselector";
 import { IStageApprover } from "../../workers/stageapprover/istageapprover";
 import { StageApprover } from "../../workers/stageapprover/stageapprover";
 import { IPipelinesApiRetry } from "../../extensions/pipelinesapiretry/ipipelineapiretry";
@@ -68,13 +68,13 @@ export class WorkerFactory implements IWorkerFactory {
         const buildApi: IBuildApiRetry = await this.apiFactory.createBuildApi();
         const pipelinesApi: IPipelinesApiRetry = await this.apiFactory.createPipelinesApi();
 
-        const buildMonitor: IBuildMonitor = new BuildMonitor(buildApi, pipelinesApi, this.logger);
-        const stageApprover: IStageApprover = new StageApprover(buildMonitor, commonHelper, this.logger);
+        const stageSelector: IStageSelector = new StageSelector(buildApi, pipelinesApi, this.logger);
+        const stageApprover: IStageApprover = new StageApprover(stageSelector, commonHelper, this.logger);
 
         const progressMonitor: IProgressMonitor = new ProgressMonitor(this.logger);
         const progressReporter: IProgressReporter = new ProgressReporter(this.logger);
 
-        return new RunDeployer(commonHelper, buildMonitor, stageApprover, progressMonitor, progressReporter, this.logger);
+        return new RunDeployer(commonHelper, stageSelector, stageApprover, progressMonitor, progressReporter, this.logger);
 
     }
 
