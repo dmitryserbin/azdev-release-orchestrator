@@ -81,19 +81,19 @@ export class RunDeployer implements IRunDeployer {
                         // Use retry mechanism to check manual approval status
                         stage = await this.stageApprover.approve(stage, run.build);
 
-                        // Validate failed approvals retry attempts
-                        // Cancel build progress if unable to approve
-                        if (stage.checkpoint?.state !== TimelineRecordState.Completed) {
-
-                            await this.stageApprover.validate(stage, run.build, run.settings);
-
-                        }
+                        // Validate failed approvals attempts
+                        // Cancel run progress if unable to approve
+                        await this.stageApprover.validateApproval(stage, run.build, run.settings);
 
                     }
 
                     if (this.stageApprover.isCheckPeding(stage)) {
 
-                        this.logger.log(`Stage <${stage.name}> is waiting for checks`);
+                        stage = await this.stageApprover.check(stage);
+
+                        // Validate pending checks attempts
+                        // Cancel run progress if unable proceed
+                        await this.stageApprover.validateCheck(stage, run.build, run.settings);
 
                     }
 

@@ -6,7 +6,9 @@ import { IBuildStage } from "../progressmonitor/ibuildstage";
 export interface IStageApprover {
 
     approve(stage: IBuildStage, build: Build, comment?: string): Promise<IBuildStage>;
-    validate(stage: IBuildStage, build: Build, settings: ISettings): Promise<void>;
+    check(stage: IBuildStage): Promise<IBuildStage>;
+    validateApproval(stage: IBuildStage, build: Build, settings: ISettings): Promise<void>;
+    validateCheck(stage: IBuildStage, build: Build, settings: ISettings): Promise<void>;
     isApprovalPeding(stage: IBuildStage): boolean;
     isCheckPeding(stage: IBuildStage): boolean;
 

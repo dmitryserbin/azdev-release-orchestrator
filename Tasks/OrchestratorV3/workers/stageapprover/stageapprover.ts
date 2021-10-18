@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Build, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, BuildStatus, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IStageApprover } from "./istageapprover";
 import { IDebug } from "../../loggers/idebug";
@@ -79,9 +79,19 @@ export class StageApprover implements IStageApprover {
 
     }
 
-    public async validate(stage: IBuildStage, build: Build, settings: ISettings): Promise<void> {
+    public async check(stage: IBuildStage): Promise<IBuildStage> {
 
-        const debug = this.debugLogger.extend(this.validate.name);
+        stage.attempt.check++;
+
+        this.logger.log(`Stage <${stage.name}> is waiting for checks (attempt ${stage.attempt.check})`);
+
+        return stage;
+
+    }
+
+    public async validateApproval(stage: IBuildStage, build: Build, settings: ISettings): Promise<void> {
+
+        const debug = this.debugLogger.extend(this.validateApproval.name);
 
         const limitExceeded: boolean = stage.attempt.approval > settings.approvalRetry;
 
@@ -93,7 +103,7 @@ export class StageApprover implements IStageApprover {
 
             if (settings.cancelFailedApproval) {
 
-                this.logger.log(`Cancelling <${build.buildNumber}> (${build.id}) build progress`);
+                this.logger.log(`Cancelling <${build.buildNumber}> (${build.id}) build <${BuildStatus[build.status!]}> progress`);
 
                 const canceledBuild: Build = await this.buildSelector.cancelBuild(build);
 
@@ -105,7 +115,36 @@ export class StageApprover implements IStageApprover {
 
             this.logger.warn(`Stage <${stage.name}> (${stage.id}) cannot be approved`);
 
-            // Wait before next approval retry
+            await this.commonHelper.wait(settings.approvalSleep);
+
+        }
+
+    }
+
+    public async validateCheck(stage: IBuildStage, build: Build, settings: ISettings): Promise<void> {
+
+        const debug = this.debugLogger.extend(this.validateCheck.name);
+
+        const limitExceeded: boolean = stage.attempt.check > settings.approvalRetry;
+
+        if (limitExceeded) {
+
+            const limitMinutes: number = Math.floor((settings.approvalRetry * settings.approvalSleep) / 60000);
+
+            this.logger.warn(`Stage <${stage.name}> (${stage.id}) check <${limitMinutes}> minute(s) time limit exceeded`);
+
+            if (settings.cancelFailedApproval) {
+
+                this.logger.log(`Cancelling <${build.buildNumber}> (${build.id}) build <${BuildStatus[build.status!]}> progress`);
+
+                const canceledBuild: Build = await this.buildSelector.cancelBuild(build);
+
+                debug(canceledBuild);
+
+            }
+
+        } else {
+
             await this.commonHelper.wait(settings.approvalSleep);
 
         }
