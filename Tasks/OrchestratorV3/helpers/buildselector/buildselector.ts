@@ -10,22 +10,25 @@ import { IBuildParameters } from "../taskhelper/ibuildparameters";
 import { IBuildFilter } from "../../workers/filtercreator/ibuildfilter";
 import { IResourcesFilter } from "../../workers/filtercreator/iresourcesfilter";
 import { IRepositoryFilter } from "../../workers/filtercreator/irepositoryfilter";
-import { IRunApiRetry } from "../../extensions/runapiretry/irunapiretry";
+import { IBuildWebApiRetry } from "../../extensions/buildwebapiretry/ibuildwebapiretry";
 import { IRunStage } from "../../workers/runcreator/irunstage";
+import { IPipelinesApiRetry } from "../../extensions/pipelinesapiretry/ipipelineapiretry";
 
 export class BuildSelector implements IBuildSelector {
 
     private debugLogger: IDebug;
 
     private buildApi: IBuildApiRetry;
-    private runApi: IRunApiRetry;
+    private pipelinesApi: IPipelinesApiRetry;
+    private buildWebApi: IBuildWebApiRetry;
 
-    constructor(buildApi: IBuildApiRetry, runApi: IRunApiRetry, logger: ILogger) {
+    constructor(buildApi: IBuildApiRetry, pipelinesApi: IPipelinesApiRetry, buildWebApi: IBuildWebApiRetry, logger: ILogger) {
 
         this.debugLogger = logger.extend(this.constructor.name);
 
         this.buildApi = buildApi;
-        this.runApi = runApi;
+        this.pipelinesApi = pipelinesApi;
+        this.buildWebApi = buildWebApi;
 
     }
 
@@ -63,7 +66,7 @@ export class BuildSelector implements IBuildSelector {
 
         }
 
-        const run: any = await this.runApi.queueRun(definition, request);
+        const run: any = await this.pipelinesApi.queueRun(definition, request);
 
         const build: Build = await this.buildApi.getBuild(definition.project!.name!, run.id);
 
@@ -123,7 +126,7 @@ export class BuildSelector implements IBuildSelector {
 
         const buildStages: IRunStage[] = [];
 
-        const runDetails: any = await this.runApi.getRunDetails(build);
+        const runDetails: any = await this.buildWebApi.getRunDetails(build);
 
         if (Array.isArray(runDetails.stages) && runDetails.stages.length) {
 
@@ -218,7 +221,7 @@ export class BuildSelector implements IBuildSelector {
 
         const debug = this.debugLogger.extend(this.getStages.name);
 
-        const result: any = await this.runApi.getRunParameters(definition, repository, parameters);
+        const result: any = await this.buildWebApi.getRunParameters(definition, repository, parameters);
 
         const definitionStages: unknown[] = result.stages;
 
@@ -290,7 +293,7 @@ export class BuildSelector implements IBuildSelector {
 
         const debug = this.debugLogger.extend(this.getParameters.name);
 
-        const result: any = await this.runApi.getRunParameters(definition, repository);
+        const result: any = await this.buildWebApi.getRunParameters(definition, repository);
 
         const templateParameters: unknown[] = result.templateParameters;
 

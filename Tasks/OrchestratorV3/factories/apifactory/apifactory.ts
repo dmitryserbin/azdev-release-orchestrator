@@ -13,8 +13,10 @@ import { IEndpoint } from "../../helpers/taskhelper/iendpoint";
 import { ILogger } from "../../loggers/ilogger";
 import { ApiClient } from "../../common/apiclient";
 import { IApiClient } from "../../common/iapiclient";
-import { IRunApiRetry } from "../../extensions/runapiretry/irunapiretry";
-import { RunApiRetry } from "../../extensions/runapiretry/runapiretry";
+import { IBuildWebApiRetry } from "../../extensions/buildwebapiretry/ibuildwebapiretry";
+import { BuildWebApiRetry } from "../../extensions/buildwebapiretry/buildwebapiretry";
+import { IPipelinesApiRetry } from "../../extensions/pipelinesapiretry/ipipelineapiretry";
+import { PipelinesApiRetry } from "../../extensions/pipelinesapiretry/pipelineapiretry";
 
 export class ApiFactory implements IApiFactory {
 
@@ -71,16 +73,29 @@ export class ApiFactory implements IApiFactory {
 
     }
 
-    public async createRunApi(): Promise<IRunApiRetry> {
+    public async createPipelinesApi(): Promise<IPipelinesApiRetry> {
 
-        const debug = this.debugLogger.extend(this.createRunApi.name);
+        const debug = this.debugLogger.extend(this.createPipelinesApi.name);
+
+        debug(`Initializing Azure DevOps Pipelines API`);
+
+        const apiClient: IApiClient = await this.createApiClient();
+        const pipelinesApi: IPipelinesApiRetry = new PipelinesApiRetry(apiClient, this.logger);
+
+        return pipelinesApi;
+
+    }
+
+    public async createBuildWebApi(): Promise<IBuildWebApiRetry> {
+
+        const debug = this.debugLogger.extend(this.createBuildWebApi.name);
 
         debug(`Initializing Azure DevOps Run API`);
 
         const apiClient: IApiClient = await this.createApiClient();
-        const runApi: IRunApiRetry = new RunApiRetry(apiClient, this.logger);
+        const buildWebApi: IBuildWebApiRetry = new BuildWebApiRetry(apiClient, this.logger);
 
-        return runApi;
+        return buildWebApi;
 
     }
 

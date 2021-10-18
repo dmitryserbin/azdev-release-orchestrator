@@ -17,7 +17,7 @@ import { IDefinitionSelector } from "../../helpers/definitionselector/idefinitio
 import { DefinitionSelector } from "../../helpers/definitionselector/definitionselector";
 import { IBuildSelector } from "../../helpers/buildselector/ibuildselector";
 import { BuildSelector } from "../../helpers/buildselector/buildselector";
-import { IRunApiRetry } from "../../extensions/runapiretry/irunapiretry";
+import { IBuildWebApiRetry } from "../../extensions/buildwebapiretry/ibuildwebapiretry";
 import { IProgressMonitor } from "../../workers/progressmonitor/iprogressmonitor";
 import { ProgressMonitor } from "../../workers/progressmonitor/progressmonitor";
 import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper";
@@ -26,6 +26,7 @@ import { IBuildMonitor } from "../../helpers/buildmonitor/ibuildmonitor";
 import { BuildMonitor } from "../../helpers/buildmonitor/buildmonitor";
 import { IStageApprover } from "../../workers/stageapprover/istageapprover";
 import { StageApprover } from "../../workers/stageapprover/stageapprover";
+import { IPipelinesApiRetry } from "../../extensions/pipelinesapiretry/ipipelineapiretry";
 
 export class WorkerFactory implements IWorkerFactory {
 
@@ -49,8 +50,9 @@ export class WorkerFactory implements IWorkerFactory {
         const buildApi: IBuildApiRetry = await this.apiFactory.createBuildApi();
         const definitionSelector: IDefinitionSelector = new DefinitionSelector(buildApi, this.logger);
 
-        const runApi: IRunApiRetry = await this.apiFactory.createRunApi();
-        const buildSelector: IBuildSelector = new BuildSelector(buildApi, runApi, this.logger);
+        const pipelinesApi: IPipelinesApiRetry = await this.apiFactory.createPipelinesApi();
+        const buildWebApi: IBuildWebApiRetry = await this.apiFactory.createBuildWebApi();
+        const buildSelector: IBuildSelector = new BuildSelector(buildApi, pipelinesApi, buildWebApi, this.logger);
 
         const filterCreator: IFilterCreator = new FilterCreator(this.logger);
         const progressReporter: IProgressReporter = new ProgressReporter(this.logger);
@@ -63,8 +65,9 @@ export class WorkerFactory implements IWorkerFactory {
 
         const commonHelper: ICommonHelper = new CommonHelper(this.logger);
 
-        const runApi: IRunApiRetry = await this.apiFactory.createRunApi();
-        const stageApprover: IStageApprover = new StageApprover(runApi, this.logger);
+        const pipelinesApi: IPipelinesApiRetry = await this.apiFactory.createPipelinesApi();
+        const buildWebApi: IBuildWebApiRetry = await this.apiFactory.createBuildWebApi();
+        const stageApprover: IStageApprover = new StageApprover(pipelinesApi, buildWebApi, this.logger);
 
         const buildApi: IBuildApiRetry = await this.apiFactory.createBuildApi();
         const buildMonitor: IBuildMonitor = new BuildMonitor(buildApi, this.logger);

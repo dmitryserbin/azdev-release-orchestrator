@@ -3,24 +3,27 @@ import { TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInter
 import { IStageApprover } from "./istageapprover";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
-import { IRunApiRetry } from "../../extensions/runapiretry/irunapiretry";
+import { IBuildWebApiRetry } from "../../extensions/buildwebapiretry/ibuildwebapiretry";
 import { IBuildStage } from "../progressmonitor/ibuildstage";
 import { IBuildApproval } from "../progressmonitor/ibuildapproval";
 import { IBuildCheck } from "../progressmonitor/ibuildcheck";
+import { IPipelinesApiRetry } from "../../extensions/pipelinesapiretry/ipipelineapiretry";
 
 export class StageApprover implements IStageApprover {
 
     private logger: ILogger;
     private debugLogger: IDebug;
 
-    private runApi: IRunApiRetry;
+    private pipelinesApi: IPipelinesApiRetry;
+    private buildWebApi: IBuildWebApiRetry;
 
-    constructor(runApi: IRunApiRetry, logger: ILogger) {
+    constructor(pipelinesApi: IPipelinesApiRetry, buildWebApi: IBuildWebApiRetry, logger: ILogger) {
 
         this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
 
-        this.runApi = runApi;
+        this.pipelinesApi = pipelinesApi;
+        this.buildWebApi = buildWebApi;
 
     }
 

@@ -8,9 +8,9 @@ import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
 import { IRepositoryFilter } from "../../workers/filtercreator/irepositoryfilter";
 import { IBuildStage } from "../../workers/progressmonitor/ibuildstage";
-import { IRunApiRetry } from "./irunapiretry";
+import { IBuildWebApiRetry } from "./ibuildwebapiretry";
 
-export class RunApiRetry implements IRunApiRetry {
+export class BuildWebApiRetry implements IBuildWebApiRetry {
 
     private debugLogger: IDebug;
 
@@ -21,34 +21,6 @@ export class RunApiRetry implements IRunApiRetry {
         this.debugLogger = logger.extend(this.constructor.name);
 
         this.apiClient = apiClient;
-
-    }
-
-    public async queueRun(definition: BuildDefinition, request: unknown): Promise<unknown> {
-
-        const run: unknown = await this.apiClient.post(`${definition.project?.name}/_apis/pipelines/${definition.id}/runs`, `5.1-preview.1`, request);
-
-        if (!run) {
-
-            throw new Error(`Unable to create <${definition.name}> (${definition.id}) definition run`);
-
-        }
-
-        return run;
-
-    }
-
-    public async updateApproval(build: Build, request: unknown): Promise<unknown> {
-
-        const approval: unknown = await this.apiClient.patch(`${build.project?.name}/_apis/pipelines/approvals`, `5.1-preview.1`, request);
-
-        if (!approval) {
-
-            throw new Error(`Unable to update <${build.buildNumber}> (${build.id}) build approval`);
-
-        }
-
-        return approval;
 
     }
 
@@ -88,22 +60,6 @@ export class RunApiRetry implements IRunApiRetry {
         const runDetails: unknown = result.dataProviders[`ms.vss-build-web.run-details-data-provider`];
 
         return runDetails;
-
-    }
-
-    public async getRunStages(build: Build): Promise<unknown[]> {
-
-        let stages: unknown[] = [];
-
-        const runDetails: any = await this.getRunDetails(build);
-
-        if (Array.isArray(runDetails.stages) && runDetails.stages.length) {
-
-            stages = runDetails.stages;
-
-        }
-
-        return stages;
 
     }
 
