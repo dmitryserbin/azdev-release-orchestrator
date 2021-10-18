@@ -38,6 +38,20 @@ export class RunApiRetry implements IRunApiRetry {
 
     }
 
+    public async updateApproval(build: Build, request: unknown): Promise<unknown> {
+
+        const approval: unknown = await this.apiClient.patch(`${build.project?.name}/_apis/pipelines/approvals`, `5.1-preview.1`, request);
+
+        if (!approval) {
+
+            throw new Error(`Unable to update <${build.buildNumber}> (${build.id}) build approval`);
+
+        }
+
+        return approval;
+
+    }
+
     public async getRunDetails(build: Build): Promise<unknown> {
 
         const debug = this.debugLogger.extend(this.getRunDetails.name);
