@@ -11,20 +11,23 @@ import { IBuildCheck } from "../progressmonitor/ibuildcheck";
 import { ISettings } from "../../helpers/taskhelper/isettings";
 import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper";
 import { IStageSelector } from "../../helpers/stageselector/istageselector";
+import { IBuildSelector } from "../../helpers/buildselector/ibuildselector";
 
 export class StageApprover implements IStageApprover {
 
     private logger: ILogger;
     private debugLogger: IDebug;
 
+    private buildSelector: IBuildSelector;
     private stageSelector: IStageSelector;
     private commonHelper: ICommonHelper;
 
-    constructor(stageSelector: IStageSelector, commonHelper: ICommonHelper, logger: ILogger) {
+    constructor(buildSelector: IBuildSelector, stageSelector: IStageSelector, commonHelper: ICommonHelper, logger: ILogger) {
 
         this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
 
+        this.buildSelector = buildSelector;
         this.stageSelector = stageSelector;
         this.commonHelper = commonHelper;
 
@@ -80,34 +83,30 @@ export class StageApprover implements IStageApprover {
 
         const debug = this.debugLogger.extend(this.validate.name);
 
-        // Validate failed approvals retry attempts
-        // Cancel stage deployment if unable to approve
-        if (stage.checkpoint?.state !== TimelineRecordState.Completed) {
+        const limitExceeded: boolean = stage.attempt.approval > settings.approvalRetry;
 
-            const limitExceeded: boolean = stage.attempt.approval > settings.approvalRetry;
+        if (limitExceeded) {
 
-            if (limitExceeded) {
+            const limitMinutes: number = Math.floor((settings.approvalRetry * settings.approvalSleep) / 60000);
 
-                const limitMinutes: number = Math.floor((settings.approvalRetry * settings.approvalSleep) / 60000);
+            this.logger.warn(`Stage <${stage.name}> (${stage.id}) approval <${limitMinutes}> minute(s) time limit exceeded`);
 
-                this.logger.warn(`Stage <${stage.name}> (${stage.id}) approval <${limitMinutes}> minute(s) time limit exceeded`);
+            if (settings.cancelFailedApproval) {
 
-                if (settings.cancelFailedApproval) {
+                this.logger.log(`Cancelling <${build.buildNumber}> (${build.id}) build progress`);
 
-                    debug(`Cancelling <${build.buildNumber}> (${build.id}) build progress`);
+                const canceledBuild: Build = await this.buildSelector.cancelBuild(build);
 
-                    // TBU
-
-                }
-
-            } else {
-
-                this.logger.warn(`Stage <${stage.name}> (${stage.id}) cannot be approved`);
-
-                // Wait before next approval retry
-                await this.commonHelper.wait(settings.approvalSleep);
+                debug(canceledBuild);
 
             }
+
+        } else {
+
+            this.logger.warn(`Stage <${stage.name}> (${stage.id}) cannot be approved`);
+
+            // Wait before next approval retry
+            await this.commonHelper.wait(settings.approvalSleep);
 
         }
 

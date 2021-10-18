@@ -78,6 +78,17 @@ export class BuildApiRetry implements IBuildApiRetry {
     }
 
     @Retryable()
+    public async updateBuild(build: Build, project: string, buildId: number, retry?: boolean): Promise<Build> {
+
+        return await this.buildApi.updateBuild(
+            build,
+            project,
+            buildId,
+            retry);
+
+    }
+
+    @Retryable()
     public async getDefinition(project: string, definitionId: number, revision?: number, minMetricsTime?: Date, propertyFilters?: string[], includeLatestBuilds?: boolean): Promise<BuildDefinition> {
 
         return await this.buildApi.getDefinition(

@@ -11,5 +11,6 @@ export interface IBuildSelector {
     getLatestBuild(definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build>;
     getSpecificBuild(definition: BuildDefinition, buildNumber: string): Promise<Build>;
     getBuildStages(build: Build, stages: string[]): Promise<IRunStage[]>;
+    cancelBuild(build: Build): Promise<Build>;
 
 }

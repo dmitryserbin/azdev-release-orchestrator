@@ -173,6 +173,24 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
+    public async cancelBuild(build: Build): Promise<Build> {
+
+        const debug = this.debugLogger.extend(this.cancelBuild.name);
+
+        const cancelRequest: Build = {
+
+            status: BuildStatus.Cancelling,
+
+        };
+
+        const canceledBuild: Build = await this.buildApi.updateBuild(cancelRequest, build.project!.id!, build.id!, false);
+
+        debug(canceledBuild);
+
+        return canceledBuild;
+
+    }
+
     private async findBuilds(definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build[]> {
 
         const debug = this.debugLogger.extend(this.findBuilds.name);
