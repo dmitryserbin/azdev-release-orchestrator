@@ -1,4 +1,4 @@
-import { TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IStageApprover } from "./istageapprover";
 import { IDebug } from "../../loggers/idebug";
@@ -27,11 +27,45 @@ export class StageApprover implements IStageApprover {
 
     }
 
-    public async approve(stage: IBuildStage): Promise<IBuildStage> {
+    public async approve(build: Build, stage: IBuildStage, comment?: string): Promise<IBuildStage> {
 
         const debug = this.debugLogger.extend(this.approve.name);
 
         debug(`Approving <${stage.name}> (${stage.id}) stage progress`);
+
+        // Approve all pending requests in sequence
+        // To support multiple approvals scenarios
+        for (const approval of stage.approvals) {
+
+            debug(`Requesting <${approval.id}> stage <${TimelineRecordState[approval.state]}> approval`);
+
+            const request: unknown = {
+
+                approvalId: approval.id,
+                status: 4,
+                comment: comment ? comment : ``,
+            
+            };
+
+            const approvalResult: any = await this.pipelinesApi.updateApproval(build, request);
+
+            debug(approvalResult);
+
+            // No need to approve following request
+            // When at least one approval succeeded
+            if (approvalResult.status === `approved`) {
+
+                this.logger.log(`Stage <${stage.name}> (${stage.id}) approved successfully`);
+
+                approval.state = TimelineRecordState.Completed;
+
+                debug(approval);
+
+                break;
+
+            }
+
+        }
 
         return stage;
 

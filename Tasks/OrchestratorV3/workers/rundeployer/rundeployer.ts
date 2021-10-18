@@ -80,7 +80,7 @@ export class RunDeployer implements IRunDeployer {
                         // Approve stage prgoress and validate outcome
                         // Use retry mechanism to check manual approval status
                         // Cancel stage progress when retry count exceeded
-                        stage = await this.stageApprover.approve(stage);
+                        stage = await this.stageApprover.approve(run.build, stage);
 
                     }
 

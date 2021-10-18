@@ -35,15 +35,15 @@ export class PipelinesApiRetry implements IPipelinesApiRetry {
 
     public async updateApproval(build: Build, request: unknown): Promise<unknown> {
 
-        const approval: unknown = await this.apiClient.patch(`${build.project?.name}/_apis/pipelines/approvals`, `5.1-preview.1`, request);
+        const approval: any = await this.apiClient.patch(`${build.project?.name}/_apis/pipelines/approvals`, `5.1-preview.1`, [ request ]);
 
-        if (!approval) {
+        if (!Array.isArray(approval.value) && approval.value.length <= 0) {
 
             throw new Error(`Unable to update <${build.buildNumber}> (${build.id}) build approval`);
 
         }
 
-        return approval;
+        return approval.value[0];
 
     }
 
