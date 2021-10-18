@@ -10,6 +10,9 @@ import { IBuildStage } from "../progressmonitor/ibuildstage";
 import { IBuildApproval } from "../progressmonitor/ibuildapproval";
 import { IBuildCheck } from "../progressmonitor/ibuildcheck";
 import { IPipelinesApiRetry } from "../../extensions/pipelinesapiretry/ipipelineapiretry";
+import { ISettings } from "../../helpers/taskhelper/isettings";
+import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper";
+import { IBuildApiRetry } from "../../extensions/buildapiretry/ibuildapiretry";
 
 export class StageApprover implements IStageApprover {
 
@@ -17,19 +20,23 @@ export class StageApprover implements IStageApprover {
     private debugLogger: IDebug;
 
     private pipelinesApi: IPipelinesApiRetry;
+    private buildApi: IBuildApiRetry;
     private buildWebApi: IBuildWebApiRetry;
+    private commonHelper: ICommonHelper;
 
-    constructor(pipelinesApi: IPipelinesApiRetry, buildWebApi: IBuildWebApiRetry, logger: ILogger) {
+    constructor(pipelinesApi: IPipelinesApiRetry, buildApi: IBuildApiRetry, buildWebApi: IBuildWebApiRetry, commonHelper: ICommonHelper, logger: ILogger) {
 
         this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
 
         this.pipelinesApi = pipelinesApi;
+        this.buildApi = buildApi;
         this.buildWebApi = buildWebApi;
+        this.commonHelper = commonHelper;
 
     }
 
-    public async approve(build: Build, stage: IBuildStage, comment?: string): Promise<IBuildStage> {
+    public async approve(stage: IBuildStage, build: Build, comment?: string): Promise<IBuildStage> {
 
         const debug = this.debugLogger.extend(this.approve.name);
 
@@ -82,6 +89,39 @@ export class StageApprover implements IStageApprover {
         }
 
         return stage;
+
+    }
+
+    public async validate(stage: IBuildStage, build: Build, settings: ISettings): Promise<void> {
+
+        const debug = this.debugLogger.extend(this.validate.name);
+
+        // Validate failed approvals retry attempts
+        // Cancel stage deployment if unable to approve
+        if (stage.checkpoint?.state !== TimelineRecordState.Completed) {
+
+            const limitExceeded: boolean = stage.attempt.approval >= settings.approvalRetry;
+
+            if (limitExceeded) {
+
+                const limitMinutes: number = Math.floor((settings.approvalRetry * settings.approvalSleep) / 60000);
+
+                this.logger.warn(`Stage <${stage.name}> (${stage.id}) approval <${limitMinutes}> minute(s) time limit exceeded`);
+
+                debug(`Cancelling <${build.buildNumber}> (${build.id}) build progress`);
+
+                // TBU
+
+            } else {
+
+                this.logger.warn(`Stage <${stage.name}> (${stage.id}) cannot be approved`);
+
+                // Wait before next approval retry
+                await this.commonHelper.wait(settings.approvalSleep);
+
+            }
+
+        }
 
     }
 

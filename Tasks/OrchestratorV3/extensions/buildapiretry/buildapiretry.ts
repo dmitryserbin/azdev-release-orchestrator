@@ -1,5 +1,5 @@
 import { IBuildApi } from "azure-devops-node-api/BuildApi";
-import { Build, BuildReason, BuildStatus, BuildResult, QueryDeletedOption, BuildQueryOrder, BuildDefinition, DefinitionQueryOrder, BuildDefinitionReference, Timeline } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, BuildReason, BuildStatus, BuildResult, QueryDeletedOption, BuildQueryOrder, BuildDefinition, DefinitionQueryOrder, BuildDefinitionReference, Timeline, UpdateStageParameters } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IBuildApiRetry } from "./ibuildapiretry";
 import { Retryable } from "../../common/retry";
@@ -111,6 +111,17 @@ export class BuildApiRetry implements IBuildApiRetry {
             taskIdFilter,
             processType,
             yamlFilename);
+
+    }
+
+    @Retryable()
+    public async updateStage(updateParameters: UpdateStageParameters, buildId: number, stageRefName: string, project?: string): Promise<void> {
+
+        return await this.buildApi.updateStage(
+            updateParameters,
+            buildId,
+            stageRefName,
+            project);
 
     }
 

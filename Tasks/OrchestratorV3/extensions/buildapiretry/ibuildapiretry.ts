@@ -1,5 +1,5 @@
 import { IBuildApi } from "azure-devops-node-api/BuildApi";
-import { Build, BuildReason, BuildStatus, BuildResult, QueryDeletedOption, BuildQueryOrder, BuildDefinition, BuildDefinitionReference, DefinitionQueryOrder, Timeline } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, BuildReason, BuildStatus, BuildResult, QueryDeletedOption, BuildQueryOrder, BuildDefinition, BuildDefinitionReference, DefinitionQueryOrder, Timeline, UpdateStageParameters } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 export interface IBuildApiRetry extends Partial<IBuildApi> {
 
@@ -9,5 +9,6 @@ export interface IBuildApiRetry extends Partial<IBuildApi> {
     queueBuild(build: Build, project: string, ignoreWarnings?: boolean, checkInTicket?: string, sourceBuildId?: number, definitionId?: number): Promise<Build>;
     getDefinition(project: string, definitionId: number, revision?: number, minMetricsTime?: Date, propertyFilters?: string[], includeLatestBuilds?: boolean): Promise<BuildDefinition>;
     getDefinitions(project: string, name?: string, repositoryId?: string, repositoryType?: string, queryOrder?: DefinitionQueryOrder, top?: number, continuationToken?: string, minMetricsTime?: Date, definitionIds?: number[], path?: string, builtAfter?: Date, notBuiltAfter?: Date, includeAllProperties?: boolean, includeLatestBuilds?: boolean, taskIdFilter?: string, processType?: number, yamlFilename?: string): Promise<BuildDefinitionReference[]>;
+    updateStage(updateParameters: UpdateStageParameters, buildId: number, stageRefName: string, project?: string): Promise<void>;
 
 }
