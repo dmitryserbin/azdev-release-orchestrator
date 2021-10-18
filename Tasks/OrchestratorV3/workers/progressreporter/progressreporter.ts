@@ -233,7 +233,7 @@ export class ProgressReporter implements IProgressReporter {
                 stage.name ? stage.name : "-",
                 stage.jobs.length ? stage.jobs.length : "-",
                 tasksCount ? tasksCount : "-",
-                stage.attempt ? stage.attempt : "-",
+                stage.attempt.stage ? stage.attempt.stage : "-",
                 stage.checkpoint ? TimelineRecordState[stage.checkpoint.state] : "-",
                 stage.result !== null ? TaskResult[stage.result] : "-",
                 duration ? duration : "",
