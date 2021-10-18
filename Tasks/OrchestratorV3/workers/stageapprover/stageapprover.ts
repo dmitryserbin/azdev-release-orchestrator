@@ -33,7 +33,6 @@ export class StageApprover implements IStageApprover {
 
         const debug = this.debugLogger.extend(this.approve.name);
 
-        // Increment retry count
         stage.attempt.approval++;
 
         this.logger.log(`Approving <${stage.name}> (${stage.id}) stage progress (attempt ${stage.attempt.approval})`);
