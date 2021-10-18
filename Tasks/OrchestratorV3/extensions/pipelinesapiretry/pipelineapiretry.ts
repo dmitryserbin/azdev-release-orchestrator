@@ -1,6 +1,7 @@
 import { Build, BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IApiClient } from "../../common/iapiclient";
+import { Retryable } from "../../common/retry";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
 import { IPipelinesApiRetry } from "./ipipelineapiretry";
@@ -19,6 +20,7 @@ export class PipelinesApiRetry implements IPipelinesApiRetry {
 
     }
 
+    @Retryable()
     public async queueRun(definition: BuildDefinition, request: unknown): Promise<unknown> {
 
         const run: unknown = await this.apiClient.post(`${definition.project?.name}/_apis/pipelines/${definition.id}/runs`, `5.1-preview.1`, request);
@@ -33,6 +35,8 @@ export class PipelinesApiRetry implements IPipelinesApiRetry {
 
     }
 
+    // Do not use REST API retry for approvals
+    // Rely on approval retry mechanism instead
     public async updateApproval(build: Build, request: unknown): Promise<unknown> {
 
         const approval: any = await this.apiClient.patch(`${build.project?.name}/_apis/pipelines/approvals`, `5.1-preview.1`, [ request ]);

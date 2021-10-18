@@ -11,12 +11,16 @@ export interface IBuildStage {
     name: string,
     startTime: Date | null,
     finishTime: Date | null,
-    attempt: number,
     state: TimelineRecordState,
     result: TaskResult | null,
     checkpoint: IBuildCheckpoint | null;
     approvals: IBuildApproval[],
     checks: IBuildCheck[],
     jobs: IBuildJob[],
+    attempt: {
+        stage: number,
+        approval: number,
+        check: number,
+    },
 
 }

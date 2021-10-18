@@ -7,7 +7,6 @@ import { IRequestOptions, IRestResponse } from "typed-rest-client";
 import { IDebug } from "../loggers/idebug";
 import { ILogger } from "../loggers/ilogger";
 import { IApiClient } from "./iapiclient";
-import { Retryable } from "./retry";
 
 export class ApiClient implements IApiClient {
 
@@ -23,7 +22,6 @@ export class ApiClient implements IApiClient {
 
     }
 
-    @Retryable()
     public async get<T>(path: string): Promise<T> {
 
         const debug = this.debugLogger.extend(this.get.name);
@@ -38,7 +36,6 @@ export class ApiClient implements IApiClient {
 
     }
 
-    @Retryable()
     public async post<T>(path: string, apiVersion?: string, body?: any): Promise<T> {
 
         const debug = this.debugLogger.extend(this.post.name);
@@ -61,7 +58,6 @@ export class ApiClient implements IApiClient {
 
     }
 
-    @Retryable()
     public async patch<T>(path: string, apiVersion?: string, body?: any): Promise<T> {
 
         const debug = this.debugLogger.extend(this.patch.name);
@@ -84,7 +80,6 @@ export class ApiClient implements IApiClient {
 
     }
 
-    @Retryable()
     public async put<T>(path: string, apiVersion?: string, body?: any): Promise<T> {
 
         const debug = this.debugLogger.extend(this.put.name);
@@ -107,7 +102,6 @@ export class ApiClient implements IApiClient {
 
     }
 
-    @Retryable()
     public async delete<T>(path: string, apiVersion?: string): Promise<T> {
 
         const debug = this.debugLogger.extend(this.delete.name);

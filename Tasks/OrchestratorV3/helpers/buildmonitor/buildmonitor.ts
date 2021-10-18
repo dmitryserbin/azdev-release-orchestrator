@@ -49,12 +49,12 @@ export class BuildMonitor implements IBuildMonitor {
 
         stage.startTime = stageTimeline.startTime!;
         stage.finishTime = stageTimeline.finishTime!;
-        stage.attempt = stageTimeline.attempt!;
         stage.state = stageTimeline.state!;
         stage.result = stageTimeline.result!;
         stage.approvals = [];
         stage.checks = [];
         stage.jobs = [];
+        stage.attempt.stage = stageTimeline.attempt!;
 
         const stageCheckpoint: TimelineRecord | undefined = this.getChildTimelineRecord(buildTimeline, stage.id!, `Checkpoint`);
 

@@ -46,13 +46,17 @@ export class ProgressMonitor implements IProgressMonitor {
                 name: stage.name,
                 startTime: null,
                 finishTime: null,
-                attempt: 0,
                 state: TimelineRecordState.Pending,
                 result: null,
                 checkpoint: null,
                 approvals: [],
                 checks: [],
                 jobs: [],
+                attempt: {
+                    stage: 0,
+                    approval: 0,
+                    check: 0,
+                },
 
             };
 

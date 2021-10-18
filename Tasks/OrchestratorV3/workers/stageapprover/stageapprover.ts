@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { Build, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IStageApprover } from "./istageapprover";
@@ -31,37 +33,50 @@ export class StageApprover implements IStageApprover {
 
         const debug = this.debugLogger.extend(this.approve.name);
 
-        debug(`Approving <${stage.name}> (${stage.id}) stage progress`);
+        // Increment retry count
+        stage.attempt.approval++;
+
+        this.logger.log(`Approving <${stage.name}> (${stage.id}) stage progress (attempt ${stage.attempt.approval})`);
 
         // Approve all pending requests in sequence
         // To support multiple approvals scenarios
         for (const approval of stage.approvals) {
 
-            debug(`Requesting <${approval.id}> stage <${TimelineRecordState[approval.state]}> approval`);
+            try {
 
-            const request: unknown = {
+                debug(`Requesting <${approval.id}> approval <${TimelineRecordState[approval.state]}> update`);
 
-                approvalId: approval.id,
-                status: 4,
-                comment: comment ? comment : ``,
-            
-            };
+                const request: unknown = {
 
-            const approvalResult: any = await this.pipelinesApi.updateApproval(build, request);
+                    approvalId: approval.id,
+                    status: `approved`,
+                    comment: comment ? comment : ``,
 
-            debug(approvalResult);
+                };
 
-            // No need to approve following request
-            // When at least one approval succeeded
-            if (approvalResult.status === `approved`) {
+                const approvalResult: any = await this.pipelinesApi.updateApproval(build, request);
 
-                this.logger.log(`Stage <${stage.name}> (${stage.id}) approved successfully`);
+                debug(approvalResult);
 
-                approval.state = TimelineRecordState.Completed;
+                // No need to approve following request
+                // When at least one approval succeeded
+                if (approvalResult.status === `approved`) {
 
-                debug(approval);
+                    this.logger.log(`Stage <${stage.name}> (${stage.id}) approved successfully`);
 
-                break;
+                    approval.state = TimelineRecordState.Completed;
+
+                    break;
+
+                }
+
+            } catch (error: any) {
+
+                debug(`Approval <${approval.id}> request rejected`);
+
+                debug(error);
+
+                approval.state = TimelineRecordState.Pending;
 
             }
 

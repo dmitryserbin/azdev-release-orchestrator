@@ -3,6 +3,7 @@
 import { Build, BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IApiClient } from "../../common/iapiclient";
+import { Retryable } from "../../common/retry";
 import { IBuildParameters } from "../../helpers/taskhelper/ibuildparameters";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
@@ -24,6 +25,7 @@ export class BuildWebApiRetry implements IBuildWebApiRetry {
 
     }
 
+    @Retryable()
     public async getRunDetails(build: Build): Promise<unknown> {
 
         const debug = this.debugLogger.extend(this.getRunDetails.name);
@@ -63,6 +65,7 @@ export class BuildWebApiRetry implements IBuildWebApiRetry {
 
     }
 
+    @Retryable()
     public async getRunParameters(definition: BuildDefinition, repository?: IRepositoryFilter, parameters?: IBuildParameters): Promise<unknown> {
 
         const debug = this.debugLogger.extend(this.getRunParameters.name);
@@ -106,6 +109,7 @@ export class BuildWebApiRetry implements IBuildWebApiRetry {
 
     }
 
+    @Retryable()
     public async getRunStageChecks(build: Build, stage: IBuildStage): Promise<unknown> {
 
         const debug = this.debugLogger.extend(this.getRunStageChecks.name);
