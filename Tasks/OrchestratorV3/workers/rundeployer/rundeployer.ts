@@ -77,8 +77,7 @@ export class RunDeployer implements IRunDeployer {
 
                     if (this.stageApprover.isApprovalPeding(stage)) {
 
-                        // Approve stage prgoress and validate outcome
-                        // Use retry mechanism to check manual approval status
+                        // Approve stage progress and validate outcome
                         // Cancel run progress if unable to approve with retry
                         stage = await this.stageApprover.approve(stage, run.build, run.settings);
 
@@ -87,7 +86,7 @@ export class RunDeployer implements IRunDeployer {
                     if (this.stageApprover.isCheckPeding(stage)) {
 
                         // Validate stage progress checks status
-                        // Cancel run progress if unable to approve with retry
+                        // Cancel run progress if checks pending with retry
                         stage = await this.stageApprover.check(stage, run.build, run.settings);
 
                     }
@@ -116,7 +115,6 @@ export class RunDeployer implements IRunDeployer {
 
             if (runProgress.status === RunStatus.InProgress) {
 
-                // Wait before next status update
                 await this.commonHelper.wait(run.settings.sleep);
 
             } else {
