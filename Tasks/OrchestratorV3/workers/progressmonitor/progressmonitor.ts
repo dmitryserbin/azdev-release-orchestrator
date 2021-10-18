@@ -141,19 +141,6 @@ export class ProgressMonitor implements IProgressMonitor {
 
     }
 
-    public getPendingStages(runProgress: IRunProgress): IBuildStage[] {
-
-        const debug = this.debugLogger.extend(this.getPendingStages.name);
-
-        const pendingStages: IBuildStage[] = runProgress.stages.filter(
-            (stage) => this.isStagePending(stage));
-
-        debug(pendingStages);
-
-        return pendingStages;
-
-    }
-
     private isStageCompleted(stage: IBuildStage): boolean {
 
         const debug = this.debugLogger.extend(this.isStageCompleted.name);
@@ -186,20 +173,5 @@ export class ProgressMonitor implements IProgressMonitor {
 
     }
 
-    private isStagePending(stage: IBuildStage): boolean {
-
-        const debug = this.debugLogger.extend(this.isStagePending.name);
-
-        const status: boolean = stage.state === TimelineRecordState.Pending;
-
-        if (status) {
-
-            debug(`Stage <${stage.name}> (${TimelineRecordState[stage.state]}) is pending`);
-
-        }
-
-        return status;
-
-    }
 
 }

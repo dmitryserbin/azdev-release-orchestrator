@@ -47,17 +47,27 @@ export class RunDeployer implements IRunDeployer {
 
         debug(`Starting <${runProgress.name}> (${runProgress.id}) run <${RunStatus[runProgress.status]}> progress tracking`);
 
-        const pendingStages: IBuildStage[] = this.progressMonitor.getPendingStages(runProgress);
-
-        for (const stage of pendingStages) {
+        for (let stage of runProgress.stages) {
 
             debug(`Monitoring <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state!]}> progress`);
 
             const inProgress: boolean = true;
 
+            // Start pending stage deployment process
+            // Or skip deployment if stage in progress
+            if (stage.state === TimelineRecordState.Pending) {
+
+                this.logger.log(`Manually starting <${stage.name}> (${stage.id}) stage progress`);
+
+                await this.stageSelector.startStage(run.build, stage);
+
+            }
+
             do {
 
                 debug(`Updating <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state]}> status`);
+
+                stage = await this.stageSelector.getStage(run.build, stage);
 
                 await this.commonHelper.wait(run.settings.sleep);
 

@@ -1,4 +1,4 @@
-import { Build, Timeline, TimelineRecord } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, StageUpdateType, Timeline, TimelineRecord, UpdateStageParameters } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { ILogger } from "../../loggers/ilogger";
 import { IDebug } from "../../loggers/idebug";
@@ -78,6 +78,22 @@ export class StageSelector implements IStageSelector {
         debug(stage);
 
         return stage;
+
+    }
+
+    public async startStage(build: Build, stage: IBuildStage): Promise<void> {
+
+        const debug = this.debugLogger.extend(this.startStage.name);
+
+        debug(`Starting <${stage.name}> (${stage.id}) stage progress`);
+
+        const retryRequest: UpdateStageParameters = {
+
+            state: StageUpdateType.Retry,
+
+        };
+
+        await this.buildApi.updateStage(retryRequest, build.id!, stage.name, build.project?.name);
 
     }
 
