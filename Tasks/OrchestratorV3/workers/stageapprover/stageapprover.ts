@@ -84,7 +84,7 @@ export class StageApprover implements IStageApprover {
         // Cancel stage deployment if unable to approve
         if (stage.checkpoint?.state !== TimelineRecordState.Completed) {
 
-            const limitExceeded: boolean = stage.attempt.approval >= settings.approvalRetry;
+            const limitExceeded: boolean = stage.attempt.approval > settings.approvalRetry;
 
             if (limitExceeded) {
 
