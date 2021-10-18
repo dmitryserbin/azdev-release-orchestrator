@@ -67,9 +67,9 @@ export class WorkerFactory implements IWorkerFactory {
 
         const buildApi: IBuildApiRetry = await this.apiFactory.createBuildApi();
         const pipelinesApi: IPipelinesApiRetry = await this.apiFactory.createPipelinesApi();
-        const stageApprover: IStageApprover = new StageApprover(pipelinesApi, buildApi, commonHelper, this.logger);
 
-        const buildMonitor: IBuildMonitor = new BuildMonitor(buildApi, this.logger);
+        const buildMonitor: IBuildMonitor = new BuildMonitor(buildApi, pipelinesApi, this.logger);
+        const stageApprover: IStageApprover = new StageApprover(buildMonitor, commonHelper, this.logger);
 
         const progressMonitor: IProgressMonitor = new ProgressMonitor(this.logger);
         const progressReporter: IProgressReporter = new ProgressReporter(this.logger);

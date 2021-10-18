@@ -12,18 +12,21 @@ import { IBuildTask } from "../../workers/progressmonitor/ibuildtask";
 import { IBuildApproval } from "../../workers/progressmonitor/ibuildapproval";
 import { IBuildCheck } from "../../workers/progressmonitor/ibuildcheck";
 import { IBuildCheckpoint } from "../../workers/progressmonitor/ibuildcheckpoint";
+import { IPipelinesApiRetry } from "../../extensions/pipelinesapiretry/ipipelineapiretry";
 
 export class BuildMonitor implements IBuildMonitor {
 
     private debugLogger: IDebug;
 
     private buildApi: IBuildApiRetry;
+    private pipelinesApi: IPipelinesApiRetry;
 
-    constructor(buildApi: IBuildApiRetry, logger: ILogger) {
+    constructor(buildApi: IBuildApiRetry, pipelinesApi: IPipelinesApiRetry, logger: ILogger) {
 
         this.debugLogger = logger.extend(this.constructor.name);
 
         this.buildApi = buildApi;
+        this.pipelinesApi = pipelinesApi;
 
     }
 
@@ -77,6 +80,26 @@ export class BuildMonitor implements IBuildMonitor {
         debug(stage);
 
         return stage;
+
+    }
+
+    public async approveStage(build: Build, approval: IBuildApproval, comment?: string): Promise<unknown> {
+
+        const debug = this.debugLogger.extend(this.approveStage.name);
+
+        const request: unknown = {
+
+            approvalId: approval.id,
+            status: `approved`,
+            comment: comment ? comment : ``,
+
+        };
+
+        const approvalResult: any = await this.pipelinesApi.updateApproval(build, request);
+
+        debug(approvalResult);
+
+        return approvalResult;
 
     }
 

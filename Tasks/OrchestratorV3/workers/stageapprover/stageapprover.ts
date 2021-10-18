@@ -8,27 +8,24 @@ import { ILogger } from "../../loggers/ilogger";
 import { IBuildStage } from "../progressmonitor/ibuildstage";
 import { IBuildApproval } from "../progressmonitor/ibuildapproval";
 import { IBuildCheck } from "../progressmonitor/ibuildcheck";
-import { IPipelinesApiRetry } from "../../extensions/pipelinesapiretry/ipipelineapiretry";
 import { ISettings } from "../../helpers/taskhelper/isettings";
 import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper";
-import { IBuildApiRetry } from "../../extensions/buildapiretry/ibuildapiretry";
+import { IBuildMonitor } from "../../helpers/buildmonitor/ibuildmonitor";
 
 export class StageApprover implements IStageApprover {
 
     private logger: ILogger;
     private debugLogger: IDebug;
 
-    private pipelinesApi: IPipelinesApiRetry;
-    private buildApi: IBuildApiRetry;
+    private buildMonitor: IBuildMonitor;
     private commonHelper: ICommonHelper;
 
-    constructor(pipelinesApi: IPipelinesApiRetry, buildApi: IBuildApiRetry, commonHelper: ICommonHelper, logger: ILogger) {
+    constructor(buildMonitor: IBuildMonitor, commonHelper: ICommonHelper, logger: ILogger) {
 
         this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
 
-        this.pipelinesApi = pipelinesApi;
-        this.buildApi = buildApi;
+        this.buildMonitor = buildMonitor;
         this.commonHelper = commonHelper;
 
     }
@@ -49,17 +46,7 @@ export class StageApprover implements IStageApprover {
 
                 debug(`Requesting <${approval.id}> approval <${TimelineRecordState[approval.state]}> update`);
 
-                const request: unknown = {
-
-                    approvalId: approval.id,
-                    status: `approved`,
-                    comment: comment ? comment : ``,
-
-                };
-
-                const approvalResult: any = await this.pipelinesApi.updateApproval(build, request);
-
-                debug(approvalResult);
+                const approvalResult: any = await this.buildMonitor.approveStage(build, approval, comment);
 
                 // No need to approve following request
                 // When at least one approval succeeded
