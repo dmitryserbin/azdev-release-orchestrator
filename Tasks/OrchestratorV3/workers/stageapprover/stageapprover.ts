@@ -161,7 +161,7 @@ export class StageApprover implements IStageApprover {
 
                 const canceledBuild: Build = await this.buildSelector.cancelBuild(build);
 
-                debug(canceledBuild);
+                debug(`Build <${build.buildNumber}> (${build.id}) reported <${BuildStatus[canceledBuild.status!]}> status`);
 
             }
 
