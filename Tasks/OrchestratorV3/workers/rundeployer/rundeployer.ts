@@ -43,18 +43,17 @@ export class RunDeployer implements IRunDeployer {
 
         const debug = this.debugLogger.extend(this.deployManual.name);
 
-        const runProgress: IRunProgress = this.progressMonitor.createRunProgress(run);
+        let runProgress: IRunProgress = this.progressMonitor.createRunProgress(run);
 
         debug(`Starting <${runProgress.name}> (${runProgress.id}) run <${RunStatus[runProgress.status]}> progress tracking`);
 
         for (let stage of runProgress.stages) {
 
-            debug(`Monitoring <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state!]}> progress`);
+            debug(`Starting <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state!]}> progress`);
 
             const inProgress: boolean = true;
 
-            // Start pending stage deployment process
-            // Or skip deployment if stage in progress
+            // Manually start pending stage process
             if (stage.state === TimelineRecordState.Pending) {
 
                 this.logger.log(`Manually starting <${stage.name}> (${stage.id}) stage progress`);
@@ -65,13 +64,51 @@ export class RunDeployer implements IRunDeployer {
 
             do {
 
-                debug(`Updating <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state]}> status`);
+                debug(`Updating <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state!]}> progress`);
 
                 stage = await this.stageSelector.getStage(run.build, stage);
+
+                if (stage.checkpoint?.state !== TimelineRecordState.Completed) {
+
+                    if (this.stageApprover.isApprovalPeding(stage)) {
+
+                        // Approve stage progress and validate outcome
+                        // Cancel run progress if unable to approve with retry
+                        stage = await this.stageApprover.approve(stage, run.build, run.settings);
+
+                    }
+
+                    if (this.stageApprover.isCheckPeding(stage)) {
+
+                        // Validate stage progress checks status
+                        // Cancel run progress if checks pending with retry
+                        stage = await this.stageApprover.check(stage, run.build, run.settings);
+
+                    }
+
+                }
+
+                if (stage.state === TimelineRecordState.Completed) {
+
+                    this.logger.log(`Stage <${stage.name}> (${stage.id}) reported <${TimelineRecordState[stage.state!]}> state`);
+
+                    // Do not print empty stage job progress
+                    // Rejected stages do not contain any jobs
+                    if (stage.jobs.length) {
+
+                        this.progressReporter.logStageProgress(stage);
+
+                    }
+
+                    break;
+
+                }
 
                 await this.commonHelper.wait(run.settings.sleep);
 
             } while (inProgress);
+
+            runProgress = this.progressMonitor.updateRunProgress(runProgress);
 
         }
 

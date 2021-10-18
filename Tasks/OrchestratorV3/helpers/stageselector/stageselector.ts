@@ -57,7 +57,7 @@ export class StageSelector implements IStageSelector {
         stage.jobs = [];
         stage.attempt.stage = stageTimeline.attempt!;
 
-        const stageCheckpoint: TimelineRecord | undefined = this.getChildTimelineRecord(buildTimeline, stage.id!, `Checkpoint`);
+        const stageCheckpoint: TimelineRecord | undefined = this.getChildTimelineRecord(buildTimeline, stageTimeline.id!, `Checkpoint`);
 
         if (stageCheckpoint) {
 
@@ -67,7 +67,7 @@ export class StageSelector implements IStageSelector {
 
         }
 
-        const stagePhases: TimelineRecord[] = this.getChildTimelineRecords(buildTimeline, stage.id!, `Phase`);
+        const stagePhases: TimelineRecord[] = this.getChildTimelineRecords(buildTimeline, stageTimeline.id!, `Phase`);
 
         if (stagePhases.length) {
 
