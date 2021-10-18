@@ -104,7 +104,7 @@ export class RunDeployer implements IRunDeployer {
 
                 }
 
-                await this.commonHelper.wait(run.settings.sleep);
+                await this.commonHelper.wait(run.settings.updateInterval);
 
             } while (inProgress);
 
@@ -184,7 +184,7 @@ export class RunDeployer implements IRunDeployer {
 
             if (runProgress.status === RunStatus.InProgress) {
 
-                await this.commonHelper.wait(run.settings.sleep);
+                await this.commonHelper.wait(run.settings.updateInterval);
 
             } else {
 

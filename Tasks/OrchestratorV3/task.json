@@ -1,4 +1,4 @@
-﻿{
+{
   "id": "5d38d46b-4c0a-4c14-8f0c-04df59e4dc27",
   "name": "releaseorchestrator",
   "friendlyName": "Release Orchestrator",
@@ -8,7 +8,7 @@
   "category": "Release",
   "author": "Dmitry Serbin",
   "deprecated": false,
-  "preview": false,
+  "preview": true,
   "version": {
     "Major": 3,
     "Minor": 0,
@@ -139,16 +139,21 @@
       "groupName": "Advanced"
     },
     {
-      "name": "approvalRetry",
-      "type": "int",
-      "label": "Approval retries",
-      "helpMarkDown": "Specify number of attempts to retry (with 1 minute delay) approving target release stage deployment (if unsuccessful) before failing. Default = 60 (times)",
-      "defaultValue": 60,
-      "required": true,
-      "validation": {
-        "expression": "isInRange(value, 0, 100)",
-        "message": "Approval retries must be within 0 <=> 100 range"
-      },
+      "name": "skipTracking",
+      "type": "boolean",
+      "label": "Skip progress tracking",
+      "helpMarkDown": "Skip stage progress tracking. Default = false",
+      "defaultValue": false,
+      "required": false,
+      "groupName": "Advanced"
+    },
+    {
+      "name": "cancelFailedApproval",
+      "type": "boolean",
+      "label": "Cancel failed approval",
+      "helpMarkDown": "Cancel build progress when stage approval or check fails. Default = false",
+      "defaultValue": false,
+      "required": false,
       "groupName": "Advanced"
     },
     {
@@ -161,6 +166,32 @@
       "validation": {
         "expression": "isInRange(value, 1, 300)",
         "message": "Update interval must be within 1 <=> 300 range"
+      },
+      "groupName": "Advanced"
+    },
+    {
+      "name": "approvalInterval",
+      "type": "int",
+      "label": "Approval interval",
+      "helpMarkDown": "Specify number of seconds to wait before next stage approval attempt. Default = 60 (seconds)",
+      "defaultValue": 60,
+      "required": true,
+      "validation": {
+        "expression": "isInRange(value, 1, 300)",
+        "message": "Approval interval must be within 1 <=> 300 range"
+      },
+      "groupName": "Advanced"
+    },
+    {
+      "name": "approvalAttempts",
+      "type": "int",
+      "label": "Approval attempts",
+      "helpMarkDown": "Specify number of attempts to retry (with 1 minute delay) approving target release stage deployment (if unsuccessful) before failing. Default = 10 (times)",
+      "defaultValue": 10,
+      "required": true,
+      "validation": {
+        "expression": "isInRange(value, 0, 100)",
+        "message": "Approval attempts must be within 0 <=> 100 range"
       },
       "groupName": "Advanced"
     }

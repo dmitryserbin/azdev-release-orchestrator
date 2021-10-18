@@ -79,10 +79,12 @@ export class TaskHelper implements ITaskHelper {
         const projectName: string = getInput("projectName", true)!;
         const definitionName: string = getInput("definitionName", true)!;
 
-        const updateInterval: string = getInput("updateInterval", true)!;
-        const approvalRetry: string = getInput("approvalRetry", true)!;
-        const cancelFailedApproval: boolean = getBoolInput("cancelFailedApproval", false);
         const skipTracking: boolean = getBoolInput("skipTracking", false);
+        const cancelFailedApproval: boolean = getBoolInput("cancelFailedApproval", false);
+
+        const updateInterval: string = getInput("updateInterval", true)!;
+        const approvalInterval: string = getInput("approvalInterval", true)!;
+        const approvalAttempts: string = getInput("approvalAttempts", true)!;
 
         const filters: IFilters = {
 
@@ -97,11 +99,9 @@ export class TaskHelper implements ITaskHelper {
 
         const settings: ISettings = {
 
-            sleep: Number(updateInterval)
-                ? Number(updateInterval) * 1000 : 5000,
-            approvalRetry: Number(approvalRetry)
-                ? Number(approvalRetry) : 60,
-            approvalSleep: 60000,
+            updateInterval: Number(updateInterval) * 1000,
+            approvalInterval: Number(approvalInterval) * 1000,
+            approvalAttempts: Number(approvalAttempts),
             cancelFailedApproval,
             skipTracking,
 

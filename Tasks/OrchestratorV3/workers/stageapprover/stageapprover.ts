@@ -115,11 +115,11 @@ export class StageApprover implements IStageApprover {
 
         const debug = this.debugLogger.extend(this.validateApproval.name);
 
-        const limitExceeded: boolean = stage.attempt.approval > settings.approvalRetry;
+        const limitExceeded: boolean = stage.attempt.approval > settings.approvalAttempts;
 
         if (limitExceeded) {
 
-            const limitMinutes: number = Math.floor((settings.approvalRetry * settings.approvalSleep) / 60000);
+            const limitMinutes: number = Math.floor((settings.approvalAttempts * settings.approvalInterval) / 60000);
 
             this.logger.warn(`Stage <${stage.name}> (${stage.id}) approval <${limitMinutes}> minute(s) time limit exceeded`);
 
@@ -137,7 +137,7 @@ export class StageApprover implements IStageApprover {
 
             this.logger.warn(`Stage <${stage.name}> (${stage.id}) cannot be approved`);
 
-            await this.commonHelper.wait(settings.approvalSleep);
+            await this.commonHelper.wait(settings.approvalInterval);
 
         }
 
@@ -147,11 +147,11 @@ export class StageApprover implements IStageApprover {
 
         const debug = this.debugLogger.extend(this.validateCheck.name);
 
-        const limitExceeded: boolean = stage.attempt.check > settings.approvalRetry;
+        const limitExceeded: boolean = stage.attempt.check > settings.approvalAttempts;
 
         if (limitExceeded) {
 
-            const limitMinutes: number = Math.floor((settings.approvalRetry * settings.approvalSleep) / 60000);
+            const limitMinutes: number = Math.floor((settings.approvalAttempts * settings.approvalInterval) / 60000);
 
             this.logger.warn(`Stage <${stage.name}> (${stage.id}) check <${limitMinutes}> minute(s) time limit exceeded`);
 
@@ -167,7 +167,7 @@ export class StageApprover implements IStageApprover {
 
         } else {
 
-            await this.commonHelper.wait(settings.approvalSleep);
+            await this.commonHelper.wait(settings.approvalInterval);
 
         }
 

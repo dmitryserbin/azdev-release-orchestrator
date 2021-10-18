@@ -1,8 +1,8 @@
 export interface ISettings {
 
-    sleep: number;
-    approvalRetry: number;
-    approvalSleep: number;
+    updateInterval: number;
+    approvalInterval: number;
+    approvalAttempts: number;
     cancelFailedApproval: boolean;
     skipTracking: boolean;
 
