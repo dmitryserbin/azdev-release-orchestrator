@@ -5,7 +5,6 @@ import { Build, TimelineRecordState } from "azure-devops-node-api/interfaces/Bui
 import { IStageApprover } from "./istageapprover";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
-import { IBuildWebApiRetry } from "../../extensions/buildwebapiretry/ibuildwebapiretry";
 import { IBuildStage } from "../progressmonitor/ibuildstage";
 import { IBuildApproval } from "../progressmonitor/ibuildapproval";
 import { IBuildCheck } from "../progressmonitor/ibuildcheck";
@@ -21,17 +20,15 @@ export class StageApprover implements IStageApprover {
 
     private pipelinesApi: IPipelinesApiRetry;
     private buildApi: IBuildApiRetry;
-    private buildWebApi: IBuildWebApiRetry;
     private commonHelper: ICommonHelper;
 
-    constructor(pipelinesApi: IPipelinesApiRetry, buildApi: IBuildApiRetry, buildWebApi: IBuildWebApiRetry, commonHelper: ICommonHelper, logger: ILogger) {
+    constructor(pipelinesApi: IPipelinesApiRetry, buildApi: IBuildApiRetry, commonHelper: ICommonHelper, logger: ILogger) {
 
         this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
 
         this.pipelinesApi = pipelinesApi;
         this.buildApi = buildApi;
-        this.buildWebApi = buildWebApi;
         this.commonHelper = commonHelper;
 
     }
