@@ -81,6 +81,7 @@ export class TaskHelper implements ITaskHelper {
 
         const updateInterval: string = getInput("updateInterval", true)!;
         const approvalRetry: string = getInput("approvalRetry", true)!;
+        const cancelFailedApproval: boolean = getBoolInput("cancelFailedApproval", false);
         const skipTracking: boolean = getBoolInput("skipTracking", false);
 
         const filters: IFilters = {
@@ -101,7 +102,8 @@ export class TaskHelper implements ITaskHelper {
             approvalRetry: Number(approvalRetry)
                 ? Number(approvalRetry) : 60,
             approvalSleep: 60000,
-            skipTracking: skipTracking,
+            cancelFailedApproval,
+            skipTracking,
 
         };
 

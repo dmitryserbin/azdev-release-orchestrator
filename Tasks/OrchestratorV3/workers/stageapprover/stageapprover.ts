@@ -108,9 +108,13 @@ export class StageApprover implements IStageApprover {
 
                 this.logger.warn(`Stage <${stage.name}> (${stage.id}) approval <${limitMinutes}> minute(s) time limit exceeded`);
 
-                debug(`Cancelling <${build.buildNumber}> (${build.id}) build progress`);
+                if (settings.cancelFailedApproval) {
 
-                // TBU
+                    debug(`Cancelling <${build.buildNumber}> (${build.id}) build progress`);
+
+                    // TBU
+
+                }
 
             } else {
 
