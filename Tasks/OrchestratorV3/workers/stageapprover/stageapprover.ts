@@ -33,7 +33,7 @@ export class StageApprover implements IStageApprover {
 
     }
 
-    public async approve(stage: IBuildStage, build: Build, comment?: string): Promise<IBuildStage> {
+    public async approve(stage: IBuildStage, build: Build, settings: ISettings, comment?: string): Promise<IBuildStage> {
 
         const debug = this.debugLogger.extend(this.approve.name);
 
@@ -41,9 +41,12 @@ export class StageApprover implements IStageApprover {
 
         this.logger.log(`Approving <${stage.name}> (${stage.id}) stage progress (attempt ${stage.attempt.approval})`);
 
+        const pendingApprovals: IBuildApproval[] = stage.approvals.filter(
+            (approval) => approval.state !== TimelineRecordState.Completed);
+
         // Approve all pending requests in sequence
-        // To support multiple approvals scenarios
-        for (const approval of stage.approvals) {
+        // To support multiple required approvals scenario
+        for (const approval of pendingApprovals) {
 
             try {
 
@@ -73,23 +76,42 @@ export class StageApprover implements IStageApprover {
 
             }
 
+            // Validate failed approvals attempts
+            // Cancel run progress if unable to approve
+            if (approval.state !== TimelineRecordState.Completed) {
+
+                await this.validateApproval(stage, build, settings);
+
+            }
+
         }
 
         return stage;
 
     }
 
-    public async check(stage: IBuildStage): Promise<IBuildStage> {
+    public async check(stage: IBuildStage, build: Build, settings: ISettings): Promise<IBuildStage> {
 
         stage.attempt.check++;
 
         this.logger.log(`Stage <${stage.name}> (${stage.id}) is pending checks (attempt ${stage.attempt.check})`);
 
+        const pendingChecks: IBuildCheck[] = stage.checks.filter(
+            (check) => check.state !== TimelineRecordState.Completed);
+
+        if (pendingChecks.length) {
+
+            // Validate pending checks attempts
+            // Cancel run progress if unable proceed
+            await this.validateCheck(stage, build, settings);
+
+        }
+
         return stage;
 
     }
 
-    public async validateApproval(stage: IBuildStage, build: Build, settings: ISettings): Promise<void> {
+    private async validateApproval(stage: IBuildStage, build: Build, settings: ISettings): Promise<void> {
 
         const debug = this.debugLogger.extend(this.validateApproval.name);
 
@@ -103,7 +125,7 @@ export class StageApprover implements IStageApprover {
 
             if (settings.cancelFailedApproval) {
 
-                this.logger.log(`Cancelling <${build.buildNumber}> (${build.id}) build <${BuildStatus[build.status!]}> progress`);
+                this.logger.log(`Cancelling <${build.buildNumber}> (${build.id}) run <${BuildStatus[build.status!]}> progress`);
 
                 const canceledBuild: Build = await this.buildSelector.cancelBuild(build);
 
