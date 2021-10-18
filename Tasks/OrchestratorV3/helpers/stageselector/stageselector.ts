@@ -48,6 +48,10 @@ export class StageSelector implements IStageSelector {
 
         }
 
+        // Target stage ID changes with every new run
+        // Re-assigning to support stage re-deployment
+        stage.id = stageTimeline.id!;
+
         stage.startTime = stageTimeline.startTime!;
         stage.finishTime = stageTimeline.finishTime!;
         stage.state = stageTimeline.state!;
@@ -109,7 +113,7 @@ export class StageSelector implements IStageSelector {
 
         };
 
-        const approvalResult: any = await this.pipelinesApi.updateApproval(build, request);
+        const approvalResult: unknown = await this.pipelinesApi.updateApproval(build, request);
 
         debug(approvalResult);
 
