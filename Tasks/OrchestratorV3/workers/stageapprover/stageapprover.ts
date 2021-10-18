@@ -65,7 +65,7 @@ export class StageApprover implements IStageApprover {
 
             } catch (error: any) {
 
-                debug(`Approval <${approval.id}> request rejected`);
+                debug(`Stage <${stage.name}> (${stage.id}) approval <${approval.id}> rejected`);
 
                 debug(error);
 
@@ -83,7 +83,7 @@ export class StageApprover implements IStageApprover {
 
         stage.attempt.check++;
 
-        this.logger.log(`Stage <${stage.name}> is waiting for checks (attempt ${stage.attempt.check})`);
+        this.logger.log(`Stage <${stage.name}> (${stage.id}) is pending checks (attempt ${stage.attempt.check})`);
 
         return stage;
 
