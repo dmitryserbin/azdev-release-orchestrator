@@ -104,8 +104,8 @@ jobs:
     - template: steps/test-v3.yml
       parameters:
         projectName: HelloYo
-        definitionName: HelloYo
-        releaseName: HelloYo-20190521.1-1
+        definitionName: HelloYo-release
+        stages: DEV,TEST,PROD
 
 - ${{ if eq(parameters.cleanup, true) }}:
   - job: Cleanup
