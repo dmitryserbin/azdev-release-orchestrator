@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0.*
+
+`TBU`
+
+- Initial release ([TBU](TBU))
+
 ## 2.0.*
 
 `2021-02-15`
