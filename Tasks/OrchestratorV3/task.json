@@ -26,7 +26,7 @@
       "name": "endpointType",
       "type": "radio",
       "label": "Azure DevOps endpoint type",
-      "helpMarkDown": "Select endpoint type to connect to Azure DevOps: \n- Integrated = default `SystemVssConnection` service endpoint for `Project Collection Build Service` user account\n- Service = user-defined personal access token (PAT) service endpoint",
+      "helpMarkDown": "Select endpoint type to connect to Azure DevOps: \n- Integrated = default 'SystemVssConnection' service endpoint for 'Project Collection Build Service' user account\n- Service = user-defined personal access token (PAT) service endpoint",
       "required": true,
       "defaultValue": "integrated",
       "options": {
@@ -56,7 +56,7 @@
       "name": "definitionName",
       "type": "pickList",
       "label": "Definition name",
-      "helpMarkDown": "Specify target pipeline definition name or ID",
+      "helpMarkDown": "Specify target build pipeline definition name or ID",
       "required": true,
       "properties": {
         "EditableOptions": true
@@ -65,7 +65,7 @@
     {
       "name": "strategy",
       "type": "radio",
-      "label": "Strategy",
+      "label": "Run strategy",
       "helpMarkDown": "Select strategy to perform target run orchestration. Create new build, select latest or target specific build in the definition",
       "required": true,
       "defaultValue": "new",
@@ -84,10 +84,13 @@
     },
     {
       "name": "buildNumber",
-      "type": "string",
+      "type": "pickList",
       "label": "Build number",
-      "helpMarkDown": "Specify target build number or build ID",
-      "required": false,
+      "helpMarkDown": "Specify target build number or build ID (shows last 25 builds)",
+      "required": true,
+      "properties": {
+        "EditableOptions": true
+      },
       "visibleRule": "strategy = specific"
     },
     {
@@ -205,10 +208,17 @@
     },
     {
       "target": "definitionName",
-      "endpointId": "tfs:rm",
+      "endpointId": "tfs:teamfoundation",
       "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/build/definitions",
-      "resultSelector": "jsonpath:$.value[?(@.isDeleted == false)]",
+      "resultSelector": "jsonpath:$.value[*]",
       "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+    },
+    {
+      "endpointId": "tfs:teamfoundation",
+      "target": "buildNumber",
+      "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/build/builds?definitions=$(definitionName)&$top=25",
+      "resultSelector": "jsonpath:$.value[*]",
+      "resultTemplate": "{ \"Value\" : \"{{{buildNumber}}}\", \"DisplayValue\" : \"{{{buildNumber}}}\" }"
     }
   ],
   "execution": {
