@@ -84,7 +84,7 @@ jobs:
       parameters:
         path: ${{ variables.artifactsPath }}
         contents: |
-          Docs/
+          Docs/**
           Images/**
           LICENSE
           *.md
