@@ -51,15 +51,15 @@ export class BuildWebApiRetry implements IBuildWebApiRetry {
 
         const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${build.project?.id}`, `5.0-preview.1`, body);
 
-        if (!result || result.dataProviderExceptions) {
+        const runDetails: unknown = result.dataProviders[`ms.vss-build-web.run-details-data-provider`];
+
+        if (!runDetails || result.dataProviderExceptions) {
 
             debug(result);
 
             throw new Error(`Unable to retrieve <${build.buildNumber}> (${build.id}) run details`);
 
         }
-
-        const runDetails: unknown = result.dataProviders[`ms.vss-build-web.run-details-data-provider`];
 
         return runDetails;
 
@@ -95,15 +95,15 @@ export class BuildWebApiRetry implements IBuildWebApiRetry {
 
         const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${definition.project?.id}`, `5.0-preview.1`, body);
 
-        if (!result || result.dataProviderExceptions) {
+        const runParameters: unknown = result.dataProviders[`ms.vss-build-web.pipeline-run-parameters-data-provider`];
+
+        if (!runParameters || result.dataProviderExceptions) {
 
             debug(result);
 
             throw new Error(`Unable to retrieve <${definition.name}> (${definition.id}) run parameters`);
 
         }
-
-        const runParameters: unknown = result.dataProviders[`ms.vss-build-web.pipeline-run-parameters-data-provider`];
 
         return runParameters;
 
@@ -137,15 +137,15 @@ export class BuildWebApiRetry implements IBuildWebApiRetry {
 
         const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${build.project?.id}`, `5.0-preview.1`, body);
 
-        if (!result || result.dataProviderExceptions) {
+        const runStageChecks: unknown = result.dataProviders[`ms.vss-build-web.checks-panel-data-provider`][0];
+
+        if (!runStageChecks || result.dataProviderExceptions) {
 
             debug(result);
 
             throw new Error(`Unable to retrieve <${build.buildNumber}> (${build.id}) run stage <${stage.name}> (${stage.id}) checks`);
 
         }
-
-        const runStageChecks: unknown = result.dataProviders[`ms.vss-build-web.checks-panel-data-provider`][0];
 
         return runStageChecks;
 
