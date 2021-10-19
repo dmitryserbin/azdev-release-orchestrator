@@ -20,26 +20,14 @@ The **Release Orchestrator** tasks perform classic or YAML pipeline execution, p
 
 Task | Description
 :-------|:-----------
-[Release Orchestrator V2](Docs/OrchestratorV2.md)       | Execute and monitor [classic](https://docs.microsoft.com/en-us/azure/devops/pipelines/release) release pipelines
 [Release Orchestrator V3](Docs/OrchestratorV3.md)       | Execute and monitor [YAML](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/pipelines-get-started) pipelines
+[Release Orchestrator V2](Docs/OrchestratorV2.md)       | Execute and monitor [classic](https://docs.microsoft.com/en-us/azure/devops/pipelines/release) release pipelines
 
 ## How to use
 
 1. Add `Release Orchestrator` task to your pipeline
 2. Select prefered Azure DevOps service endpoint type
 3. Select target project and define target pipeline
-
-> Release Orchestrator V2 task (target classic pipeline), please refer to task version 2 [documentation](Docs/OrchestratorV2.md) for more details.
-
-```yaml
-- task: releaseorchestrator@2
-  displayName: Release Orchestrator
-  inputs:
-    projectName: My-Project
-    definitionName: My-Definition
-    releaseStrategy: create
-    definitionStage: DEV
-```
 
 > Release Orchestrator V3 task (target YAML pipeline), please refer to task version 3 [documentation](Docs/OrchestratorV3.md) for more details.
 
@@ -51,6 +39,18 @@ Task | Description
     definitionName: My-Definition
     strategy: new
     stages: DEV
+```
+
+> Release Orchestrator V2 task (target classic pipeline), please refer to task version 2 [documentation](Docs/OrchestratorV2.md) for more details.
+
+```yaml
+- task: releaseorchestrator@2
+  displayName: Release Orchestrator
+  inputs:
+    projectName: My-Project
+    definitionName: My-Definition
+    releaseStrategy: create
+    definitionStage: DEV
 ```
 
 ## Support
