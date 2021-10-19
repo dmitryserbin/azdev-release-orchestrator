@@ -15,11 +15,11 @@
     "Azure Pipelines"
   ],
   "tags": [
+    "Build",
     "Release",
     "Pipeline",
     "Orchestration",
-    "Microservices",
-    "Deploy"
+    "Microservices"
   ],
   "icons": {
     "default": "Images/icon.png"
@@ -59,6 +59,10 @@
   "files": [
     {
       "path": "Tasks"
+    },
+    {
+      "path": "Docs",
+      "addressable": true
     },
     {
       "path": "Images",
