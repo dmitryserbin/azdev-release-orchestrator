@@ -212,13 +212,6 @@
       "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/build/definitions",
       "resultSelector": "jsonpath:$.value[*]",
       "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
-    },
-    {
-      "endpointId": "tfs:teamfoundation",
-      "target": "buildNumber",
-      "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/build/builds?definitions=$(definitionName)&$top=25",
-      "resultSelector": "jsonpath:$.value[*]",
-      "resultTemplate": "{ \"Value\" : \"{{{buildNumber}}}\", \"DisplayValue\" : \"{{{buildNumber}}}\" }"
     }
   ],
   "execution": {
