@@ -66,7 +66,7 @@
       "name": "strategy",
       "type": "radio",
       "label": "Strategy",
-      "helpMarkDown": "Select strategy to perform target build orchestration. Create new build, target specific or latest build in the definition",
+      "helpMarkDown": "Select strategy to perform target run orchestration. Create new build, select latest or target specific build in the definition",
       "required": true,
       "defaultValue": "new",
       "options": {
@@ -131,8 +131,8 @@
     {
       "name": "ignoreFailure",
       "type": "boolean",
-      "label": "Ignore failures",
-      "helpMarkDown": "Suppress errors and set task result to partially succeeded in case of a failure. Default = false",
+      "label": "Ignore progress failure",
+      "helpMarkDown": "Suppress progress errors and set task result to partially succeeded in case of a failure. Default = false",
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"
