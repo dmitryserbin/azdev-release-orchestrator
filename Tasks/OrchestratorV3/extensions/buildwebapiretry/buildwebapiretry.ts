@@ -51,7 +51,7 @@ export class BuildWebApiRetry implements IBuildWebApiRetry {
 
         const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${build.project?.id}`, `5.0-preview.1`, body);
 
-        if (result.dataProviderExceptions) {
+        if (!result || result.dataProviderExceptions) {
 
             debug(result);
 
@@ -95,7 +95,7 @@ export class BuildWebApiRetry implements IBuildWebApiRetry {
 
         const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${definition.project?.id}`, `5.0-preview.1`, body);
 
-        if (result.dataProviderExceptions) {
+        if (!result || result.dataProviderExceptions) {
 
             debug(result);
 
@@ -137,7 +137,7 @@ export class BuildWebApiRetry implements IBuildWebApiRetry {
 
         const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${build.project?.id}`, `5.0-preview.1`, body);
 
-        if (result.dataProviderExceptions) {
+        if (!result || result.dataProviderExceptions) {
 
             debug(result);
 
