@@ -26,7 +26,7 @@
       "name": "endpointType",
       "type": "radio",
       "label": "Azure DevOps endpoint type",
-      "helpMarkDown": "Select endpoint type to connect to Azure DevOps: \n- Integrated = default 'SystemVssConnection' service endpoint for 'Project Collection Build Service' user account; \n- Service = user-defined personal access token (PAT) service endpoint \n\nNote: requires 'View releases', 'View release definition', 'Create releases' and 'Manage deployments' target release pipeline permissions",
+      "helpMarkDown": "Select endpoint type to connect to Azure DevOps: \n- Integrated = default `SystemVssConnection` service endpoint for `Project Collection Build Service` user account\n- Service = user-defined personal access token (PAT) service endpoint",
       "required": true,
       "defaultValue": "integrated",
       "options": {
@@ -118,7 +118,7 @@
     {
       "name": "parameters",
       "type": "multiLine",
-      "label": "Pipeline parameters",
+      "label": "Parameters",
       "helpMarkDown": "Override target pipeline parameters when creating a new run. In 'Name=Value' format, special characters supported, new line separated",
       "properties": {
         "rows": 8,
