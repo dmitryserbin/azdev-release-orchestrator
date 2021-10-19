@@ -56,7 +56,7 @@
       "name": "definitionName",
       "type": "pickList",
       "label": "Definition name",
-      "helpMarkDown": "Specify target build pipeline definition name or ID",
+      "helpMarkDown": "Specify target build pipeline definition name",
       "required": true,
       "properties": {
         "EditableOptions": true
@@ -79,25 +79,22 @@
       "name": "stages",
       "type": "string",
       "label": "Stages",
-      "helpMarkDown": "Specify target definition or build stages (comma separated)",
+      "helpMarkDown": "Specify target stages (comma separated)",
       "required": false
     },
     {
       "name": "buildNumber",
-      "type": "pickList",
+      "type": "string",
       "label": "Build number",
-      "helpMarkDown": "Specify target build number or build ID (shows last 25 builds)",
+      "helpMarkDown": "Specify target build number (i.e. build name)",
       "required": true,
-      "properties": {
-        "EditableOptions": true
-      },
       "visibleRule": "strategy = specific"
     },
     {
       "name": "buildResult",
       "type": "pickList",
       "label": "Build result",
-      "helpMarkDown": "Specify target build status filter. Options: succeeded, partiallySucceeded, notStarted, rejected & canceled",
+      "helpMarkDown": "Specify target build status filter. Options: Succeeded, PartiallySucceeded, Failed or Canceled",
       "properties": {
         "EditableOptions": true
       },
@@ -211,14 +208,7 @@
       "endpointId": "tfs:teamfoundation",
       "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/build/definitions",
       "resultSelector": "jsonpath:$.value[?(@.quality == 'definition')]",
-      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
-    },
-    {
-      "endpointId": "tfs:teamfoundation",
-      "target": "buildNumber",
-      "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/build/builds?definitions=$(definitionName)&$top=25",
-      "resultSelector": "jsonpath:$.value[*]",
-      "resultTemplate": "{ \"Value\" : \"{{{buildNumber}}}\", \"DisplayValue\" : \"{{{buildNumber}}} (by {{{requestedBy.displayName}}} at {{{lastChangedDate}}})\" }"
+      "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
     }
   ],
   "execution": {
