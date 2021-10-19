@@ -26,7 +26,7 @@
       "name": "endpointType",
       "type": "radio",
       "label": "Azure DevOps endpoint type",
-      "helpMarkDown": "Select endpoint type to connect to Azure DevOps: \n- Integrated = default 'SystemVssConnection' service endpoint for 'Project Collection Build Service' user account\n- Service = user-defined personal access token (PAT) service endpoint",
+      "helpMarkDown": "Select endpoint type to connect to Azure DevOps: \n- **Integrated** = default 'SYSTEMVSSCONNECTION' service endpoint for 'Project Collection Build Service' system account\n- **Service** = user-defined Azure DevOps service endpoint using personal access token (PAT)",
       "required": true,
       "defaultValue": "integrated",
       "options": {
