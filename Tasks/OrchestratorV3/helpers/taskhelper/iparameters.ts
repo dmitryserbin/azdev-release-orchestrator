@@ -1,12 +1,12 @@
 import { IFilters } from "./ifilters";
-import { ReleaseType } from "./releasetype";
+import { Strategy } from "./strategy";
 import { ISettings } from "./isettings";
 import { IBuildParameters } from "./ibuildparameters";
 import { IDetails } from "./idetails";
 
 export interface IParameters {
 
-    releaseType: ReleaseType;
+    strategy: Strategy;
     projectName: string;
     definitionName: string;
     stages: string[];

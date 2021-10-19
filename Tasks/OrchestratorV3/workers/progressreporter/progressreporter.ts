@@ -13,7 +13,7 @@ import { IBuildParameters } from "../../helpers/taskhelper/ibuildparameters";
 import { ILogger } from "../../loggers/ilogger";
 import { IFilters } from "../../helpers/taskhelper/ifilters";
 import { IRun } from "../runcreator/irun";
-import { ReleaseType } from "../../helpers/taskhelper/releasetype";
+import { Strategy } from "../../helpers/taskhelper/strategy";
 import { IRunProgress } from "../../orchestrator/irunprogress";
 import { RunStatus } from "../../orchestrator/runstatus";
 import { IBuildStage } from "../progressmonitor/ibuildstage";
@@ -114,15 +114,15 @@ export class ProgressReporter implements IProgressReporter {
 
     }
 
-    public logFilters(filters: IFilters, type: ReleaseType): void {
+    public logFilters(filters: IFilters, strategy: Strategy): void {
 
         const columns: string[] = [];
 
         const result: any[] = [];
 
-        switch (type) {
+        switch (strategy) {
 
-            case ReleaseType.New: {
+            case Strategy.New: {
 
                 columns.push("Branch name");
                 columns.push("Pipeline resource");
@@ -140,7 +140,7 @@ export class ProgressReporter implements IProgressReporter {
 
                 break;
 
-            } case ReleaseType.Latest: {
+            } case Strategy.Latest: {
 
                 columns.push("Branch name");
                 columns.push("Build result");
@@ -154,7 +154,7 @@ export class ProgressReporter implements IProgressReporter {
 
             } default: {
 
-                throw new Error(`Type <${ReleaseType[type]}> not implemented`);
+                throw new Error(`Strategy <${Strategy[strategy]}> not implemented`);
 
             }
         }

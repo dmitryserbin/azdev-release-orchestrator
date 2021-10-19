@@ -1,7 +1,7 @@
 import { IOrchestrator } from "./iorchestrator";
 import { IRunDeployer } from "../workers/rundeployer/irundeployer";
 import { IParameters } from "../helpers/taskhelper/iparameters";
-import { ReleaseType } from "../helpers/taskhelper/releasetype";
+import { Strategy } from "../helpers/taskhelper/strategy";
 import { IDebug } from "../loggers/idebug";
 import { ILogger } from "../loggers/ilogger";
 import { IWorkerFactory } from "../factories/workerfactory/iworkerfactory";
@@ -38,11 +38,11 @@ export class Orchestrator implements IOrchestrator {
 
         const run: IRun = await runCreator.create(parameters);
 
-        debug(`Starting <${ReleaseType[parameters.releaseType]}> pipeline orchestration type`);
+        debug(`Starting <${Strategy[parameters.strategy]}> pipeline orchestration strategy`);
 
-        switch (parameters.releaseType) {
+        switch (parameters.strategy) {
 
-            case ReleaseType.New: {
+            case Strategy.New: {
 
                 this.logger.log(`Deploying new <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`);
 
@@ -52,7 +52,7 @@ export class Orchestrator implements IOrchestrator {
 
                 break;
 
-            } case ReleaseType.Latest: {
+            } case Strategy.Latest: {
 
                 this.logger.log(`Re-deploying latest <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`);
 
@@ -62,7 +62,7 @@ export class Orchestrator implements IOrchestrator {
 
                 break;
 
-            } case ReleaseType.Specific: {
+            } case Strategy.Specific: {
 
                 this.logger.log(`Re-deploying specific <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`);
 

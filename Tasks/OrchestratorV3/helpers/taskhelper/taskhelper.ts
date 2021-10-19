@@ -5,7 +5,7 @@ import { getInput, getEndpointUrl, getEndpointAuthorizationParameter, getBoolInp
 import { ITaskHelper } from "./itaskhelper";
 import { IEndpoint } from "./iendpoint";
 import { IParameters } from "./iparameters";
-import { ReleaseType } from "./releasetype";
+import { Strategy } from "./strategy";
 import { IDebug } from "../../loggers/idebug";
 import { IDetails } from "./idetails";
 import { RunStatus } from "../../orchestrator/runstatus";
@@ -75,7 +75,7 @@ export class TaskHelper implements ITaskHelper {
 
         const debug = this.debugLogger.extend(this.getParameters.name);
 
-        const releaseStrategy: string = getInput("releaseStrategy", true)!;
+        const strategy: string = getInput("strategy", true)!;
         const projectName: string = getInput("projectName", true)!;
         const definitionName: string = getInput("definitionName", true)!;
 
@@ -107,11 +107,11 @@ export class TaskHelper implements ITaskHelper {
 
         };
 
-        const details: IDetails = await this.getDetails();
+        const details: IDetails = await this.readDetails();
 
         let parameters: IParameters = {
 
-            releaseType: ReleaseType.New,
+            strategy: Strategy.New,
             projectName: projectName,
             definitionName: definitionName,
             stages: [],
@@ -122,11 +122,11 @@ export class TaskHelper implements ITaskHelper {
 
         };
 
-        switch (releaseStrategy) {
+        switch (strategy) {
 
-            case "create": {
+            case "new": {
 
-                parameters = await this.readCreateInputs(parameters);
+                parameters = await this.readNewInputs(parameters);
 
                 break;
 
@@ -141,10 +141,6 @@ export class TaskHelper implements ITaskHelper {
                 parameters = await this.readSpecificInputs(parameters);
 
                 break;
-
-            } default: {
-
-                throw new Error(`Release strategy <${releaseStrategy}> not supported`);
 
             }
 
@@ -210,9 +206,9 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
-    private async getDetails(): Promise<IDetails> {
+    private async readDetails(): Promise<IDetails> {
 
-        const debug = this.debugLogger.extend(this.getDetails.name);
+        const debug = this.debugLogger.extend(this.readDetails.name);
 
         const endpointName: string | undefined = getInput("endpointName", false);
         const projectName: string | undefined = getVariable("SYSTEM_TEAMPROJECT");
@@ -236,35 +232,32 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
-    private async readCreateInputs(parameters: IParameters): Promise<IParameters> {
+    private async readNewInputs(parameters: IParameters): Promise<IParameters> {
 
-        parameters.releaseType = ReleaseType.New;
+        parameters.strategy = Strategy.New;
 
         // Optional to support variable input
-        const definitionStages: string[] = getDelimitedInput("definitionStage", ",", false);
+        const stages: string[] = getDelimitedInput("stages", ",", false);
         const branchName: string | undefined = getInput("branchName", false);
-        const buildParameters: string[] = getDelimitedInput("buildParameters", "\n", false);
+        const pipelineParameters: string[] = getDelimitedInput("parameters", "\n", false);
 
-        // Get definition stages filter
-        if (definitionStages.length) {
+        if (stages.length) {
 
-            parameters.stages = definitionStages;
+            parameters.stages = stages;
 
         }
 
-        // Get branch filter
         if (branchName) {
 
             parameters.filters.branchName = branchName;
 
         }
 
-        // Get build parameters
-        if (buildParameters.length) {
+        if (pipelineParameters.length) {
 
-            for (const variable of buildParameters) {
+            for (const parameter of pipelineParameters) {
 
-                const value: [string, string] | null = parseKeyValue(variable);
+                const value: [string, string] | null = parseKeyValue(parameter);
 
                 if (value) {
 
@@ -282,23 +275,35 @@ export class TaskHelper implements ITaskHelper {
 
     private async readLatestInputs(parameters: IParameters): Promise<IParameters> {
 
-        parameters.releaseType = ReleaseType.Latest;
+        parameters.strategy = Strategy.Latest;
 
         // Optional to support variable input
-        const releaseStages: string[] = getDelimitedInput("releaseStage", ",", false);
+        const stages: string[] = getDelimitedInput("stages", ",", false);
         const branchName: string | undefined = getInput("branchName", false);
+        const buildResult: string | undefined = getInput("buildResult", false);
+        const buildTags: string[] = getDelimitedInput("buildTags", ",", false);
 
-        // Get release stages filter
-        if (releaseStages.length) {
+        if (stages.length) {
 
-            parameters.stages = releaseStages;
+            parameters.stages = stages;
 
         }
 
-        // Get branch filter
         if (branchName) {
 
             parameters.filters.branchName = branchName;
+
+        }
+
+        if (buildResult) {
+
+            parameters.filters.buildResult = buildResult;
+
+        }
+
+        if (buildTags.length) {
+
+            parameters.stages = buildTags;
 
         }
 
@@ -308,19 +313,18 @@ export class TaskHelper implements ITaskHelper {
 
     private async readSpecificInputs(parameters: IParameters): Promise<IParameters> {
 
-        parameters.releaseType = ReleaseType.Specific;
+        parameters.strategy = Strategy.Specific;
 
-        const releaseStages: string[] = getDelimitedInput("releaseStage", ",", false);
+        const stages: string[] = getDelimitedInput("stages", ",", false);
+        const buildNumber: string = getInput("buildName", true)!;
 
-        // Get build number
-        parameters.filters.buildNumber = getInput("buildNumber", true)!;
+        if (stages.length) {
 
-        // Get release stages filter
-        if (releaseStages.length) {
-
-            parameters.stages = releaseStages;
+            parameters.stages = stages;
 
         }
+
+        parameters.filters.buildNumber = buildNumber;
 
         return parameters;
 

@@ -6,7 +6,7 @@ import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
 import { IRunCreator } from "./iruncreator";
 import { IRun } from "./irun";
-import { ReleaseType } from "../../helpers/taskhelper/releasetype";
+import { Strategy } from "../../helpers/taskhelper/strategy";
 import { IProgressReporter } from "../progressreporter/iprogressreporter";
 import { IBuildFilter } from "../filtercreator/ibuildfilter";
 import { IFilterCreator } from "../filtercreator/ifiltercreator";
@@ -51,13 +51,13 @@ export class RunCreator implements IRunCreator {
 
         let build: Build;
 
-        switch (parameters.releaseType) {
+        switch (parameters.strategy) {
 
-            case ReleaseType.New: {
+            case Strategy.New: {
 
                 this.logger.log(`Creating new <${definition.name}> (${definition.id}) pipeline release`);
 
-                this.progressReporter.logFilters(parameters.filters, parameters.releaseType);
+                this.progressReporter.logFilters(parameters.filters, parameters.strategy);
 
                 if (parameters.parameters && Object.keys(parameters.parameters).length) {
 
@@ -73,11 +73,11 @@ export class RunCreator implements IRunCreator {
 
                 break;
 
-            } case ReleaseType.Latest: {
+            } case Strategy.Latest: {
 
                 this.logger.log(`Targeting latest <${definition.name}> (${definition.id}) pipeline release`);
 
-                this.progressReporter.logFilters(parameters.filters, parameters.releaseType);
+                this.progressReporter.logFilters(parameters.filters, parameters.strategy);
 
                 const buildFilter: IBuildFilter = await this.filterCreator.createBuildFilter(parameters.filters);
 
@@ -85,7 +85,7 @@ export class RunCreator implements IRunCreator {
 
                 break;
 
-            } case ReleaseType.Specific: {
+            } case Strategy.Specific: {
 
                 this.logger.log(`Targeting specific <${definition.name}> (${definition.id}) pipeline release`);
 
@@ -109,7 +109,7 @@ export class RunCreator implements IRunCreator {
 
         };
 
-        debug(`Run <${build.buildNumber}> (${build.id}) type <${ReleaseType[parameters.releaseType]}> created`);
+        debug(`Run <${build.buildNumber}> (${build.id}) type <${Strategy[parameters.strategy]}> created`);
 
         return run;
 

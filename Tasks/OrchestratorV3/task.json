@@ -56,78 +56,77 @@
       "name": "definitionName",
       "type": "pickList",
       "label": "Definition name",
-      "helpMarkDown": "Specify target release definition name or ID",
+      "helpMarkDown": "Specify target pipeline definition name or ID",
       "required": true,
       "properties": {
         "EditableOptions": true
       }
     },
     {
-      "name": "releaseStrategy",
+      "name": "strategy",
       "type": "radio",
-      "label": "Release strategy",
-      "helpMarkDown": "Select release strategy to perform target release deployment. Create new release, target specific or latest release in the release definition",
+      "label": "Strategy",
+      "helpMarkDown": "Select strategy to perform target build orchestration. Create new build, target specific or latest build in the definition",
       "required": true,
-      "defaultValue": "create",
+      "defaultValue": "new",
       "options": {
-        "create": "Create release",
-        "latest": "Latest release",
-        "specific": "Specific release"
+        "new": "New run",
+        "latest": "Latest run",
+        "specific": "Specific run"
       }
     },
     {
-      "name": "releaseName",
-      "type": "pickList",
-      "label": "Release name",
-      "helpMarkDown": "Specify target release name or ID (shows last 25 releases)",
-      "required": true,
-      "properties": {
-        "EditableOptions": true
-      },
-      "visibleRule": "releaseStrategy = specific"
-    },
-    {
-      "name": "releaseStage",
-      "type": "pickList",
-      "label": "Release stage",
-      "helpMarkDown": "Specify target release stage filter (comma separated)",
-      "required": false,
-      "properties": {
-        "EditableOptions": true
-      },
-      "visibleRule": "releaseStrategy != create"
-    },
-    {
-      "name": "definitionStage",
-      "type": "pickList",
-      "label": "Definition stage",
-      "helpMarkDown": "Specify target release definition stage filter (comma separated)",
-      "required": false,
-      "properties": {
-        "EditableOptions": true
-      },
-      "visibleRule": "releaseStrategy = create"
-    },
-    {
-      "name": "branchName",
+      "name": "stages",
       "type": "string",
-      "label": "Source branch",
-      "helpMarkDown": "Specify target release source branch filter. Example = 'refs/heads/master' (build artifact, last 100 builds) or 'master' (Git artifact)",
-      "required": false,
-      "visibleRule": "releaseStrategy != specific"
+      "label": "Stages",
+      "helpMarkDown": "Specify target definition or build stages (comma separated)",
+      "required": false
     },
     {
-      "name": "releaseVariables",
+      "name": "buildNumber",
+      "type": "string",
+      "label": "Build number",
+      "helpMarkDown": "Specify target build number or build ID",
+      "required": false,
+      "visibleRule": "strategy = specific"
+    },
+    {
+      "name": "buildResult",
+      "type": "pickList",
+      "label": "Build result",
+      "helpMarkDown": "Specify target build status filter. Options: succeeded, partiallySucceeded, notStarted, rejected & canceled",
+      "properties": {
+        "EditableOptions": true
+      },
+      "options": {
+        "Succeeded": "Succeeded",
+        "PartiallySucceeded": "Partially succeeded",
+        "Failed": "Failed",
+        "Canceled": "Canceled"
+      },
+      "required": false,
+      "visibleRule": "strategy = latest"
+    },
+    {
+      "name": "buildTags",
+      "type": "string",
+      "label": "Build tags",
+      "helpMarkDown": "Specify target build tags (comma separated)",
+      "required": false,
+      "visibleRule": "strategy = latest"
+    },
+    {
+      "name": "parameters",
       "type": "multiLine",
-      "label": "Release variables",
-      "helpMarkDown": "Override target release pipeline variables when creating a new release. Specified release variables must be configured to be 'settable at release time'. In 'Name=Value' format, special characters supported, new line separated",
+      "label": "Pipeline parameters",
+      "helpMarkDown": "Override target pipeline parameters when creating a new run. In 'Name=Value' format, special characters supported, new line separated",
       "properties": {
         "rows": 8,
         "maxLength": 10000,
         "resizable": true
       },
       "required": false,
-      "visibleRule": "releaseStrategy = create"
+      "visibleRule": "strategy = new"
     },
     {
       "name": "ignoreFailure",
@@ -160,7 +159,7 @@
       "name": "updateInterval",
       "type": "int",
       "label": "Update interval",
-      "helpMarkDown": "Specify number of seconds to wait before next release deployment progress update. Default = 5 (seconds)",
+      "helpMarkDown": "Specify number of seconds to wait before next run progress update. Default = 5 (seconds)",
       "defaultValue": 5,
       "required": true,
       "validation": {
@@ -186,7 +185,7 @@
       "name": "approvalAttempts",
       "type": "int",
       "label": "Approval attempts",
-      "helpMarkDown": "Specify number of attempts to retry (with 1 minute delay) approving target release stage deployment (if unsuccessful) before failing. Default = 10 (times)",
+      "helpMarkDown": "Specify number of attempts to retry (with 1 minute delay) approving target stage progress (if unsuccessful) before failing. Default = 10 (times)",
       "defaultValue": 10,
       "required": true,
       "validation": {
@@ -207,29 +206,8 @@
     {
       "target": "definitionName",
       "endpointId": "tfs:rm",
-      "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/release/definitions",
+      "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/build/definitions",
       "resultSelector": "jsonpath:$.value[?(@.isDeleted == false)]",
-      "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
-    },
-    {
-      "target": "definitionStage",
-      "endpointId": "tfs:rm",
-      "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/release/definitions/?searchText=$(definitionName)&isExactNameMatch=true&$expand=Environments",
-      "resultSelector": "jsonpath:$.value[*].environments[*]",
-      "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
-    },
-    {
-      "target": "releaseName",
-      "endpointId": "tfs:rm",
-      "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/release/releases?definitionId=$(definitionName)&$top=25",
-      "resultSelector": "jsonpath:$.value[*]",
-      "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}} (by {{{createdBy.displayName}}} at {{{createdOn}}})\" }"
-    },
-    {
-      "target": "releaseStage",
-      "endpointId": "tfs:rm",
-      "endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/release/releases?definitionId=$(definitionName)&searchText=$(releaseName)&$expand=Environments",
-      "resultSelector": "jsonpath:$.value[*].environments[*]",
       "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
     }
   ],
