@@ -29,12 +29,11 @@ export class TaskHelper implements ITaskHelper {
 
         const endpointType: string = getInput("endpointType", true)!;
 
-        // Use upper-case default endpoint name
+        // Use upper-case default system endpoint name
         // For compartability with non-Windows systems
         let endpointName: string = "SYSTEMVSSCONNECTION";
         let tokenParameterName: string = "AccessToken";
 
-        // Get service endpoint
         if (endpointType === "service") {
 
             endpointName = getInput("endpointName", true)!;
@@ -42,11 +41,19 @@ export class TaskHelper implements ITaskHelper {
 
         }
 
-        const endpointUrl: string | undefined = getEndpointUrl(endpointName, false);
+        let endpointUrl: string | undefined = getEndpointUrl(endpointName, false);
 
         if (!endpointUrl) {
 
             throw new Error(`Unable to get <${endpointName}> endpoint URL`);
+
+        }
+
+        // Target generic Azure DevOps API URL
+        // When using default system endpoint
+        if (endpointType === "integrated") {
+
+            endpointUrl = endpointUrl.replace(`vsrm.`, ``);
 
         }
 
