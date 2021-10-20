@@ -7,10 +7,6 @@ trigger:
     - Tasks/*
 
 parameters:
-- name: publishPreview
-  displayName: Publish preview
-  type: boolean
-  default: true
 - name: testV1
   displayName: Test V1
   type: boolean
@@ -40,11 +36,19 @@ stages:
   jobs:
   - template: templates/preview.yml
     parameters:
-      publish: ${{ parameters.publishPreview }}
+      environmentName: Marketplace
+
+- stage: Test
+  dependsOn:
+  - Build
+  - Preview
+  jobs:
+  - template: templates/test.yml
+    parameters:
       testV1: ${{ parameters.testV1 }}
       testV2: ${{ parameters.testV2 }}
       testV3: ${{ parameters.testV3 }}
-      cleanup: false
+      cleanup: true
 
 - stage: Release
   dependsOn:
