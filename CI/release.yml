@@ -54,6 +54,7 @@ stages:
   dependsOn:
   - Build
   - Preview
+  - Test
   jobs:
   - template: templates/release.yml
     parameters:
