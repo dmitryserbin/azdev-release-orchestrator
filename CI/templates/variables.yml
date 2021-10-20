@@ -6,7 +6,7 @@ variables:
   artifactsPath: $(Build.ArtifactStagingDirectory)
   extensionArtifactPath: $(Pipeline.Workspace)/Extension/*.vsix
   extensionPreviewVisibility: privatepreview
-  extensionPreviewShareWith: dmitryserbin
+  extensionPreviewShareWith: dmitryserbin,iag
   extensionVisibility: public
   extensionVersion: $(Build.BuildId)
   marketplaceEndpoint: dmitryserbin.marketplace
