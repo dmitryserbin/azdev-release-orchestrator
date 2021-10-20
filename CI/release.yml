@@ -8,7 +8,7 @@ trigger:
 
 parameters:
 - name: publishPreview
-  displayName: Publish preview extension
+  displayName: Publish preview
   type: boolean
   default: true
 - name: testV1
