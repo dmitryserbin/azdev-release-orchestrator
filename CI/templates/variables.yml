@@ -11,3 +11,4 @@ variables:
   extensionVersion: $(Build.BuildId)
   marketplaceEndpoint: dmitryserbin.marketplace
   release.orchestrator.suppress.succeededwithissues: true
+  debug: release-orchestrator:*
