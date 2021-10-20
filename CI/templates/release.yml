@@ -2,7 +2,7 @@ parameters:
   environmentName: ''
 
 jobs:
-- deployment: Extension
+- deployment: Publish
   environment: ${{ parameters.environmentName }}
   pool:
     name: Default

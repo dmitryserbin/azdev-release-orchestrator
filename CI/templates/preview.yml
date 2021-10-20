@@ -1,41 +1,27 @@
 parameters:
+  publish: false
   testV1: false
   testV2: false
   testV3: false
   cleanup: false
 
 jobs:
-- job: Install
-  pool:
-    name: Default
-  workspace:
-    clean: all
-  variables:
-  - template: variables.yml
-  steps:
-  - download: current
-    displayName: Download artifacts
-
-  - template: steps/install.yml
-    parameters:
-      endpointName: ${{ variables.tasksEndpoint }}
-      name: ${{ variables.taskNameV1 }}
-      path: $(Pipeline.Workspace)
-      replace: true
-
-  - template: steps/install.yml
-    parameters:
-      endpointName: ${{ variables.tasksEndpoint }}
-      name: ${{ variables.taskNameV2 }}
-      path: $(Pipeline.Workspace)
-      replace: false
-
-  - template: steps/install.yml
-    parameters:
-      endpointName: ${{ variables.tasksEndpoint }}
-      name: ${{ variables.taskNameV3 }}
-      path: $(Pipeline.Workspace)
-      replace: false
+- ${{ if eq(parameters.publish, true) }}:
+  - job: Publish
+    pool:
+      name: Default
+    workspace:
+      clean: all
+    variables:
+    - template: variables.yml
+    steps:
+    - template: steps/publish.yml
+      parameters:
+        path: ${{ variables.extensionArtifactPath }}
+        endpointName: ${{ variables.marketplaceEndpoint }}
+        visibility: ${{ variables.extensionPreviewVisibility }}
+        shareWith: ${{ variables.extensionPreviewShareWith }}
+        tag: preview
 
 - ${{ if eq(parameters.testV1, true) }}:
   - job: OrchestratorV1
@@ -45,8 +31,9 @@ jobs:
       clean: all
     variables:
     - template: variables.yml
-    dependsOn:
-    - Install
+    ${{ if eq(parameters.publish, true) }}:
+      dependsOn:
+      - Publish
     steps:
     - template: steps/test-v1.yml
       parameters:
@@ -69,7 +56,8 @@ jobs:
     variables:
     - template: variables.yml
     dependsOn:
-    - Install
+    - ${{ if eq(parameters.publish, true) }}:
+      - Publish
     - ${{ if eq(parameters.testV1, true) }}:
       - OrchestratorV1
     steps:
@@ -95,7 +83,8 @@ jobs:
     variables:
     - template: variables.yml
     dependsOn:
-    - Install
+    - ${{ if eq(parameters.publish, true) }}:
+      - Publish
     - ${{ if eq(parameters.testV1, true) }}:
       - OrchestratorV1
     - ${{ if eq(parameters.testV2, true) }}:
@@ -116,7 +105,8 @@ jobs:
     variables:
     - template: variables.yml
     dependsOn:
-    - Install
+    - ${{ if eq(parameters.publish, true) }}:
+      - Publish
     - ${{ if eq(parameters.testV1, true) }}:
       - OrchestratorV1
     - ${{ if eq(parameters.testV2, true) }}:

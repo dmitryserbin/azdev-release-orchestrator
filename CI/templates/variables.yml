@@ -4,9 +4,10 @@ variables:
   taskNameV3: OrchestratorV3
   tasksPath: Tasks
   artifactsPath: $(Build.ArtifactStagingDirectory)
-  tasksEndpoint: dmitryserbin.tasks
-  marketplaceEndpoint: dmitryserbin.marketplace
-  extensionVersion: $(Build.BuildId)
   extensionArtifactPath: $(Pipeline.Workspace)/Extension/*.vsix
+  extensionPreviewVisibility: privatepreview
+  extensionPreviewShareWith: dmitryserbin
   extensionVisibility: public
+  extensionVersion: $(Build.BuildId)
+  marketplaceEndpoint: dmitryserbin.marketplace
   release.orchestrator.suppress.succeededwithissues: true
