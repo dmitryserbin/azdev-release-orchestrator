@@ -56,7 +56,7 @@ export class ProgressReporter implements IProgressReporter {
             run.build.id,
             run.build.buildNumber,
             stages.length ? String.Join("|", stages) : "-",
-            run.build.requestedBy ? run.build.requestedBy.displayName : "-",
+            run.build.requestedFor ? run.build.requestedFor.displayName : "-",
             releaseDate ? `${releaseDate.toLocaleDateString()} at ${releaseDate.toLocaleTimeString()}` : "-",
 
         ]);
