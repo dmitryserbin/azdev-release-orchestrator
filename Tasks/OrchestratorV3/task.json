@@ -91,6 +91,14 @@
       "visibleRule": "strategy = specific"
     },
     {
+      "name": "branchName",
+      "type": "string",
+      "label": "Branch name",
+      "helpMarkDown": "Specify source branch name. Example: `refs/heads/mybranch`",
+      "required": false,
+      "visibleRule": "strategy = new || strategy = latest"
+    },
+    {
       "name": "buildResult",
       "type": "pickList",
       "label": "Build result",
