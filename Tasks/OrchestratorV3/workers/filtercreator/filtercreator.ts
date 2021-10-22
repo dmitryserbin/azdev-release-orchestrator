@@ -89,9 +89,10 @@ export class FilterCreator implements IFilterCreator {
         const buildFilter: IBuildFilter = {
 
             buildStatus: [
+                BuildStatus.None,
+                BuildStatus.InProgress,
                 BuildStatus.Completed,
                 BuildStatus.NotStarted,
-                BuildStatus.None,
             ],
             buildResult: filters.buildResult ? (<never>BuildResult)[filters.buildResult] : undefined,
             tagFilters: filters.buildTags,
