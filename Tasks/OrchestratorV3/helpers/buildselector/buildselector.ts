@@ -48,7 +48,7 @@ export class BuildSelector implements IBuildSelector {
 
             const definitionStages: string[] = await this.getStages(definition, resourcesFilter.repositories.self, parameters);
 
-            await this.confirmStages(definition, definitionStages, stages);
+            await this.confirmRequiredStages(definition, definitionStages, stages);
 
             const stagesToSkip: string[] = await this.getStagesToSkip(definitionStages, stages);
 
@@ -143,6 +143,7 @@ export class BuildSelector implements IBuildSelector {
                     name: stage.name!,
                     id: stage.id!,
                     target: skipped ? false : true,
+                    skipped: skipped,
 
                 };
 
@@ -163,14 +164,6 @@ export class BuildSelector implements IBuildSelector {
 
                 }
 
-                // Confirm target stage is not skipped
-                // Applicable to existing runs only
-                if (buildStage.target && skipped) {
-
-                    throw new Error(`Stage <${buildStage.name}> (${buildStage.id}) skipped in <${build.buildNumber}> (${build.id}) run`);
-
-                }
-
                 buildStages.push(buildStage);
 
             }
@@ -178,6 +171,10 @@ export class BuildSelector implements IBuildSelector {
         }
 
         debug(buildStages);
+
+        // Confirm target stages are not skipped
+        // Applicable to existing runs only
+        await this.confirmTargetStages(build, buildStages);
 
         return buildStages;
 
@@ -272,7 +269,7 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
-    private async confirmStages(definition: BuildDefinition, stages: string[], required: string[]): Promise<void> {
+    private async confirmRequiredStages(definition: BuildDefinition, stages: string[], required: string[]): Promise<void> {
 
         if (!stages.length) {
 
@@ -290,6 +287,23 @@ export class BuildSelector implements IBuildSelector {
                 throw new Error(`Definition <${definition.name}> (${definition.id}) does not contain <${stage}> stage`);
 
             }
+
+        }
+
+    }
+
+    private async confirmTargetStages(build: Build, stages: IRunStage[]): Promise<void> {
+
+        const debug = this.debugLogger.extend(this.confirmTargetStages.name);
+
+        const skippedTargetStages: IRunStage[] = stages.filter(
+            (stage) => stage.target && stage.skipped);
+
+        if (skippedTargetStages.length) {
+
+            debug(skippedTargetStages);
+
+            throw new Error(`Target stage(s) <${skippedTargetStages.map((stage) => stage.name).join(`|`)}> skipped in <${build.buildNumber}> (${build.id}) run`);
 
         }
 
