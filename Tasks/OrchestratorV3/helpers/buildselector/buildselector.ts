@@ -134,13 +134,15 @@ export class BuildSelector implements IBuildSelector {
 
             for (const stage of runDetails.stages) {
 
-                // Do not auto target never started stages
-                // Applicable to existing builds only
+                const skipped: boolean = stage.result === 4 ? true : false;
+
+                // Do not auto-target skipped stages
+                // Applicable to existing runs only
                 const buildStage: IRunStage = {
 
                     name: stage.name!,
                     id: stage.id!,
-                    target: stage.result !== 4 ? true : false,
+                    target: skipped ? false : true,
 
                 };
 
@@ -158,6 +160,14 @@ export class BuildSelector implements IBuildSelector {
                         buildStage.target = false;
 
                     }
+
+                }
+
+                // Confirm target stage is not skipped
+                // Applicable to existing runs only
+                if (buildStage.target && skipped) {
+
+                    throw new Error(`Stage <${buildStage.name}> (${buildStage.id}) skipped in <${build.buildNumber}> (${build.id}) run`);
 
                 }
 
