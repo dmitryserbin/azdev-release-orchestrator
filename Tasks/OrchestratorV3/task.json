@@ -170,7 +170,7 @@
       "helpMarkDown": "Ignore skipped stages when tracking run progress and proceed as completed (applicable to existing runs only). Default = false",
       "defaultValue": false,
       "required": false,
-      "visibleRule": "strategy = latest || specific = latest",
+      "visibleRule": "strategy = latest || strategy = specific",
       "groupName": "Advanced"
     },
     {
