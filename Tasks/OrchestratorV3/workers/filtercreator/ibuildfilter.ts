@@ -2,7 +2,7 @@ import { BuildResult, BuildStatus } from "azure-devops-node-api/interfaces/Build
 
 export interface IBuildFilter {
 
-    buildStatus: BuildStatus;
+    buildStatus: BuildStatus[];
     buildResult: BuildResult | undefined;
     tagFilters: string[];
     branchName: string;

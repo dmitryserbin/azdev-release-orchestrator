@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Build, BuildDefinition, BuildStatus } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, BuildDefinition, BuildQueryOrder, BuildStatus } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { ILogger } from "../../loggers/ilogger";
 import { IDebug } from "../../loggers/idebug";
@@ -197,7 +197,7 @@ export class BuildSelector implements IBuildSelector {
 
         debug(filter);
 
-        const builds: Build[] = await this.buildApi.getBuilds(
+        let builds: Build[] = await this.buildApi.getBuilds(
             definition.project!.name!,
             [ definition.id! ],
             undefined,
@@ -206,7 +206,7 @@ export class BuildSelector implements IBuildSelector {
             undefined,
             undefined,
             undefined,
-            filter.buildStatus,
+            undefined,
             filter.buildResult,
             filter.tagFilters.length ? filter.tagFilters : undefined,
             undefined,
@@ -214,11 +214,15 @@ export class BuildSelector implements IBuildSelector {
             undefined,
             undefined,
             undefined,
-            undefined,
+            BuildQueryOrder.QueueTimeDescending,
             filter.branchName,
             undefined,
             undefined,
             undefined);
+
+        // Apply build status filter
+        builds = builds.filter((build) => filter.buildStatus.find(
+            (status) => status === build.status));
 
         if (!builds.length) {
 
@@ -226,10 +230,10 @@ export class BuildSelector implements IBuildSelector {
 
         }
 
-        debug(`Found <${builds.length}> (${BuildStatus[filter.buildStatus]}) build(s) matching filter`);
+        debug(`Found <${builds.length}> build(s) matching (${filter.buildStatus.map((status) => BuildStatus[status]).join(`|`)}) status filter`);
 
         debug(builds.map(
-            (build) => `${build.buildNumber} (${build.id})`));
+            (build) => `${build.buildNumber} | ${build.id} | ${BuildStatus[build.status!]}`));
 
         return builds;
 
