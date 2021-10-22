@@ -120,7 +120,7 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
-    public async getBuildStages(build: Build, stages: string[]): Promise<IRunStage[]> {
+    public async getBuildStages(build: Build, stages: string[], ignoreSkipped: boolean): Promise<IRunStage[]> {
 
         const debug = this.debugLogger.extend(this.getBuildStages.name);
 
@@ -174,7 +174,11 @@ export class BuildSelector implements IBuildSelector {
 
         // Confirm target stages are not skipped
         // Applicable to existing runs only
-        await this.confirmTargetStages(build, buildStages);
+        if (!ignoreSkipped) {
+
+            await this.confirmTargetStages(build, buildStages);
+
+        }
 
         return buildStages;
 

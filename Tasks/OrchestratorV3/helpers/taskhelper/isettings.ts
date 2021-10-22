@@ -4,6 +4,7 @@ export interface ISettings {
     approvalInterval: number;
     approvalAttempts: number;
     cancelFailedApproval: boolean;
+    ignoreSkippedStages: boolean;
     skipTracking: boolean;
 
 }

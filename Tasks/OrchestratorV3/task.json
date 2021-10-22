@@ -149,7 +149,7 @@
       "name": "skipTracking",
       "type": "boolean",
       "label": "Skip progress tracking",
-      "helpMarkDown": "Skip stage progress tracking. Default = false",
+      "helpMarkDown": "Skip run stage progress tracking. Default = false",
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"
@@ -161,6 +161,16 @@
       "helpMarkDown": "Cancel build progress when stage approval or check fails. Default = false",
       "defaultValue": false,
       "required": false,
+      "groupName": "Advanced"
+    },
+    {
+      "name": "ignoreSkippedStages",
+      "type": "boolean",
+      "label": "Ignore skipped stages",
+      "helpMarkDown": "Ignore skipped stages when tracking run progress and proceed as completed (applicable to existing runs only). Default = false",
+      "defaultValue": false,
+      "required": false,
+      "visibleRule": "strategy = latest || specific = latest",
       "groupName": "Advanced"
     },
     {
