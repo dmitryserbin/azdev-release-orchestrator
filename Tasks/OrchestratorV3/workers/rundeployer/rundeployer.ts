@@ -60,6 +60,10 @@ export class RunDeployer implements IRunDeployer {
 
                 await this.stageSelector.startStage(run.build, stage);
 
+                // Wait for the stage to initialize
+                // Otherwise it may report completed
+                await this.commonHelper.wait(5000);
+
             }
 
             do {
