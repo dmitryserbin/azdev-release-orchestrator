@@ -123,7 +123,7 @@ export class StageApprover implements IStageApprover {
 
             this.logger.warn(`Stage <${stage.name}> (${stage.id}) approval <${limitMinutes}> minute(s) time limit exceeded`);
 
-            if (settings.cancelFailedApproval) {
+            if (settings.cancelFailedCheckpoint) {
 
                 this.logger.log(`Cancelling <${build.buildNumber}> (${build.id}) run <${BuildStatus[build.status!]}> progress`);
 
@@ -155,7 +155,7 @@ export class StageApprover implements IStageApprover {
 
             this.logger.warn(`Stage <${stage.name}> (${stage.id}) check <${limitMinutes}> minute(s) time limit exceeded`);
 
-            if (settings.cancelFailedApproval) {
+            if (settings.cancelFailedCheckpoint) {
 
                 this.logger.log(`Cancelling <${build.buildNumber}> (${build.id}) build <${BuildStatus[build.status!]}> progress`);
 

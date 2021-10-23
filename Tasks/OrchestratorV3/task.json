@@ -155,9 +155,9 @@
       "groupName": "Advanced"
     },
     {
-      "name": "cancelFailedApproval",
+      "name": "cancelFailedCheckpoint",
       "type": "boolean",
-      "label": "Cancel failed approval",
+      "label": "Cancel failed checkpoint",
       "helpMarkDown": "Cancel build progress when stage approval or check fails. Default = false",
       "defaultValue": false,
       "required": false,
