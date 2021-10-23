@@ -33,11 +33,30 @@ In order to use custom service endpoint, you may need to create a new Azure Pipe
 
 ### Pipeline permissions
 
-TBU
+In pipelines security section of Azure DevOps project allow the following access to user account of the service endpoint:
+
+Permission | Type
+:--------- | :---
+Queue builds | `Allow`
+Stop builds | `Allow`
+View build pipeline | `Allow`
+View builds | `Allow`
+
+Use `Project Collection Build Service` for integrated endpoint or user specified account for custom service endpoint. You can grant required permissions to all pipelines in the project or to a specific pipeline only.
+
+Please refer to Azure DevOps [permissions and security roles documentation](https://docs.microsoft.com/en-us/azure/devops/pipelines/policies/permissions) for more details.
 
 ### Approval permissions
 
-TBU
+In order to enable automated stage approval the service endpoint user accunt needs to be added to the stage environment approval list.
+
+- Add service endpoint user account to stage environment approvers
+- Check `Allow approvers to approve their own runs`
+- Set `Minimum number of approvals required` to `1`
+
+In case the service endpoint user is not in the approval list or is not allowed to approve the run, manual approval is required and a warning is displayed in the run progress.
+
+Please refer to Azure DevOps [approvals and gates documentation](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/approvals) for more details.
 
 ## How to use
 
