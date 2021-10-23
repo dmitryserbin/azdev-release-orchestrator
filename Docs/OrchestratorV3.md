@@ -14,7 +14,13 @@
 
 The **Release Orchestrator V3** task performs Azure DevOps [YAML](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/pipelines-get-started) pipelines execution, progress monitoring, and provides various customization settings.
 
-TBU
+- Create new, target latest or specific run
+- Target all or specific run stages
+- Apply various run filters and controls
+- Approve run stages and validate checks
+- Track run progress and display results
+
+The task uses either **integrated** or **specific** Azure DevOps service endpoint to connect to the target pipelines.
 
 ## Prerequisites
 
