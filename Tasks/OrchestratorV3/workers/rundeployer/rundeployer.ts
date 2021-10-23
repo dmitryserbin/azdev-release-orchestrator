@@ -212,15 +212,7 @@ export class RunDeployer implements IRunDeployer {
 
         }
 
-        if (run.settings.skipTracking) {
-
-            this.logger.log(`Run <${runProgress.name}> (${runProgress.id}) progress <${RunStatus[runProgress.status]}> tracking skipped`);
-
-        } else {
-
-            this.logger.log(`Run <${runProgress.name}> (${runProgress.id}) progress <${RunStatus[runProgress.status]}> tracking completed`);
-
-        }
+        this.logger.log(`Run <${runProgress.name}> (${runProgress.id}) progress <${RunStatus[runProgress.status]}> tracking ${run.settings.skipTracking ? `skipped` : `completed`}`);
 
         this.progressReporter.logStagesProgress(runProgress.stages)
 
