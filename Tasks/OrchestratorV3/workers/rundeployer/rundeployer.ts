@@ -146,6 +146,14 @@ export class RunDeployer implements IRunDeployer {
 
                 stage = await this.stageSelector.getStage(run.build, stage);
 
+                if (run.settings.skipTracking) {
+
+                    this.logger.log(`Skipping <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state!]}> progress tracking`);
+
+                    continue;
+
+                }
+
                 if (stage.checkpoint?.state !== TimelineRecordState.Completed) {
 
                     if (this.stageApprover.isApprovalPeding(stage)) {
@@ -188,6 +196,12 @@ export class RunDeployer implements IRunDeployer {
 
             if (runProgress.status === RunStatus.InProgress) {
 
+                if (run.settings.skipTracking) {
+
+                    inProgress = false;
+
+                }
+
                 await this.commonHelper.wait(run.settings.updateInterval);
 
             } else {
@@ -198,7 +212,15 @@ export class RunDeployer implements IRunDeployer {
 
         }
 
-        this.logger.log(`Run <${runProgress.name}> (${runProgress.id}) progress <${RunStatus[runProgress.status]}> tracking completed`);
+        if (run.settings.skipTracking) {
+
+            this.logger.log(`Run <${runProgress.name}> (${runProgress.id}) progress <${RunStatus[runProgress.status]}> tracking skipped`);
+
+        } else {
+
+            this.logger.log(`Run <${runProgress.name}> (${runProgress.id}) progress <${RunStatus[runProgress.status]}> tracking completed`);
+
+        }
 
         this.progressReporter.logStagesProgress(runProgress.stages)
 
