@@ -60,7 +60,25 @@ Please refer to Azure DevOps [approvals and gates documentation](https://docs.mi
 
 ## How to use
 
-TBU
+1. Add `Release Orchestrator` task to your pipeline
+2. Select prefered Azure DevOps service endpoint type
+3. Select target project and define target pipeline
+
+You can choose different strategy to perform target pipeline run execution:
+
+- `New run`: create new run
+- `Latest run`: find and target latest run
+- `Specific run`: find and target specific run
+
+```yaml
+- task: releaseorchestrator@3
+  displayName: Release Orchestrator
+  inputs:
+    projectName: My-Project
+    definitionName: My-Definition
+    strategy: new
+    stages: DEV
+```
 
 ### New run
 
