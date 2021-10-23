@@ -51,7 +51,7 @@ export class RunDeployer implements IRunDeployer {
 
             debug(`Starting <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state!]}> progress`);
 
-            const inProgress: boolean = true;
+            let inProgress: boolean = true;
 
             // Manually start pending stage process
             if (stage.state === TimelineRecordState.Pending) {
@@ -71,6 +71,16 @@ export class RunDeployer implements IRunDeployer {
                 debug(`Updating <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state!]}> progress`);
 
                 stage = await this.stageSelector.getStage(run.build, stage);
+
+                if (run.settings.skipTracking) {
+
+                    this.logger.log(`Skipping <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state!]}> progress tracking`);
+
+                    inProgress = false;
+
+                    continue;
+
+                }
 
                 if (stage.checkpoint?.state !== TimelineRecordState.Completed) {
 
@@ -104,7 +114,7 @@ export class RunDeployer implements IRunDeployer {
 
                     }
 
-                    break;
+                    inProgress = false;
 
                 }
 
@@ -116,7 +126,7 @@ export class RunDeployer implements IRunDeployer {
 
         }
 
-        this.logger.log(`Run <${runProgress.name}> (${runProgress.id}) progress <${RunStatus[runProgress.status]}> tracking completed`);
+        this.logger.log(`Run <${runProgress.name}> (${runProgress.id}) progress <${RunStatus[runProgress.status]}> tracking ${run.settings.skipTracking ? `skipped` : `completed`}`);
 
         this.progressReporter.logStagesProgress(runProgress.stages)
 
