@@ -94,4 +94,10 @@ TBU
 
 ## Advanced
 
-TBU
+- `Ignore progress failure`: suppress progress errors and set task result to partially succeeded in case of a failure
+- `Skip progress tracking`: skip target run stage progress tracking (i.e. do not wait for run to complete)
+- `Cancel failed checkpoint`: cancel run progress when stage approval or check fails
+- `Ignore skipped stages`: ignore skipped stages when tracking run progress and proceed as completed (applicable to existing runs only)
+- `Update interval`: number of seconds to wait before next run progress update
+- `Approval interval`: number of seconds to wait before next stage approval attempt
+- `Approval attempts`: number of attempts to retry approving target stage (if unsuccessful) before failing

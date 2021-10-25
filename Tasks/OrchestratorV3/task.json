@@ -56,7 +56,7 @@
       "name": "definitionName",
       "type": "pickList",
       "label": "Definition name",
-      "helpMarkDown": "Specify target build pipeline definition name",
+      "helpMarkDown": "Specify target pipeline definition name",
       "required": true,
       "properties": {
         "EditableOptions": true
@@ -66,7 +66,7 @@
       "name": "strategy",
       "type": "radio",
       "label": "Run strategy",
-      "helpMarkDown": "Select strategy to perform target build orchestration. Create new build, select latest or target specific build in the definition",
+      "helpMarkDown": "Select strategy to perform target run orchestration. Create new run, select latest or target specific run in the definition",
       "required": true,
       "defaultValue": "new",
       "options": {
@@ -127,7 +127,7 @@
       "name": "parameters",
       "type": "multiLine",
       "label": "Parameters",
-      "helpMarkDown": "Override target pipeline parameters when creating a new build. In 'Name=Value' format, special characters supported, new line separated",
+      "helpMarkDown": "Override target pipeline parameters when creating a new run. In 'Name=Value' format, special characters supported, new line separated",
       "properties": {
         "rows": 8,
         "maxLength": 10000,
@@ -149,7 +149,7 @@
       "name": "skipTracking",
       "type": "boolean",
       "label": "Skip progress tracking",
-      "helpMarkDown": "Skip run stage progress tracking. Default = false",
+      "helpMarkDown": "Skip target run stage progress tracking (i.e. do not wait for run to complete). Default = false",
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"
@@ -158,7 +158,7 @@
       "name": "cancelFailedCheckpoint",
       "type": "boolean",
       "label": "Cancel failed checkpoint",
-      "helpMarkDown": "Cancel build progress when stage approval or check fails. Default = false",
+      "helpMarkDown": "Cancel run progress when stage approval or check fails. Default = false",
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"
@@ -177,7 +177,7 @@
       "name": "updateInterval",
       "type": "int",
       "label": "Update interval",
-      "helpMarkDown": "Specify number of seconds to wait before next build progress update. Default = 5 (seconds)",
+      "helpMarkDown": "Specify number of seconds to wait before next run progress update. Default = 5 (seconds)",
       "defaultValue": 5,
       "required": true,
       "validation": {
@@ -203,7 +203,7 @@
       "name": "approvalAttempts",
       "type": "int",
       "label": "Approval attempts",
-      "helpMarkDown": "Specify number of attempts to retry (with 1 minute delay) approving target stage progress (if unsuccessful) before failing. Default = 10 (times)",
+      "helpMarkDown": "Specify number of attempts to retry approving target stage (if unsuccessful) before failing. Default = 10 (times)",
       "defaultValue": 10,
       "required": true,
       "validation": {

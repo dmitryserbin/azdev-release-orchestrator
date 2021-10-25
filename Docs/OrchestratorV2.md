@@ -87,7 +87,7 @@ You can choose different strategy to perform target release deployment:
 
 By default, new release deployment uses default stage [triggers](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#env-triggers) configured in the target pipeline. In order to deploy specific stages, you need to specify target stages using `Filter definition stages` option.
 
-- `Definition stage`: target release Definition stage filter (comma separated)
+- `Definition stage`: target release definition stage filter (comma separated)
 - `Artifact version`: target release primary build type artifact version filter (i.e. build number, last 100 builds)
 - `Artifact tag`: target release primary build type artifact tag filter (comma separated, last 100 builds)
 - `Artifact branch`: target release primary artifact source branch filter. Supports build artifact (last 100 builds) or Git artifact
