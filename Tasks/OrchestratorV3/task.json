@@ -167,7 +167,7 @@
       "name": "ignoreSkippedStages",
       "type": "boolean",
       "label": "Ignore skipped stages",
-      "helpMarkDown": "Ignore skipped stages when tracking run progress and proceed as completed (applicable to existing runs only). Default = false",
+      "helpMarkDown": "Ignore skipped stages when tracking run progress and proceed as completed. Default = false",
       "defaultValue": false,
       "required": false,
       "visibleRule": "strategy = latest || strategy = specific",
