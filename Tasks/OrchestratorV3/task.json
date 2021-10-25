@@ -39,7 +39,7 @@
       "type": "connectedService:ExternalTfs",
       "label": "Azure DevOps service endpoint",
       "required": true,
-      "helpMarkDown": "Custom service endpoint for Azure DevOps connection",
+      "helpMarkDown": "Service endpoint for Azure DevOps connection",
       "visibleRule": "endpointType = service"
     },
     {
