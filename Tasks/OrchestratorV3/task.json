@@ -26,7 +26,7 @@
       "name": "endpointType",
       "type": "radio",
       "label": "Azure DevOps endpoint type",
-      "helpMarkDown": "Select endpoint type to connect to Azure DevOps: \n- **Integrated** = default 'SYSTEMVSSCONNECTION' service endpoint for 'Project Collection Build Service' system account\n- **Service** = user-defined Azure DevOps service endpoint using personal access token (PAT)",
+      "helpMarkDown": "Endpoint type to connect to Azure DevOps: \n- **Integrated** = default 'SYSTEMVSSCONNECTION' service endpoint for 'Project Collection Build Service' system account\n- **Service** = user-defined Azure DevOps service endpoint using personal access token (PAT)",
       "required": true,
       "defaultValue": "integrated",
       "options": {
@@ -37,16 +37,16 @@
     {
       "name": "endpointName",
       "type": "connectedService:ExternalTfs",
-      "label": "Service endpoint",
+      "label": "Azure DevOps service endpoint",
       "required": true,
-      "helpMarkDown": "Select service endpoint for Azure DevOps connection",
+      "helpMarkDown": "Custom service endpoint for Azure DevOps connection",
       "visibleRule": "endpointType = service"
     },
     {
       "name": "projectName",
       "type": "pickList",
       "label": "Project name",
-      "helpMarkDown": "Specify target project name or ID",
+      "helpMarkDown": "Target project name or project ID",
       "required": true,
       "properties": {
         "EditableOptions": true
@@ -56,7 +56,7 @@
       "name": "definitionName",
       "type": "pickList",
       "label": "Definition name",
-      "helpMarkDown": "Specify target pipeline definition name",
+      "helpMarkDown": "Target pipeline definition name",
       "required": true,
       "properties": {
         "EditableOptions": true
@@ -66,7 +66,7 @@
       "name": "strategy",
       "type": "radio",
       "label": "Run strategy",
-      "helpMarkDown": "Select strategy to perform target run orchestration. Create new run, select latest or target specific run in the definition",
+      "helpMarkDown": "Strategy to perform target run orchestration. Create new run, select latest or target specific run in the definition",
       "required": true,
       "defaultValue": "new",
       "options": {
@@ -79,14 +79,14 @@
       "name": "stages",
       "type": "string",
       "label": "Stages",
-      "helpMarkDown": "Specify target stages (comma separated)",
+      "helpMarkDown": "Target definition or run stages (comma separated)",
       "required": false
     },
     {
       "name": "buildNumber",
       "type": "string",
       "label": "Build number",
-      "helpMarkDown": "Specify target build number (i.e. build name)",
+      "helpMarkDown": "Target build number (i.e. build name)",
       "required": true,
       "visibleRule": "strategy = specific"
     },
@@ -94,7 +94,7 @@
       "name": "branchName",
       "type": "string",
       "label": "Branch name",
-      "helpMarkDown": "Specify source branch name. Example: `refs/heads/mybranch`",
+      "helpMarkDown": "Source branch name filter. Example: `refs/heads/mybranch`",
       "required": false,
       "visibleRule": "strategy = new || strategy = latest"
     },
@@ -102,7 +102,7 @@
       "name": "buildResult",
       "type": "pickList",
       "label": "Build result",
-      "helpMarkDown": "Specify target build status filter. Options: Succeeded, PartiallySucceeded, Failed or Canceled",
+      "helpMarkDown": "Target build status filter. Options: `Succeeded`, `PartiallySucceeded`, `Failed` or `Canceled`",
       "properties": {
         "EditableOptions": true
       },
@@ -119,7 +119,7 @@
       "name": "buildTags",
       "type": "string",
       "label": "Build tags",
-      "helpMarkDown": "Specify target build tags (comma separated)",
+      "helpMarkDown": "Target build tags (comma separated)",
       "required": false,
       "visibleRule": "strategy = latest"
     },
@@ -127,7 +127,7 @@
       "name": "parameters",
       "type": "multiLine",
       "label": "Parameters",
-      "helpMarkDown": "Override target pipeline parameters when creating a new run. In 'Name=Value' format, special characters supported, new line separated",
+      "helpMarkDown": "Override target pipeline parameters when creating a new run. In `Name=Value` format, special characters supported, new line separated",
       "properties": {
         "rows": 8,
         "maxLength": 10000,
@@ -177,7 +177,7 @@
       "name": "updateInterval",
       "type": "int",
       "label": "Update interval",
-      "helpMarkDown": "Specify number of seconds to wait before next run progress update. Default = 5 (seconds)",
+      "helpMarkDown": "Number of seconds to wait before next run progress update. Default = 5 (seconds)",
       "defaultValue": 5,
       "required": true,
       "validation": {
@@ -190,7 +190,7 @@
       "name": "approvalInterval",
       "type": "int",
       "label": "Approval interval",
-      "helpMarkDown": "Specify number of seconds to wait before next stage approval attempt. Default = 60 (seconds)",
+      "helpMarkDown": "Number of seconds to wait before next stage approval attempt. Default = 60 (seconds)",
       "defaultValue": 60,
       "required": true,
       "validation": {
@@ -203,7 +203,7 @@
       "name": "approvalAttempts",
       "type": "int",
       "label": "Approval attempts",
-      "helpMarkDown": "Specify number of attempts to retry approving target stage (if unsuccessful) before failing. Default = 10 (times)",
+      "helpMarkDown": "Number of attempts to retry approving target stage (if unsuccessful) before failing. Default = 10 (times)",
       "defaultValue": 10,
       "required": true,
       "validation": {
