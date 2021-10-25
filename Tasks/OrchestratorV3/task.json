@@ -94,7 +94,7 @@
       "name": "branchName",
       "type": "string",
       "label": "Branch name",
-      "helpMarkDown": "Source branch name filter. Example: `refs/heads/mybranch`",
+      "helpMarkDown": "Source branch name filter. Example: `mybranch`",
       "required": false,
       "visibleRule": "strategy = new || strategy = latest"
     },
