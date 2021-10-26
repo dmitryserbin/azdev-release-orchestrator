@@ -44,7 +44,7 @@ export class Orchestrator implements IOrchestrator {
 
             case Strategy.New: {
 
-                this.logger.log(`Deploying new <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`);
+                this.logger.log(`Executing new <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`);
 
                 progressReporter.logRun(run);
 
@@ -54,7 +54,7 @@ export class Orchestrator implements IOrchestrator {
 
             } case Strategy.Latest: {
 
-                this.logger.log(`Re-deploying latest <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`);
+                this.logger.log(`Executing latest <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`);
 
                 progressReporter.logRun(run);
 
@@ -64,7 +64,7 @@ export class Orchestrator implements IOrchestrator {
 
             } case Strategy.Specific: {
 
-                this.logger.log(`Re-deploying specific <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`);
+                this.logger.log(`Executing specific <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`);
 
                 progressReporter.logRun(run);
 
