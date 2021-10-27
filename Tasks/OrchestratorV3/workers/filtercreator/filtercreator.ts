@@ -96,7 +96,7 @@ export class FilterCreator implements IFilterCreator {
             ],
             buildResult: filters.buildResult ? (<never>BuildResult)[filters.buildResult] : undefined,
             tagFilters: filters.buildTags,
-            branchName: filters.branchName ? `refs/heads/${filters.branchName}` : "",
+            branchName: filters.branchName ? `refs/heads/${filters.branchName}` : ``,
 
         };
 
