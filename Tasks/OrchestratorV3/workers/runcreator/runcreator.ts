@@ -97,7 +97,7 @@ export class RunCreator implements IRunCreator {
 
         }
 
-        const stages: IRunStage[] = await this.buildSelector.getBuildStages(build, parameters.stages, parameters.settings.ignoreSkippedStages);
+        const stages: IRunStage[] = await this.buildSelector.getBuildStages(build, parameters.stages, parameters.settings.proceedSkippedStages);
 
         const run: IRun = {
 

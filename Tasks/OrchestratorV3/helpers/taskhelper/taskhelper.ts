@@ -87,7 +87,7 @@ export class TaskHelper implements ITaskHelper {
         const definitionName: string = getInput("definitionName", true)!;
 
         const cancelFailedCheckpoint: boolean = getBoolInput("cancelFailedCheckpoint", false);
-        const ignoreSkippedStages: boolean = getBoolInput("ignoreSkippedStages", false);
+        const proceedSkippedStages: boolean = getBoolInput("proceedSkippedStages", false);
         const skipTracking: boolean = getBoolInput("skipTracking", false);
 
         const updateInterval: string = getInput("updateInterval", true)!;
@@ -111,7 +111,7 @@ export class TaskHelper implements ITaskHelper {
             approvalInterval: Number(approvalInterval) * 1000,
             approvalAttempts: Number(approvalAttempts),
             cancelFailedCheckpoint,
-            ignoreSkippedStages,
+            proceedSkippedStages,
             skipTracking,
 
         };

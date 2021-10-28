@@ -4,5 +4,6 @@ export interface IRunStage {
     id: string;
     target: boolean;
     skipped: boolean;
+    pending: boolean;
 
 }

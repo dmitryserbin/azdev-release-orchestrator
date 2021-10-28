@@ -120,7 +120,7 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
-    public async getBuildStages(build: Build, stages: string[], ignoreSkipped: boolean): Promise<IRunStage[]> {
+    public async getBuildStages(build: Build, stages: string[], proceedSkipped: boolean): Promise<IRunStage[]> {
 
         const debug = this.debugLogger.extend(this.getBuildStages.name);
 
@@ -135,6 +135,7 @@ export class BuildSelector implements IBuildSelector {
             for (const stage of runDetails.stages) {
 
                 const skipped: boolean = stage.result === 4 ? true : false;
+                const pending: boolean = stage.stateData.pendingDependencies === true ? true : false;
 
                 // Do not auto-target skipped stages
                 // Applicable to existing runs only
@@ -144,6 +145,7 @@ export class BuildSelector implements IBuildSelector {
                     id: stage.id!,
                     target: skipped ? false : true,
                     skipped: skipped,
+                    pending: pending,
 
                 };
 
@@ -172,9 +174,9 @@ export class BuildSelector implements IBuildSelector {
 
         debug(buildStages);
 
-        // Confirm target stages are not skipped
-        // Applicable to existing runs only
-        if (!ignoreSkipped) {
+        // Confirm target stages are not skipped or pending
+        // Applicable when targeting existing runs only
+        if (!proceedSkipped) {
 
             await this.confirmTargetStages(build, buildStages);
 
@@ -308,6 +310,17 @@ export class BuildSelector implements IBuildSelector {
             debug(skippedTargetStages);
 
             throw new Error(`Target stage(s) <${skippedTargetStages.map((stage) => stage.name).join(`|`)}> skipped in <${build.buildNumber}> (${build.id}) run`);
+
+        }
+
+        const pendingTargetStages: IRunStage[] = stages.filter(
+            (stage) => stage.target && stage.pending);
+
+        if (pendingTargetStages.length) {
+
+            debug(pendingTargetStages);
+
+            throw new Error(`Target stage(s) <${pendingTargetStages.map((stage) => stage.name).join(`|`)}> pending <${build.buildNumber}> (${build.id}) conditions`);
 
         }
 
