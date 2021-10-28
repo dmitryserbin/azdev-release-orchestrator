@@ -93,6 +93,7 @@ export class StageSelector implements IStageSelector {
 
         const retryRequest: UpdateStageParameters = {
 
+            forceRetryAllJobs: true,
             state: StageUpdateType.Retry,
 
         };
