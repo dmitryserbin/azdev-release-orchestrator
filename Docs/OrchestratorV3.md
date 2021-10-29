@@ -74,17 +74,31 @@ You can choose different `strategy` to perform target pipeline run execution:
 - task: releaseorchestrator@3
   displayName: Release Orchestrator
   inputs:
-    # endpointType: service # Optional. Options: integrated, service
-    # endpointName: My-Endpoint # Required when endpointType == service
-    projectName: My-Project # Required
-    definitionName: My-Definition # Required
-    strategy: new # Optional. Options: new (default), latest, specific
-    stages: DEV # Optional
+    # endpointType: service         # Optional. Options: integrated (default), service
+    # endpointName: My-Endpoint     # Required when endpointType == service
+    projectName: My-Project         # Required
+    definitionName: My-Definition   # Required
+    # strategy: new                 # Optional. Options: new (default), latest, specific
+    # stages: DEV,TEST,PROD         # Optional
 ```
 
 ### New run
 
-TBU
+By default, new run targets all stages in order configured in the pipeline. To target specific stages only, specify required stages using `stages` parameter.
+
+```yaml
+- task: releaseorchestrator@3
+  displayName: Release Orchestrator
+  inputs:
+    projectName: My-Project
+    definitionName: My-Definition
+    strategy: new
+    # stages: DEV                   # Optional
+    # branchName: my/branch/name    # Optional
+    # parameters: |                 # Optional
+    #   MyParameterOne=MyValueOne
+    #   MyParameterTwo=MyValueTwo
+```
 
 ### Latest run
 
@@ -96,7 +110,7 @@ TBU
 
 ## Advanced
 
-Parameter |  Description
+Parameter | Description
 :-------- | :----------
 `ignoreFailure` | Suppress progress errors and set task result to partially succeeded in case of a failure. Default = false
 `skipTracking` | Skip target run stage progress tracking (i.e. do not wait for run to complete). Default = false
