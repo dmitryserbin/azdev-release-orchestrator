@@ -82,6 +82,16 @@ export class RunDeployer implements IRunDeployer {
 
                 }
 
+                if (stage.state === TimelineRecordState.Pending && run.settings.proceedSkippedStages) {
+
+                    this.logger.log(`Pending stage <${stage.name}> (${stage.id}) cannot be started`);
+
+                    inProgress = false;
+
+                    continue;
+
+                }
+
                 if (stage.checkpoint?.state !== TimelineRecordState.Completed) {
 
                     if (this.stageApprover.isApprovalPeding(stage)) {
