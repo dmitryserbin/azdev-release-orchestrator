@@ -122,6 +122,25 @@ export class StageSelector implements IStageSelector {
 
     }
 
+    public async confirmStage(stage: IBuildStage): Promise<void> {
+
+        const skipped: boolean = stage.result === 4 ? true : false;
+        const pending: boolean = stage.state === 0 && stage.checkpoint === null ? true : false;
+
+        if (skipped) {
+
+            throw new Error(`Target stage <${stage.name}> (${stage.id}) is skipped`);
+
+        }
+
+        if (pending) {
+
+            throw new Error(`Target stage <${stage.name}> (${stage.id}) is pending dependencies`);
+
+        }
+
+    }
+
     private getTimelineRecord(timeline: Timeline, name: string, type: string): TimelineRecord | undefined {
 
         const timelineRecord: TimelineRecord | undefined = timeline.records!.find(

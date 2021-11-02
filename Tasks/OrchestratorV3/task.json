@@ -167,7 +167,7 @@
       "name": "proceedSkippedStages",
       "type": "boolean",
       "label": "Ignore skipped stages",
-      "helpMarkDown": "Proceed as normal when targeting skipped stages or stages pending dependencies in existing runs. Default = false",
+      "helpMarkDown": "Proceed as normal when targeting existing run with skipped stages or stages pending dependencies. Default = false",
       "defaultValue": false,
       "required": false,
       "visibleRule": "strategy = latest || strategy = specific",

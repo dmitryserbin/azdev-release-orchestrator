@@ -120,7 +120,7 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
-    public async getBuildStages(build: Build, stages: string[], proceedSkipped: boolean): Promise<IRunStage[]> {
+    public async getBuildStages(build: Build, stages: string[]): Promise<IRunStage[]> {
 
         const debug = this.debugLogger.extend(this.getBuildStages.name);
 
@@ -135,7 +135,6 @@ export class BuildSelector implements IBuildSelector {
             for (const stage of runDetails.stages) {
 
                 const skipped: boolean = stage.result === 4 ? true : false;
-                const pending: boolean = stage.stateData.pendingDependencies === true ? true : false;
 
                 // Do not auto-target skipped stages
                 // Applicable to existing runs only
@@ -144,8 +143,6 @@ export class BuildSelector implements IBuildSelector {
                     name: stage.name!,
                     id: stage.id!,
                     target: skipped ? false : true,
-                    skipped: skipped,
-                    pending: pending,
 
                 };
 
@@ -173,14 +170,6 @@ export class BuildSelector implements IBuildSelector {
         }
 
         debug(buildStages);
-
-        // Confirm target stages are not skipped or pending
-        // Applicable when targeting existing runs only
-        if (!proceedSkipped) {
-
-            await this.confirmTargetStages(build, buildStages);
-
-        }
 
         return buildStages;
 
@@ -293,34 +282,6 @@ export class BuildSelector implements IBuildSelector {
                 throw new Error(`Definition <${definition.name}> (${definition.id}) does not contain <${stage}> stage`);
 
             }
-
-        }
-
-    }
-
-    private async confirmTargetStages(build: Build, stages: IRunStage[]): Promise<void> {
-
-        const debug = this.debugLogger.extend(this.confirmTargetStages.name);
-
-        const skippedTargetStages: IRunStage[] = stages.filter(
-            (stage) => stage.target && stage.skipped);
-
-        if (skippedTargetStages.length) {
-
-            debug(skippedTargetStages);
-
-            throw new Error(`Target stage(s) <${skippedTargetStages.map((stage) => stage.name).join(`|`)}> skipped in <${build.buildNumber}> (${build.id}) run`);
-
-        }
-
-        const pendingTargetStages: IRunStage[] = stages.filter(
-            (stage) => stage.target && stage.pending);
-
-        if (pendingTargetStages.length) {
-
-            debug(pendingTargetStages);
-
-            throw new Error(`Target stage(s) <${pendingTargetStages.map((stage) => stage.name).join(`|`)}> pending <${build.buildNumber}> (${build.id}) conditions`);
 
         }
 

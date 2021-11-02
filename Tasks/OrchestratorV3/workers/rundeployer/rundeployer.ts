@@ -64,6 +64,16 @@ export class RunDeployer implements IRunDeployer {
                 // Otherwise it may report completed
                 await this.commonHelper.wait(5000);
 
+                // Confirm stage is not skipped or pending dependencies
+                // To be done only after manual stage start attempt
+                if (!run.settings.proceedSkippedStages) {
+
+                    stage = await this.stageSelector.getStage(run.build, stage);
+
+                    await this.stageSelector.confirmStage(stage);
+
+                }
+
             }
 
             do {
