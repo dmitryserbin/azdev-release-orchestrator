@@ -84,7 +84,7 @@ You can choose different `strategy` to perform target pipeline run execution:
 
 ### New run
 
-By default, new run targets all stages in order configured in the pipeline. To target specific stages only, specify required stages using `stages` parameter.
+Creates new run and targets all stages in order configured in the pipeline. To target specific stages only, specify required stages using `stages` parameter. The target stages will be triggered in sequential order, exactly as specified.
 
 ```yaml
 - task: releaseorchestrator@3
@@ -102,11 +102,35 @@ By default, new run targets all stages in order configured in the pipeline. To t
 
 ### Latest run
 
-TBU
+Finds latest run and targets all stages in order configured in the run. To target specific stages only, specify required stages using `stages` parameter. The target stages will be triggered in sequential order, exactly as specified.
+
+```yaml
+- task: releaseorchestrator@3
+  displayName: Release Orchestrator
+  inputs:
+    projectName: My-Project
+    definitionName: My-Definition
+    strategy: latest
+    # stages: DEV                   # Optional
+    # branchName: my/branch/name    # Optional
+    # buildResult: Succeeded        # Optional. Options: Succeeded, PartiallySucceeded, Failed or Canceled
+    # buildTags: My-Tag             # Optional
+```
 
 ### Specific run
 
-TBU
+Finds specific run by name and targets all stages in order configured in the run. To target specific stages only, specify required stages using `stages` parameter. The target stages will be triggered in sequential order, exactly as specified.
+
+```yaml
+- task: releaseorchestrator@3
+  displayName: Release Orchestrator
+  inputs:
+    projectName: My-Project
+    definitionName: My-Definition
+    strategy: specific
+    buildNumber: 20210518.1
+    # stages: DEV                   # Optional
+```
 
 ## Advanced
 

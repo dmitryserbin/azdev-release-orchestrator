@@ -85,7 +85,7 @@ You can choose different strategy to perform target release deployment:
 
 ### Create release
 
-By default, new release deployment uses default stage [triggers](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#env-triggers) configured in the target pipeline. In order to deploy specific stages, you need to specify target stages using `Filter definition stages` option.
+New release deployment uses default stage [triggers](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#env-triggers) configured in the target pipeline. In order to deploy specific stages, you need to specify target stages using `Filter definition stages` option.
 
 - `Definition stage`: target release definition stage filter (comma separated)
 - `Artifact version`: target release primary build type artifact version filter (i.e. build number, last 100 builds)
@@ -113,7 +113,7 @@ By default, new release deployment uses default stage [triggers](https://docs.mi
 
 ### Latest release
 
-By default, latest release deployment targets all stages configured in the target pipeline. In order to deploy specific stages, you need to specify target stages using `Filter release stages` option. The target stages will be re-deployed in sequential order, exactly as you specified. Search range is last 100 releases.
+Latest release deployment targets all stages configured in the target pipeline. In order to deploy specific stages, you need to specify target stages using `Filter release stages` option. The target stages will be re-deployed in sequential order, exactly as you specified. Search range is last 100 releases.
 
 - `Release stage`: target release stage filter (comma separated)
 - `Release tag`: target release tag filter (comma separated, last 100 releases)
@@ -141,7 +141,7 @@ By default, latest release deployment targets all stages configured in the targe
 
 ### Specific release
 
-By default, specific release deployment targets all stages configured in the target pipeline. In order to deploy specific stages, you need to specify target stages using `Filter release stages` option. The target stages will be re-deployed in sequential order, exactly as you specified. Search range is last 100 releases.
+Specific release deployment targets all stages configured in the target pipeline. In order to deploy specific stages, you need to specify target stages using `Filter release stages` option. The target stages will be re-deployed in sequential order, exactly as you specified. Search range is last 100 releases.
 
 - `Release stage`: target release stage filter (comma separated)
 
