@@ -70,6 +70,8 @@ You can choose different `strategy` to perform target pipeline run execution:
 - `Latest run`: find and target latest run
 - `Specific run`: find and target specific run
 
+Every run strategy targets all stages in order configured in the pipeline (`new`) or in the run (`latest` or `specific`). To target specific stages only, define required stages using `stages` parameter. The target stages will be triggered in sequential order, exactly as specified.
+
 ```yaml
 - task: releaseorchestrator@3
   displayName: Release Orchestrator
@@ -84,7 +86,7 @@ You can choose different `strategy` to perform target pipeline run execution:
 
 ### New run
 
-Creates new run and targets all stages in order configured in the pipeline. To target specific stages only, specify required stages using `stages` parameter. The target stages will be triggered in sequential order, exactly as specified.
+Create new run and target all stages in order configured in the pipeline or as specified in `stages` parameter.
 
 ```yaml
 - task: releaseorchestrator@3
@@ -102,7 +104,7 @@ Creates new run and targets all stages in order configured in the pipeline. To t
 
 ### Latest run
 
-Finds latest run and targets all stages in order configured in the run. To target specific stages only, specify required stages using `stages` parameter. The target stages will be triggered in sequential order, exactly as specified.
+Find latest run using filters and target all stages in order configured in the run or as specified in `stages` parameter.
 
 ```yaml
 - task: releaseorchestrator@3
@@ -119,7 +121,7 @@ Finds latest run and targets all stages in order configured in the run. To targe
 
 ### Specific run
 
-Finds specific run by name and targets all stages in order configured in the run. To target specific stages only, specify required stages using `stages` parameter. The target stages will be triggered in sequential order, exactly as specified.
+Find specific run by name and target all stages in order configured in the run or as specified in `stages` parameter.
 
 ```yaml
 - task: releaseorchestrator@3
