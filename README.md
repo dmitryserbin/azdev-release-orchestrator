@@ -20,8 +20,10 @@ The **Release Orchestrator** tasks perform classic or YAML pipeline execution, p
 
 Task | Description
 :-------|:-----------
-[Release Orchestrator V3](Docs/OrchestratorV3.md) | Execute and monitor [YAML](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/pipelines-get-started) pipelines
+[Release Orchestrator V3](Docs/OrchestratorV3.md) * | Execute and monitor [YAML](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/pipelines-get-started) pipelines
 [Release Orchestrator V2](Docs/OrchestratorV2.md) | Execute and monitor [classic](https://docs.microsoft.com/en-us/azure/devops/pipelines/release) release pipelines
+
+> \* NOTE: task in public preview and some features may suddenly change
 
 ## How to use
 
