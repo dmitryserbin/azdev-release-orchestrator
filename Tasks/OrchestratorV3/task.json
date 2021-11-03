@@ -140,7 +140,7 @@
       "name": "ignoreFailure",
       "type": "boolean",
       "label": "Ignore progress failure",
-      "helpMarkDown": "Suppress progress errors and set task result to partially succeeded in case of a failure. Default = false",
+      "helpMarkDown": "Suppress progress errors and set task result to partially succeeded in case of a failure. Default = `false`",
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"
@@ -149,7 +149,7 @@
       "name": "skipTracking",
       "type": "boolean",
       "label": "Skip progress tracking",
-      "helpMarkDown": "Skip target run stage progress tracking (i.e. do not wait for run to complete). Default = false",
+      "helpMarkDown": "Skip target run stage progress tracking (i.e. do not wait for run to complete). Default = `false`",
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"
@@ -158,7 +158,7 @@
       "name": "cancelFailedCheckpoint",
       "type": "boolean",
       "label": "Cancel failed checkpoint",
-      "helpMarkDown": "Cancel run progress when stage approval or check fails. Default = false",
+      "helpMarkDown": "Cancel run progress when stage approval or check fails. Default = `false`",
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"
@@ -167,7 +167,7 @@
       "name": "proceedSkippedStages",
       "type": "boolean",
       "label": "Ignore skipped stages",
-      "helpMarkDown": "Proceed as normal when targeting existing run with skipped stages or stages pending dependencies. Default = false",
+      "helpMarkDown": "Proceed as normal when targeting existing run with skipped stages or stages pending dependencies. Default = `false`",
       "defaultValue": false,
       "required": false,
       "visibleRule": "strategy = latest || strategy = specific",
@@ -177,7 +177,7 @@
       "name": "updateInterval",
       "type": "int",
       "label": "Update interval",
-      "helpMarkDown": "Number of seconds to wait before next run progress update. Default = 5 (seconds)",
+      "helpMarkDown": "Number of seconds to wait before next run progress update. Default = `5` (seconds)",
       "defaultValue": 5,
       "required": true,
       "validation": {
@@ -190,7 +190,7 @@
       "name": "approvalInterval",
       "type": "int",
       "label": "Approval interval",
-      "helpMarkDown": "Number of seconds to wait before next stage approval attempt. Default = 60 (seconds)",
+      "helpMarkDown": "Number of seconds to wait before next stage approval attempt. Default = `60` (seconds)",
       "defaultValue": 60,
       "required": true,
       "validation": {
@@ -203,7 +203,7 @@
       "name": "approvalAttempts",
       "type": "int",
       "label": "Approval attempts",
-      "helpMarkDown": "Number of attempts to retry approving target stage (if unsuccessful) before failing. Default = 10 (times)",
+      "helpMarkDown": "Number of attempts to retry approving target stage (if unsuccessful) before failing. Default = `10` (times)",
       "defaultValue": 10,
       "required": true,
       "validation": {

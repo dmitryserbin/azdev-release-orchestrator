@@ -86,7 +86,7 @@ Every run strategy targets all stages in order configured in the pipeline (`new`
 
 ### New run
 
-Create new run and target all stages in order configured in the pipeline or as specified in `stages` parameter.
+Create new run and target all stages in default order configured in the pipeline or as specified in `stages` parameter.
 
 ```yaml
 - task: releaseorchestrator@3
@@ -104,7 +104,7 @@ Create new run and target all stages in order configured in the pipeline or as s
 
 ### Latest run
 
-Find latest run using filters and target all stages in order configured in the run or as specified in `stages` parameter.
+Find latest run using filters and target all stages in default order configured in the run or as specified in `stages` parameter.
 
 ```yaml
 - task: releaseorchestrator@3
@@ -121,7 +121,7 @@ Find latest run using filters and target all stages in order configured in the r
 
 ### Specific run
 
-Find specific run by name and target all stages in order configured in the run or as specified in `stages` parameter.
+Find specific run by name and target all stages in default order configured in the run or as specified in `stages` parameter.
 
 ```yaml
 - task: releaseorchestrator@3
@@ -138,10 +138,10 @@ Find specific run by name and target all stages in order configured in the run o
 
 Parameter | Description
 :-------- | :----------
-`ignoreFailure` | Suppress progress errors and set task result to partially succeeded in case of a failure. Default = false
-`skipTracking` | Skip target run stage progress tracking (i.e. do not wait for run to complete). Default = false
-`cancelFailedCheckpoint` | Cancel run progress when stage approval or check fails. Default = false
-`proceedSkippedStages` | Proceed as normal when targeting existing run with skipped stages or stages pending dependencies. Default = false
-`updateInterval` | Number of seconds to wait before next run progress update. Default = 5 (seconds)
-`approvalInterval` | Number of seconds to wait before next stage approval attempt. Default = 60 (seconds)
-`approvalAttempts` | Number of attempts to retry approving target stage (if unsuccessful) before failing. Default = 10 (times)
+`ignoreFailure` | Suppress progress errors and set task result to partially succeeded in case of a failure. Default = `false`
+`skipTracking` | Skip target run stage progress tracking (i.e. do not wait for run to complete). Default = `false`
+`cancelFailedCheckpoint` | Cancel run progress when stage approval or check fails. Default = `false`
+`proceedSkippedStages` | Proceed as normal when targeting existing run with skipped stages or stages pending dependencies. Default = `false`
+`updateInterval` | Number of seconds to wait before next run progress update. Default = `5` (seconds)
+`approvalInterval` | Number of seconds to wait before next stage approval attempt. Default = `60` (seconds)
+`approvalAttempts` | Number of attempts to retry approving target stage (if unsuccessful) before failing. Default = `10` (times)
