@@ -84,6 +84,15 @@ Every run strategy targets all stages in order configured in the pipeline (`new`
     # stages: DEV,TEST,PROD         # Optional
 ```
 
+Parameter | Description
+:-------- | :----------
+`endpointType` | Endpoint type to connect to Azure DevOps<br /><br />- `integrated` – default `SYSTEMVSSCONNECTION` service endpoint for `Project Collection Build Service` system account<br />- `service` – user-defined Azure DevOps service endpoint using personal access token (PAT)
+`endpointName` | Service endpoint for Azure DevOps connection
+`projectName` | Target project name or project ID
+`definitionName` | Target pipeline definition name
+`strategy` | Strategy to perform target run orchestration<br /><br />- `new` – create new run<br />- `latest` – select latest run<br />- `specific` – target specific run
+`stages` | Target definition or run stages (comma separated)
+
 ### New run
 
 Create new run and target all stages in default order configured in the pipeline or as specified in `stages` parameter.
@@ -102,6 +111,11 @@ Create new run and target all stages in default order configured in the pipeline
     #   MyParameterTwo=MyValueTwo
 ```
 
+Parameter | Description
+:-------- | :----------
+`branchName` | Source branch name filter. Example: `mybranch`
+`parameters` | Override target pipeline parameters when creating a new run. In `Name=Value` format, special characters supported, new line separated
+
 ### Latest run
 
 Find latest run using filters and target all stages in default order configured in the run or as specified in `stages` parameter.
@@ -119,6 +133,12 @@ Find latest run using filters and target all stages in default order configured 
     # buildTags: My-Tag             # Optional
 ```
 
+Parameter | Description
+:-------- | :----------
+`branchName` | Source branch name filter. Example: `mybranch`
+`buildResult` | Target build result filter. Options: `Succeeded`, `PartiallySucceeded`, `Failed` or `Canceled`
+`buildTags` | Target build tags filter (comma separated)
+
 ### Specific run
 
 Find specific run by name and target all stages in default order configured in the run or as specified in `stages` parameter.
@@ -134,14 +154,18 @@ Find specific run by name and target all stages in default order configured in t
     # stages: DEV                   # Optional
 ```
 
+Parameter | Description
+:-------- | :----------
+`buildNumber` | Target build number (i.e. build name)
+
 ## Advanced
 
 Parameter | Description
 :-------- | :----------
-`ignoreFailure` | Suppress progress errors and set task result to partially succeeded in case of a failure. Default = `false`
-`skipTracking` | Skip target run stage progress tracking (i.e. do not wait for run to complete). Default = `false`
-`cancelFailedCheckpoint` | Cancel run progress when stage approval or check fails. Default = `false`
-`proceedSkippedStages` | Proceed as normal when targeting existing run with skipped stages or stages pending dependencies. Default = `false`
-`updateInterval` | Number of seconds to wait before next run progress update. Default = `5` (seconds)
-`approvalInterval` | Number of seconds to wait before next stage approval attempt. Default = `60` (seconds)
-`approvalAttempts` | Number of attempts to retry approving target stage (if unsuccessful) before failing. Default = `10` (times)
+`ignoreFailure` | Suppress progress errors and set task result to partially succeeded in case of a failure. Default: `false`
+`skipTracking` | Skip target run stage progress tracking (i.e. do not wait for run to complete). Default: `false`
+`cancelFailedCheckpoint` | Cancel run progress when stage approval or check fails. Default: `false`
+`proceedSkippedStages` | Proceed as normal when targeting existing run with skipped stages or stages pending dependencies. Default: `false`
+`updateInterval` | Number of seconds to wait before next run progress update. Default: `5` (seconds)
+`approvalInterval` | Number of seconds to wait before next stage approval attempt. Default: `60` (seconds)
+`approvalAttempts` | Number of attempts to retry approving target stage (if unsuccessful) before failing. Default: `10` (times)
