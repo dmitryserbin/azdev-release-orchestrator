@@ -86,7 +86,7 @@ Every run strategy targets all stages in order configured in the pipeline (`new`
 
 Parameter | Description
 :-------- | :----------
-`endpointType` | Endpoint type to connect to Azure DevOps<br /><br />- `integrated` – default `SYSTEMVSSCONNECTION` service endpoint for `Project Collection Build Service` system account<br />- `service` – user-defined Azure DevOps service endpoint using personal access token (PAT)
+`endpointType` | Endpoint type to connect to Azure DevOps<br /><br />- `integrated` – system `SYSTEMVSSCONNECTION` service endpoint for `Project Collection Build Service` account<br />- `service` – user-defined Azure DevOps service endpoint using personal access token (PAT)
 `endpointName` | Service endpoint for Azure DevOps connection
 `projectName` | Target project name or project ID
 `definitionName` | Target pipeline definition name
