@@ -48,7 +48,7 @@ Please refer to Azure DevOps [permissions and security roles documentation](http
 
 ### Approval permissions
 
-In order to enable automated stage approval the service endpoint user accunt needs to be added to the stage environment approval list.
+In order to enable automated stage approval the service endpoint user account needs to be added to the stage environment approval list.
 
 - Add service endpoint user account to stage environment approvers
 - Check `Allow approvers to approve their own runs`

@@ -2,7 +2,7 @@
 
 - [Features](#features)
 - [Prerequisites](#prerequisites)
-  - [Endpoint permissions](#endpoint-permissions)
+  - [Pipeline permissions](#pipeline-permissions)
   - [Approval permissions](#approval-permissions)
 - [How to use](#how-to-use)
   - [Create release](#create-release)
@@ -14,8 +14,6 @@
 
 The **Release Orchestrator V2** task performs [classic](https://docs.microsoft.com/en-us/azure/devops/pipelines/release) Azure DevOps release pipelines execution, progress monitoring, and provides various customization settings.
 
-The task uses either **integrated** (SystemVssConnection) or **specific**  personal access token (PAT) Azure DevOps service endpoint to connect to project pipelines.
-
 - Create new, deploy latest release or specific release
 - Target specific release deployment stages
 - Apply release deployment filters
@@ -23,16 +21,16 @@ The task uses either **integrated** (SystemVssConnection) or **specific**  perso
 
 ## Prerequisites
 
-To perform release pipeline orchestration the task requires Azure DevOps service endpoint with specific access to target project pipelines to be able to create and manage releases. There are two types of Azure DevOps [service endpoints](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) supported:
+To perform release orchestration the task uses one of two types of Azure DevOps [service endpoints](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) to connect to the target pipelines. The service endpoint requires specific access to target project pipelines to be able to create and manage releases.
 
 Type | Name | Account
 ---- | ---- | -------
 `integrated` | SystemVssConnection | Project Collection Build Service
 `service` | User specified | User specified
 
-In order to use custom service endpoint, you may need to create a new Azure Pipelines [service connection](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) using [PAT](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate) token.
+In order to use custom service endpoint, you may need to create a new Azure Pipelines [service connection](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints) using [personal access token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate).
 
-### Release permissions
+### Pipeline permissions
 
 In release pipelines security section of Azure DevOps project allow the following access to user account of the service endpoint:
 
@@ -50,7 +48,7 @@ Please refer to Azure DevOps [permissions and security roles documentation](http
 
 ### Approval permissions
 
-The task can automate release stage pre-deployment approval, in order to configure it you need update release definition stages settings:
+In order to enable automated stage pre-deployment approval the service endpoint user account needs to be added to the stage approvers.
 
 - Add `Project Collection Build Service` or user specified service endpoint user account to stage approvers
 - Uncheck `The user requesting a release or deployment should not approve it` checkbox
@@ -62,16 +60,29 @@ Please refer to Azure DevOps [approvals and gates documentation](https://docs.mi
 ## How to use
 
 1. Add `Release Orchestrator` task to your release pipeline
-2. Select `Integrated endpoint` or `Service endpoint` endpoint type
-3. Select target project as well as target release definition
+2. Select prefered Azure DevOps service endpoint type
+3. Select target project and define target release definition
 
-You can choose different strategy to perform target release deployment:
+You can choose different `releaseStrategy` to perform target pipeline run execution:
 
 - `Create release`: create new release using [default stage triggers](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#env-triggers) or target specific stages
 - `Latest release`: find and re-deploy latest release from release definition
 - `Specific release`: find and re-deploy specific release from release definition
 
-> Template: baseline task configuration
+```yaml
+- task: releaseorchestrator@2
+  displayName: Release Orchestrator
+  inputs:
+    # endpointType: service             # Optional. Options: integrated, service
+    # endpointName: My-Endpoint         # Required when endpointType == service
+    projectName: My-Project
+    definitionName: My-Definition
+    # releaseStrategy: create           # Optional. Options: create (default), latest, specific
+```
+
+### Create release
+
+New release deployment uses default stage [triggers](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#env-triggers) configured in the target pipeline. In order to deploy specific stages, you need to specify target stages using `Filter definition stages` option.
 
 ```yaml
 - task: releaseorchestrator@2
@@ -79,13 +90,15 @@ You can choose different strategy to perform target release deployment:
   inputs:
     projectName: My-Project
     definitionName: My-Definition
-    # endpointType: service # Optional. Options: integrated, service
-    # endpointName: My-Endpoint # Required when endpointType == service
+    releaseStrategy: create
+    # definitionStage: DEV,TEST,PROD    # Optional
+    # artifactVersion: My-Build-01      # Optional
+    # artifactTag: My-Artifact-Tag      # Optional
+    # artifactBranch: refs/heads/master # Optional
+    # releaseVariables: |               # Optional
+    #  My-Variable-One=My-Value-One
+    #  My-Variable-Two=My-Value-Two
 ```
-
-### Create release
-
-New release deployment uses default stage [triggers](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/triggers?view=azure-devops#env-triggers) configured in the target pipeline. In order to deploy specific stages, you need to specify target stages using `Filter definition stages` option.
 
 - `Definition stage`: target release definition stage filter (comma separated)
 - `Artifact version`: target release primary build type artifact version filter (i.e. build number, last 100 builds)
@@ -93,27 +106,24 @@ New release deployment uses default stage [triggers](https://docs.microsoft.com/
 - `Artifact branch`: target release primary artifact source branch filter. Supports build artifact (last 100 builds) or Git artifact
 - `Release variables`: override target release pipeline variables when creating a new release. Specified release variables must be configured to be 'settable at release time'. In 'Name=Value' format, special characters supported, new line separated
 
-> Template: new release deployment with automated stage triggers
-
-```yaml
-- task: releaseorchestrator@2
-  displayName: Create release (auto)
-  inputs:
-    projectName: My-Project
-    definitionName: My-Definition
-    releaseStrategy: create
-    # definitionStage: DEV,TEST,PROD # Optional
-    # artifactVersion: My-Build-01 # Optional
-    # artifactTag: My-Artifact-Tag # Optional
-    # artifactBranch: refs/heads/master # Optional
-    # releaseVariables: | # Optional
-    #  My-Variable-One=My-Value-One
-    #  My-Variable-Two=My-Value-Two
-```
-
 ### Latest release
 
 Latest release deployment targets all stages configured in the target pipeline. In order to deploy specific stages, you need to specify target stages using `Filter release stages` option. The target stages will be re-deployed in sequential order, exactly as you specified. Search range is last 100 releases.
+
+```yml
+- task: releaseorchestrator@2
+  displayName: Release Orchestrator
+  inputs:
+    projectName: My-Project
+    definitionName: My-Definition
+    releaseStrategy: latest
+    # releaseStage: DEV,TEST,PROD       # Optional
+    # releaseTag: My-Release-Tag        # Optional
+    # artifactVersion: My-Build-01      # Optional
+    # artifactTag: My-Artifact-Tag      # Optional
+    # artifactBranch: refs/heads/master # Optional
+    # stageStatus: succeeded            # Optional
+```
 
 - `Release stage`: target release stage filter (comma separated)
 - `Release tag`: target release tag filter (comma separated, last 100 releases)
@@ -122,42 +132,24 @@ Latest release deployment targets all stages configured in the target pipeline. 
 - `Artifact branch`: target release primary artifact source branch filter. Supports build artifact (last 100 builds) or Git artifact
 - `Stage status`: target release stage status filter (comma separated). Options: succeeded, partiallySucceeded, notStarted, rejected & canceled
 
-> Template: latest release deployment
-
-```yml
-- task: releaseorchestrator@2
-  displayName: Latest release (manual)
-  inputs:
-    projectName: My-Project
-    definitionName: My-Definition
-    releaseStrategy: latest
-    # releaseStage: DEV,TEST,PROD # Optional
-    # releaseTag: My-Release-Tag # Optional
-    # artifactVersion: My-Build-01 # Optional
-    # artifactTag: My-Artifact-Tag # Optional
-    # artifactBranch: refs/heads/master # Optional
-    # stageStatus: succeeded # Optional
-```
-
 ### Specific release
 
 Specific release deployment targets all stages configured in the target pipeline. In order to deploy specific stages, you need to specify target stages using `Filter release stages` option. The target stages will be re-deployed in sequential order, exactly as you specified. Search range is last 100 releases.
 
-- `Release stage`: target release stage filter (comma separated)
-
-> Template: specific release deployment
-
 ```yml
 steps:
 - task: releaseorchestrator@2
-  displayName: Specific release (manual)
+  displayName: Release Orchestrator
   inputs:
     projectName: My-Project
     definitionName: My-Definition
     releaseStrategy: specific
     releaseName: My-Release
-    # releaseStage: DEV,TEST,PROD # Optional
+    # releaseStage: DEV,TEST,PROD       # Optional
 ```
+
+- `Release name`: target release name or ID (shows last 25 releases)
+- `Release stage`: target release stage filter (comma separated)
 
 ## Advanced
 
@@ -165,15 +157,13 @@ steps:
 - `Approval retries`: number of attempts to retry (with 1 minute delay) approving target release stage deployment (if unsuccessful) before failing. Set to `0` if you want to disable approval retry and stop immediately if approval fails
 - `Update interval`: number of seconds to wait before next release deployment progress update. Might be useful for longer releases to help reducing number of calls to your Azure DevOps pipeline
 
-> Template: advanced task configuration
-
 ```yaml
 - task: releaseorchestrator@2
   displayName: Release Orchestrator
   inputs:
     projectName: My-Project
     definitionName: My-Definition
-    ignoreFailure: false # Optional
-    approvalRetry: 60 # Required. Default: 60 (times)
-    updateInterval: 5 # Required. Default: 5 (seconds)
+    ignoreFailure: false                # Optional
+    approvalRetry: 60                   # Required. Default: 60 (times)
+    updateInterval: 5                   # Required. Default: 5 (seconds)
 ```
