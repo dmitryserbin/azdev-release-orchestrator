@@ -26,7 +26,7 @@
       "name": "endpointType",
       "type": "radio",
       "label": "Azure DevOps endpoint type",
-      "helpMarkDown": "Select endpoint type to connect to Azure DevOps: \n- Integrated = default 'SystemVssConnection' service endpoint for 'Project Collection Build Service' user account; \n- Service = user-defined personal access token (PAT) service endpoint \n\nNote: requires 'View releases', 'View release definition', 'Create releases' and 'Manage deployments' target release pipeline permissions",
+      "helpMarkDown": "Endpoint type to connect to Azure DevOps\n\n- `integrated` – system `SYSTEMVSSCONNECTION` service endpoint for `Project Collection Build Service` account\n- `service` – user-defined Azure DevOps service endpoint using personal access token (PAT)",
       "required": true,
       "defaultValue": "integrated",
       "options": {
@@ -37,16 +37,16 @@
     {
       "name": "endpointName",
       "type": "connectedService:ExternalTfs",
-      "label": "Service endpoint",
+      "label": "Azure DevOps service endpoint",
       "required": true,
-      "helpMarkDown": "Select service endpoint for Azure DevOps connection",
+      "helpMarkDown": "Service endpoint for Azure DevOps connection",
       "visibleRule": "endpointType = service"
     },
     {
       "name": "projectName",
       "type": "pickList",
       "label": "Project name",
-      "helpMarkDown": "Specify target project name or ID",
+      "helpMarkDown": "Target project name or project ID",
       "required": true,
       "properties": {
         "EditableOptions": true
@@ -56,7 +56,7 @@
       "name": "definitionName",
       "type": "pickList",
       "label": "Definition name",
-      "helpMarkDown": "Specify target release definition name or ID",
+      "helpMarkDown": "Target release definition name or ID",
       "required": true,
       "properties": {
         "EditableOptions": true
@@ -66,7 +66,7 @@
       "name": "releaseStrategy",
       "type": "radio",
       "label": "Release strategy",
-      "helpMarkDown": "Select release strategy to perform target release deployment. Create new release, target specific or latest release in the release definition",
+      "helpMarkDown": "Release strategy to perform target release deployment\n\n- `create` – create new release\n- `latest` – select latest release\n- `specific` – target specific release",
       "required": true,
       "defaultValue": "create",
       "options": {
@@ -79,7 +79,7 @@
       "name": "releaseName",
       "type": "pickList",
       "label": "Release name",
-      "helpMarkDown": "Specify target release name or ID (shows last 25 releases)",
+      "helpMarkDown": "Target release name or ID (shows last 25 releases)",
       "required": true,
       "properties": {
         "EditableOptions": true
@@ -90,7 +90,7 @@
       "name": "releaseStage",
       "type": "pickList",
       "label": "Release stage",
-      "helpMarkDown": "Specify target release stage filter (comma separated)",
+      "helpMarkDown": "Target release stage filter (comma separated)",
       "required": false,
       "properties": {
         "EditableOptions": true
@@ -101,7 +101,7 @@
       "name": "definitionStage",
       "type": "pickList",
       "label": "Definition stage",
-      "helpMarkDown": "Specify target release definition stage filter (comma separated)",
+      "helpMarkDown": "Target release definition stage filter (comma separated)",
       "required": false,
       "properties": {
         "EditableOptions": true
@@ -112,7 +112,7 @@
       "name": "releaseTag",
       "type": "string",
       "label": "Release tag",
-      "helpMarkDown": "Specify target release tag filter (comma separated, last 100 releases)",
+      "helpMarkDown": "Target release tag filter (comma separated, last 100 releases)",
       "required": false,
       "visibleRule": "releaseStrategy = latest"
     },
@@ -120,7 +120,7 @@
       "name": "artifactVersion",
       "type": "string",
       "label": "Artifact version",
-      "helpMarkDown": "Specify target release primary build type artifact version filter (i.e. build number, last 100 builds)",
+      "helpMarkDown": "Target release primary build type artifact version filter (i.e. build number, last 100 builds)",
       "required": false,
       "visibleRule": "releaseStrategy != specific"
     },
@@ -128,7 +128,7 @@
       "name": "artifactTag",
       "type": "string",
       "label": "Artifact tag",
-      "helpMarkDown": "Specify target release primary build type artifact tag filter (comma separated, last 100 builds)",
+      "helpMarkDown": "Target release primary build type artifact tag filter (comma separated, last 100 builds)",
       "required": false,
       "visibleRule": "releaseStrategy != specific"
     },
@@ -136,7 +136,7 @@
       "name": "artifactBranch",
       "type": "string",
       "label": "Artifact branch",
-      "helpMarkDown": "Specify target release primary artifact source branch filter. Example = 'refs/heads/master' (build artifact, last 100 builds) or 'master' (Git artifact)",
+      "helpMarkDown": "Target release primary artifact source branch filter. Example: `refs/heads/master` (build artifact, last 100 builds) or `master` (Git artifact)",
       "required": false,
       "visibleRule": "releaseStrategy != specific"
     },
@@ -144,7 +144,7 @@
       "name": "stageStatus",
       "type": "pickList",
       "label": "Target stage status",
-      "helpMarkDown": "Specify target release stage status filter (comma separated). Options: succeeded, partiallySucceeded, notStarted, rejected & canceled",
+      "helpMarkDown": "Target release stage status filter (comma separated). Options: `succeeded`, `partiallySucceeded`, `notStarted`, `rejected` & `canceled`",
       "properties": {
         "MultiSelectFlatList": true,
         "EditableOptions": false
@@ -163,7 +163,7 @@
       "name": "releaseVariables",
       "type": "multiLine",
       "label": "Release variables",
-      "helpMarkDown": "Override target release pipeline variables when creating a new release. Specified release variables must be configured to be 'settable at release time'. In 'Name=Value' format, special characters supported, new line separated",
+      "helpMarkDown": "Override target release pipeline variables when creating a new release. Specified release variables must be configured to be `settable at release time`. In `Name=Value` format, special characters supported, new line separated",
       "properties": {
         "rows": 8,
         "maxLength": 10000,
@@ -176,7 +176,7 @@
       "name": "ignoreFailure",
       "type": "boolean",
       "label": "Ignore failures",
-      "helpMarkDown": "Suppress errors and set task result to partially succeeded in case of a failure. Default = false",
+      "helpMarkDown": "Suppress errors and set task result to partially succeeded in case of a failure. Default: `false`",
       "defaultValue": false,
       "required": false,
       "groupName": "Advanced"
@@ -185,7 +185,7 @@
       "name": "approvalRetry",
       "type": "int",
       "label": "Approval retries",
-      "helpMarkDown": "Specify number of attempts to retry (with 1 minute delay) approving target release stage deployment (if unsuccessful) before failing. Default = 60 (times)",
+      "helpMarkDown": "Number of attempts to retry (with 1 minute delay) approving target release stage deployment (if unsuccessful) before failing. Default: `60` (times)",
       "defaultValue": 60,
       "required": true,
       "validation": {
@@ -198,7 +198,7 @@
       "name": "updateInterval",
       "type": "int",
       "label": "Update interval",
-      "helpMarkDown": "Specify number of seconds to wait before next release deployment progress update. Default = 5 (seconds)",
+      "helpMarkDown": "Number of seconds to wait before next release deployment progress update. Default: `5` (seconds)",
       "defaultValue": 5,
       "required": true,
       "validation": {

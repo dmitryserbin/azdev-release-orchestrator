@@ -26,7 +26,7 @@
       "name": "endpointType",
       "type": "radio",
       "label": "Azure DevOps endpoint type",
-      "helpMarkDown": "Endpoint type to connect to Azure DevOps: \n- `integrated` – system `SYSTEMVSSCONNECTION` service endpoint for `Project Collection Build Service` account\n- `service` – user-defined Azure DevOps service endpoint using personal access token (PAT)",
+      "helpMarkDown": "Endpoint type to connect to Azure DevOps\n\n- `integrated` – system `SYSTEMVSSCONNECTION` service endpoint for `Project Collection Build Service` account\n- `service` – user-defined Azure DevOps service endpoint using personal access token (PAT)",
       "required": true,
       "defaultValue": "integrated",
       "options": {
@@ -66,7 +66,7 @@
       "name": "strategy",
       "type": "radio",
       "label": "Run strategy",
-      "helpMarkDown": "Strategy to perform target run orchestration. Create new run, select latest or target specific run in the definition",
+      "helpMarkDown": "Strategy to perform target run orchestration\n\n- `new` – create new run\n- `latest` – select latest run\n- `specific` – target specific run",
       "required": true,
       "defaultValue": "new",
       "options": {
