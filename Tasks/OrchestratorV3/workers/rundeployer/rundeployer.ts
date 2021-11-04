@@ -58,15 +58,13 @@ export class RunDeployer implements IRunDeployer {
 
                 this.logger.log(`Manually starting <${stage.name}> (${stage.id}) stage progress`);
 
-                await this.stageSelector.startStage(run.build, stage);
+                const confirmStageStart: boolean = run.settings.proceedSkippedStages ? false : true;
 
-                // Wait for the stage to initialize
-                // Otherwise it may report completed
-                await this.commonHelper.wait(15000);
+                await this.stageSelector.startStage(run.build, stage, confirmStageStart);
 
                 // Confirm stage is not skipped or pending dependencies
                 // To be done only after manual stage start attempt
-                if (!run.settings.proceedSkippedStages) {
+                if (confirmStageStart) {
 
                     stage = await this.stageSelector.getStage(run.build, stage);
 

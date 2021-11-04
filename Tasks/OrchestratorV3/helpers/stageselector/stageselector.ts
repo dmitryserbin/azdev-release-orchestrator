@@ -1,4 +1,4 @@
-import { Build, StageUpdateType, Timeline, TimelineRecord, UpdateStageParameters } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, StageUpdateType, Timeline, TimelineRecord, TimelineRecordState, UpdateStageParameters } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { ILogger } from "../../loggers/ilogger";
 import { IDebug } from "../../loggers/idebug";
@@ -11,6 +11,7 @@ import { IBuildApproval } from "../../workers/progressmonitor/ibuildapproval";
 import { IBuildCheck } from "../../workers/progressmonitor/ibuildcheck";
 import { IBuildCheckpoint } from "../../workers/progressmonitor/ibuildcheckpoint";
 import { IPipelinesApiRetry } from "../../extensions/pipelinesapiretry/ipipelineapiretry";
+import { ICommonHelper } from "../commonhelper/icommonhelper";
 
 export class StageSelector implements IStageSelector {
 
@@ -18,13 +19,15 @@ export class StageSelector implements IStageSelector {
 
     private buildApi: IBuildApiRetry;
     private pipelinesApi: IPipelinesApiRetry;
+    private commonHelper: ICommonHelper;
 
-    constructor(buildApi: IBuildApiRetry, pipelinesApi: IPipelinesApiRetry, logger: ILogger) {
+    constructor(buildApi: IBuildApiRetry, pipelinesApi: IPipelinesApiRetry, commonHelper: ICommonHelper, logger: ILogger) {
 
         this.debugLogger = logger.extend(this.constructor.name);
 
         this.buildApi = buildApi;
         this.pipelinesApi = pipelinesApi;
+        this.commonHelper = commonHelper;
 
     }
 
@@ -85,7 +88,7 @@ export class StageSelector implements IStageSelector {
 
     }
 
-    public async startStage(build: Build, stage: IBuildStage): Promise<void> {
+    public async startStage(build: Build, stage: IBuildStage, confirm: boolean): Promise<void> {
 
         const debug = this.debugLogger.extend(this.startStage.name);
 
@@ -99,6 +102,43 @@ export class StageSelector implements IStageSelector {
         };
 
         await this.buildApi.updateStage(retryRequest, build.id!, stage.name, build.project?.name);
+
+        // Confirm stage progress initialized
+        // Otherwise it may report completed
+        if (confirm) {
+
+            const maxAttempts: number = 10;
+
+            let started: boolean = false;
+            let attempt: number = 0;
+
+            do {
+
+                attempt++;
+
+                if (attempt > maxAttempts) {
+
+                    throw new Error(`Unable to start <${stage.name}> (${stage.id}) stage progress`);
+
+                }
+
+                debug(`Validating <${stage.name}> (${stage.id}) stage start (sttempt ${attempt})`);
+
+                await this.commonHelper.wait(10000);
+
+                stage = await this.getStage(build, stage);
+
+                if (stage.state !== TimelineRecordState.Completed) {
+
+                    debug(`Stage <${stage.name}> (${stage.id}) successfully started`);
+
+                    started = true;
+
+                }
+
+            } while (!started);
+
+        }
 
     }
 

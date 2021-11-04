@@ -70,7 +70,7 @@ export class WorkerFactory implements IWorkerFactory {
         const buildWebApi: IBuildWebApiRetry = await this.apiFactory.createBuildWebApi();
 
         const buildSelector: IBuildSelector = new BuildSelector(buildApi, pipelinesApi, buildWebApi, this.logger);
-        const stageSelector: IStageSelector = new StageSelector(buildApi, pipelinesApi, this.logger);
+        const stageSelector: IStageSelector = new StageSelector(buildApi, pipelinesApi, commonHelper, this.logger);
         const stageApprover: IStageApprover = new StageApprover(buildSelector, stageSelector, commonHelper, this.logger);
 
         const progressMonitor: IProgressMonitor = new ProgressMonitor(this.logger);
