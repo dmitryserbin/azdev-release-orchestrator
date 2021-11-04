@@ -62,7 +62,7 @@ export class RunDeployer implements IRunDeployer {
 
                 // Wait for the stage to initialize
                 // Otherwise it may report completed
-                await this.commonHelper.wait(5000);
+                await this.commonHelper.wait(15000);
 
                 // Confirm stage is not skipped or pending dependencies
                 // To be done only after manual stage start attempt
