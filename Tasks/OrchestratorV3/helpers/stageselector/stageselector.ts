@@ -107,7 +107,7 @@ export class StageSelector implements IStageSelector {
         // Otherwise it may report completed
         if (confirm) {
 
-            const maxAttempts: number = 10;
+            const maxAttempts: number = 12;
 
             let started: boolean = false;
             let attempt: number = 0;
@@ -118,7 +118,7 @@ export class StageSelector implements IStageSelector {
 
                 if (attempt > maxAttempts) {
 
-                    throw new Error(`Unable to start <${stage.name}> (${stage.id}) stage progress`);
+                    throw new Error(`Unable to start <${stage.name}> (${TimelineRecordState[stage.state]}) stage progress (${attempt} sttempts)`);
 
                 }
 
