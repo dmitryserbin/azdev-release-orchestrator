@@ -133,6 +133,8 @@ export class StageApprover implements IStageApprover {
 
             }
 
+            throw new Error(`Unable to complete <${stage.name}> (${stage.id}) stage approval`);
+
         } else {
 
             this.logger.warn(`Stage <${stage.name}> (${stage.id}) cannot be approved`);
@@ -164,6 +166,8 @@ export class StageApprover implements IStageApprover {
                 debug(`Build <${build.buildNumber}> (${build.id}) reported <${BuildStatus[canceledBuild.status!]}> status`);
 
             }
+
+            throw new Error(`Unable to validate <${stage.name}> (${stage.id}) stage checks`);
 
         } else {
 
