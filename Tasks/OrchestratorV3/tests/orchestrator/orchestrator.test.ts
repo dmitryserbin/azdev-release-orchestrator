@@ -2,6 +2,7 @@ import "mocha";
 
 import * as chai from "chai";
 import * as TypeMoq from "typemoq";
+import * as faker from "faker";
 
 import { ILogger } from "../../loggers/ilogger";
 import { IDebug } from "../../loggers/idebug";
@@ -46,13 +47,13 @@ describe("Orchestrator", ()  => {
     beforeEach(async () => {
 
         parametersMock = TypeMoq.Mock.ofType<IParameters>();
-        parametersMock.target.projectName = TypeMoq.It.isAnyString();
-        parametersMock.target.definitionName = TypeMoq.It.isAnyString();
+        parametersMock.object.projectName = faker.random.word();
+        parametersMock.object.definitionName = faker.random.word();
 
         runMock = TypeMoq.Mock.ofType<IRun>();
-        runMock.target.project = TypeMoq.It.isAny();
-        runMock.target.definition = TypeMoq.It.isAny();
-        runMock.target.build = TypeMoq.It.isAny();
+        runMock.object.project = TypeMoq.It.isAny();
+        runMock.object.definition = TypeMoq.It.isAny();
+        runMock.object.build = TypeMoq.It.isAny();
 
         runProgressMock = TypeMoq.Mock.ofType<IRunProgress>();
 
