@@ -53,8 +53,8 @@ export class ProgressReporter implements IProgressReporter {
 
         table.push([
 
-            run.build.id,
-            run.build.buildNumber,
+            run.build.id ? run.build.id.toString() : "-",
+            run.build.buildNumber ? run.build.buildNumber : "",
             stages.length ? String.Join("|", stages) : "-",
             run.build.requestedFor ? run.build.requestedFor.displayName : "-",
             releaseDate ? `${releaseDate.toLocaleDateString()} at ${releaseDate.toLocaleTimeString()}` : "-",
