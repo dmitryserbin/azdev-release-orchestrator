@@ -4,7 +4,6 @@ import { IParameters } from "../helpers/taskhelper/iparameters";
 import { Strategy } from "../helpers/taskhelper/strategy";
 import { IDebug } from "../loggers/idebug";
 import { ILogger } from "../loggers/ilogger";
-import { IWorkerFactory } from "../factories/workerfactory/iworkerfactory";
 import { IRun } from "../workers/runcreator/irun";
 import { IRunCreator } from "../workers/runcreator/iruncreator";
 import { IRunProgress } from "./irunprogress";
@@ -15,14 +14,18 @@ export class Orchestrator implements IOrchestrator {
     private logger: ILogger;
     private debugLogger: IDebug;
 
-    private workerFactory: IWorkerFactory;
+    private runCreator: IRunCreator;
+    private runDeployer: IRunDeployer;
+    private progressReporter: IProgressReporter;
 
-    constructor(workerFactory: IWorkerFactory, logger: ILogger) {
+    constructor(runCreator: IRunCreator, runDeployer: IRunDeployer, progressReporter: IProgressReporter, logger: ILogger) {
 
         this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
 
-        this.workerFactory = workerFactory; 
+        this.runCreator = runCreator; 
+        this.runDeployer = runDeployer;
+        this.progressReporter = progressReporter;
 
     }
 
@@ -32,11 +35,7 @@ export class Orchestrator implements IOrchestrator {
 
         let runProgress: IRunProgress;
 
-        const runCreator: IRunCreator = await this.workerFactory.createRunCreator();
-        const runDeployer: IRunDeployer = await this.workerFactory.createRunDeployer();
-        const progressReporter: IProgressReporter = await this.workerFactory.createProgressReporter();
-
-        const run: IRun = await runCreator.create(parameters);
+        const run: IRun = await this.runCreator.create(parameters);
 
         debug(`Starting <${Strategy[parameters.strategy]}> pipeline orchestration strategy`);
 
@@ -46,9 +45,9 @@ export class Orchestrator implements IOrchestrator {
 
                 this.logger.log(`Executing new <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`);
 
-                progressReporter.logRun(run);
+                this.progressReporter.logRun(run);
 
-                runProgress = await runDeployer.deployAutomated(run);
+                runProgress = await this.runDeployer.deployAutomated(run);
 
                 break;
 
@@ -56,9 +55,9 @@ export class Orchestrator implements IOrchestrator {
 
                 this.logger.log(`Executing latest <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`);
 
-                progressReporter.logRun(run);
+                this.progressReporter.logRun(run);
 
-                runProgress = await runDeployer.deployManual(run);
+                runProgress = await this.runDeployer.deployManual(run);
 
                 break;
 
@@ -66,9 +65,9 @@ export class Orchestrator implements IOrchestrator {
 
                 this.logger.log(`Executing specific <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`);
 
-                progressReporter.logRun(run);
+                this.progressReporter.logRun(run);
 
-                runProgress = await runDeployer.deployManual(run);
+                runProgress = await this.runDeployer.deployManual(run);
 
                 break;
 
@@ -76,7 +75,7 @@ export class Orchestrator implements IOrchestrator {
 
         }
 
-        progressReporter.logRunProgress(runProgress);
+        this.progressReporter.logRunProgress(runProgress);
 
         return runProgress;
 

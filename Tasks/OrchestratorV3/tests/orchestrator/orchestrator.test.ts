@@ -6,7 +6,6 @@ import * as faker from "faker";
 
 import { ILogger } from "../../loggers/ilogger";
 import { IDebug } from "../../loggers/idebug";
-import { IWorkerFactory } from "../../factories/workerfactory/iworkerfactory";
 import { IRunCreator } from "../../workers/runcreator/iruncreator";
 import { IRunDeployer } from "../../workers/rundeployer/irundeployer";
 import { IProgressReporter } from "../../workers/progressreporter/iprogressreporter";
@@ -17,43 +16,51 @@ import { IOrchestrator } from "../../orchestrator/iorchestrator";
 import { Orchestrator } from "../../orchestrator/orchestrator";
 import { Strategy } from "../../helpers/taskhelper/strategy";
 
-describe("Orchestrator", ()  => {
+describe("Orchestrator", async () => {
 
     const loggerMock = TypeMoq.Mock.ofType<ILogger>();
     const debugMock = TypeMoq.Mock.ofType<IDebug>();
 
-    loggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null);
-    loggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.target);
-    debugMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.target);
+    loggerMock
+        .setup((x) => x.log(TypeMoq.It.isAny()))
+        .returns(() => null);
+
+    loggerMock
+        .setup((x) => x.extend(TypeMoq.It.isAnyString()))
+        .returns(() => debugMock.object);
+
+    debugMock
+        .setup((x) => x.extend(TypeMoq.It.isAnyString()))
+        .returns(() => debugMock.object);
 
     const runCreatorMock = TypeMoq.Mock.ofType<IRunCreator>();
     const runDeployerMock = TypeMoq.Mock.ofType<IRunDeployer>();
-
     const progressReporterMock = TypeMoq.Mock.ofType<IProgressReporter>();
-    progressReporterMock.setup((x) => x.logRun(TypeMoq.It.isAny())).returns(() => null);
-    progressReporterMock.setup((x) => x.logRunProgress(TypeMoq.It.isAny())).returns(() => null);
 
-    const workerFactoryMock = TypeMoq.Mock.ofType<IWorkerFactory>();
-    workerFactoryMock.setup((x) => x.createRunCreator()).returns(() => Promise.resolve(runCreatorMock.target));
-    workerFactoryMock.setup((x) => x.createRunDeployer()).returns(() => Promise.resolve(runDeployerMock.target));
-    workerFactoryMock.setup((x) => x.createProgressReporter()).returns(() => Promise.resolve(progressReporterMock.target));
+    progressReporterMock
+        .setup((x) => x.logRun(TypeMoq.It.isAny()))
+        .returns(() => null);
+
+    progressReporterMock
+        .setup((x) => x.logRunProgress(TypeMoq.It.isAny()))
+        .returns(() => null);
 
     let parametersMock: TypeMoq.IMock<IParameters>;
     let runMock: TypeMoq.IMock<IRun>;
     let runProgressMock: TypeMoq.IMock<IRunProgress>;
 
-    const orchestrator: IOrchestrator = new Orchestrator(workerFactoryMock.target, loggerMock.target);
+    const orchestrator: IOrchestrator = new Orchestrator(runCreatorMock.object, runDeployerMock.object, progressReporterMock.object, loggerMock.object);
 
     beforeEach(async () => {
 
         parametersMock = TypeMoq.Mock.ofType<IParameters>();
-        parametersMock.object.projectName = faker.random.word();
-        parametersMock.object.definitionName = faker.random.word();
+        parametersMock.target.projectName = faker.random.word();
+        parametersMock.target.definitionName = faker.random.word();
 
         runMock = TypeMoq.Mock.ofType<IRun>();
-        runMock.object.project = TypeMoq.It.isAny();
-        runMock.object.definition = TypeMoq.It.isAny();
-        runMock.object.build = TypeMoq.It.isAny();
+        runMock.target.project = TypeMoq.It.isAny();
+        runMock.target.definition = TypeMoq.It.isAny();
+        runMock.target.build = TypeMoq.It.isAny();
 
         runProgressMock = TypeMoq.Mock.ofType<IRunProgress>();
 
@@ -69,8 +76,15 @@ describe("Orchestrator", ()  => {
 
         parametersMock.target.strategy = Strategy.New;
 
-        runCreatorMock.setup((x) => x.create(parametersMock.target)).returns(() => Promise.resolve(runMock.target));
-        runDeployerMock.setup((x) => x.deployAutomated(runMock.target)).returns(() => Promise.resolve(runProgressMock.target));
+        runCreatorMock
+            .setup((x) => x.create(parametersMock.target))
+            .returns(() => Promise.resolve(runMock.target))
+            .verifiable(TypeMoq.Times.once());
+
+        runDeployerMock
+            .setup((x) => x.deployAutomated(runMock.target))
+            .returns(() => Promise.resolve(runProgressMock.target))
+            .verifiable(TypeMoq.Times.once());
 
         //#endregion
 
@@ -83,6 +97,9 @@ describe("Orchestrator", ()  => {
         //#region ASSERT
 
         chai.expect(result).to.not.eq(null);
+
+        runCreatorMock.verifyAll();
+        runDeployerMock.verifyAll();
 
         //#endregion
 
@@ -94,8 +111,15 @@ describe("Orchestrator", ()  => {
 
         parametersMock.target.strategy = Strategy.Latest;
 
-        runCreatorMock.setup((x) => x.create(parametersMock.target)).returns(() => Promise.resolve(runMock.target));
-        runDeployerMock.setup((x) => x.deployManual(runMock.target)).returns(() => Promise.resolve(runProgressMock.target));
+        runCreatorMock
+            .setup((x) => x.create(parametersMock.target))
+            .returns(() => Promise.resolve(runMock.target))
+            .verifiable(TypeMoq.Times.once());
+
+        runDeployerMock
+            .setup((x) => x.deployManual(runMock.target))
+            .returns(() => Promise.resolve(runProgressMock.target))
+            .verifiable(TypeMoq.Times.once());
 
         //#endregion
 
@@ -108,6 +132,9 @@ describe("Orchestrator", ()  => {
         //#region ASSERT
 
         chai.expect(result).to.not.eq(null);
+
+        runCreatorMock.verifyAll();
+        runDeployerMock.verifyAll();
 
         //#endregion
 
@@ -119,8 +146,15 @@ describe("Orchestrator", ()  => {
 
         parametersMock.target.strategy = Strategy.Specific;
 
-        runCreatorMock.setup((x) => x.create(parametersMock.target)).returns(() => Promise.resolve(runMock.target));
-        runDeployerMock.setup((x) => x.deployManual(runMock.target)).returns(() => Promise.resolve(runProgressMock.target));
+        runCreatorMock
+            .setup((x) => x.create(parametersMock.target))
+            .returns(() => Promise.resolve(runMock.target))
+            .verifiable(TypeMoq.Times.once());
+
+        runDeployerMock
+            .setup((x) => x.deployManual(runMock.target))
+            .returns(() => Promise.resolve(runProgressMock.target))
+            .verifiable(TypeMoq.Times.once());
 
         //#endregion
 
@@ -133,6 +167,9 @@ describe("Orchestrator", ()  => {
         //#region ASSERT
 
         chai.expect(result).to.not.eq(null);
+
+        runCreatorMock.verifyAll();
+        runDeployerMock.verifyAll();
 
         //#endregion
 

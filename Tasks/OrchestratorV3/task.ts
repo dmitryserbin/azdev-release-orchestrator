@@ -13,6 +13,9 @@ import { IApiFactory } from "./factories/apifactory/iapifactory";
 import { ApiFactory } from "./factories/apifactory/apifactory";
 import { IWorkerFactory } from "./factories/workerfactory/iworkerfactory";
 import { WorkerFactory } from "./factories/workerfactory/workerfactory";
+import { IProgressReporter } from "./workers/progressreporter/iprogressreporter";
+import { IRunCreator } from "./workers/runcreator/iruncreator";
+import { IRunDeployer } from "./workers/rundeployer/irundeployer";
 
 async function run() {
 
@@ -27,7 +30,12 @@ async function run() {
 
         const apiFactory: IApiFactory = new ApiFactory(endpoint, logger);
         const workerFactory: IWorkerFactory = new WorkerFactory(apiFactory, logger);
-        const orchestrator: IOrchestrator = new Orchestrator(workerFactory, logger);
+
+        const runCreator: IRunCreator = await workerFactory.createRunCreator();
+        const runDeployer: IRunDeployer = await workerFactory.createRunDeployer();
+        const progressReporter: IProgressReporter = await workerFactory.createProgressReporter();
+
+        const orchestrator: IOrchestrator = new Orchestrator(runCreator, runDeployer, progressReporter, logger);
 
         // Run orchestrator
         const releaseProgress: IRunProgress = await orchestrator.orchestrate(parameters);
