@@ -35,6 +35,13 @@ describe("RunCreator", async () => {
         .setup((x) => x.extend(TypeMoq.It.isAnyString()))
         .returns(() => debugMock.object);
 
+    const parametersMock = {
+
+        projectName: faker.random.word(),
+        definitionName: faker.random.word(),
+
+    } as IParameters;
+
     const projectMock = {
 
         name: faker.random.word(),
@@ -62,8 +69,6 @@ describe("RunCreator", async () => {
     const filterCreatorMock = TypeMoq.Mock.ofType<IFilterCreator>();
     const progressReporterMock = TypeMoq.Mock.ofType<IProgressReporter>();
 
-    let parametersMock: TypeMoq.IMock<IParameters>;
-
     const runCreator: IRunCreator = new RunCreator(projectSelectorMock.object, definitionSelectorMock.object, buildSelectorMock.object, filterCreatorMock.object, progressReporterMock.object, loggerMock.object);
 
     beforeEach(async () => {
@@ -73,10 +78,6 @@ describe("RunCreator", async () => {
         buildSelectorMock.reset();
         filterCreatorMock.reset();
         progressReporterMock.reset();
-
-        parametersMock = TypeMoq.Mock.ofType<IParameters>();
-        parametersMock.target.projectName = faker.random.word();
-        parametersMock.target.definitionName = faker.random.word();
 
         projectSelectorMock
             .setup((x) => x.getProject(TypeMoq.It.isAnyString()))
@@ -99,13 +100,13 @@ describe("RunCreator", async () => {
 
         //#region ARRANGE
 
-        parametersMock.target.strategy = Strategy.New;
+        parametersMock.strategy = Strategy.New;
 
         //#endregion
 
         //#region ACT
 
-        const result = await runCreator.create(parametersMock.target);
+        const result = await runCreator.create(parametersMock);
 
         //#endregion
 

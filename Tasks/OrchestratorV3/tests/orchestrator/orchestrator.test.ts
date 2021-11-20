@@ -37,9 +37,26 @@ describe("Orchestrator", async () => {
     const runDeployerMock = TypeMoq.Mock.ofType<IRunDeployer>();
     const progressReporterMock = TypeMoq.Mock.ofType<IProgressReporter>();
 
-    let parametersMock: TypeMoq.IMock<IParameters>;
-    let runMock: TypeMoq.IMock<IRun>;
-    let runProgressMock: TypeMoq.IMock<IRunProgress>;
+    const parametersMock = {
+
+        projectName: faker.random.word(),
+        definitionName: faker.random.word(),
+
+    } as IParameters;
+
+    const runMock = {
+
+        project: TypeMoq.It.isAny(),
+        definition: TypeMoq.It.isAny(),
+        build: TypeMoq.It.isAny(),
+
+    } as IRun;
+
+    const runProgressMock = {
+
+        id: faker.datatype.number(),
+
+    } as IRunProgress;
 
     const orchestrator: IOrchestrator = new Orchestrator(runCreatorMock.object, runDeployerMock.object, progressReporterMock.object, loggerMock.object);
 
@@ -48,17 +65,6 @@ describe("Orchestrator", async () => {
         runCreatorMock.reset();
         runDeployerMock.reset();
         progressReporterMock.reset();
-
-        parametersMock = TypeMoq.Mock.ofType<IParameters>();
-        parametersMock.target.projectName = faker.random.word();
-        parametersMock.target.definitionName = faker.random.word();
-
-        runMock = TypeMoq.Mock.ofType<IRun>();
-        runMock.target.project = TypeMoq.It.isAny();
-        runMock.target.definition = TypeMoq.It.isAny();
-        runMock.target.build = TypeMoq.It.isAny();
-
-        runProgressMock = TypeMoq.Mock.ofType<IRunProgress>();
 
         progressReporterMock
             .setup((x) => x.logRun(TypeMoq.It.isAny()))
@@ -74,23 +80,23 @@ describe("Orchestrator", async () => {
 
         //#region ARRANGE
 
-        parametersMock.target.strategy = Strategy.New;
+        parametersMock.strategy = Strategy.New;
 
         runCreatorMock
-            .setup((x) => x.create(parametersMock.target))
-            .returns(() => Promise.resolve(runMock.target))
+            .setup((x) => x.create(parametersMock))
+            .returns(() => Promise.resolve(runMock))
             .verifiable(TypeMoq.Times.once());
 
         runDeployerMock
-            .setup((x) => x.deployAutomated(runMock.target))
-            .returns(() => Promise.resolve(runProgressMock.target))
+            .setup((x) => x.deployAutomated(runMock))
+            .returns(() => Promise.resolve(runProgressMock))
             .verifiable(TypeMoq.Times.once());
 
         //#endregion
 
         //#region ACT
 
-        const result = await orchestrator.orchestrate(parametersMock.target);
+        const result = await orchestrator.orchestrate(parametersMock);
 
         //#endregion
 
@@ -109,23 +115,23 @@ describe("Orchestrator", async () => {
 
         //#region ARRANGE
 
-        parametersMock.target.strategy = Strategy.Latest;
+        parametersMock.strategy = Strategy.Latest;
 
         runCreatorMock
-            .setup((x) => x.create(parametersMock.target))
-            .returns(() => Promise.resolve(runMock.target))
+            .setup((x) => x.create(parametersMock))
+            .returns(() => Promise.resolve(runMock))
             .verifiable(TypeMoq.Times.once());
 
         runDeployerMock
-            .setup((x) => x.deployManual(runMock.target))
-            .returns(() => Promise.resolve(runProgressMock.target))
+            .setup((x) => x.deployManual(runMock))
+            .returns(() => Promise.resolve(runProgressMock))
             .verifiable(TypeMoq.Times.once());
 
         //#endregion
 
         //#region ACT
 
-        const result = await orchestrator.orchestrate(parametersMock.target);
+        const result = await orchestrator.orchestrate(parametersMock);
 
         //#endregion
 
@@ -144,23 +150,23 @@ describe("Orchestrator", async () => {
 
         //#region ARRANGE
 
-        parametersMock.target.strategy = Strategy.Specific;
+        parametersMock.strategy = Strategy.Specific;
 
         runCreatorMock
-            .setup((x) => x.create(parametersMock.target))
-            .returns(() => Promise.resolve(runMock.target))
+            .setup((x) => x.create(parametersMock))
+            .returns(() => Promise.resolve(runMock))
             .verifiable(TypeMoq.Times.once());
 
         runDeployerMock
-            .setup((x) => x.deployManual(runMock.target))
-            .returns(() => Promise.resolve(runProgressMock.target))
+            .setup((x) => x.deployManual(runMock))
+            .returns(() => Promise.resolve(runProgressMock))
             .verifiable(TypeMoq.Times.once());
 
         //#endregion
 
         //#region ACT
 
-        const result = await orchestrator.orchestrate(parametersMock.target);
+        const result = await orchestrator.orchestrate(parametersMock);
 
         //#endregion
 
