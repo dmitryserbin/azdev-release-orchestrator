@@ -37,14 +37,6 @@ describe("Orchestrator", async () => {
     const runDeployerMock = TypeMoq.Mock.ofType<IRunDeployer>();
     const progressReporterMock = TypeMoq.Mock.ofType<IProgressReporter>();
 
-    progressReporterMock
-        .setup((x) => x.logRun(TypeMoq.It.isAny()))
-        .returns(() => null);
-
-    progressReporterMock
-        .setup((x) => x.logRunProgress(TypeMoq.It.isAny()))
-        .returns(() => null);
-
     let parametersMock: TypeMoq.IMock<IParameters>;
     let runMock: TypeMoq.IMock<IRun>;
     let runProgressMock: TypeMoq.IMock<IRunProgress>;
@@ -52,6 +44,10 @@ describe("Orchestrator", async () => {
     const orchestrator: IOrchestrator = new Orchestrator(runCreatorMock.object, runDeployerMock.object, progressReporterMock.object, loggerMock.object);
 
     beforeEach(async () => {
+
+        runCreatorMock.reset();
+        runDeployerMock.reset();
+        progressReporterMock.reset();
 
         parametersMock = TypeMoq.Mock.ofType<IParameters>();
         parametersMock.target.projectName = faker.random.word();
@@ -64,9 +60,13 @@ describe("Orchestrator", async () => {
 
         runProgressMock = TypeMoq.Mock.ofType<IRunProgress>();
 
-        runCreatorMock.reset();
-        runDeployerMock.reset();
-        progressReporterMock.reset();
+        progressReporterMock
+            .setup((x) => x.logRun(TypeMoq.It.isAny()))
+            .returns(() => null);
+
+        progressReporterMock
+            .setup((x) => x.logRunProgress(TypeMoq.It.isAny()))
+            .returns(() => null);
 
     });
 
@@ -174,5 +174,12 @@ describe("Orchestrator", async () => {
         //#endregion
 
     });
+
+});
+
+process.on("unhandledRejection", (error: unknown) => {
+
+    console.error(error);
+    process.exit(1);
 
 });
