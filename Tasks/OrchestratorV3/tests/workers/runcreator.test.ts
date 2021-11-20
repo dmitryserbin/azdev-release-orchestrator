@@ -4,6 +4,9 @@ import * as chai from "chai";
 import * as TypeMoq from "typemoq";
 import * as faker from "faker";
 
+import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
+import { Build, BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
+
 import { ILogger } from "../../loggers/ilogger";
 import { IDebug } from "../../loggers/idebug";
 import { IBuildSelector } from "../../helpers/buildselector/ibuildselector";
@@ -15,8 +18,7 @@ import { IRunCreator } from "../../workers/runcreator/iruncreator";
 import { RunCreator } from "../../workers/runcreator/runcreator";
 import { IParameters } from "../../helpers/taskhelper/iparameters";
 import { Strategy } from "../../helpers/taskhelper/strategy";
-import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
-import { Build, BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { IFilters } from "../../helpers/taskhelper/ifilters";
 
 describe("RunCreator", async () => {
 
@@ -35,10 +37,17 @@ describe("RunCreator", async () => {
         .setup((x) => x.extend(TypeMoq.It.isAnyString()))
         .returns(() => debugMock.object);
 
+    const filtersMock = {
+
+        buildNumber: faker.random.word(),
+
+    } as IFilters;
+
     const parametersMock = {
 
         projectName: faker.random.word(),
         definitionName: faker.random.word(),
+        filters: filtersMock,
 
     } as IParameters;
 
@@ -89,11 +98,6 @@ describe("RunCreator", async () => {
             .returns(() => Promise.resolve(definitionMock))
             .verifiable(TypeMoq.Times.once());
 
-        buildSelectorMock
-            .setup((x) => x.createBuild(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny()))
-            .returns(() => Promise.resolve(buildMock))
-            .verifiable(TypeMoq.Times.once());
-
     });
 
     it("Should create new run", async () => {
@@ -101,6 +105,73 @@ describe("RunCreator", async () => {
         //#region ARRANGE
 
         parametersMock.strategy = Strategy.New;
+
+        buildSelectorMock
+            .setup((x) => x.createBuild(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny()))
+            .returns(() => Promise.resolve(buildMock))
+            .verifiable(TypeMoq.Times.once());
+
+        //#endregion
+
+        //#region ACT
+
+        const result = await runCreator.create(parametersMock);
+
+        //#endregion
+
+        //#region ASSERT
+
+        chai.expect(result).to.not.eq(null);
+
+        projectSelectorMock.verifyAll();
+        definitionSelectorMock.verifyAll();
+        buildSelectorMock.verifyAll();
+
+        //#endregion
+
+    });
+
+    it("Should target latest run", async () => {
+
+        //#region ARRANGE
+
+        parametersMock.strategy = Strategy.Latest;
+
+        buildSelectorMock
+            .setup((x) => x.getLatestBuild(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber()))
+            .returns(() => Promise.resolve(buildMock))
+            .verifiable(TypeMoq.Times.once());
+
+        //#endregion
+
+        //#region ACT
+
+        const result = await runCreator.create(parametersMock);
+
+        //#endregion
+
+        //#region ASSERT
+
+        chai.expect(result).to.not.eq(null);
+
+        projectSelectorMock.verifyAll();
+        definitionSelectorMock.verifyAll();
+        buildSelectorMock.verifyAll();
+
+        //#endregion
+
+    });
+
+    it("Should target specific run", async () => {
+
+        //#region ARRANGE
+
+        parametersMock.strategy = Strategy.Specific;
+
+        buildSelectorMock
+            .setup((x) => x.getSpecificBuild(TypeMoq.It.isAny(), TypeMoq.It.isAnyString()))
+            .returns(() => Promise.resolve(buildMock))
+            .verifiable(TypeMoq.Times.once());
 
         //#endregion
 
