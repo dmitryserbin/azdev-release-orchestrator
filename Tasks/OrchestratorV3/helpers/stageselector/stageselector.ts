@@ -88,7 +88,7 @@ export class StageSelector implements IStageSelector {
 
     }
 
-    public async startStage(build: Build, stage: IBuildStage, confirm: boolean): Promise<void> {
+    public async startStage(build: Build, stage: IBuildStage): Promise<void> {
 
         const debug = this.debugLogger.extend(this.startStage.name);
 
@@ -102,43 +102,6 @@ export class StageSelector implements IStageSelector {
         };
 
         await this.buildApi.updateStage(retryRequest, build.id!, stage.name, build.project?.name);
-
-        // Confirm stage progress initialized
-        // Otherwise it may report completed
-        if (confirm) {
-
-            const maxAttempts: number = 12;
-
-            let started: boolean = false;
-            let attempt: number = 0;
-
-            do {
-
-                attempt++;
-
-                if (attempt > maxAttempts) {
-
-                    throw new Error(`Unable to start <${stage.name}> (${TimelineRecordState[stage.state]}) stage progress (${attempt} sttempts)`);
-
-                }
-
-                debug(`Validating <${stage.name}> (${stage.id}) stage start (sttempt ${attempt})`);
-
-                await this.commonHelper.wait(10000);
-
-                stage = await this.getStage(build, stage);
-
-                if (stage.state !== TimelineRecordState.Completed) {
-
-                    debug(`Stage <${stage.name}> (${stage.id}) successfully started`);
-
-                    started = true;
-
-                }
-
-            } while (!started);
-
-        }
 
     }
 
@@ -162,16 +125,58 @@ export class StageSelector implements IStageSelector {
 
     }
 
-    public async confirmStage(stage: IBuildStage): Promise<void> {
+    public async confirmStage(build: Build, stage: IBuildStage, maxAttempts: number): Promise<IBuildStage> {
+
+        const debug = this.debugLogger.extend(this.confirmStage.name);
+
+        let started: boolean = false;
+        let attempt: number = 0;
+
+        do {
+
+            attempt++;
+
+            if (attempt > maxAttempts) {
+
+                throw new Error(`Unable to start <${stage.name}> (${TimelineRecordState[stage.state]}) stage progress (${attempt} sttempts)`);
+
+            }
+
+            debug(`Validating <${stage.name}> (${stage.id}) stage start (sttempt ${attempt})`);
+
+            await this.commonHelper.wait(10000);
+
+            stage = await this.getStage(build, stage);
+
+            if (stage.state !== TimelineRecordState.Completed) {
+
+                debug(`Stage <${stage.name}> (${stage.id}) successfully started`);
+
+                started = true;
+
+            }
+
+        } while (!started);
+
+        // Confirm stage is not skipped or pending dependencies
+        // Must be done only after manual stage start attempt
+        this.confirmStageState(stage);
+
+        return stage;
+
+    }
+
+    private confirmStageState(stage: IBuildStage): void {
 
         const skipped: boolean = stage.result === 4 ? true : false;
-        const pending: boolean = stage.state === 0 && stage.checkpoint === null ? true : false;
 
         if (skipped) {
 
             throw new Error(`Target stage <${stage.name}> (${stage.id}) is skipped`);
 
         }
+
+        const pending: boolean = stage.state === 0 && stage.checkpoint === null ? true : false;
 
         if (pending) {
 

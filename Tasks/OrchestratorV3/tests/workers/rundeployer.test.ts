@@ -122,7 +122,7 @@ describe("RunDeployer", async () => {
 
         //#region ARRANGE
 
-        stageOneMock.state = TimelineRecordState.Pending;
+        stageOneMock.state = TimelineRecordState.Completed;
 
         runProgressMock.stages = [
 
@@ -133,11 +133,6 @@ describe("RunDeployer", async () => {
         progressMonitorMock
             .setup((x) => x.createRunProgress(runMock))
             .returns(() => runProgressMock)
-            .verifiable(TypeMoq.Times.once());
-
-        stageSelectorMock
-            .setup((x) => x.startStage(buildMock, stageOneMock, true))
-            .returns(() => Promise.resolve())
             .verifiable(TypeMoq.Times.once());
 
         stageSelectorMock
