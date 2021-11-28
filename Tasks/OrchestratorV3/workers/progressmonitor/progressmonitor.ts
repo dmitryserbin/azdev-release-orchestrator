@@ -88,21 +88,19 @@ export class ProgressMonitor implements IProgressMonitor {
 
             debug(`All run stages <${String.Join("|", completedStages)}> completed`);
 
-            // Get canceled or abandoned stages
-            const failedStages: boolean = runProgress.stages.filter(
-                (stage) => stage.result === TaskResult.Canceled || stage.result === TaskResult.Abandoned).length > 0;
+            // Get non-succeeded stages
+            const nonSucceededStages: boolean = this.isNonSucceededStages(runProgress.stages);
 
-            if (failedStages) {
+            if (nonSucceededStages) {
 
                 runProgress.status = RunStatus.Failed;
 
             } else {
 
                 // Get succeeded with issues stages
-                const issuesStages: boolean = runProgress.stages.filter(
-                    (stage) => stage.result === TaskResult.SucceededWithIssues).length > 0;
+                const succeededWithIssuesStages: boolean = this.isSucceededWithIssuesStages(runProgress.stages);
 
-                if (issuesStages) {
+                if (succeededWithIssuesStages) {
 
                     runProgress.status = RunStatus.PartiallySucceeded;
 
@@ -173,5 +171,25 @@ export class ProgressMonitor implements IProgressMonitor {
 
     }
 
+    private isNonSucceededStages(stages: IBuildStage[]): boolean {
+
+        const nonSucceeded: boolean = stages.filter(
+            (stage) =>
+                stage.result === TaskResult.Failed ||
+                stage.result === TaskResult.Canceled ||
+                stage.result === TaskResult.Abandoned).length > 0;
+
+        return nonSucceeded;
+
+    }
+
+    private isSucceededWithIssuesStages(stages: IBuildStage[]): boolean {
+
+        const succeededWithIssues: boolean = stages.filter(
+            (stage) => stage.result === TaskResult.SucceededWithIssues).length > 0;
+
+        return succeededWithIssues;
+
+    }
 
 }
