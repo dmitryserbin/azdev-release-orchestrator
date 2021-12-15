@@ -166,6 +166,9 @@ describe("RunDeployer", async () => {
 
         //#region ARRANGE
 
+        const completedStageOneMock = Object.assign({}, stageOneMock, { state: TimelineRecordState.Completed });
+        const succeededRunProgressMock = Object.assign({}, runProgressMock, { status: RunStatus.Succeeded });
+
         progressMonitorMock
             .setup((x) => x.createRunProgress(runMock))
             .returns(() => runProgressMock)
@@ -178,14 +181,12 @@ describe("RunDeployer", async () => {
 
         stageDeployerMock
             .setup((x) => x.deployAutomated(stageOneMock, runMock.build, runMock.settings))
-            .returns(() => Promise.resolve(
-                Object.assign({}, stageOneMock, { state: TimelineRecordState.Completed })))
+            .returns(() => Promise.resolve(completedStageOneMock))
             .verifiable(TypeMoq.Times.once());
 
         progressMonitorMock
             .setup((x) => x.updateRunProgress(runProgressMock))
-            .returns(() => 
-                Object.assign({}, runProgressMock, { status: RunStatus.Succeeded }))
+            .returns(() => succeededRunProgressMock)
             .verifiable(TypeMoq.Times.once());
 
         progressReporterMock
