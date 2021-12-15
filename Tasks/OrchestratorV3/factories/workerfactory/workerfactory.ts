@@ -27,6 +27,8 @@ import { StageSelector } from "../../helpers/stageselector/stageselector";
 import { IStageApprover } from "../../workers/stageapprover/istageapprover";
 import { StageApprover } from "../../workers/stageapprover/stageapprover";
 import { IPipelinesApiRetry } from "../../extensions/pipelinesapiretry/ipipelineapiretry";
+import { IStageDeployer } from "../../workers/stagedeployer/istagedeployer";
+import { StageDeployer } from "../../workers/stagedeployer/stagedeployer";
 
 export class WorkerFactory implements IWorkerFactory {
 
@@ -76,7 +78,9 @@ export class WorkerFactory implements IWorkerFactory {
         const progressMonitor: IProgressMonitor = new ProgressMonitor(this.logger);
         const progressReporter: IProgressReporter = new ProgressReporter(this.logger);
 
-        return new RunDeployer(commonHelper, stageSelector, stageApprover, progressMonitor, progressReporter, this.logger);
+        const stageDeployer: IStageDeployer = new StageDeployer(commonHelper, stageSelector, stageApprover, progressReporter, this.logger);
+
+        return new RunDeployer(commonHelper, stageDeployer, progressMonitor, progressReporter, this.logger);
 
     }
 

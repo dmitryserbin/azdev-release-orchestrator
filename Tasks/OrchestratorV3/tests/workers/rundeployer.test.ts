@@ -13,8 +13,6 @@ import { IProgressReporter } from "../../workers/progressreporter/iprogressrepor
 import { IRunDeployer } from "../../workers/rundeployer/irundeployer";
 import { RunDeployer } from "../../workers/rundeployer/rundeployer";
 import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper";
-import { IStageSelector } from "../../helpers/stageselector/istageselector";
-import { IStageApprover } from "../../workers/stageapprover/istageapprover";
 import { IProgressMonitor } from "../../workers/progressmonitor/iprogressmonitor";
 import { IRun } from "../../workers/runcreator/irun";
 import { ISettings } from "../../helpers/taskhelper/isettings";
@@ -22,6 +20,7 @@ import { IRunProgress } from "../../orchestrator/irunprogress";
 import { RunStatus } from "../../orchestrator/runstatus";
 import { IBuildStage } from "../../workers/progressmonitor/ibuildstage";
 import { IBuildJob } from "../../workers/progressmonitor/ibuildjob";
+import { IStageDeployer } from "../../workers/stagedeployer/istagedeployer";
 
 describe("RunDeployer", async () => {
 
@@ -81,18 +80,16 @@ describe("RunDeployer", async () => {
     let stageOneMock: IBuildStage;
 
     const commonHelperMock = TypeMoq.Mock.ofType<ICommonHelper>();
-    const stageSelectorMock = TypeMoq.Mock.ofType<IStageSelector>();
-    const stageApproverMock = TypeMoq.Mock.ofType<IStageApprover>();
+    const stageDeployerMock = TypeMoq.Mock.ofType<IStageDeployer>();
     const progressMonitorMock = TypeMoq.Mock.ofType<IProgressMonitor>();
     const progressReporterMock = TypeMoq.Mock.ofType<IProgressReporter>();
 
-    const runDeployer: IRunDeployer = new RunDeployer(commonHelperMock.object, stageSelectorMock.object, stageApproverMock.object, progressMonitorMock.object, progressReporterMock.object, loggerMock.object);
+    const runDeployer: IRunDeployer = new RunDeployer(commonHelperMock.object, stageDeployerMock.object, progressMonitorMock.object, progressReporterMock.object, loggerMock.object);
 
     beforeEach(async () => {
 
         commonHelperMock.reset();
-        stageSelectorMock.reset();
-        stageApproverMock.reset();
+        stageDeployerMock.reset();
         progressMonitorMock.reset();
         progressReporterMock.reset();
 
@@ -111,7 +108,7 @@ describe("RunDeployer", async () => {
             name: faker.random.word(),
             project: faker.random.word(),
             url: faker.random.word(),
-            stages: [],
+            stages: [ stageOneMock ],
             status: RunStatus.InProgress,
 
         } as IRunProgress;
@@ -122,27 +119,21 @@ describe("RunDeployer", async () => {
 
         //#region ARRANGE
 
-        stageOneMock.state = TimelineRecordState.Completed;
-
-        runProgressMock.stages = [
-
-            stageOneMock,
-
-        ];
-
         progressMonitorMock
             .setup((x) => x.createRunProgress(runMock))
             .returns(() => runProgressMock)
             .verifiable(TypeMoq.Times.once());
 
-        stageSelectorMock
-            .setup((x) => x.getStage(runMock.build, stageOneMock))
-            .returns(() => Promise.resolve(stageOneMock))
+        stageDeployerMock
+            .setup((x) => x.deployManual(stageOneMock, runMock.build, runMock.settings))
+            .returns(() => Promise.resolve(
+                Object.assign({}, stageOneMock, { state: TimelineRecordState.Completed })))
             .verifiable(TypeMoq.Times.once());
 
         progressMonitorMock
             .setup((x) => x.updateRunProgress(runProgressMock))
-            .returns(() => runProgressMock)
+            .returns(() => 
+                Object.assign({}, runProgressMock, { status: RunStatus.Succeeded }))
             .verifiable(TypeMoq.Times.once());
 
         progressReporterMock
@@ -160,10 +151,62 @@ describe("RunDeployer", async () => {
         //#region ASSERT
 
         chai.expect(result).to.not.eq(null);
+        chai.expect(result.status).to.eq(RunStatus.Succeeded);
 
         commonHelperMock.verifyAll();
-        stageSelectorMock.verifyAll();
-        stageApproverMock.verifyAll();
+        stageDeployerMock.verifyAll();
+        progressMonitorMock.verifyAll();
+        progressReporterMock.verifyAll();
+
+        //#endregion
+
+    });
+
+    it("Should deploy automated", async () => {
+
+        //#region ARRANGE
+
+        progressMonitorMock
+            .setup((x) => x.createRunProgress(runMock))
+            .returns(() => runProgressMock)
+            .verifiable(TypeMoq.Times.once());
+
+        progressMonitorMock
+            .setup((x) => x.getActiveStages(runProgressMock))
+            .returns(() => [ stageOneMock ])
+            .verifiable(TypeMoq.Times.once());
+
+        stageDeployerMock
+            .setup((x) => x.deployAutomated(stageOneMock, runMock.build, runMock.settings))
+            .returns(() => Promise.resolve(
+                Object.assign({}, stageOneMock, { state: TimelineRecordState.Completed })))
+            .verifiable(TypeMoq.Times.once());
+
+        progressMonitorMock
+            .setup((x) => x.updateRunProgress(runProgressMock))
+            .returns(() => 
+                Object.assign({}, runProgressMock, { status: RunStatus.Succeeded }))
+            .verifiable(TypeMoq.Times.once());
+
+        progressReporterMock
+            .setup((x) => x.logStagesProgress(runProgressMock.stages))
+            .verifiable(TypeMoq.Times.once());
+
+        //#endregion
+
+        //#region ACT
+
+        const result = await runDeployer.deployAutomated(runMock);
+
+        //#endregion
+
+        //#region ASSERT
+
+        chai.expect(result).to.not.eq(null);
+        chai.expect(result.status).to.eq(RunStatus.Succeeded);
+
+        commonHelperMock.verifyAll();
+        stageDeployerMock.verifyAll();
         progressMonitorMock.verifyAll();
         progressReporterMock.verifyAll();
 

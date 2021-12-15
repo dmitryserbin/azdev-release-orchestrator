@@ -1,7 +1,5 @@
 import { String } from "typescript-string-operations";
 
-import { TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
-
 import { IRunDeployer } from "./irundeployer";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
@@ -12,8 +10,7 @@ import { RunStatus } from "../../orchestrator/runstatus";
 import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper";
 import { IProgressReporter } from "../progressreporter/iprogressreporter";
 import { IBuildStage } from "../progressmonitor/ibuildstage";
-import { IStageSelector } from "../../helpers/stageselector/istageselector";
-import { IStageApprover } from "../stageapprover/istageapprover";
+import { IStageDeployer } from "../stagedeployer/istagedeployer";
 
 export class RunDeployer implements IRunDeployer {
 
@@ -21,19 +18,18 @@ export class RunDeployer implements IRunDeployer {
     private debugLogger: IDebug;
 
     private commonHelper: ICommonHelper;
-    private stageSelector: IStageSelector;
-    private stageApprover: IStageApprover;
+    private stageDeployer: IStageDeployer;
     private progressMonitor: IProgressMonitor;
     private progressReporter: IProgressReporter;
+    
 
-    constructor(commonHelper: ICommonHelper, stageSelector: IStageSelector, stageApprover: IStageApprover, progressMonitor: IProgressMonitor, progressReporter: IProgressReporter, logger: ILogger) {
+    constructor(commonHelper: ICommonHelper, stageDeployer: IStageDeployer, progressMonitor: IProgressMonitor, progressReporter: IProgressReporter, logger: ILogger) {
 
         this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
 
-        this.stageSelector = stageSelector;
-        this.stageApprover = stageApprover;
         this.commonHelper = commonHelper;
+        this.stageDeployer = stageDeployer;
         this.progressMonitor = progressMonitor;
         this.progressReporter = progressReporter;
 
@@ -49,90 +45,7 @@ export class RunDeployer implements IRunDeployer {
 
         for (let stage of runProgress.stages) {
 
-            debug(`Starting <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state!]}> progress`);
-
-            let inProgress: boolean = true;
-
-            // Manually start pending stage process
-            if (stage.state === TimelineRecordState.Pending) {
-
-                this.logger.log(`Manually starting <${stage.name}> (${stage.id}) stage progress`);
-
-                await this.stageSelector.startStage(run.build, stage);
-
-                if (!run.settings.proceedSkippedStages) {
-
-                    stage = await this.stageSelector.confirmStage(run.build, stage, 12);
-
-                }
-
-            }
-
-            do {
-
-                debug(`Updating <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state!]}> progress`);
-
-                stage = await this.stageSelector.getStage(run.build, stage);
-
-                if (run.settings.skipTracking) {
-
-                    this.logger.log(`Skipping <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state!]}> progress tracking`);
-
-                    inProgress = false;
-
-                    continue;
-
-                }
-
-                if (stage.state === TimelineRecordState.Pending && run.settings.proceedSkippedStages) {
-
-                    this.logger.log(`Pending stage <${stage.name}> (${stage.id}) cannot be started`);
-
-                    inProgress = false;
-
-                    continue;
-
-                }
-
-                if (stage.checkpoint?.state !== TimelineRecordState.Completed) {
-
-                    if (this.stageApprover.isApprovalPeding(stage)) {
-
-                        // Approve stage progress and validate outcome
-                        // Cancel run progress if unable to approve with retry
-                        stage = await this.stageApprover.approve(stage, run.build, run.settings);
-
-                    }
-
-                    if (this.stageApprover.isCheckPeding(stage)) {
-
-                        // Validate stage progress checks status
-                        // Cancel run progress if checks pending with retry
-                        stage = await this.stageApprover.check(stage, run.build, run.settings);
-
-                    }
-
-                }
-
-                if (stage.state === TimelineRecordState.Completed) {
-
-                    this.logger.log(`Stage <${stage.name}> (${stage.id}) reported <${TimelineRecordState[stage.state!]}> state`);
-
-                    // Do not print empty stage job progress
-                    // Rejected stages do not contain any jobs
-                    if (stage.jobs.length) {
-
-                        this.progressReporter.logStageProgress(stage);
-
-                    }
-
-                    inProgress = false;
-
-                }
-
-                await this.commonHelper.wait(run.settings.updateInterval);
-
-            } while (inProgress);
+            stage = await this.stageDeployer.deployManual(stage, run.build, run.settings);
 
             runProgress = this.progressMonitor.updateRunProgress(runProgress);
 
@@ -164,53 +77,7 @@ export class RunDeployer implements IRunDeployer {
 
             for (let stage of activeStages) {
 
-                debug(`Updating <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state!]}> progress`);
-
-                stage = await this.stageSelector.getStage(run.build, stage);
-
-                if (run.settings.skipTracking) {
-
-                    this.logger.log(`Skipping <${stage.name}> (${stage.id}) stage <${TimelineRecordState[stage.state!]}> progress tracking`);
-
-                    continue;
-
-                }
-
-                if (stage.checkpoint?.state !== TimelineRecordState.Completed) {
-
-                    if (this.stageApprover.isApprovalPeding(stage)) {
-
-                        // Approve stage progress and validate outcome
-                        // Cancel run progress if unable to approve with retry
-                        stage = await this.stageApprover.approve(stage, run.build, run.settings);
-
-                    }
-
-                    if (this.stageApprover.isCheckPeding(stage)) {
-
-                        // Validate stage progress checks status
-                        // Cancel run progress if checks pending with retry
-                        stage = await this.stageApprover.check(stage, run.build, run.settings);
-
-                    }
-
-                }
-
-                if (stage.state === TimelineRecordState.Completed) {
-
-                    this.logger.log(`Stage <${stage.name}> (${stage.id}) reported <${TimelineRecordState[stage.state!]}> state`);
-
-                    // Do not print empty stage job progress
-                    // Rejected stages do not contain any jobs
-                    if (stage.jobs.length) {
-
-                        this.progressReporter.logStageProgress(stage);
-
-                    }
-
-                    break;
-
-                }
+                stage = await this.stageDeployer.deployAutomated(stage, run.build, run.settings);
 
             }
 
