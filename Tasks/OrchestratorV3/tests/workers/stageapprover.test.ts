@@ -188,8 +188,6 @@ describe("StageApprover", async () => {
 
         //#region ARRANGE
 
-        checkOneMock.state = TimelineRecordState.Pending;
-
         buildSelectorMock
             .setup((x) => x.cancelBuild(buildMock))
             .returns(() => Promise.resolve(buildMock))
@@ -206,6 +204,38 @@ describe("StageApprover", async () => {
         //#region ASSERT
 
         buildSelectorMock.verifyAll();
+
+        //#endregion
+
+    });
+
+    it("Confirm pending approval", async () => {
+
+        //#region ACT
+
+        const result = stageApprover.isApprovalPending(stageOneMock);
+
+        //#endregion
+
+        //#region ASSERT
+
+        chai.expect(result).to.eq(true);
+
+        //#endregion
+
+    });
+
+    it("Confirm pending check", async () => {
+
+        //#region ACT
+
+        const result = stageApprover.isCheckPending(stageOneMock);
+
+        //#endregion
+
+        //#region ASSERT
+
+        chai.expect(result).to.eq(true);
 
         //#endregion
 
