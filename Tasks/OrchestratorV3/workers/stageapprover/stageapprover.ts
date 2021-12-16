@@ -177,9 +177,9 @@ export class StageApprover implements IStageApprover {
 
     }
 
-    public isApprovalPeding(stage: IBuildStage): boolean {
+    public isApprovalPending(stage: IBuildStage): boolean {
 
-        const debug = this.debugLogger.extend(this.isApprovalPeding.name);
+        const debug = this.debugLogger.extend(this.isApprovalPending.name);
 
         let isPending: boolean = false;
 
@@ -202,9 +202,9 @@ export class StageApprover implements IStageApprover {
 
     }
 
-    public isCheckPeding(stage: IBuildStage): boolean {
+    public isCheckPending(stage: IBuildStage): boolean {
 
-        const debug = this.debugLogger.extend(this.isCheckPeding.name);
+        const debug = this.debugLogger.extend(this.isCheckPending.name);
 
         let isPending: boolean = false;
 

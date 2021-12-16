@@ -7,7 +7,7 @@ export interface IStageApprover {
 
     approve(stage: IBuildStage, build: Build, settings: ISettings, comment?: string): Promise<IBuildStage>;
     check(stage: IBuildStage, build: Build, settings: ISettings): Promise<IBuildStage>;
-    isApprovalPeding(stage: IBuildStage): boolean;
-    isCheckPeding(stage: IBuildStage): boolean;
+    isApprovalPending(stage: IBuildStage): boolean;
+    isCheckPending(stage: IBuildStage): boolean;
 
 }

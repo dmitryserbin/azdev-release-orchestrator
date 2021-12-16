@@ -109,7 +109,7 @@ describe("StageDeployer", async () => {
             .verifiable(TypeMoq.Times.once());
 
         stageApproverMock
-            .setup((x) => x.isApprovalPeding(startedStageOneMock))
+            .setup((x) => x.isApprovalPending(startedStageOneMock))
             .returns(() => true)
             .verifiable(TypeMoq.Times.once());
 
@@ -119,7 +119,7 @@ describe("StageDeployer", async () => {
             .verifiable(TypeMoq.Times.once());
 
         stageApproverMock
-            .setup((x) => x.isCheckPeding(startedStageOneMock))
+            .setup((x) => x.isCheckPending(startedStageOneMock))
             .returns(() => true)
             .verifiable(TypeMoq.Times.once());
 
@@ -213,7 +213,7 @@ describe("StageDeployer", async () => {
             .verifiable(TypeMoq.Times.once());
 
         stageApproverMock
-            .setup((x) => x.isApprovalPeding(startedStageOneMock))
+            .setup((x) => x.isApprovalPending(startedStageOneMock))
             .returns(() => true)
             .verifiable(TypeMoq.Times.once());
 
@@ -223,7 +223,7 @@ describe("StageDeployer", async () => {
             .verifiable(TypeMoq.Times.once());
 
         stageApproverMock
-            .setup((x) => x.isCheckPeding(startedStageOneMock))
+            .setup((x) => x.isCheckPending(startedStageOneMock))
             .returns(() => true)
             .verifiable(TypeMoq.Times.once());
 

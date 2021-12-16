@@ -83,7 +83,7 @@ export class StageDeployer implements IStageDeployer {
 
             if (stage.checkpoint?.state !== TimelineRecordState.Completed) {
 
-                if (this.stageApprover.isApprovalPeding(stage)) {
+                if (this.stageApprover.isApprovalPending(stage)) {
 
                     // Approve stage progress and validate outcome
                     // Cancel run progress if unable to approve with retry
@@ -91,7 +91,7 @@ export class StageDeployer implements IStageDeployer {
 
                 }
 
-                if (this.stageApprover.isCheckPeding(stage)) {
+                if (this.stageApprover.isCheckPending(stage)) {
 
                     // Validate stage progress checks status
                     // Cancel run progress if checks pending with retry
@@ -143,7 +143,7 @@ export class StageDeployer implements IStageDeployer {
 
         if (stage.checkpoint?.state !== TimelineRecordState.Completed) {
 
-            if (this.stageApprover.isApprovalPeding(stage)) {
+            if (this.stageApprover.isApprovalPending(stage)) {
 
                 // Approve stage progress and validate outcome
                 // Cancel run progress if unable to approve with retry
@@ -151,7 +151,7 @@ export class StageDeployer implements IStageDeployer {
 
             }
 
-            if (this.stageApprover.isCheckPeding(stage)) {
+            if (this.stageApprover.isCheckPending(stage)) {
 
                 // Validate stage progress checks status
                 // Cancel run progress if checks pending with retry
