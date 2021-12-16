@@ -62,7 +62,7 @@ export class StageApprover implements IStageApprover {
 
                     approval.state = TimelineRecordState.Completed;
 
-                    break;
+                    continue;
 
                 }
 
