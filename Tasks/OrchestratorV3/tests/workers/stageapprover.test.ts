@@ -60,7 +60,9 @@ describe("StageApprover", async () => {
         settingsMock = {
 
             proceedSkippedStages: false,
+            cancelFailedCheckpoint: true,
             updateInterval: 1,
+            approvalAttempts: 0,
 
         } as ISettings;
 
@@ -87,7 +89,7 @@ describe("StageApprover", async () => {
 
     });
 
-    it("Should approve stage", async () => {
+    it("Should successfully approve stage", async () => {
 
         //#region ARRANGE
 
@@ -111,6 +113,39 @@ describe("StageApprover", async () => {
         chai.expect(result).to.not.eq(null);
 
         stageSelectorMock.verifyAll();
+
+        //#endregion
+
+    });
+
+    it("Should fail approval and cancel stage", async () => {
+
+        //#region ARRANGE
+
+        const approvedResult = { status: `failed` };
+
+        stageSelectorMock
+            .setup((x) => x.approveStage(buildMock, approvalOneMock, undefined))
+            .returns(() => Promise.resolve(approvedResult))
+            .verifiable(TypeMoq.Times.once());
+
+        buildSelectorMock
+            .setup((x) => x.cancelBuild(buildMock))
+            .returns(() => Promise.resolve(buildMock))
+            .verifiable(TypeMoq.Times.once());
+
+        //#endregion
+
+        //#region ACT
+
+        await chai.expect(stageApprover.approve(stageOneMock, buildMock, settingsMock)).to.be.rejected;
+
+        //#endregion
+
+        //#region ASSERT
+
+        stageSelectorMock.verifyAll();
+        buildSelectorMock.verifyAll();
 
         //#endregion
 
