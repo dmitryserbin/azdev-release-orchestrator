@@ -93,6 +93,7 @@ describe("ProgressMonitor", async () => {
 
             id: runStageOneMock.id,
             name: runStageOneMock.name,
+            state: TimelineRecordState.Pending,
 
         } as IBuildStage;
 
@@ -239,6 +240,32 @@ describe("ProgressMonitor", async () => {
 
         chai.expect(result).to.not.eq(null);
         chai.expect(result.status).to.eq(RunStatus.InProgress);
+
+        //#endregion
+
+    });
+
+    it("Should get active stages", async () => {
+
+        //#region ARRANGE
+
+        buildStageOneMock.state = TimelineRecordState.InProgress;
+
+        runProgressMock.stages = [ buildStageOneMock ];
+
+        //#endregion
+
+        //#region ACT
+
+        const result = progressMonitor.getActiveStages(runProgressMock);
+
+        //#endregion
+
+        //#region ASSERT
+
+        chai.expect(result).to.not.eq(null);
+        chai.expect(result).lengthOf(1);
+        chai.expect(result[0].state).eq(TimelineRecordState.InProgress);
 
         //#endregion
 
