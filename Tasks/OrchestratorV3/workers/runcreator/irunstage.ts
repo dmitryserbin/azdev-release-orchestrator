@@ -1,7 +1,7 @@
 export interface IRunStage {
 
-    name: string;
     id: string;
+    name: string;
     target: boolean;
 
 }

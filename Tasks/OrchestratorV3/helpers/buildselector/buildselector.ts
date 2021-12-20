@@ -140,8 +140,8 @@ export class BuildSelector implements IBuildSelector {
                 // Applicable to existing runs only
                 const buildStage: IRunStage = {
 
-                    name: stage.name!,
                     id: stage.id!,
+                    name: stage.name!,
                     target: skipped ? false : true,
 
                 };
