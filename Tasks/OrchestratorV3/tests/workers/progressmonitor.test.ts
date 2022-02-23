@@ -2,7 +2,8 @@ import "mocha";
 
 import * as chai from "chai";
 import * as TypeMoq from "typemoq";
-import faker from "faker";
+
+import { faker } from "@faker-js/faker";
 
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { Build, BuildDefinition, TaskResult, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
