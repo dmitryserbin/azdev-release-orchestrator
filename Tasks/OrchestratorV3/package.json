@@ -22,7 +22,7 @@
     "@types/debug": "^4.1.7",
     "azure-devops-node-api": "^11.1.1",
     "azure-pipelines-task-lib": "^3.2.0",
-    "cli-table": "^0.3.9",
+    "cli-table": "^0.3.11",
     "debug": "^4.3.3",
     "moment": "^2.29.1",
     "parse-key-value-pair": "^1.1.2",
