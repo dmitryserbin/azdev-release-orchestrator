@@ -144,7 +144,18 @@ export class StageSelector implements IStageSelector {
 
             debug(`Validating <${stage.name}> (${stage.id}) stage start (sttempt ${attempt})`);
 
-            await this.commonHelper.wait(interval);
+            if (attempt == 1) {
+
+                // Minimum first attempt timout to improve
+                // Validation experience under normal conditions
+                await this.commonHelper.wait(10000);
+
+            }
+            else {
+
+                await this.commonHelper.wait(interval);
+
+            }
 
             stage = await this.getStage(build, stage);
 
