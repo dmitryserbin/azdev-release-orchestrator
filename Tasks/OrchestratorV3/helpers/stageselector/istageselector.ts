@@ -8,6 +8,6 @@ export interface IStageSelector {
     getStage(build: Build, stage: IBuildStage): Promise<IBuildStage>;
     startStage(build: Build, stage: IBuildStage): Promise<void>;
     approveStage(build: Build, approval: IBuildApproval, comment?: string): Promise<unknown>;
-    confirmStage(build: Build, stage: IBuildStage, maxAttempts: number): Promise<IBuildStage>;
+    confirmStage(build: Build, stage: IBuildStage, maxAttempts: number, interval: number): Promise<IBuildStage>;
 
 }

@@ -187,6 +187,32 @@
       "groupName": "Advanced"
     },
     {
+      "name": "stageStartAttempts",
+      "type": "int",
+      "label": "Stage start attempts",
+      "helpMarkDown": "Number of attempts to retry starting target stage (if unsuccessful) before failing. Default: `10` (times)",
+      "defaultValue": 10,
+      "required": true,
+      "validation": {
+        "expression": "isInRange(value, 0, 100)",
+        "message": "Stage start attempts must be within 0 <=> 100 range"
+      },
+      "groupName": "Advanced"
+    },
+    {
+      "name": "stageStartInterval",
+      "type": "int",
+      "label": "Stage start interval",
+      "helpMarkDown": "Number of seconds to wait before next stage start attempt. Default: `60` (seconds)",
+      "defaultValue": 60,
+      "required": true,
+      "validation": {
+        "expression": "isInRange(value, 1, 300)",
+        "message": "Stage start interval must be within 1 <=> 300 range"
+      },
+      "groupName": "Advanced"
+    },
+    {
       "name": "approvalInterval",
       "type": "int",
       "label": "Approval interval",

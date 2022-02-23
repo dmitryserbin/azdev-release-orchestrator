@@ -125,7 +125,7 @@ export class StageSelector implements IStageSelector {
 
     }
 
-    public async confirmStage(build: Build, stage: IBuildStage, maxAttempts: number): Promise<IBuildStage> {
+    public async confirmStage(build: Build, stage: IBuildStage, maxAttempts: number, interval: number): Promise<IBuildStage> {
 
         const debug = this.debugLogger.extend(this.confirmStage.name);
 
@@ -144,7 +144,7 @@ export class StageSelector implements IStageSelector {
 
             debug(`Validating <${stage.name}> (${stage.id}) stage start (sttempt ${attempt})`);
 
-            await this.commonHelper.wait(10000);
+            await this.commonHelper.wait(interval);
 
             stage = await this.getStage(build, stage);
 

@@ -65,6 +65,8 @@ describe("StageDeployer", async () => {
 
             proceedSkippedStages: false,
             updateInterval: 1,
+            stageStartAttempts: 1,
+            stageStartInterval: 1,
 
         } as ISettings;
 
@@ -99,7 +101,7 @@ describe("StageDeployer", async () => {
             .verifiable(TypeMoq.Times.once());
 
         stageSelectorMock
-            .setup((x) => x.confirmStage(buildMock, stageOneMock, 12))
+            .setup((x) => x.confirmStage(buildMock, stageOneMock, settingsMock.stageStartAttempts, settingsMock.stageStartInterval))
             .returns(() => Promise.resolve(startedStageOneMock))
             .verifiable(TypeMoq.Times.once());
 
@@ -172,7 +174,7 @@ describe("StageDeployer", async () => {
             .verifiable(TypeMoq.Times.once());
 
         stageSelectorMock
-            .setup((x) => x.confirmStage(buildMock, stageOneMock, 12))
+            .setup((x) => x.confirmStage(buildMock, stageOneMock, settingsMock.stageStartAttempts, settingsMock.stageStartInterval))
             .returns(() => Promise.resolve(startedStageOneMock))
             .verifiable(TypeMoq.Times.once());
 

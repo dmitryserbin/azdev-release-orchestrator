@@ -49,7 +49,7 @@ export class StageDeployer implements IStageDeployer {
 
             if (!settings.proceedSkippedStages) {
 
-                stage = await this.stageSelector.confirmStage(build, stage, 12);
+                stage = await this.stageSelector.confirmStage(build, stage, settings.stageStartAttempts, settings.stageStartInterval);
 
             }
 

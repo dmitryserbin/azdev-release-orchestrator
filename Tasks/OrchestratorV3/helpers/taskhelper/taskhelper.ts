@@ -91,6 +91,8 @@ export class TaskHelper implements ITaskHelper {
         const skipTracking: boolean = getBoolInput("skipTracking", false);
 
         const updateInterval: string = getInput("updateInterval", true)!;
+        const stageStartAttempts: string = getInput("stageStartAttempts", true)!;
+        const stageStartInterval: string = getInput("stageStartInterval", true)!;
         const approvalInterval: string = getInput("approvalInterval", true)!;
         const approvalAttempts: string = getInput("approvalAttempts", true)!;
 
@@ -108,6 +110,8 @@ export class TaskHelper implements ITaskHelper {
         const settings: ISettings = {
 
             updateInterval: Number(updateInterval) * 1000,
+            stageStartAttempts: Number(stageStartAttempts),
+            stageStartInterval: Number(stageStartInterval) * 1000,
             approvalInterval: Number(approvalInterval) * 1000,
             approvalAttempts: Number(approvalAttempts),
             cancelFailedCheckpoint,
