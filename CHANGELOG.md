@@ -4,7 +4,7 @@
 
 `TBU`
 
-- Initial release ([TBU](TBU))
+- Introduce V3 with YAML pipelines support ([68](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/68))
 
 ## 2.0.*
 
