@@ -134,13 +134,13 @@ export class StageSelector implements IStageSelector {
 
         do {
 
-            attempt++;
-
             if (attempt > maxAttempts) {
 
                 throw new Error(`Unable to start <${stage.name}> (${TimelineRecordState[stage.state]}) stage progress (${attempt} sttempts)`);
 
             }
+
+            attempt++;
 
             debug(`Validating <${stage.name}> (${stage.id}) stage start (sttempt ${attempt})`);
 
