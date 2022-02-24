@@ -169,3 +169,7 @@ Parameter | Description
 `updateInterval` | Number of seconds to wait before next run progress update. Default: `5` (seconds)
 `approvalInterval` | Number of seconds to wait before next stage approval attempt. Default: `60` (seconds)
 `approvalAttempts` | Number of attempts to retry approving target stage (if unsuccessful) before failing. Default: `10` (times)
+
+## Troubleshooting
+
+To enable debug mode to help troubleshooting issues, please configure `DEBUG=release-orchestrator:*` custom pipeline [variable](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables). You can also make the debug mode variable [configurable](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#allow-at-queue-time) at pipeline queue time.

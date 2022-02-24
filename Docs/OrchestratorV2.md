@@ -167,3 +167,7 @@ steps:
     approvalRetry: 60                   # Required. Default: 60 (times)
     updateInterval: 5                   # Required. Default: 5 (seconds)
 ```
+
+## Troubleshooting
+
+To enable debug mode to help troubleshooting issues, please configure `DEBUG=release-orchestrator:*` custom release [variable](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/variables).
