@@ -172,4 +172,4 @@ Parameter | Description
 
 ## Troubleshooting
 
-To enable debug mode to help troubleshooting issues, please configure `DEBUG=release-orchestrator:*` custom pipeline [variable](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables). You can also make the debug mode variable [configurable](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#allow-at-queue-time) at pipeline queue time.
+To enable debug mode to help troubleshooting issues, set `DEBUG=release-orchestrator:*` pipeline [variable](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables) (can be configred at [pipeline queue time](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#allow-at-queue-time)) or turn on Azure DevOps pipelines [system diagnostics](https://docs.microsoft.com/en-us/azure/devops/pipelines/troubleshooting/review-logs?view=azure-devops#configure-verbose-logs).
