@@ -25,7 +25,6 @@
     "cli-table": "^0.3.11",
     "debug": "^4.3.3",
     "moment": "^2.29.1",
-    "parse-key-value-pair": "^1.1.2",
     "typescript-string-operations": "^1.4.1"
   },
   "devDependencies": {

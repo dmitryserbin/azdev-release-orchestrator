@@ -16,6 +16,8 @@ import { WorkerFactory } from "./factories/workerfactory/workerfactory";
 import { IProgressReporter } from "./workers/progressreporter/iprogressreporter";
 import { IRunCreator } from "./workers/runcreator/iruncreator";
 import { IRunDeployer } from "./workers/rundeployer/irundeployer";
+import { ICommonHelper } from "./helpers/commonhelper/icommonhelper";
+import { CommonHelper } from "./helpers/commonhelper/commonhelper";
 
 async function run() {
 
@@ -25,7 +27,8 @@ async function run() {
 
     const logger: ILogger = new Logger("release-orchestrator", forceDebug);
 
-    const taskHelper: ITaskHelper = new TaskHelper(logger);
+    const commonHelper: ICommonHelper = new CommonHelper(logger);
+    const taskHelper: ITaskHelper = new TaskHelper(logger, commonHelper);
 
     try {
 

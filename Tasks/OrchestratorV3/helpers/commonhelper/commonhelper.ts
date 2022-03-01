@@ -22,4 +22,23 @@ export class CommonHelper implements ICommonHelper {
 
     }
 
+    public parseKeyValue(input: string): [string, string] {
+
+        const matchRegex = /^\s*([\w\\.\\-\s]+)\s*=\s*(.*)?\s*$/;
+
+        const match: RegExpMatchArray | null = input.match(matchRegex);
+
+        if (match === null) {
+
+            throw new Error(`Unable to parse <${input}> input`);
+
+        }
+
+        const key = match[1].trim();
+        const value = match[2].trim();
+
+        return [key, value];
+
+    }
+
 }
