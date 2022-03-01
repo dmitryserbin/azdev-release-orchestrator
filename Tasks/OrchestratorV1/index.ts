@@ -15,7 +15,7 @@ async function run() {
 
     try {
 
-        console.log(`IMPORTANT: This task version is deprecated, please consider updating to the latest major version`);
+        tl.warning(`IMPORTANT: This task version is deprecated and soon will be removed, please consider updating to the latest major version`);
 
         // Get endpoint
         const endpoint: IEndpoint = await getEndpoint();

@@ -7,187 +7,56 @@ trigger:
     - Tasks/*
 
 parameters:
-- name: testOrchestratorV1
-  displayName: Test OrchestratorV1
+- name: testV1
+  displayName: Test V1
   type: boolean
   default: true
-- name: testOrchestratorV2
-  displayName: Test OrchestratorV2
+- name: testV2
+  displayName: Test V2
   type: boolean
   default: true
-
-variables:
-  release.orchestrator.suppress.succeededwithissues: true
+- name: testV3
+  displayName: Test V3
+  type: boolean
+  default: true
 
 stages:
 - stage: Build
   jobs:
-  - job: OrchestratorV1
-    pool:
-      name: Default
-    workspace:
-      clean: all
-    steps:
-    - template: templates/build.yml
-      parameters:
-        name: OrchestratorV1
-        path: Tasks/OrchestratorV1
-        restore: true
-        build: true
-        test: true
-        clean: true
-        publish: true
+  - template: templates/build.yml
+    parameters:
+      taskV1: true
+      taskV2: true
+      taskV3: true
+      extension: true
 
-  - job: OrchestratorV2
-    pool:
-      name: Default
-    workspace:
-      clean: all
-    steps:
-    - template: templates/build.yml
-      parameters:
-        name: OrchestratorV2
-        path: Tasks/OrchestratorV2
-        restore: true
-        lint: true
-        build: true
-        test: true
-        clean: true
-        publish: true
-
-  - job: Extension
-    pool:
-      name: Default
-    workspace:
-      clean: all
-    dependsOn:
-    - OrchestratorV1
-    - OrchestratorV2
-    steps:
-    - template: templates/package.yml
-      parameters:
-        path: $(Build.ArtifactStagingDirectory)
-        contents: |
-          Images/**
-          LICENSE
-          *.md
-          *.json
-        version: $(Build.BuildId)
+- stage: Preview
+  dependsOn:
+  - Build
+  jobs:
+  - template: templates/preview.yml
+    parameters:
+      environmentName: Marketplace
 
 - stage: Test
   dependsOn:
   - Build
+  - Preview
   jobs:
-  - job: Install
-    pool:
-      name: Default
-    workspace:
-      clean: all
-    steps:
-    - download: current
-      displayName: Download artifacts
-
-    - task: taskpublisher@1
-      displayName: Install OrchestratorV1
-      inputs:
-        ConnectedService: dmitryserbin.tasks
-        TaskPath: $(Pipeline.Workspace)/OrchestratorV1
-        Replace: true
-
-    - task: taskpublisher@1
-      displayName: Install OrchestratorV2
-      inputs:
-        ConnectedService: dmitryserbin.tasks
-        TaskPath: $(Pipeline.Workspace)/OrchestratorV2
-        Replace: false
-
-  - job: OrchestratorV1
-    pool:
-      name: Default
-    workspace:
-      clean: all
-    dependsOn:
-    - Install
-    condition: and(succeeded(), eq(${{ parameters.testOrchestratorV1 }}, true))
-    steps:
-    - template: templates/execute.v1.yml
-      parameters:
-        projectId: 761623f0-c4c0-4dab-884b-a428a01c200f
-        definitionId: 1
-        releaseId: 162
-        releasePartialId: 194
-        releaseFailedId: 200
-        releaseStages: DEV,TEST,PROD
-        artifactTagName: Build-Yo
-        releaseTagName: Release-Yo
-        sourceBranchName: refs/heads/working/test
-
-  - job: OrchestratorV2
-    dependsOn:
-    - Install
-    - OrchestratorV1
-    condition: and(succeeded(), eq(${{ parameters.testOrchestratorV2 }}, true))
-    pool:
-      name: Default
-    workspace:
-      clean: all
-    steps:
-    - template: templates/execute.v2.yml
-      parameters:
-        projectName: HelloYo
-        definitionName: HelloYo
-        releaseName: HelloYo-20190521.1-1
-        releasePartialName: HelloYo-20190521.4-27
-        releaseFailedName: HelloYo-20190521.4-32
-        releaseStage: DEV,TEST,PROD
-        artifactVersion: 20190521.1
-        artifactTag: Build-Yo
-        artifactBranch: refs/heads/working/test
-        releaseTag: Release-Yo
-
-  - job: Cleanup
-    dependsOn:
-    - OrchestratorV1
-    - OrchestratorV2
-    pool:
-      name: Default
-    workspace:
-      clean: all
-    steps:
-    - task: PowerShell@2
-      displayName: Cleanup releases
-      inputs:
-        targetType: filePath
-        filePath: CI/scripts/cleanup.ps1
-        arguments: >
-          -OrganizationName dmitryserbin
-          -ProjectName HelloYo
-          -DefinitionName HelloYo
-          -AccessToken $(System.AccessToken)
-        pwsh: true
+  - template: templates/test.yml
+    parameters:
+      testV1: ${{ parameters.testV1 }}
+      testV2: ${{ parameters.testV2 }}
+      testV3: ${{ parameters.testV3 }}
+      cleanup: true
 
 - stage: Release
   dependsOn:
   - Build
+  - Preview
   - Test
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   jobs:
-  - deployment: Extension
-    pool:
-      name: Default
-    workspace:
-      clean: all
-    environment: Marketplace
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: TfxInstaller@3
-            displayName: Install TFX CLI
-
-          - task: PublishAzureDevOpsExtension@3
-            displayName: Publish extension
-            inputs:
-              connectedServiceName: dmitryserbin.marketplace
-              fileType: vsix
-              vsixFile: $(Pipeline.Workspace)/Extension/*.vsix
+  - template: templates/release.yml
+    parameters:
+      environmentName: Marketplace
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))

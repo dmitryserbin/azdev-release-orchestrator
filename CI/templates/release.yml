@@ -1,0 +1,21 @@
+parameters:
+  environmentName: ''
+
+jobs:
+- deployment: Publish
+  environment: ${{ parameters.environmentName }}
+  pool:
+    name: Default
+  workspace:
+    clean: all
+  variables:
+  - template: variables.yml
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - template: steps/publish.yml
+          parameters:
+            path: ${{ variables.extensionArtifactPath }}
+            endpointName: ${{ variables.marketplaceEndpoint }}
+            visibility: ${{ variables.extensionVisibility }}

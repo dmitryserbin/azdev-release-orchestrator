@@ -1,0 +1,13 @@
+parameters:
+  projectName: ""
+  definitionName: ""
+  stages: ""
+
+steps:
+- task: releaseorchestrator@3
+  displayName: New release (auto)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    strategy: new
+    stages: ${{ parameters.stages }}

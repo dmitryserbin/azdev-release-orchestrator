@@ -1,61 +1,93 @@
 parameters:
-  name: ""
-  path: ""
-  restore: false
-  lint: false
-  build: false
-  test: false
-  clean: false
-  publish: false
-  testResults: "**/results.xml"
+  taskV1: false
+  taskV2: false
+  taskV3: false
+  extension: false
 
-steps:
-- ${{ if eq(parameters.restore, true) }}:
-  - task: Npm@1
-    displayName: Restore packages
-    inputs:
-      workingDir: ${{ parameters.path }}
+jobs:
+- ${{ if eq(parameters.taskV1, true) }}:
+  - job: OrchestratorV1
+    pool:
+      name: Default
+    workspace:
+      clean: all
+    variables:
+    - template: variables.yml
+    steps:
+    - template: steps/build.yml
+      parameters:
+        name: ${{ variables.taskNameV1 }}
+        path: ${{ variables.tasksPath }}
+        restore: true
+        build: true
+        test: true
+        clean: true
+        publish: true
 
-- ${{ if eq(parameters.lint, true) }}:
-  - task: Npm@1
-    displayName: Run lint
-    inputs:
-      command: custom
-      workingDir: ${{ parameters.path }}
-      customCommand: run lint
+- ${{ if eq(parameters.taskV2, true) }}:
+  - job: OrchestratorV2
+    pool:
+      name: Default
+    workspace:
+      clean: all
+    variables:
+    - template: variables.yml
+    steps:
+    - template: steps/build.yml
+      parameters:
+        name: ${{ variables.taskNameV2 }}
+        path: ${{ variables.tasksPath }}
+        restore: true
+        lint: true
+        build: true
+        test: true
+        clean: true
+        publish: true
 
-- ${{ if eq(parameters.build, true) }}:
-  - task: Npm@1
-    displayName: Run build
-    inputs:
-      command: custom
-      workingDir: ${{ parameters.path }}
-      customCommand: run build
+- ${{ if eq(parameters.taskV3, true) }}:
+  - job: OrchestratorV3
+    pool:
+      name: Default
+    workspace:
+      clean: all
+    variables:
+    - template: variables.yml
+    steps:
+    - template: steps/build.yml
+      parameters:
+        name: ${{ variables.taskNameV3 }}
+        path: ${{ variables.tasksPath }}
+        restore: true
+        lint: true
+        build: true
+        test: true
+        clean: true
+        publish: true
 
-- ${{ if eq(parameters.test, true) }}:
-  - task: Npm@1
-    displayName: Run tests
-    inputs:
-      command: custom
-      workingDir: ${{ parameters.path }}
-      customCommand: run test
-
-- ${{ if eq(parameters.clean, true) }}:
-  - task: Npm@1
-    displayName: Run clean
-    inputs:
-      command: custom
-      workingDir: ${{ parameters.path }}
-      customCommand: run clean
-
-- ${{ if eq(parameters.test, true) }}:
-  - task: PublishTestResults@2
-    displayName: Publish test results
-    inputs:
-      testResultsFiles: ${{ parameters.testResults }}
-    condition: always()
-
-- ${{ if eq(parameters.publish, true) }}:
-  - publish: ${{ parameters.path }}
-    displayName: Publish artifact
-    artifact: ${{ parameters.name }}
+- ${{ if eq(parameters.extension, true) }}:
+  - job: Extension
+    pool:
+      name: Default
+    workspace:
+      clean: all
+    variables:
+    - template: variables.yml
+    dependsOn:
+    - ${{ if eq(parameters.taskV1, true) }}:
+      - OrchestratorV1
+    - ${{ if eq(parameters.taskV2, true) }}:
+      - OrchestratorV2
+    - ${{ if eq(parameters.taskV3, true) }}:
+      - OrchestratorV3
+    steps:
+    - template: steps/package.yml
+      parameters:
+        path: ${{ variables.artifactsPath }}
+        contents: |
+          Docs/**
+          Images/**
+          LICENSE
+          *.md
+          *.json
+        version: ${{ variables.extensionVersion }}
+        publish: true

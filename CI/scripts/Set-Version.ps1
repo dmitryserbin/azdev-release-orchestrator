@@ -1,13 +1,13 @@
 [CmdletBinding()]
 Param
 (
-	[Parameter(Mandatory=$True)]
+	[Parameter(Mandatory = $True)]
 	[String]$Path,
 
-	[Parameter(Mandatory=$True)]
+	[Parameter(Mandatory = $True)]
 	[Int]$Patch,
 
-	[Parameter(Mandatory=$False)]
+	[Parameter(Mandatory = $False)]
 	[Switch]$UpdateBuildNumber
 )
 
@@ -16,10 +16,10 @@ function Get-MarketplaceExtension
 	[CmdletBinding()]
 	Param
 	(
-		[Parameter(Mandatory=$True)]
+		[Parameter(Mandatory = $True)]
 		[String]$Name,
 
-		[Parameter(Mandatory=$True)]
+		[Parameter(Mandatory = $True)]
 		[String]$ApiVersion
 	)
 
@@ -44,19 +44,30 @@ function Get-MarketplaceExtension
 		-Compress `
 		-ErrorAction Stop
 
-	$Extension = (Invoke-RestMethod `
+	$Extensions = (Invoke-RestMethod `
 		-Method Post `
 		-Uri $Uri `
 		-ContentType application/json `
 		-Body $Body `
-		-ErrorAction Stop).results.extensions[0].versions[0]
+		-ErrorAction Stop).results.extensions
 
-	if (-not $Extension)
+	if (-not $Extensions)
 	{
-		throw "Extension <$Name> not found"
+		Write-Warning "Extension <$Name> not yet published"
+
+		return
 	}
 
-	return $Extension
+	$LatestVersion = $Extensions[0].versions[0]
+
+	if (-not $LatestVersion)
+	{
+		Write-Warning "No extension <$Name> versions not found"
+
+		return
+	}
+
+	return $LatestVersion
 }
 
 function Find-ExtensionPath
@@ -64,7 +75,7 @@ function Find-ExtensionPath
 	[CmdletBinding()]
 	Param
 	(
-		[Parameter(Mandatory=$True)]
+		[Parameter(Mandatory = $True)]
 		[String]$Path
 	)
 
@@ -93,10 +104,10 @@ function Update-ExtensionVersion
 	[CmdletBinding()]
 	Param
 	(
-		[Parameter(Mandatory=$True)]
+		[Parameter(Mandatory = $True)]
 		[String]$Path,
 
-		[Parameter(Mandatory=$True)]
+		[Parameter(Mandatory = $True)]
 		[Int]$Patch
 	)
 
@@ -189,13 +200,13 @@ function Confirm-ExtensionVersion
 	[CmdletBinding()]
 	Param
 	(
-		[Parameter(Mandatory=$True)]
+		[Parameter(Mandatory = $True)]
 		[Object]$Release,
 
-		[Parameter(Mandatory=$True)]
+		[Parameter(Mandatory = $True)]
 		[Object]$Latest,
 
-		[Parameter(Mandatory=$False)]
+		[Parameter(Mandatory = $False)]
 		[Switch]$Required
 	)
 
@@ -222,10 +233,10 @@ function Set-ExtensionVersion
 	[CmdletBinding()]
 	Param
 	(
-		[Parameter(Mandatory=$True)]
+		[Parameter(Mandatory = $True)]
 		[Object]$Definition,
 
-		[Parameter(Mandatory=$True)]
+		[Parameter(Mandatory = $True)]
 		[Int]$Patch
 	)
 
@@ -242,10 +253,10 @@ function Set-TaskVersion
 	[CmdletBinding()]
 	Param
 	(
-		[Parameter(Mandatory=$True)]
+		[Parameter(Mandatory = $True)]
 		[Object]$Definition,
 
-		[Parameter(Mandatory=$True)]
+		[Parameter(Mandatory = $True)]
 		[Int]$Patch
 	)
 
@@ -260,7 +271,7 @@ function Set-BuildNumber
 	[CmdletBinding()]
 	Param
 	(
-		[Parameter(Mandatory=$True)]
+		[Parameter(Mandatory = $True)]
 		[String]$Value
 	)
 
@@ -278,10 +289,13 @@ $LatestExtension = Get-MarketplaceExtension `
 	-Name ("{0}.{1}" -f $ReleaseExtension.publisher, $ReleaseExtension.id) `
 	-ApiVersion 6.1-preview.1
 
-Confirm-ExtensionVersion `
-	-Release $ReleaseExtension `
-	-Latest $LatestExtension `
-	-Required
+if ($LatestExtension)
+{
+	Confirm-ExtensionVersion `
+		-Release $ReleaseExtension `
+		-Latest $LatestExtension `
+		-Required
+}
 
 if ($UpdateBuildNumber)
 {

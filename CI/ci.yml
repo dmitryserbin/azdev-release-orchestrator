@@ -10,31 +10,9 @@ pr:
   autoCancel: true
 
 jobs:
-- job: OrchestratorV1
-  pool:
-    name: Default
-  workspace:
-    clean: all
-  steps:
-  - template: templates/build.yml
-    parameters:
-      name: OrchestratorV1
-      path: Tasks/OrchestratorV1
-      restore: true
-      build: true
-      test: true
-
-- job: OrchestratorV2
-  pool:
-    name: Default
-  workspace:
-    clean: all
-  steps:
-  - template: templates/build.yml
-    parameters:
-      name: OrchestratorV2
-      path: Tasks/OrchestratorV2
-      restore: true
-      lint: true
-      build: true
-      test: true
+- template: templates/build.yml
+  parameters:
+    taskV1: true
+    taskV2: true
+    taskV3: true
+    extension: true
