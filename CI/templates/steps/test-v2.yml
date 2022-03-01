@@ -1,9 +1,9 @@
 parameters:
   projectName: ""
   definitionName: ""
-  releaseName: ""
-  releasePartialName: ""
-  releaseFailedName: ""
+  specificReleaseName: ""
+  partialReleaseName: ""
+  failedReleaseName: ""
   releaseStage: ""
   artifactVersion: ""
   artifactTag: ""
@@ -17,7 +17,7 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: specific
-    releaseName: ${{ parameters.releaseName }}
+    releaseName: ${{ parameters.specificReleaseName }}
 
 - task: releaseorchestrator@2
   displayName: Specific release (manual)
@@ -25,7 +25,7 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: specific
-    releaseName: ${{ parameters.releaseName }}
+    releaseName: ${{ parameters.specificReleaseName }}
     releaseStage: ${{ parameters.releaseStage }}
 
 - task: releaseorchestrator@2
@@ -34,7 +34,7 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: specific
-    releaseName: ${{ parameters.releasePartialName }}
+    releaseName: ${{ parameters.partialReleaseName }}
     releaseStage: ${{ parameters.releaseStage }}
 
 - task: releaseorchestrator@2
@@ -43,7 +43,7 @@ steps:
     projectName: ${{ parameters.projectName }}
     definitionName: ${{ parameters.definitionName }}
     releaseStrategy: specific
-    releaseName: ${{ parameters.releaseFailedName }}
+    releaseName: ${{ parameters.failedReleaseName }}
     releaseStage: ${{ parameters.releaseStage }}
     ignoreFailure: true
 
