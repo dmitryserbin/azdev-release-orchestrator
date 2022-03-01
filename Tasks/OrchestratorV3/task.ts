@@ -21,9 +21,9 @@ async function run() {
 
     // Force enable debug mode when Azure DevOps pipelines
     // System diagnostics is enabled via System.Debug variable
-    const systemDebug: boolean = process.env.SYSTEM_DEBUG == "true" && process.env.DEBUG == undefined;
+    const forceDebug: boolean = process.env.SYSTEM_DEBUG == "true" && process.env.DEBUG == undefined;
 
-    const logger: ILogger = new Logger("release-orchestrator", systemDebug);
+    const logger: ILogger = new Logger("release-orchestrator", forceDebug);
 
     const taskHelper: ITaskHelper = new TaskHelper(logger);
 
