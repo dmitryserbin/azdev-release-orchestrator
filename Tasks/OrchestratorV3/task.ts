@@ -19,7 +19,11 @@ import { IRunDeployer } from "./workers/rundeployer/irundeployer";
 
 async function run() {
 
-    const logger: ILogger = new Logger("release-orchestrator");
+    // Force enable debug mode when Azure DevOps pipelines
+    // System diagnostics is enabled via System.Debug variable
+    const systemDebug: boolean = process.env.SYSTEM_DEBUG == "true" && process.env.DEBUG == undefined;
+
+    const logger: ILogger = new Logger("release-orchestrator", systemDebug);
 
     const taskHelper: ITaskHelper = new TaskHelper(logger);
 

@@ -2,17 +2,23 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import Debug from "debug";
-import { IDebug } from "./idebug";
 
+import { IDebug } from "./idebug";
 import { ILogger } from "./ilogger";
 
 export class Logger implements ILogger {
 
     private debugLogger: IDebug;
 
-    constructor(name: string) {
+    constructor(name: string, force: boolean = false) {
 
         this.debugLogger = Debug(name);
+
+        if (force) {
+
+            Debug.enable(`${name}:*`);
+
+        }
 
     }
 
