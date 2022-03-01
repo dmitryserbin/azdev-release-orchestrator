@@ -14,7 +14,7 @@ export class Logger implements ILogger {
 
         this.debugLogger = Debug(name);
 
-        if (force) {
+        if (force === true) {
 
             Debug.enable(`${name}:*`);
 
