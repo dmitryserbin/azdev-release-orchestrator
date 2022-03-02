@@ -17,7 +17,11 @@ import { OrchestratorFactory } from "./factories/orchestratorfactory";
 
 async function run() {
 
-    const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator");
+    // Force enable debug mode when Azure DevOps pipelines
+    // System diagnostics is enabled via System.Debug variable
+    const forceDebug: boolean = process.env.SYSTEM_DEBUG == "true" && process.env.DEBUG == undefined;
+
+    const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator", forceDebug);
     const consoleLogger: IConsoleLogger = new ConsoleLogger();
 
     const taskHelper: ITaskHelper = new TaskHelper(debugCreator);
