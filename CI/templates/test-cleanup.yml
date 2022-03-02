@@ -5,14 +5,9 @@ jobs:
   workspace:
     clean: all
   steps:
-  - task: PowerShell@2
-    displayName: Cleanup releases
-    inputs:
-      targetType: filePath
-      filePath: CI/scripts/Clear-Releases.ps1
-      arguments: >
-        -OrganizationName dmitryserbin
-        -ProjectName HelloYo
-        -DefinitionName HelloYo
-        -AccessToken $(System.AccessToken)
-      pwsh: true
+  - template: steps/test-cleanup.yml
+    parameters:
+      organizationName: dmitryserbin
+      projectName: HelloYo
+      definitionName: HelloYo
+      accessToken: $(System.AccessToken)
