@@ -6,20 +6,6 @@ trigger:
     include:
     - Tasks/*
 
-parameters:
-- name: testV1
-  displayName: Test V1
-  type: boolean
-  default: true
-- name: testV2
-  displayName: Test V2
-  type: boolean
-  default: true
-- name: testV3
-  displayName: Test V3
-  type: boolean
-  default: true
-
 stages:
 - stage: Build
   jobs:
