@@ -18,9 +18,9 @@ jobs:
       parameters:
         projectId: 761623f0-c4c0-4dab-884b-a428a01c200f
         definitionId: 1
-        specificReleaseId: 829
-        partialReleaseId: 831
-        failedReleaseId: 833
+        specificReleaseId: 838
+        partialReleaseId: 839
+        failedReleaseId: 840
         releaseStages: DEV,TEST,PROD
         artifactTagName: Build-Yo
         releaseTagName: Release-Yo
@@ -42,9 +42,9 @@ jobs:
       parameters:
         projectName: HelloYo
         definitionName: HelloYo
-        specificReleaseName: HelloYo-20220302.1-1
-        partialReleaseName: HelloYo-20220302.1-3
-        failedReleaseName: HelloYo-20220302.1-4
+        specificReleaseName: HelloYo-20220302.1-6
+        partialReleaseName: HelloYo-20220302.1-7
+        failedReleaseName: HelloYo-20220302.1-8
         releaseStage: DEV,TEST,PROD
         artifactVersion: 20220302.1
         artifactTag: Build-Yo
