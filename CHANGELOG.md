@@ -10,11 +10,11 @@
 
 `2022-03-03`
 
-- Add Azure DevOps pipelines system diagnostics support ([TBU](TBU))
+- Add Azure DevOps pipelines system diagnostics support ([70](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/70))
 
 `2021-02-15`
 
-- Improve release status retry mechanism ([60]([TBU](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/60)))
+- Improve release status retry mechanism ([60](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/60))
 
 `2021-01-29`
 
