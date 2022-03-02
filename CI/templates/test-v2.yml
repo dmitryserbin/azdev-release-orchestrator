@@ -8,10 +8,10 @@ jobs:
   - template: steps/test-v2.yml
     parameters:
       projectName: HelloYo
-      definitionName: HelloYo
-      specificReleaseName: HelloYo-V1-20220302.1-1
-      partialReleaseName: HelloYo-V1-20220302.1-2
-      failedReleaseName: HelloYo-V1-20220302.1-3
+      definitionName: HelloYo-V2
+      specificReleaseName: HelloYo-V2-20220302.1-1
+      partialReleaseName: HelloYo-V2-20220302.1-2
+      failedReleaseName: HelloYo-V2-20220302.1-3
       releaseStage: DEV,TEST,PROD
       artifactVersion: 20220302.1
       artifactTag: Build-Yo
