@@ -1,9 +1,9 @@
 parameters:
   projectId: ""
   definitionId: ""
-  releaseId: ""
-  releasePartialId: ""
-  releaseFailedId: ""
+  specificReleaseId: ""
+  partialReleaseId: ""
+  failedReleaseId: ""
   releaseStages: ""
   artifactTagName: ""
   releaseTagName: ""
@@ -16,7 +16,7 @@ steps:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
     ReleaseStrategy: specific
-    TargetRelease: ${{ parameters.releaseId }}
+    TargetRelease: ${{ parameters.specificReleaseId }}
     TargetReleaseStages: ${{ parameters.releaseStages }}
 
 - task: releaseorchestrator@1
@@ -25,7 +25,7 @@ steps:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
     ReleaseStrategy: specific
-    TargetRelease: ${{ parameters.releasePartialId }}
+    TargetRelease: ${{ parameters.partialReleaseId }}
     TargetReleaseStages: ${{ parameters.releaseStages }}
 
 - task: releaseorchestrator@1
@@ -34,7 +34,7 @@ steps:
     TargetProject: ${{ parameters.projectId }}
     TargetDefinition: ${{ parameters.definitionId }}
     ReleaseStrategy: specific
-    TargetRelease: ${{ parameters.releaseFailedId }}
+    TargetRelease: ${{ parameters.failedReleaseId }}
     TargetReleaseStages: ${{ parameters.releaseStages }}
     IgnoreFailure: true
 

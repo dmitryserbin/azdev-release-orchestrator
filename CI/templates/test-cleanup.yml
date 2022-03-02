@@ -1,0 +1,13 @@
+jobs:
+- job: Cleanup
+  pool:
+    name: Default
+  workspace:
+    clean: all
+  steps:
+  - template: steps/test-cleanup.yml
+    parameters:
+      organizationName: dmitryserbin
+      projectName: HelloYo
+      definitionName: HelloYo
+      accessToken: $(System.AccessToken)

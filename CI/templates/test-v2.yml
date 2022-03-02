@@ -1,0 +1,19 @@
+jobs:
+- job: OrchestratorV2
+  pool:
+    name: Default
+  workspace:
+    clean: all
+  steps:
+  - template: steps/test-v2.yml
+    parameters:
+      projectName: HelloYo
+      definitionName: HelloYo-V2
+      specificReleaseName: HelloYo-V2-20220302.1-1
+      partialReleaseName: HelloYo-V2-20220302.1-2
+      failedReleaseName: HelloYo-V2-20220302.1-3
+      releaseStage: DEV,TEST,PROD
+      artifactVersion: 20220302.1
+      artifactTag: Build-Yo
+      artifactBranch: refs/heads/working/test
+      releaseTag: Release-Yo

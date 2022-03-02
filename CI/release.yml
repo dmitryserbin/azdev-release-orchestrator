@@ -6,20 +6,6 @@ trigger:
     include:
     - Tasks/*
 
-parameters:
-- name: testV1
-  displayName: Test V1
-  type: boolean
-  default: true
-- name: testV2
-  displayName: Test V2
-  type: boolean
-  default: true
-- name: testV3
-  displayName: Test V3
-  type: boolean
-  default: true
-
 stages:
 - stage: Build
   jobs:
@@ -38,23 +24,10 @@ stages:
     parameters:
       environmentName: Marketplace
 
-- stage: Test
-  dependsOn:
-  - Build
-  - Preview
-  jobs:
-  - template: templates/test.yml
-    parameters:
-      testV1: ${{ parameters.testV1 }}
-      testV2: ${{ parameters.testV2 }}
-      testV3: ${{ parameters.testV3 }}
-      cleanup: true
-
 - stage: Release
   dependsOn:
   - Build
   - Preview
-  - Test
   jobs:
   - template: templates/release.yml
     parameters:
