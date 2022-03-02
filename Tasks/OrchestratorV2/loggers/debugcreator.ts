@@ -8,9 +8,15 @@ export class DebugCreator implements IDebugCreator {
 
     private debugLogger: IDebugLogger;
 
-    constructor(name: string) {
+    constructor(name: string, force: boolean = false) {
 
         this.debugLogger = Debug(name);
+
+        if (force === true) {
+
+            Debug.enable(`${name}:*`);
+
+        }
 
     }
 

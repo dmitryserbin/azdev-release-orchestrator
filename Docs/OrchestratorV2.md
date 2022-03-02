@@ -170,4 +170,4 @@ steps:
 
 ## Troubleshooting
 
-To enable debug mode to help troubleshooting issues, please configure `DEBUG=release-orchestrator:*` custom release [variable](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/variables).
+To enable debug mode to help troubleshooting issues, set `DEBUG=release-orchestrator:*` pipeline [variable](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/variables) turn on Azure DevOps pipelines [system diagnostics](https://docs.microsoft.com/en-us/azure/devops/pipelines/troubleshooting/review-logs?view=azure-devops#configure-verbose-logs) (or [debug mode](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/variables?view=azure-devops&tabs=batch#run-a-release-in-debug-mode) in classic release pipelines).
