@@ -1,0 +1,18 @@
+jobs:
+- job: OrchestratorV1
+  pool:
+    name: Default
+  workspace:
+    clean: all
+  steps:
+  - template: steps/test-v1.yml
+    parameters:
+      projectId: 761623f0-c4c0-4dab-884b-a428a01c200f
+      definitionId: 1
+      specificReleaseId: 838
+      partialReleaseId: 839
+      failedReleaseId: 840
+      releaseStages: DEV,TEST,PROD
+      artifactTagName: Build-Yo
+      releaseTagName: Release-Yo
+      sourceBranchName: refs/heads/working/test
