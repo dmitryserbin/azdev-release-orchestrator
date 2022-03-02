@@ -9,9 +9,9 @@ jobs:
     parameters:
       projectName: HelloYo
       definitionName: HelloYo
-      specificReleaseName: HelloYo-20220302.1-6
-      partialReleaseName: HelloYo-20220302.1-7
-      failedReleaseName: HelloYo-20220302.1-8
+      specificReleaseName: HelloYo-V1-20220302.1-1
+      partialReleaseName: HelloYo-V1-20220302.1-2
+      failedReleaseName: HelloYo-V1-20220302.1-3
       releaseStage: DEV,TEST,PROD
       artifactVersion: 20220302.1
       artifactTag: Build-Yo

@@ -9,9 +9,9 @@ jobs:
     parameters:
       projectId: 761623f0-c4c0-4dab-884b-a428a01c200f
       definitionId: 1
-      specificReleaseId: 838
-      partialReleaseId: 839
-      failedReleaseId: 840
+      specificReleaseId: 851
+      partialReleaseId: 853
+      failedReleaseId: 854
       releaseStages: DEV,TEST,PROD
       artifactTagName: Build-Yo
       releaseTagName: Release-Yo
