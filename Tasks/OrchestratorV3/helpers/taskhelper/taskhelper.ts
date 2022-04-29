@@ -317,7 +317,7 @@ export class TaskHelper implements ITaskHelper {
 
         if (buildTags.length) {
 
-            parameters.stages = buildTags;
+            parameters.filters.buildTags = buildTags;
 
         }
 

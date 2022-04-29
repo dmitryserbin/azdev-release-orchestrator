@@ -2,6 +2,10 @@
 
 ## 3.0.*
 
+`2022-04-30`
+
+- Fixed BuildTags parameter not assigned ([72](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/72))
+
 `2022-03-02`
 
 - Introduce V3 with YAML pipelines support ([68](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/68))
