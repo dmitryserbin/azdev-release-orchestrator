@@ -4,6 +4,7 @@ import { Build, BuildReason, BuildStatus, BuildResult, QueryDeletedOption, Build
 import { IBuildApiRetry } from "./ibuildapiretry";
 import { Retryable } from "../../common/retry";
 import { IApiClient } from "../../common/iapiclient";
+import { IRestResponse } from "typed-rest-client";
 
 export class BuildApiRetry implements IBuildApiRetry {
 
@@ -138,11 +139,11 @@ export class BuildApiRetry implements IBuildApiRetry {
 
         const run: unknown = await this.apiClient.patch(`${project}/_apis/build/builds/${buildId}/stages/${stageRefName}`, `7.1-preview.1`, updateParameters, true);
 
-        const responseCode: number | undefined = (run as any).statusCode;
+        const responseCode: number | undefined = (run as IRestResponse<number>).statusCode;
 
         const validResponseCodes: number[] = [ 200, 204 ];
 
-        if (!responseCode || validResponseCodes.includes(responseCode)) {
+        if (!responseCode || !validResponseCodes.includes(responseCode)) {
 
             throw new Error(`Unable to update <${stageRefName}> stage status`);
 
