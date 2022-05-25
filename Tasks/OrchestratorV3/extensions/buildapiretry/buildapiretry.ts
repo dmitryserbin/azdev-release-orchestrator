@@ -9,13 +9,11 @@ import { IRestResponse } from "typed-rest-client";
 export class BuildApiRetry implements IBuildApiRetry {
 
     private buildApi: IBuildApi;
-
     private apiClient: IApiClient;
 
     constructor(buildApi: IBuildApi, apiClient: IApiClient) {
 
         this.buildApi = buildApi;
-
         this.apiClient = apiClient;
 
     }
@@ -131,9 +129,8 @@ export class BuildApiRetry implements IBuildApiRetry {
 
     }
 
-    // BuildApi uses old API version which does not
-    // Include forceRetryAllJobs in body. Therefore
-    // Using our own API client to make updateStage call
+    // BuildApi uses old API version which does not support forceRetryAllJobs parameter
+    // Therefore using our own implementation to make updateStage REST call
     @Retryable()
     public async updateStage(updateParameters: UpdateStageParameters, buildId: number, stageRefName: string, project?: string): Promise<void> {
 
