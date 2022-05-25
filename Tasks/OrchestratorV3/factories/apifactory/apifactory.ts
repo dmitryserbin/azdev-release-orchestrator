@@ -67,7 +67,8 @@ export class ApiFactory implements IApiFactory {
         debug(`Initializing Azure DevOps Build API`);
 
         const buildApi: BuildApi = await this.webApi.getBuildApi();
-        const buildApiRetry: IBuildApiRetry = new BuildApiRetry(buildApi);
+        const apiClient: IApiClient = await this.createApiClient();
+        const buildApiRetry: IBuildApiRetry = new BuildApiRetry(buildApi, apiClient);
 
         return buildApiRetry;
 

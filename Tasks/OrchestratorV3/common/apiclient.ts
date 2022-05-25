@@ -32,6 +32,12 @@ export class ApiClient implements IApiClient {
 
         const response: IRestResponse<any> = await this.vsoClient.restClient.get(url);
 
+        if (response.statusCode) {
+
+            debug(`Response status code <${response.statusCode}> received`);
+
+        }
+
         return response.result;
 
     }
@@ -54,11 +60,20 @@ export class ApiClient implements IApiClient {
 
         const response: IRestResponse<any> = await this.vsoClient.restClient.create(url, body, requestOptions);
 
+        if (response.statusCode) {
+
+            debug(`Response status code <${response.statusCode}> received`);
+
+        }
+
         return response.result;
 
     }
 
-    public async patch<T>(path: string, apiVersion?: string, body?: any): Promise<T> {
+    // Ability to return raw response
+    // As updateStage method requires
+    // StatusCode for success validation
+    public async patch<T>(path: string, apiVersion?: string, body?: any, raw?: boolean): Promise<T | IRestResponse<T>> {
 
         const debug = this.debugLogger.extend(this.patch.name);
 
@@ -76,7 +91,21 @@ export class ApiClient implements IApiClient {
 
         const response: IRestResponse<any> = await this.vsoClient.restClient.update(url, body, requestOptions);
 
-        return response.result;
+        if (response.statusCode) {
+
+            debug(`Response status code <${response.statusCode}> received`);
+
+        }
+
+        if (raw) {
+
+            return response;
+
+        } else {
+
+            return response.result;
+
+        }
 
     }
 
@@ -97,6 +126,12 @@ export class ApiClient implements IApiClient {
         }
 
         const response: IRestResponse<any> = await this.vsoClient.restClient.replace(url, body, requestOptions);
+
+        if (response.statusCode) {
+
+            debug(`Response status code <${response.statusCode}> received`);
+
+        }
 
         return response.result;
 
@@ -119,6 +154,12 @@ export class ApiClient implements IApiClient {
         }
 
         const response: IRestResponse<any> = await this.vsoClient.restClient.del(url, requestOptions);
+
+        if (response.statusCode) {
+
+            debug(`Response status code <${response.statusCode}> received`);
+
+        }
 
         return response.result;
 
