@@ -4,11 +4,11 @@
 
 `2022-05-26`
 
-- Improve force stage start mechanism update stage ([76](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/76))
+- Improve force stage start mechanism ([76](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/76))
 
 `2022-04-30`
 
-- Fixed BuildTags parameter not assigned ([72](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/72))
+- Fixed `buildTags` parameter not assigned ([72](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/72))
 
 `2022-03-02`
 
