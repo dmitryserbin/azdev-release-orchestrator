@@ -1,10 +1,12 @@
 # Changelog
 
-## 3.0.*
+## 3.1.*
 
 `2022-10-20`
 
 - Remove obsolete V1 task ([83](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/83))
+
+## 3.0.*
 
 `2022-05-26`
 
