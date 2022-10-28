@@ -6,6 +6,8 @@ trigger:
     include:
     - Tasks/*
 
+pr: none
+
 stages:
 - stage: Build
   jobs:
