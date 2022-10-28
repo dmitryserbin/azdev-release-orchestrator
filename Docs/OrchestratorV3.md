@@ -42,7 +42,7 @@ Stop builds | `Allow`
 View build pipeline | `Allow`
 View builds | `Allow`
 
-Use `Project Collection Build Service` for integrated endpoint or user specified account for custom service endpoint. You can grant required permissions to all pipelines in the project or to a specific pipeline only.
+Use `Project Collection Build Service` for integrated endpoint (do not mix up with Project Build Service) or user specified account for custom service endpoint. You can grant required permissions to all pipelines in the project or to a specific pipeline only.
 
 Please refer to Azure DevOps [permissions and security roles documentation](https://docs.microsoft.com/en-us/azure/devops/pipelines/policies/permissions) for more details.
 

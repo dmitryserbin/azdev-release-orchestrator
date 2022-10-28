@@ -31,7 +31,7 @@ Task | Description
 2. Select prefered Azure DevOps service endpoint type
 3. Select target project and define target pipeline
 
-> Release Orchestrator V3 task (target YAML pipeline), please refer to task version 3 [documentation](Docs/OrchestratorV3.md) for more details.
+> Release Orchestrator V3 task (target YAML pipeline), please refer to task [version 3 documentation](Docs/OrchestratorV3.md) for more details.
 
 ```yaml
 - task: releaseorchestrator@3
@@ -43,7 +43,7 @@ Task | Description
     stages: DEV
 ```
 
-> Release Orchestrator V2 task (target classic pipeline), please refer to task version 2 [documentation](Docs/OrchestratorV2.md) for more details.
+> Release Orchestrator V2 task (target classic pipeline), please refer to task [version 2 documentation](Docs/OrchestratorV2.md) for more details.
 
 ```yaml
 - task: releaseorchestrator@2
