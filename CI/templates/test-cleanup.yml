@@ -9,11 +9,5 @@ jobs:
     parameters:
       organizationName: dmitryserbin
       projectName: HelloYo
-      definitionName: HelloYo-V1
-      accessToken: $(System.AccessToken)
-  - template: steps/test-cleanup.yml
-    parameters:
-      organizationName: dmitryserbin
-      projectName: HelloYo
       definitionName: HelloYo-V2
       accessToken: $(System.AccessToken)
