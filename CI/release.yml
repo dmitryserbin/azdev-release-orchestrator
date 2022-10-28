@@ -6,12 +6,13 @@ trigger:
     include:
     - Tasks/*
 
+pr: none
+
 stages:
 - stage: Build
   jobs:
   - template: templates/build.yml
     parameters:
-      taskV1: true
       taskV2: true
       taskV3: true
       extension: true

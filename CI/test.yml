@@ -1,11 +1,6 @@
 trigger: none
 
 stages:
-- stage: OrchestratorV1
-  dependsOn: []
-  jobs:
-  - template: templates/test-v1.yml
-
 - stage: OrchestratorV2
   dependsOn: []
   jobs:
@@ -18,7 +13,6 @@ stages:
 
 - stage: Cleanup
   dependsOn:
-  - OrchestratorV1
   - OrchestratorV2
   - OrchestratorV3
   jobs:
