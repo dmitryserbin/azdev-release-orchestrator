@@ -11,3 +11,13 @@ steps:
     definitionName: ${{ parameters.definitionName }}
     strategy: new
     stages: ${{ parameters.stages }}
+
+- task: releaseorchestrator@3
+  displayName: New release (parameters)
+  inputs:
+    projectName: ${{ parameters.projectName }}
+    definitionName: ${{ parameters.definitionName }}
+    strategy: new
+    stages: ${{ parameters.stages }}
+    parameters: |
+      message=Test!
