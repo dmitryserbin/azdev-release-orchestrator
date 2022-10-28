@@ -2,6 +2,10 @@
 
 ## 3.0.*
 
+`2022-10-20`
+
+- Remove obsolete V1 task ([83](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/83))
+
 `2022-05-26`
 
 - Improve force stage start mechanism ([76](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/76))
