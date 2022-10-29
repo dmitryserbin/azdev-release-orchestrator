@@ -42,7 +42,7 @@ async function run() {
 
         await taskHelper.validate(releaseProgress.status);
 
-    } catch (error) {
+    } catch (error: any) {
 
         await taskHelper.fail(error.message);
 

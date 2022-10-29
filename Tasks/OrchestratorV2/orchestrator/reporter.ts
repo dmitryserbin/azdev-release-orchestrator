@@ -132,10 +132,10 @@ export class Reporter implements IReporter {
 
         table.push([
 
-            release.id,
-            release.name,
+            release.id ? release.id.toString() : "-",
+            release.name ? release.name.toString() : "-",
             releaseStages ? String.Join("|", releaseStages) : "-",
-            release.createdBy ? release.createdBy!.displayName : "-",
+            release.createdBy!.displayName ? release.createdBy!.displayName : "-",
             releaseDate ? `${releaseDate.toLocaleDateString()} at ${releaseDate.toLocaleTimeString()}` : "-",
 
         ]);

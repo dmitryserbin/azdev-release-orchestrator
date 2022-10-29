@@ -43,8 +43,14 @@ export class TaskHelper implements ITaskHelper {
 
         }
 
-        const endpointUrl: string = getEndpointUrl(endpointName, false);
+        const endpointUrl: string | undefined = getEndpointUrl(endpointName, false);
         const endpointToken: string | undefined = getEndpointAuthorizationParameter(endpointName, tokenParameterName, false);
+
+        if (!endpointUrl) {
+
+            throw new Error(`Unable to get <${endpointName}> endpoint URL`);
+
+        }
 
         if (!endpointToken) {
 
