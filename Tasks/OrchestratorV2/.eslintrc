@@ -1,13 +1,11 @@
 {
   "parser": "@typescript-eslint/parser",
-  "env": {
-    "commonjs": true,
-    "es6": true,
-    "es2020": true,
-    "node": true
-  },
   "parserOptions": {
-    "ecmaVersion": 2019
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": [
+      "tsconfig.json"
+    ]
   },
   "plugins": [
     "@typescript-eslint"

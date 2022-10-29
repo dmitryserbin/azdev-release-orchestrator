@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { IEndpoint } from "./interfaces/task/endpoint";
 import { IParameters } from "./interfaces/task/parameters";
 import { ITaskHelper } from "./interfaces/helpers/taskhelper";
