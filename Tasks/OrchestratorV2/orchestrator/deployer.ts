@@ -1,21 +1,19 @@
-import { String } from "typescript-string-operations";
+import { EnvironmentStatus, Release, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { Release, ReleaseEnvironment, EnvironmentStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
-
-import { IDetails } from "../interfaces/task/details";
-import { IDeployer } from "../interfaces/orchestrator/deployer";
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
-import { ICommonHelper } from "../interfaces/helpers/commonhelper";
-import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
-import { IReleaseJob } from "../interfaces/common/releasejob";
-import { IMonitor } from "../interfaces/orchestrator/monitor";
-import { IStageProgress } from "../interfaces/common/stageprogress";
-import { IReleaseProgress } from "../interfaces/common/releaseprogress";
-import { ReleaseStatus } from "../interfaces/common/releasestatus";
-import { IApprover } from "../interfaces/orchestrator/approver";
-import { IReporter } from "../interfaces/orchestrator/reporter";
+import { IDetails } from "../interfaces/task/idetails";
+import { IDeployer } from "../interfaces/orchestrator/ideployer";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
+import { IConsoleLogger } from "../interfaces/loggers/iconsolelogger";
+import { ICommonHelper } from "../interfaces/helpers/icommonhelper";
+import { IReleaseHelper } from "../interfaces/helpers/ireleasehelper";
+import { IReleaseJob } from "../interfaces/common/ireleasejob";
+import { IMonitor } from "../interfaces/orchestrator/imonitor";
+import { IStageProgress } from "../interfaces/common/istageprogress";
+import { IReleaseProgress } from "../interfaces/common/ireleaseprogress";
+import { ReleaseStatus } from "../interfaces/common/ireleasestatus";
+import { IApprover } from "../interfaces/orchestrator/iapprover";
+import { IReporter } from "../interfaces/orchestrator/ireporter";
 
 export class Deployer implements IDeployer {
 
@@ -120,7 +118,7 @@ export class Deployer implements IDeployer {
 
         }
 
-        this.consoleLogger.log(`All release stages <${String.Join("|", releaseJob.stages)}> deployment completed`);
+        this.consoleLogger.log(`All release stages <${releaseJob.stages?.join("|")}> deployment completed`);
 
         this.consoleLogger.log(
             this.progressReporter.getStagesProgress(releaseProgress.stages));
@@ -139,7 +137,7 @@ export class Deployer implements IDeployer {
 
         do {
 
-            debug(`Monitoring <${String.Join("|", releaseProgress.stages.map((stage) => stage.name))}> stage(s) deployment progress`);
+            debug(`Monitoring <${releaseProgress.stages.map((stage) => stage.name)?.join("|")}> stage(s) deployment progress`);
 
             const releaseStatus: Release = await this.releaseHelper.getReleaseStatus(releaseJob.project.name!, releaseJob.release.id!);
 
@@ -190,7 +188,7 @@ export class Deployer implements IDeployer {
 
         } while (releaseProgress.status === ReleaseStatus.InProgress);
 
-        this.consoleLogger.log(`All release stages <${String.Join("|", releaseJob.stages)}> deployment completed`);
+        this.consoleLogger.log(`All release stages <${releaseJob.stages?.join("|")}> deployment completed`);
 
         this.consoleLogger.log(
             this.progressReporter.getStagesProgress(releaseProgress.stages));

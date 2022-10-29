@@ -4,8 +4,6 @@ parameters:
 jobs:
 - deployment: Publish
   environment: ${{ parameters.environmentName }}
-  pool:
-    name: Default
   workspace:
     clean: all
   variables:

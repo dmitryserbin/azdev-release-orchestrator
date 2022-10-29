@@ -36,9 +36,9 @@ describe("FilterCreator", async () => {
 
         filtersMock = {
 
-            buildNumber: ``,
-            branchName: ``,
-            buildResult: ``,
+            buildNumber: "",
+            branchName: "",
+            buildResult: "",
             buildTags: [],
             pipelineResources: {},
             repositoryResources: {},
@@ -51,7 +51,7 @@ describe("FilterCreator", async () => {
 
         //#region ARRANGE
 
-        filtersMock.branchName = `My-Branch`;
+        filtersMock.branchName = "My-Branch";
 
         //#endregion
 
@@ -75,7 +75,7 @@ describe("FilterCreator", async () => {
 
         //#region ARRANGE
 
-        filtersMock.buildResult = `Succeeded`;
+        filtersMock.buildResult = "Succeeded";
 
         //#endregion
 
@@ -98,7 +98,7 @@ describe("FilterCreator", async () => {
 
         //#region ARRANGE
 
-        filtersMock.buildTags = [ `One`, `Two` ];
+        filtersMock.buildTags = [ "One", "Two" ];
 
         //#endregion
 
@@ -122,7 +122,7 @@ describe("FilterCreator", async () => {
 
         //#region ARRANGE
 
-        filtersMock.branchName = `My-Branch`;
+        filtersMock.branchName = "My-Branch";
 
         //#endregion
 

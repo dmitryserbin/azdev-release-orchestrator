@@ -1,5 +1,7 @@
 trigger: none
 
+pool: Default
+
 stages:
 - stage: OrchestratorV2
   dependsOn: []

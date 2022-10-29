@@ -1,26 +1,27 @@
-import parseKeyValue from "parse-key-value-pair";
+import { TaskResult, getBoolInput, getDelimitedInput, getEndpointAuthorizationParameter, getEndpointUrl, getInput, getVariable, setResult } from "azure-pipelines-task-lib/task";
 
-import { getInput, getEndpointUrl, getEndpointAuthorizationParameter, getBoolInput, getDelimitedInput, getVariable, setResult, TaskResult } from "azure-pipelines-task-lib/task";
-
-import { ITaskHelper } from "../interfaces/helpers/taskhelper";
-import { IEndpoint } from "../interfaces/task/endpoint";
-import { IParameters } from "../interfaces/task/parameters";
-import { ReleaseType } from "../interfaces/common/releasetype";
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { IDetails } from "../interfaces/task/details";
-import { ReleaseStatus } from "../interfaces/common/releasestatus";
-import { IFilters } from "../interfaces/task/filters";
-import { IReleaseVariable } from "../interfaces/common/releasevariable";
-import { ISettings } from "../interfaces/common/settings";
+import { ITaskHelper } from "../interfaces/helpers/itaskhelper";
+import { IEndpoint } from "../interfaces/task/iendpoint";
+import { IParameters } from "../interfaces/task/iparameters";
+import { ReleaseType } from "../interfaces/common/ireleasetype";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
+import { IDetails } from "../interfaces/task/idetails";
+import { ReleaseStatus } from "../interfaces/common/ireleasestatus";
+import { IFilters } from "../interfaces/task/ifilters";
+import { IReleaseVariable } from "../interfaces/common/ireleasevariable";
+import { ISettings } from "../interfaces/common/isettings";
+import { ICommonHelper } from "../interfaces/helpers/icommonhelper";
 
 export class TaskHelper implements ITaskHelper {
 
     private debugLogger: IDebugLogger;
+    private commonHelper: ICommonHelper;
 
-    constructor(debugCreator: IDebugCreator) {
+    constructor(debugCreator: IDebugCreator, commonHelper: ICommonHelper) {
 
         this.debugLogger = debugCreator.extend(this.constructor.name);
+        this.commonHelper = commonHelper;
 
     }
 
@@ -43,8 +44,14 @@ export class TaskHelper implements ITaskHelper {
 
         }
 
-        const endpointUrl: string = getEndpointUrl(endpointName, false);
+        const endpointUrl: string | undefined = getEndpointUrl(endpointName, false);
         const endpointToken: string | undefined = getEndpointAuthorizationParameter(endpointName, tokenParameterName, false);
+
+        if (!endpointUrl) {
+
+            throw new Error(`Unable to get <${endpointName}> endpoint URL`);
+
+        }
 
         if (!endpointToken) {
 
@@ -161,7 +168,7 @@ export class TaskHelper implements ITaskHelper {
             requesterName: requesterName ? requesterName : "Release Orchestrator",
             requesterId: requesterId ? requesterId : "Unknown",
 
-        }
+        };
 
         debug(details);
 
@@ -173,8 +180,8 @@ export class TaskHelper implements ITaskHelper {
 
         const debug = this.debugLogger.extend(this.validate.name);
 
-        const partialMessage: string = `One or more release stages partially succeeded`;
-        const failedMessage: string = `One or more release stages deployment failed`;
+        const partialMessage: string = "One or more release stages partially succeeded";
+        const failedMessage: string = "One or more release stages deployment failed";
 
         debug(status);
 
@@ -267,7 +274,7 @@ export class TaskHelper implements ITaskHelper {
 
             for (const variable of releaseVariables) {
 
-                const value: [string, string] | null = parseKeyValue(variable);
+                const value: [string, string] = this.commonHelper.parseKeyValue(variable);
 
                 if (value) {
 

@@ -1,15 +1,13 @@
-import { String } from "typescript-string-operations";
+import { ApprovalStatus, DeploymentAttempt, EnvironmentStatus, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { ApprovalStatus, EnvironmentStatus, ReleaseEnvironment, DeploymentAttempt } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
-
-import { IMonitor } from "../interfaces/orchestrator/monitor";
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { IReleaseProgress } from "../interfaces/common/releaseprogress";
-import { IStageApproval } from "../interfaces/common/stageapproval";
-import { IStageProgress } from "../interfaces/common/stageprogress";
-import { ReleaseStatus } from "../interfaces/common/releasestatus";
-import { IReleaseJob } from "../interfaces/common/releasejob";
+import { IMonitor } from "../interfaces/orchestrator/imonitor";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
+import { IReleaseProgress } from "../interfaces/common/ireleaseprogress";
+import { IStageApproval } from "../interfaces/common/istageapproval";
+import { IStageProgress } from "../interfaces/common/istageprogress";
+import { ReleaseStatus } from "../interfaces/common/ireleasestatus";
+import { IReleaseJob } from "../interfaces/common/ireleasejob";
 
 export class Monitor implements IMonitor {
 
@@ -61,8 +59,9 @@ export class Monitor implements IMonitor {
                 name: stage,
                 id: releaseStage.id,
                 approval: approvalStatus,
-                status: EnvironmentStatus.NotStarted
-            }
+                status: EnvironmentStatus.NotStarted,
+
+            };
 
             releaseProgress.stages.push(stageProgress);
 
@@ -79,19 +78,17 @@ export class Monitor implements IMonitor {
         const debug = this.debugLogger.extend(this.updateReleaseProgress.name);
 
         const completedStages: string[] = releaseProgress.stages.filter(
-            (stage) => this.isStageCompleted(stage)).map(
-                (stage) => stage.name);
+            (stage) => this.isStageCompleted(stage)).map((stage) => stage.name);
 
         const activeStages: string[] = releaseProgress.stages.filter(
-            (stage) => this.isStageActive(stage)).map(
-                (stage) => stage.name);
+            (stage) => this.isStageActive(stage)).map((stage) => stage.name);
 
         // Get stages completion status
         const completed: boolean = completedStages.length === releaseProgress.stages.length;
 
         if (completed) {
 
-            debug(`All release stages <${String.Join("|", completedStages)}> completed`);
+            debug(`All release stages <${completedStages?.join("|")}> completed`);
 
             // Get rejected or canceled stages
             const failed: boolean = releaseProgress.stages.filter((i) =>
@@ -121,7 +118,7 @@ export class Monitor implements IMonitor {
 
         } else {
 
-            debug(`Release stages <${String.Join("|", activeStages)}> in progress`);
+            debug(`Release stages <${activeStages?.join("|")}> in progress`);
 
             releaseProgress.status = ReleaseStatus.InProgress;
 

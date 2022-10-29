@@ -4,18 +4,18 @@ import * as chai from "chai";
 import * as TypeMoq from "typemoq";
 
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
-import { ReleaseEnvironment, Release, ApprovalStatus, EnvironmentStatus, DeploymentAttempt } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ApprovalStatus, DeploymentAttempt, EnvironmentStatus, Release, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../../interfaces/loggers/debuglogger";
-import { IMonitor } from "../../interfaces/orchestrator/monitor";
+import { IDebugCreator } from "../../interfaces/loggers/idebugcreator";
+import { IDebugLogger } from "../../interfaces/loggers/idebuglogger";
+import { IMonitor } from "../../interfaces/orchestrator/imonitor";
 import { Monitor } from "../../orchestrator/monitor";
-import { IReleaseJob } from "../../interfaces/common/releasejob";
-import { ReleaseStatus } from "../../interfaces/common/releasestatus";
-import { IReleaseProgress } from "../../interfaces/common/releaseprogress";
-import { IStageProgress } from "../../interfaces/common/stageprogress";
+import { IReleaseJob } from "../../interfaces/common/ireleasejob";
+import { ReleaseStatus } from "../../interfaces/common/ireleasestatus";
+import { IReleaseProgress } from "../../interfaces/common/ireleaseprogress";
+import { IStageProgress } from "../../interfaces/common/istageprogress";
 
-describe("Monitor", ()  => {
+describe("Monitor", () => {
 
     const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>();
     const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>();

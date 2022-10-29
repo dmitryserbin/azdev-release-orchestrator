@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
+import { IConsoleLogger } from "../interfaces/loggers/iconsolelogger";
 
 export class ConsoleLogger implements IConsoleLogger {
 

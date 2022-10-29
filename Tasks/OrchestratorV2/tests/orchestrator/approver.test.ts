@@ -3,21 +3,21 @@ import "mocha";
 import * as chai from "chai";
 import * as TypeMoq from "typemoq";
 
-import { ReleaseEnvironment, ApprovalStatus, ReleaseApproval } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ApprovalStatus, ReleaseApproval, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
-import { IConsoleLogger } from "../../interfaces/loggers/consolelogger";
-import { IDebugLogger } from "../../interfaces/loggers/debuglogger";
-import { IReleaseHelper } from "../../interfaces/helpers/releasehelper";
-import { IDetails } from "../../interfaces/task/details";
-import { ICommonHelper } from "../../interfaces/helpers/commonhelper";
-import { IApprover } from "../../interfaces/orchestrator/approver";
-import { IStageProgress } from "../../interfaces/common/stageprogress";
-import { ISettings } from "../../interfaces/common/settings";
+import { IDebugCreator } from "../../interfaces/loggers/idebugcreator";
+import { IConsoleLogger } from "../../interfaces/loggers/iconsolelogger";
+import { IDebugLogger } from "../../interfaces/loggers/idebuglogger";
+import { IReleaseHelper } from "../../interfaces/helpers/ireleasehelper";
+import { IDetails } from "../../interfaces/task/idetails";
+import { ICommonHelper } from "../../interfaces/helpers/icommonhelper";
+import { IApprover } from "../../interfaces/orchestrator/iapprover";
+import { IStageProgress } from "../../interfaces/common/istageprogress";
+import { ISettings } from "../../interfaces/common/isettings";
 import { Approver } from "../../orchestrator/approver";
-import { IStageApproval } from "../../interfaces/common/stageapproval";
+import { IStageApproval } from "../../interfaces/common/istageapproval";
 
-describe("Approver", ()  => {
+describe("Approver", () => {
 
     const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>();
     const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>();

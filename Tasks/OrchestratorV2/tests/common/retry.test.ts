@@ -5,9 +5,9 @@ import "mocha";
 import * as chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 
-import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
+import { IDebugCreator } from "../../interfaces/loggers/idebugcreator";
 import { DebugCreator } from "../../loggers/debugcreator";
-import { RetryThis, IRetryThis } from "./retrythis";
+import { IRetryThis, RetryThis } from "./retrythis";
 
 const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator");
 

@@ -5,7 +5,7 @@ export interface IRunProgress {
 
     id: number;
     name: string;
-    project: string,
+    project: string;
     url: string;
     stages: IBuildStage[];
     status: RunStatus;

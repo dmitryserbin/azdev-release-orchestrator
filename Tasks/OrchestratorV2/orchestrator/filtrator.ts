@@ -1,17 +1,15 @@
-import { String } from "typescript-string-operations";
-
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
-import { ReleaseDefinition, Artifact, EnvironmentStatus, ReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { Artifact, EnvironmentStatus, ReleaseDefinition, ReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
-import { IBuildHelper } from "../interfaces/helpers/buildhelper";
-import { IReleaseFilter } from "../interfaces/common/releasefilter";
-import { IArtifactFilter } from "../interfaces/common/artifactfilter";
-import { IFilters } from "../interfaces/task/filters";
-import { IFiltrator } from "../interfaces/orchestrator/filtrator";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
+import { IReleaseHelper } from "../interfaces/helpers/ireleasehelper";
+import { IBuildHelper } from "../interfaces/helpers/ibuildhelper";
+import { IReleaseFilter } from "../interfaces/common/ireleasefilter";
+import { IArtifactFilter } from "../interfaces/common/iartifactfilter";
+import { IFilters } from "../interfaces/task/ifilters";
+import { IFiltrator } from "../interfaces/orchestrator/ifiltrator";
 
 export class Filtrator implements IFiltrator {
 
@@ -117,7 +115,7 @@ export class Filtrator implements IFiltrator {
         // Add release tag filter
         if (filters.releaseTags.length) {
 
-            debug(`Using <${String.Join("|", filters.releaseTags)}> release tag filter`);
+            debug(`Using <${filters.releaseTags?.join("|")}> release tag filter`);
 
             releaseFilter.tags = filters.releaseTags;
 
@@ -126,7 +124,7 @@ export class Filtrator implements IFiltrator {
         // Add stage status filter
         if (filters.stageStatuses.length) {
 
-            debug(`Using <${String.Join("|", filters.stageStatuses)}> release stage status filter`);
+            debug(`Using <${filters.stageStatuses?.join("|")}> release stage status filter`);
 
             const supportedStatuses: string[] = [
 
@@ -174,7 +172,7 @@ export class Filtrator implements IFiltrator {
 
                     } default: {
 
-                        throw new Error(`Stage status filter <${status}> not supported. Supported statuses: ${String.Join("|", supportedStatuses)}`);
+                        throw new Error(`Stage status filter <${status}> not supported. Supported statuses: ${supportedStatuses?.join("|")}`);
 
                     }
 
@@ -202,7 +200,7 @@ export class Filtrator implements IFiltrator {
 
         if (tags.length) {
 
-            debug(`Using <${String.Join("|", tags)}> artifact tag filter`);
+            debug(`Using <${tags?.join("|")}> artifact tag filter`);
 
         }
 

@@ -1,23 +1,21 @@
-import { String } from "typescript-string-operations";
-
-import { ReleaseDefinition, Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { Release, ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 
-import { IParameters } from "../interfaces/task/parameters";
-import { ReleaseType } from "../interfaces/common/releasetype";
-import { IDetails } from "../interfaces/task/details";
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
-import { ICoreHelper } from "../interfaces/helpers/corehelper";
-import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
-import { ICreator } from "../interfaces/orchestrator/creator";
-import { IReleaseJob } from "../interfaces/common/releasejob";
-import { IReleaseFilter } from "../interfaces/common/releasefilter";
-import { IArtifactFilter } from "../interfaces/common/artifactfilter";
-import { DeploymentType } from "../interfaces/common/deploymenttype";
-import { IReporter } from "../interfaces/orchestrator/reporter";
-import { IFiltrator } from "../interfaces/orchestrator/filtrator";
+import { IParameters } from "../interfaces/task/iparameters";
+import { ReleaseType } from "../interfaces/common/ireleasetype";
+import { IDetails } from "../interfaces/task/idetails";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
+import { IConsoleLogger } from "../interfaces/loggers/iconsolelogger";
+import { ICoreHelper } from "../interfaces/helpers/icorehelper";
+import { IReleaseHelper } from "../interfaces/helpers/ireleasehelper";
+import { ICreator } from "../interfaces/orchestrator/icreator";
+import { IReleaseJob } from "../interfaces/common/ireleasejob";
+import { IReleaseFilter } from "../interfaces/common/ireleasefilter";
+import { IArtifactFilter } from "../interfaces/common/iartifactfilter";
+import { DeploymentType } from "../interfaces/common/ideploymenttype";
+import { IReporter } from "../interfaces/orchestrator/ireporter";
+import { IFiltrator } from "../interfaces/orchestrator/ifiltrator";
 
 export class Creator implements ICreator {
 
@@ -66,7 +64,7 @@ export class Creator implements ICreator {
 
         };
 
-        debug(`Release <${targetRelease.name}> (<${String.Join("|", targetStages)}>) job cleated`);
+        debug(`Release <${targetRelease.name}> (<${targetStages?.join("|")}>) job cleated`);
 
         return releaseJob;
 
@@ -85,7 +83,7 @@ export class Creator implements ICreator {
                 this.consoleLogger.log(`Creating new <${definition.name}> (${definition.id}) release pipeline release`);
 
                 this.consoleLogger.log(
-                    this.progressReporter.getFilters(parameters.filters)
+                    this.progressReporter.getFilters(parameters.filters),
                 );
 
                 const artifactFilter: IArtifactFilter[] = await this.filterCreator.createArtifactFilter(project, definition, parameters.filters);
@@ -95,7 +93,7 @@ export class Creator implements ICreator {
                     this.consoleLogger.log(`Overridding <${parameters.variables.length}> release pipeline <${definition.name}> variable(s)`);
 
                     this.consoleLogger.log(
-                        this.progressReporter.getVariables(parameters.variables)
+                        this.progressReporter.getVariables(parameters.variables),
                     );
 
                 }
@@ -109,7 +107,7 @@ export class Creator implements ICreator {
                 this.consoleLogger.log(`Targeting latest <${definition.name}> (${definition.id}) release pipeline release`);
 
                 this.consoleLogger.log(
-                    this.progressReporter.getFilters(parameters.filters)
+                    this.progressReporter.getFilters(parameters.filters),
                 );
 
                 const releaseFilter: IReleaseFilter = await this.filterCreator.createReleaseFilter(definition, parameters.stages, parameters.filters);

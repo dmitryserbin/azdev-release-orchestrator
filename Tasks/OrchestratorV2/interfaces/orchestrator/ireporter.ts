@@ -1,9 +1,9 @@
 import { Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { IReleaseProgress } from "../common/releaseprogress";
-import { IStageProgress } from "../common/stageprogress";
-import { IFilters } from "../task/filters";
-import { IReleaseVariable } from "../common/releasevariable";
+import { IReleaseProgress } from "../common/ireleaseprogress";
+import { IStageProgress } from "../common/istageprogress";
+import { IFilters } from "../task/ifilters";
+import { IReleaseVariable } from "../common/ireleasevariable";
 
 export interface IReporter {
 

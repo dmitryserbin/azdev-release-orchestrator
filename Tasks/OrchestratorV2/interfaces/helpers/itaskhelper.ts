@@ -1,7 +1,7 @@
-import { IEndpoint } from "../task/endpoint";
-import { IParameters } from "../task/parameters";
-import { IDetails } from "../task/details";
-import { ReleaseStatus } from "../common/releasestatus";
+import { IEndpoint } from "../task/iendpoint";
+import { IParameters } from "../task/iparameters";
+import { IDetails } from "../task/idetails";
+import { ReleaseStatus } from "../common/ireleasestatus";
 
 export interface ITaskHelper {
 

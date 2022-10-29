@@ -1,6 +1,6 @@
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { ICommonHelper } from "../interfaces/helpers/commonhelper";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
+import { ICommonHelper } from "../interfaces/helpers/icommonhelper";
 
 export class CommonHelper implements ICommonHelper {
 
@@ -19,6 +19,25 @@ export class CommonHelper implements ICommonHelper {
         debug(`Waiting <${count}> milliseconds`);
 
         return new Promise((resolve) => setTimeout(resolve, count));
+
+    }
+
+    public parseKeyValue(input: string): [string, string] {
+
+        const matchRegex = /^\s*([\w\\.\\-\s]+)\s*=\s*(.*)?\s*$/;
+
+        const match: RegExpMatchArray | null = input.match(matchRegex);
+
+        if (match === null) {
+
+            throw new Error(`Unable to parse <${input}> input`);
+
+        }
+
+        const key = match[1].trim();
+        const value = match[2].trim();
+
+        return [ key, value ];
 
     }
 

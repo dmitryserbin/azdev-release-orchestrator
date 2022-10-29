@@ -28,14 +28,14 @@ export class FilterCreator implements IFilterCreator {
             repositories: {},
             pipelines: {},
 
-        }
+        };
 
         if (filters.branchName) {
 
             const self: IRepositoryFilter = {
 
                 refName: `refs/heads/${filters.branchName}`,
-                version: ``,
+                version: "",
 
             };
 
@@ -66,7 +66,7 @@ export class FilterCreator implements IFilterCreator {
                 const repositoryFilter: IRepositoryFilter = {
 
                     refName: `refs/heads/${filters.repositoryResources[resource]}`,
-                    version: ``,
+                    version: "",
 
                 };
 
@@ -96,7 +96,7 @@ export class FilterCreator implements IFilterCreator {
             ],
             buildResult: filters.buildResult ? (<never>BuildResult)[filters.buildResult] : undefined,
             tagFilters: filters.buildTags,
-            branchName: filters.branchName ? `refs/heads/${filters.branchName}` : ``,
+            branchName: filters.branchName ? `refs/heads/${filters.branchName}` : "",
 
         };
 

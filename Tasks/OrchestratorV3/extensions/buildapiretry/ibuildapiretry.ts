@@ -1,5 +1,5 @@
 import { IBuildApi } from "azure-devops-node-api/BuildApi";
-import { Build, BuildReason, BuildStatus, BuildResult, QueryDeletedOption, BuildQueryOrder, BuildDefinition, BuildDefinitionReference, DefinitionQueryOrder, Timeline, UpdateStageParameters } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, BuildDefinition, BuildDefinitionReference, BuildQueryOrder, BuildReason, BuildResult, BuildStatus, DefinitionQueryOrder, QueryDeletedOption, Timeline, UpdateStageParameters } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 export interface IBuildApiRetry extends Partial<IBuildApi> {
 

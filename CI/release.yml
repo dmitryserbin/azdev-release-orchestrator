@@ -8,6 +8,9 @@ trigger:
 
 pr: none
 
+pool:
+  vmImage: ubuntu-latest
+
 stages:
 - stage: Build
   jobs:

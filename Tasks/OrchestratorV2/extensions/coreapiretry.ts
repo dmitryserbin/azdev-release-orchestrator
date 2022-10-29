@@ -1,7 +1,7 @@
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { ICoreApi } from "azure-devops-node-api/CoreApi";
 
-import { ICoreApiRetry } from "../interfaces/extensions/coreapiretry";
+import { ICoreApiRetry } from "../interfaces/extensions/icoreapiretry";
 import { Retryable } from "../common/retry";
 
 export class CoreApiRetry implements ICoreApiRetry {

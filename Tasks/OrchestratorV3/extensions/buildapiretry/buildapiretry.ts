@@ -1,5 +1,5 @@
 import { IBuildApi } from "azure-devops-node-api/BuildApi";
-import { Build, BuildReason, BuildStatus, BuildResult, QueryDeletedOption, BuildQueryOrder, BuildDefinition, DefinitionQueryOrder, BuildDefinitionReference, Timeline, UpdateStageParameters } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, BuildDefinition, BuildDefinitionReference, BuildQueryOrder, BuildReason, BuildResult, BuildStatus, DefinitionQueryOrder, QueryDeletedOption, Timeline, UpdateStageParameters } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IBuildApiRetry } from "./ibuildapiretry";
 import { Retryable } from "../../common/retry";
@@ -134,7 +134,7 @@ export class BuildApiRetry implements IBuildApiRetry {
     @Retryable()
     public async updateStage(updateParameters: UpdateStageParameters, buildId: number, stageRefName: string, project?: string): Promise<void> {
 
-        const run: unknown = await this.apiClient.patch(`${project}/_apis/build/builds/${buildId}/stages/${stageRefName}`, `7.1-preview.1`, updateParameters, true);
+        const run: unknown = await this.apiClient.patch(`${project}/_apis/build/builds/${buildId}/stages/${stageRefName}`, "7.1-preview.1", updateParameters, true);
 
         const responseCode: number | undefined = (run as IRestResponse<number>).statusCode;
 

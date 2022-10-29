@@ -1,7 +1,7 @@
 import { CoreApi } from "azure-devops-node-api/CoreApi";
 import { BuildApi } from "azure-devops-node-api/BuildApi";
 import { WebApi, getPersonalAccessTokenHandler } from "azure-devops-node-api";
-import { IRequestOptions, IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
+import { IRequestHandler, IRequestOptions } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
 
 import { IApiFactory } from "./iapifactory";
 import { IDebug } from "../../loggers/idebug";
@@ -40,7 +40,7 @@ export class ApiFactory implements IApiFactory {
 
         this.debugLogger(requestOptions);
 
-        this.debugLogger(`Initializing Azure DevOps Web API`);
+        this.debugLogger("Initializing Azure DevOps Web API");
 
         const auth: IRequestHandler = getPersonalAccessTokenHandler(endpoint.token);
         this.webApi = new WebApi(endpoint.url, auth, requestOptions);
@@ -51,7 +51,7 @@ export class ApiFactory implements IApiFactory {
 
         const debug = this.debugLogger.extend(this.createCoreApi.name);
 
-        debug(`Initializing Azure DevOps Core API`);
+        debug("Initializing Azure DevOps Core API");
 
         const coreApi: CoreApi = await this.webApi.getCoreApi();
         const coreApiRetry: ICoreApiRetry = new CoreApiRetry(coreApi);
@@ -64,7 +64,7 @@ export class ApiFactory implements IApiFactory {
 
         const debug = this.debugLogger.extend(this.createBuildApi.name);
 
-        debug(`Initializing Azure DevOps Build API`);
+        debug("Initializing Azure DevOps Build API");
 
         const buildApi: BuildApi = await this.webApi.getBuildApi();
         const apiClient: IApiClient = await this.createApiClient();
@@ -78,7 +78,7 @@ export class ApiFactory implements IApiFactory {
 
         const debug = this.debugLogger.extend(this.createPipelinesApi.name);
 
-        debug(`Initializing Azure DevOps Pipelines API`);
+        debug("Initializing Azure DevOps Pipelines API");
 
         const apiClient: IApiClient = await this.createApiClient();
         const pipelinesApi: IPipelinesApiRetry = new PipelinesApiRetry(apiClient, this.logger);
@@ -91,7 +91,7 @@ export class ApiFactory implements IApiFactory {
 
         const debug = this.debugLogger.extend(this.createBuildWebApi.name);
 
-        debug(`Initializing Azure DevOps Run API`);
+        debug("Initializing Azure DevOps Run API");
 
         const apiClient: IApiClient = await this.createApiClient();
         const buildWebApi: IBuildWebApiRetry = new BuildWebApiRetry(apiClient, this.logger);
@@ -104,7 +104,7 @@ export class ApiFactory implements IApiFactory {
 
         const debug = this.debugLogger.extend(this.createApiClient.name);
 
-        debug(`Initializing Azure DevOps API client`);
+        debug("Initializing Azure DevOps API client");
 
         const apiClient: IApiClient = new ApiClient(this.webApi.vsoClient, this.logger);
 

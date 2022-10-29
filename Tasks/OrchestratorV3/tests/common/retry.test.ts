@@ -5,7 +5,7 @@ import "mocha";
 import * as chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 
-import { RetryThis, IRetryThis } from "./retrythis";
+import { IRetryThis, RetryThis } from "./retrythis";
 import { ILogger } from "../../loggers/ilogger";
 import { Logger } from "../../loggers/logger";
 

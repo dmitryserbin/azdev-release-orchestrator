@@ -43,7 +43,7 @@ export class StageSelector implements IStageSelector {
 
         }
 
-        const stageTimeline: TimelineRecord | undefined = this.getTimelineRecord(buildTimeline, stage.name, `Stage`);
+        const stageTimeline: TimelineRecord | undefined = this.getTimelineRecord(buildTimeline, stage.name, "Stage");
 
         if (!stageTimeline) {
 
@@ -64,7 +64,7 @@ export class StageSelector implements IStageSelector {
         stage.jobs = [];
         stage.attempt.stage = stageTimeline.attempt!;
 
-        const stageCheckpoint: TimelineRecord | undefined = this.getChildTimelineRecord(buildTimeline, stageTimeline.id!, `Checkpoint`);
+        const stageCheckpoint: TimelineRecord | undefined = this.getChildTimelineRecord(buildTimeline, stageTimeline.id!, "Checkpoint");
 
         if (stageCheckpoint) {
 
@@ -74,7 +74,7 @@ export class StageSelector implements IStageSelector {
 
         }
 
-        const stagePhases: TimelineRecord[] = this.getChildTimelineRecords(buildTimeline, stageTimeline.id!, `Phase`);
+        const stagePhases: TimelineRecord[] = this.getChildTimelineRecords(buildTimeline, stageTimeline.id!, "Phase");
 
         if (stagePhases.length) {
 
@@ -112,8 +112,8 @@ export class StageSelector implements IStageSelector {
         const request: unknown = {
 
             approvalId: approval.id,
-            status: `approved`,
-            comment: comment ? comment : ``,
+            status: "approved",
+            comment: comment ? comment : "",
 
         };
 
@@ -150,8 +150,7 @@ export class StageSelector implements IStageSelector {
                 // Validation experience under normal conditions
                 await this.commonHelper.wait(10000);
 
-            }
-            else {
+            } else {
 
                 await this.commonHelper.wait(interval);
 
@@ -218,8 +217,7 @@ export class StageSelector implements IStageSelector {
     private getChildTimelineRecords(timeline: Timeline, parentId: string, type: string): TimelineRecord[] {
 
         const timelineRecords: TimelineRecord[] = timeline.records!.filter(
-            (record: TimelineRecord) => record.parentId === parentId && record.type === type).sort(
-                (left, right) => left.order! - right.order!);
+            (record: TimelineRecord) => record.parentId === parentId && record.type === type).sort((left, right) => left.order! - right.order!);
 
         return timelineRecords;
 
@@ -231,13 +229,13 @@ export class StageSelector implements IStageSelector {
 
         for (const phase of stagePhases) {
 
-            const phaseJobs: TimelineRecord[] = this.getChildTimelineRecords(timeline, phase.id!, `Job`);
+            const phaseJobs: TimelineRecord[] = this.getChildTimelineRecords(timeline, phase.id!, "Job");
 
             for (const job of phaseJobs) {
 
                 const jobStatus: IBuildJob = this.newBuildJob(job);
 
-                const jobTasks: TimelineRecord[] = this.getChildTimelineRecords(timeline, job.id!, `Task`);
+                const jobTasks: TimelineRecord[] = this.getChildTimelineRecords(timeline, job.id!, "Task");
 
                 for (const task of jobTasks) {
 
@@ -275,7 +273,7 @@ export class StageSelector implements IStageSelector {
 
         const result: IBuildApproval[] = [];
 
-        const stageApprovalTimelines: TimelineRecord[] = this.getChildTimelineRecords(timeline, stageCheckpoint.id!, `Checkpoint.Approval`);
+        const stageApprovalTimelines: TimelineRecord[] = this.getChildTimelineRecords(timeline, stageCheckpoint.id!, "Checkpoint.Approval");
 
         for (const approval of stageApprovalTimelines) {
 
@@ -293,15 +291,15 @@ export class StageSelector implements IStageSelector {
 
         const result: IBuildCheck[] = [];
 
-        const stageCheckTimelines: TimelineRecord[] = this.getChildTimelineRecords(timeline, stageCheckpoint.id!, `Checkpoint.TaskCheck`);
+        const stageCheckTimelines: TimelineRecord[] = this.getChildTimelineRecords(timeline, stageCheckpoint.id!, "Checkpoint.TaskCheck");
 
-            for (const check of stageCheckTimelines) {
+        for (const check of stageCheckTimelines) {
 
-                const buildCheck: IBuildCheck = this.newBuildCheck(check);
+            const buildCheck: IBuildCheck = this.newBuildCheck(check);
 
-                result.push(buildCheck);
+            result.push(buildCheck);
 
-            }
+        }
 
         return result;
 

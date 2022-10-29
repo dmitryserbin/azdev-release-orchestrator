@@ -3,18 +3,16 @@
 import Table from "cli-table";
 import Moment from "moment";
 
-import { String } from "typescript-string-operations";
+import { ApprovalStatus, DeploymentReason, EnvironmentStatus, Release, ReleaseTask, TaskStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { ApprovalStatus, EnvironmentStatus, TaskStatus, ReleaseTask, DeploymentReason, Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
-
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IReporter } from "../interfaces/orchestrator/reporter";
-import { IReleaseProgress } from "../interfaces/common/releaseprogress";
-import { IStageProgress } from "../interfaces/common/stageprogress";
-import { ReleaseStatus } from "../interfaces/common/releasestatus";
-import { IFilters } from "../interfaces/task/filters";
-import { IReleaseVariable } from "../interfaces/common/releasevariable";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
+import { IReporter } from "../interfaces/orchestrator/ireporter";
+import { IReleaseProgress } from "../interfaces/common/ireleaseprogress";
+import { IStageProgress } from "../interfaces/common/istageprogress";
+import { ReleaseStatus } from "../interfaces/common/ireleasestatus";
+import { IFilters } from "../interfaces/task/ifilters";
+import { IReleaseVariable } from "../interfaces/common/ireleasevariable";
 
 export class Reporter implements IReporter {
 
@@ -132,10 +130,10 @@ export class Reporter implements IReporter {
 
         table.push([
 
-            release.id,
-            release.name,
-            releaseStages ? String.Join("|", releaseStages) : "-",
-            release.createdBy ? release.createdBy!.displayName : "-",
+            release.id ? release.id.toString() : "-",
+            release.name ? release.name.toString() : "-",
+            releaseStages ? releaseStages?.join("|") : "-",
+            release.createdBy?.displayName ? release.createdBy.displayName : "-",
             releaseDate ? `${releaseDate.toLocaleDateString()} at ${releaseDate.toLocaleTimeString()}` : "-",
 
         ]);
@@ -209,7 +207,7 @@ export class Reporter implements IReporter {
             stage.id ? stage.id : "-",
             stage.name ? stage.name : "-",
             stage.deployment!.reason ? DeploymentReason[stage.deployment!.reason] : "-",
-            stage.release ?  stage.release : "-",
+            stage.release ? stage.release : "-",
             tasksCount > 0 ? tasksCount : "-",
             stage.deployment!.attempt ? stage.deployment!.attempt : "-",
             stage.approval.status ? ApprovalStatus[stage.approval.status] : "-",
@@ -231,7 +229,7 @@ export class Reporter implements IReporter {
             task.name ? task.name : "-",
             task.status ? TaskStatus[task.status] : "-",
             task.startTime && task.finishTime
-                ? Moment.duration(new Date(task.startTime).getTime() - new Date (task.finishTime).getTime()).humanize() : "-",
+                ? Moment.duration(new Date(task.startTime).getTime() - new Date(task.finishTime).getTime()).humanize() : "-",
 
         ];
 
@@ -243,11 +241,11 @@ export class Reporter implements IReporter {
 
         const result: any[] = [
 
-            filters.releaseTags.length ? String.Join("|", filters.releaseTags) : "-",
+            filters.releaseTags.length ? filters.releaseTags?.join("|") : "-",
             filters.artifactVersion ? filters.artifactVersion : "-",
-            filters.artifactTags.length ? String.Join("|", filters.artifactTags) : "-",
+            filters.artifactTags.length ? filters.artifactTags?.join("|") : "-",
             filters.artifactBranch ? filters.artifactBranch : "-",
-            filters.stageStatuses.length ? String.Join("|", filters.stageStatuses) : "-",
+            filters.stageStatuses.length ? filters.stageStatuses?.join("|") : "-",
 
         ];
 

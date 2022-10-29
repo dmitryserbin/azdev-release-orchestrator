@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-types */
 
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
 import { DebugCreator } from "../loggers/debugcreator";
 
 const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator");
@@ -23,15 +23,16 @@ export function Retryable(attempts: number = 10, timeout: number = 10000, empty:
 
                 debug(`Executing <${propertyKey}> with <${attempts}> retries`);
 
-                return await retryAsync.apply(this, [originalMethod, args, attempts, timeout, empty]);
+                return await retryAsync.apply(this, [ originalMethod, args, attempts, timeout, empty ]);
 
-            } catch (e) {
+            } catch (e: any) {
 
                 e.message = `Failed retrying <${propertyKey}> for <${attempts}> times. ${e.message}`;
 
                 throw e;
 
             }
+
         };
 
         return descriptor;
@@ -53,7 +54,7 @@ async function retryAsync(target: Function, args: any[], attempts: number, timeo
 
             if (--attempts <= 0) {
 
-                throw new Error(`Empty result received`);
+                throw new Error("Empty result received");
 
             }
 
@@ -62,13 +63,13 @@ async function retryAsync(target: Function, args: any[], attempts: number, timeo
             await new Promise((resolve) => setTimeout(resolve, timeout));
 
             // @ts-ignore
-            result = retryAsync.apply(this, [target, args, attempts, timeout, empty]);
+            result = retryAsync.apply(this, [ target, args, attempts, timeout, empty ]);
 
         }
 
         return result;
 
-    } catch (e) {
+    } catch (e: any) {
 
         if (--attempts <= 0) {
 
@@ -81,7 +82,7 @@ async function retryAsync(target: Function, args: any[], attempts: number, timeo
         await new Promise((resolve) => setTimeout(resolve, timeout));
 
         // @ts-ignore
-        return retryAsync.apply(this, [target, args, attempts, timeout]);
+        return retryAsync.apply(this, [ target, args, attempts, timeout ]);
 
     }
 

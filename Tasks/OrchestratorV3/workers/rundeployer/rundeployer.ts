@@ -1,5 +1,3 @@
-import { String } from "typescript-string-operations";
-
 import { IRunDeployer } from "./irundeployer";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
@@ -21,7 +19,6 @@ export class RunDeployer implements IRunDeployer {
     private stageDeployer: IStageDeployer;
     private progressMonitor: IProgressMonitor;
     private progressReporter: IProgressReporter;
-    
 
     constructor(commonHelper: ICommonHelper, stageDeployer: IStageDeployer, progressMonitor: IProgressMonitor, progressReporter: IProgressReporter, logger: ILogger) {
 
@@ -51,9 +48,9 @@ export class RunDeployer implements IRunDeployer {
 
         }
 
-        this.logger.log(`Run <${runProgress.name}> (${runProgress.id}) progress <${RunStatus[runProgress.status]}> tracking ${run.settings.skipTracking ? `skipped` : `completed`}`);
+        this.logger.log(`Run <${runProgress.name}> (${runProgress.id}) progress <${RunStatus[runProgress.status]}> tracking ${run.settings.skipTracking ? "skipped" : "completed"}`);
 
-        this.progressReporter.logStagesProgress(runProgress.stages)
+        this.progressReporter.logStagesProgress(runProgress.stages);
 
         return runProgress;
 
@@ -71,7 +68,7 @@ export class RunDeployer implements IRunDeployer {
 
         while (inProgress) {
 
-            debug(`Updating <${String.Join("|", runProgress.stages.map((stage) => stage.name))}> active stage(s) progress`);
+            debug(`Updating <${runProgress.stages.map((stage) => stage.name)?.join("|")}> active stage(s) progress`);
 
             const activeStages: IBuildStage[] = this.progressMonitor.getActiveStages(runProgress);
 
@@ -101,9 +98,9 @@ export class RunDeployer implements IRunDeployer {
 
         }
 
-        this.logger.log(`Run <${runProgress.name}> (${runProgress.id}) progress <${RunStatus[runProgress.status]}> tracking ${run.settings.skipTracking ? `skipped` : `completed`}`);
+        this.logger.log(`Run <${runProgress.name}> (${runProgress.id}) progress <${RunStatus[runProgress.status]}> tracking ${run.settings.skipTracking ? "skipped" : "completed"}`);
 
-        this.progressReporter.logStagesProgress(runProgress.stages)
+        this.progressReporter.logStagesProgress(runProgress.stages);
 
         return runProgress;
 

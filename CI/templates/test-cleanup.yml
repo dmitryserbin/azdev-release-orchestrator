@@ -1,7 +1,5 @@
 jobs:
 - job: Cleanup
-  pool:
-    name: Default
   workspace:
     clean: all
   steps:

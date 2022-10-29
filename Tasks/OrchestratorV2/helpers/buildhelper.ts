@@ -1,9 +1,9 @@
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { IBuildHelper } from "../interfaces/helpers/buildhelper";
-import { IBuildApiRetry } from "../interfaces/extensions/buildapiretry";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
+import { IBuildHelper } from "../interfaces/helpers/ibuildhelper";
+import { IBuildApiRetry } from "../interfaces/extensions/ibuildapiretry";
 
 export class BuildHelper implements IBuildHelper {
 

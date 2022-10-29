@@ -4,5 +4,9 @@
     "**/node_modules": true,
     "**/test-*.xml": true,
     "**/.taskkey": true,
-  }
+  },
+  "eslint.workingDirectories": [
+    "Tasks/OrchestratorV2",
+    "Tasks/OrchestratorV3"
+  ]
 }

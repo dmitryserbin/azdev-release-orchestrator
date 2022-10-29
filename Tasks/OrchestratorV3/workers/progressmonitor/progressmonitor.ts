@@ -1,5 +1,3 @@
-import { String } from "typescript-string-operations";
-
 import { TaskResult, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IProgressMonitor } from "./iprogressmonitor";
@@ -69,24 +67,22 @@ export class ProgressMonitor implements IProgressMonitor {
         return runProgress;
 
     }
-    
+
     public updateRunProgress(runProgress: IRunProgress): IRunProgress {
 
         const debug = this.debugLogger.extend(this.updateRunProgress.name);
 
         const completedStages: string[] = runProgress.stages.filter(
-            (stage) => this.isStageCompleted(stage)).map(
-                (stage) => stage.name);
+            (stage) => this.isStageCompleted(stage)).map((stage) => stage.name);
 
         const activeStages: string[] = runProgress.stages.filter(
-            (stage) => this.isStageActive(stage)).map(
-                (stage) => stage.name);
+            (stage) => this.isStageActive(stage)).map((stage) => stage.name);
 
         const allStagesCompleted: boolean = completedStages.length === runProgress.stages.length;
 
         if (allStagesCompleted) {
 
-            debug(`All run stages <${String.Join("|", completedStages)}> completed`);
+            debug(`All run stages <${completedStages?.join("|")}> completed`);
 
             // Get non-succeeded stages
             const nonSucceededStages: boolean = this.isNonSucceededStages(runProgress.stages);
@@ -114,7 +110,7 @@ export class ProgressMonitor implements IProgressMonitor {
 
         } else {
 
-            debug(`Run stages <${String.Join("|", activeStages)}> in progress`);
+            debug(`Run stages <${activeStages?.join("|")}> in progress`);
 
             runProgress.status = RunStatus.InProgress;
 

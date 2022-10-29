@@ -4,28 +4,28 @@ import * as chai from "chai";
 import * as TypeMoq from "typemoq";
 
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
-import { ReleaseDefinition, Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { Release, ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { IParameters } from "../../interfaces/task/parameters";
-import { IDetails } from "../../interfaces/task/details";
-import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
-import { IConsoleLogger } from "../../interfaces/loggers/consolelogger";
-import { ICreator } from "../../interfaces/orchestrator/creator";
-import { IReporter } from "../../interfaces/orchestrator/reporter";
-import { IDebugLogger } from "../../interfaces/loggers/debuglogger";
+import { IParameters } from "../../interfaces/task/iparameters";
+import { IDetails } from "../../interfaces/task/idetails";
+import { IDebugCreator } from "../../interfaces/loggers/idebugcreator";
+import { IConsoleLogger } from "../../interfaces/loggers/iconsolelogger";
+import { ICreator } from "../../interfaces/orchestrator/icreator";
+import { IReporter } from "../../interfaces/orchestrator/ireporter";
+import { IDebugLogger } from "../../interfaces/loggers/idebuglogger";
 import { Creator } from "../../orchestrator/creator";
-import { ICoreHelper } from "../../interfaces/helpers/corehelper";
-import { IBuildHelper } from "../../interfaces/helpers/buildhelper";
-import { IReleaseHelper } from "../../interfaces/helpers/releasehelper";
-import { ReleaseType } from "../../interfaces/common/releasetype";
-import { DeploymentType } from "../../interfaces/common/deploymenttype";
-import { IFilters } from "../../interfaces/task/filters";
-import { ISettings } from "../../interfaces/common/settings";
-import { IReleaseFilter } from "../../interfaces/common/releasefilter";
-import { IFiltrator } from "../../interfaces/orchestrator/filtrator";
-import { IArtifactFilter } from "../../interfaces/common/artifactfilter";
+import { ICoreHelper } from "../../interfaces/helpers/icorehelper";
+import { IBuildHelper } from "../../interfaces/helpers/ibuildhelper";
+import { IReleaseHelper } from "../../interfaces/helpers/ireleasehelper";
+import { ReleaseType } from "../../interfaces/common/ireleasetype";
+import { DeploymentType } from "../../interfaces/common/ideploymenttype";
+import { IFilters } from "../../interfaces/task/ifilters";
+import { ISettings } from "../../interfaces/common/isettings";
+import { IReleaseFilter } from "../../interfaces/common/ireleasefilter";
+import { IFiltrator } from "../../interfaces/orchestrator/ifiltrator";
+import { IArtifactFilter } from "../../interfaces/common/iartifactfilter";
 
-describe("Creator", ()  => {
+describe("Creator", () => {
 
     const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>();
     const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>();
@@ -179,7 +179,7 @@ describe("Creator", ()  => {
         releaseHelperMock.setup((x) => x.getDefinition(projectMock.target.name!, parametersMock.target.definitionName)).returns(
             () => Promise.resolve(definitionMock.target));
 
-        releaseHelperMock.setup((x) => x.getRelease(projectMock.target.name!, definitionMock.target.id!, parametersMock.target.releaseName,  parametersMock.target.stages)).returns(
+        releaseHelperMock.setup((x) => x.getRelease(projectMock.target.name!, definitionMock.target.id!, parametersMock.target.releaseName, parametersMock.target.stages)).returns(
             () => Promise.resolve(releaseMock.target));
 
         releaseHelperMock.setup((x) => x.getReleaseStages(releaseMock.target, parametersMock.target.stages)).returns(

@@ -5,20 +5,20 @@ import * as TypeMoq from "typemoq";
 
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
-import { ReleaseDefinition, Artifact, ArtifactMetadata, EnvironmentStatus, ReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { Artifact, ArtifactMetadata, EnvironmentStatus, ReleaseDefinition, ReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { IParameters } from "../../interfaces/task/parameters";
-import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
-import { IConsoleLogger } from "../../interfaces/loggers/consolelogger";
-import { IDebugLogger } from "../../interfaces/loggers/debuglogger";
-import { IBuildHelper } from "../../interfaces/helpers/buildhelper";
-import { IReleaseHelper } from "../../interfaces/helpers/releasehelper";
-import { IFilters } from "../../interfaces/task/filters";
-import { ISettings } from "../../interfaces/common/settings";
-import { IFiltrator } from "../../interfaces/orchestrator/filtrator";
+import { IParameters } from "../../interfaces/task/iparameters";
+import { IDebugCreator } from "../../interfaces/loggers/idebugcreator";
+import { IConsoleLogger } from "../../interfaces/loggers/iconsolelogger";
+import { IDebugLogger } from "../../interfaces/loggers/idebuglogger";
+import { IBuildHelper } from "../../interfaces/helpers/ibuildhelper";
+import { IReleaseHelper } from "../../interfaces/helpers/ireleasehelper";
+import { IFilters } from "../../interfaces/task/ifilters";
+import { ISettings } from "../../interfaces/common/isettings";
+import { IFiltrator } from "../../interfaces/orchestrator/ifiltrator";
 import { Filtrator } from "../../orchestrator/filtrator";
 
-describe("Filtrator", ()  => {
+describe("Filtrator", () => {
 
     const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>();
     const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>();
@@ -96,7 +96,7 @@ describe("Filtrator", ()  => {
         primaryBuildArtifactMock.target.definitionReference = buildDefinitionReferenceMock;
 
         const buildArtifactMock = TypeMoq.Mock.ofType<Build>();
-        buildArtifactMock.target.id = 1
+        buildArtifactMock.target.id = 1;
 
         releaseHelperMock.setup((x) => x.getDefinitionPrimaryArtifact(definitionMock.target, "Build")).returns(
             () => Promise.resolve(primaryBuildArtifactMock.target));
@@ -138,7 +138,7 @@ describe("Filtrator", ()  => {
         primaryBuildArtifactMock.target.definitionReference = buildDefinitionReferenceMock;
 
         const buildArtifactMock = TypeMoq.Mock.ofType<Build>();
-        buildArtifactMock.target.id = 1
+        buildArtifactMock.target.id = 1;
 
         releaseHelperMock.setup((x) => x.getDefinitionPrimaryArtifact(definitionMock.target, "Build")).returns(
             () => Promise.resolve(primaryBuildArtifactMock.target));

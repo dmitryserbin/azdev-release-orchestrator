@@ -3,8 +3,6 @@
 import Table from "cli-table";
 import Moment from "moment";
 
-import { String } from "typescript-string-operations";
-
 import { TaskResult, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IDebug } from "../../loggers/idebug";
@@ -55,8 +53,8 @@ export class ProgressReporter implements IProgressReporter {
 
             run.build.id ? run.build.id.toString() : "-",
             run.build.buildNumber ? run.build.buildNumber : "",
-            stages.length ? String.Join("|", stages) : "-",
-            run.build.requestedFor ? run.build.requestedFor.displayName : "-",
+            stages.length ? stages?.join("|") : "-",
+            run.build.requestedFor?.displayName ? run.build.requestedFor.displayName : "-",
             releaseDate ? `${releaseDate.toLocaleDateString()} at ${releaseDate.toLocaleTimeString()}` : "-",
 
         ]);
@@ -130,13 +128,13 @@ export class ProgressReporter implements IProgressReporter {
 
                 const pipelineResources: string[] = Object.keys(filters.pipelineResources).map(
                     (i) => `${i}|${filters.pipelineResources[i]}`);
-        
+
                 const repositoryResources: string[] = Object.keys(filters.repositoryResources).map(
                     (i) => `${i}|${filters.repositoryResources[i]}`);
 
                 result.push(filters.branchName ? filters.branchName : "-");
-                result.push(pipelineResources.length ? String.Join("\n", pipelineResources) : "-");
-                result.push(repositoryResources.length ? String.Join("\n", repositoryResources) : "-");
+                result.push(pipelineResources.length ? pipelineResources?.join("\n") : "-");
+                result.push(repositoryResources.length ? repositoryResources?.join("\n") : "-");
 
                 break;
 
@@ -148,7 +146,7 @@ export class ProgressReporter implements IProgressReporter {
 
                 result.push(filters.branchName ? filters.branchName : "-");
                 result.push(filters.buildResult ? filters.buildResult : "-");
-                result.push(filters.buildTags.length ? String.Join("|", filters.buildTags) : "-");
+                result.push(filters.buildTags.length ? filters.buildTags?.join("|") : "-");
 
                 break;
 
@@ -157,6 +155,7 @@ export class ProgressReporter implements IProgressReporter {
                 throw new Error(`Strategy <${Strategy[strategy]}> not implemented`);
 
             }
+
         }
 
         const table: Table = this.newTable(columns);
@@ -184,7 +183,7 @@ export class ProgressReporter implements IProgressReporter {
             for (const task of job.tasks) {
 
                 const duration: string | null = (task.startTime && task.finishTime) ?
-                    Moment.duration(new Date(task.startTime).getTime() - new Date (task.finishTime).getTime()).humanize() : null;
+                    Moment.duration(new Date(task.startTime).getTime() - new Date(task.finishTime).getTime()).humanize() : null;
 
                 const result: any[] = [
 
@@ -226,7 +225,7 @@ export class ProgressReporter implements IProgressReporter {
                 (job) => job.tasks.length).reduce((a, b) => a + b, 0);
 
             const duration: string | null = (stage.startTime && stage.finishTime) ?
-                Moment.duration(new Date(stage.startTime).getTime() - new Date (stage.finishTime).getTime()).humanize() : null;
+                Moment.duration(new Date(stage.startTime).getTime() - new Date(stage.finishTime).getTime()).humanize() : null;
 
             const result: any[] = [
 
@@ -267,7 +266,7 @@ export class ProgressReporter implements IProgressReporter {
 
             runProgress.id ? runProgress.id : "-",
             runProgress.name ? runProgress.name : "-",
-            stages.length ? String.Join("|", stages) : "-",
+            stages.length ? stages?.join("|") : "-",
             runProgress.status ? RunStatus[runProgress.status] : "-",
             runProgress.url ? runProgress.url : "-",
 

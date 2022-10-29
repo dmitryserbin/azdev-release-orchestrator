@@ -1,19 +1,17 @@
-import { String } from "typescript-string-operations";
-
-import { IOrchestrator } from "../interfaces/orchestrator/orchestrator";
-import { IDeployer } from "../interfaces/orchestrator/deployer";
-import { IParameters } from "../interfaces/task/parameters";
-import { ReleaseType } from "../interfaces/common/releasetype";
-import { IDetails } from "../interfaces/task/details";
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
-import { IOrchestratorFactory } from "../interfaces/factories/orchestratorfactory";
-import { IReleaseJob } from "../interfaces/common/releasejob";
-import { ICreator } from "../interfaces/orchestrator/creator";
-import { IReleaseProgress } from "../interfaces/common/releaseprogress";
-import { DeploymentType } from "../interfaces/common/deploymenttype";
-import { IReporter } from "../interfaces/orchestrator/reporter";
+import { IOrchestrator } from "../interfaces/orchestrator/iorchestrator";
+import { IDeployer } from "../interfaces/orchestrator/ideployer";
+import { IParameters } from "../interfaces/task/iparameters";
+import { ReleaseType } from "../interfaces/common/ireleasetype";
+import { IDetails } from "../interfaces/task/idetails";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
+import { IConsoleLogger } from "../interfaces/loggers/iconsolelogger";
+import { IOrchestratorFactory } from "../interfaces/factories/iorchestratorfactory";
+import { IReleaseJob } from "../interfaces/common/ireleasejob";
+import { ICreator } from "../interfaces/orchestrator/icreator";
+import { IReleaseProgress } from "../interfaces/common/ireleaseprogress";
+import { DeploymentType } from "../interfaces/common/ideploymenttype";
+import { IReporter } from "../interfaces/orchestrator/ireporter";
 
 export class Orchestrator implements IOrchestrator {
 
@@ -26,7 +24,7 @@ export class Orchestrator implements IOrchestrator {
 
         this.debugLogger = debugCreator.extend(this.constructor.name);
         this.consoleLogger = consoleLogger;
-        this.orchestratorFactory = orchestratorFactory; 
+        this.orchestratorFactory = orchestratorFactory;
 
     }
 
@@ -47,7 +45,7 @@ export class Orchestrator implements IOrchestrator {
 
             case ReleaseType.New: {
 
-                this.consoleLogger.log(`Deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${String.Join("|", releaseJob.stages)}> stage(s) release`);
+                this.consoleLogger.log(`Deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${releaseJob.stages?.join("|")}> stage(s) release`);
 
                 this.consoleLogger.log(
                     reporter.getRelease(releaseJob.release, releaseJob.stages));
@@ -56,7 +54,7 @@ export class Orchestrator implements IOrchestrator {
 
                     case DeploymentType.Automated: {
 
-                        debug(`Release orchestrated automatically as stages deployment conditions are met`);
+                        debug("Release orchestrated automatically as stages deployment conditions are met");
 
                         // Monitor automatically started stages deployment progess
                         releaseProgress = await deployer.deployAutomated(releaseJob, details);
@@ -65,7 +63,7 @@ export class Orchestrator implements IOrchestrator {
 
                     } case DeploymentType.Manual: {
 
-                        debug(`Release orchestrated manually as stages deployment conditions are not met`);
+                        debug("Release orchestrated manually as stages deployment conditions are not met");
 
                         // Manually trigger stages deployment and monitor progress
                         releaseProgress = await deployer.deployManual(releaseJob, details);
@@ -84,7 +82,7 @@ export class Orchestrator implements IOrchestrator {
 
             } default: {
 
-                this.consoleLogger.log(`Re-deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${String.Join("|", releaseJob.stages)}> stage(s) release`);
+                this.consoleLogger.log(`Re-deploying <${releaseJob.release.name}> (${releaseJob.release.id}) pipeline <${releaseJob.stages?.join("|")}> stage(s) release`);
 
                 this.consoleLogger.log(
                     reporter.getRelease(releaseJob.release, releaseJob.stages));

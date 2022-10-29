@@ -33,25 +33,25 @@ export class BuildWebApiRetry implements IBuildWebApiRetry {
         const body: unknown = {
 
             contributionIds: [
-                `ms.vss-build-web.run-details-data-provider`,
+                "ms.vss-build-web.run-details-data-provider",
             ],
             dataProviderContext: {
                 properties: {
                     buildId: `${build.id}`,
                     sourcePage: {
-                        routeId: `ms.vss-build-web.ci-results-hub-route`,
+                        routeId: "ms.vss-build-web.ci-results-hub-route",
                         routeValues: {
                             project: build.project?.name,
-                        }
-                    }
+                        },
+                    },
                 },
             },
 
         };
 
-        const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${build.project?.id}`, `5.0-preview.1`, body);
+        const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${build.project?.id}`, "5.0-preview.1", body);
 
-        const runDetails: unknown = result.dataProviders[`ms.vss-build-web.run-details-data-provider`];
+        const runDetails: unknown = result.dataProviders["ms.vss-build-web.run-details-data-provider"];
 
         if (!runDetails || result.dataProviderExceptions) {
 
@@ -73,16 +73,16 @@ export class BuildWebApiRetry implements IBuildWebApiRetry {
         const body: unknown = {
 
             contributionIds: [
-                `ms.vss-build-web.pipeline-run-parameters-data-provider`,
+                "ms.vss-build-web.pipeline-run-parameters-data-provider",
             ],
             dataProviderContext: {
                 properties: {
                     onlyFetchTemplateParameters: false,
                     pipelineId: definition.id,
-                    sourceBranch: repository ? repository.refName : ``,
-                    sourceVersion: repository ? repository.version : ``,
+                    sourceBranch: repository ? repository.refName : "",
+                    sourceVersion: repository ? repository.version : "",
                     sourcePage: {
-                        routeId: `ms.vss-build-web.pipeline-details-route`,
+                        routeId: "ms.vss-build-web.pipeline-details-route",
                         routeValues: {
                             project: definition.project?.name,
                         },
@@ -93,9 +93,9 @@ export class BuildWebApiRetry implements IBuildWebApiRetry {
 
         };
 
-        const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${definition.project?.id}`, `5.0-preview.1`, body);
+        const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${definition.project?.id}`, "5.0-preview.1", body);
 
-        const runParameters: unknown = result.dataProviders[`ms.vss-build-web.pipeline-run-parameters-data-provider`];
+        const runParameters: unknown = result.dataProviders["ms.vss-build-web.pipeline-run-parameters-data-provider"];
 
         if (!runParameters || result.dataProviderExceptions) {
 
@@ -117,7 +117,7 @@ export class BuildWebApiRetry implements IBuildWebApiRetry {
         const body: unknown = {
 
             contributionIds: [
-                `ms.vss-build-web.checks-panel-data-provider`,
+                "ms.vss-build-web.checks-panel-data-provider",
             ],
             dataProviderContext: {
                 properties: {
@@ -125,19 +125,19 @@ export class BuildWebApiRetry implements IBuildWebApiRetry {
                     stageIds: stage.id,
                     checkListItemType: 3,
                     sourcePage: {
-                        routeId: `ms.vss-build-web.ci-results-hub-route`,
+                        routeId: "ms.vss-build-web.ci-results-hub-route",
                         routeValues: {
                             project: build.project?.name,
-                        }
-                    }
+                        },
+                    },
                 },
             },
 
         };
 
-        const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${build.project?.id}`, `5.0-preview.1`, body);
+        const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${build.project?.id}`, "5.0-preview.1", body);
 
-        const runStageChecks: unknown = result.dataProviders[`ms.vss-build-web.checks-panel-data-provider`][0];
+        const runStageChecks: unknown = result.dataProviders["ms.vss-build-web.checks-panel-data-provider"][0];
 
         if (!runStageChecks || result.dataProviderExceptions) {
 

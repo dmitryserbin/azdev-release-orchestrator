@@ -6,24 +6,24 @@ import * as TypeMoq from "typemoq";
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { Release, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
-import { IConsoleLogger } from "../../interfaces/loggers/consolelogger";
-import { IDebugLogger } from "../../interfaces/loggers/debuglogger";
-import { IReleaseHelper } from "../../interfaces/helpers/releasehelper";
-import { IDetails } from "../../interfaces/task/details";
-import { IReleaseJob } from "../../interfaces/common/releasejob";
-import { ICommonHelper } from "../../interfaces/helpers/commonhelper";
-import { IApprover } from "../../interfaces/orchestrator/approver";
-import { IMonitor } from "../../interfaces/orchestrator/monitor";
-import { IReporter } from "../../interfaces/orchestrator/reporter";
-import { IDeployer } from "../../interfaces/orchestrator/deployer";
+import { IDebugCreator } from "../../interfaces/loggers/idebugcreator";
+import { IConsoleLogger } from "../../interfaces/loggers/iconsolelogger";
+import { IDebugLogger } from "../../interfaces/loggers/idebuglogger";
+import { IReleaseHelper } from "../../interfaces/helpers/ireleasehelper";
+import { IDetails } from "../../interfaces/task/idetails";
+import { IReleaseJob } from "../../interfaces/common/ireleasejob";
+import { ICommonHelper } from "../../interfaces/helpers/icommonhelper";
+import { IApprover } from "../../interfaces/orchestrator/iapprover";
+import { IMonitor } from "../../interfaces/orchestrator/imonitor";
+import { IReporter } from "../../interfaces/orchestrator/ireporter";
+import { IDeployer } from "../../interfaces/orchestrator/ideployer";
 import { Deployer } from "../../orchestrator/deployer";
-import { IReleaseProgress } from "../../interfaces/common/releaseprogress";
-import { IStageProgress } from "../../interfaces/common/stageprogress";
-import { ReleaseStatus } from "../../interfaces/common/releasestatus";
-import { ISettings } from "../../interfaces/common/settings";
+import { IReleaseProgress } from "../../interfaces/common/ireleaseprogress";
+import { IStageProgress } from "../../interfaces/common/istageprogress";
+import { ReleaseStatus } from "../../interfaces/common/ireleasestatus";
+import { ISettings } from "../../interfaces/common/isettings";
 
-describe("Deployer", ()  => {
+describe("Deployer", () => {
 
     const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>();
     const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>();
@@ -209,7 +209,7 @@ describe("Deployer", ()  => {
             () => null);
 
         progressMonitorMock.setup((x) => x.isStageCompleted(stageOneProgress.target)).returns(
-            () => true);  
+            () => true);
 
         //#endregion
 

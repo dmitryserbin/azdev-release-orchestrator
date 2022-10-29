@@ -6,7 +6,7 @@ export interface IReleaseFilter {
     artifactBranch: string;
     tags: string[];
     stages: string[];
-    stageStatuses: EnvironmentStatus[],
-    releaseStatus: ReleaseStatus,
+    stageStatuses: EnvironmentStatus[];
+    releaseStatus: ReleaseStatus;
 
 }

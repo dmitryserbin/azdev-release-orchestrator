@@ -7,7 +7,7 @@ import { IRunStage } from "./irunstage";
 export interface IRun {
 
     project: TeamProject;
-    definition: BuildDefinition
+    definition: BuildDefinition;
     build: Build;
     stages: IRunStage[];
     settings: ISettings;
