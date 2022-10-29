@@ -2,7 +2,7 @@
 
 ## 3.1.*
 
-`2022-10-20`
+`2022-10-30`
 
 - Update and remove obsolete dependencies ([84](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/84))
 - Normalize code styling & minor refactoring ([84](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/84))
