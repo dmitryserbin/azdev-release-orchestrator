@@ -1,5 +1,3 @@
-import parseKeyValue from "parse-key-value-pair";
-
 import { getInput, getEndpointUrl, getEndpointAuthorizationParameter, getBoolInput, getDelimitedInput, getVariable, setResult, TaskResult } from "azure-pipelines-task-lib/task";
 
 import { ITaskHelper } from "../interfaces/helpers/taskhelper";
@@ -13,14 +11,17 @@ import { ReleaseStatus } from "../interfaces/common/releasestatus";
 import { IFilters } from "../interfaces/task/filters";
 import { IReleaseVariable } from "../interfaces/common/releasevariable";
 import { ISettings } from "../interfaces/common/settings";
+import { ICommonHelper } from "../interfaces/helpers/commonhelper";
 
 export class TaskHelper implements ITaskHelper {
 
     private debugLogger: IDebugLogger;
+    private commonHelper: ICommonHelper;
 
-    constructor(debugCreator: IDebugCreator) {
+    constructor(debugCreator: IDebugCreator, commonHelper: ICommonHelper) {
 
         this.debugLogger = debugCreator.extend(this.constructor.name);
+        this.commonHelper = commonHelper
 
     }
 
@@ -273,7 +274,7 @@ export class TaskHelper implements ITaskHelper {
 
             for (const variable of releaseVariables) {
 
-                const value: [string, string] | null = parseKeyValue(variable);
+                const value: [string, string] = this.commonHelper.parseKeyValue(variable);
 
                 if (value) {
 

@@ -10,6 +10,7 @@ import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../../interfaces/loggers/debuglogger";
 import { TaskHelper } from "../../helpers/taskhelper";
 import { ITaskHelper } from "../../interfaces/helpers/taskhelper";
+import { CommonHelper } from "../../helpers/commonhelper";
 
 describe("TaskHelper", ()  => {
 
@@ -47,7 +48,7 @@ describe("TaskHelper", ()  => {
     let inputs: {[key: string]: string | boolean};
     let variables: {[key: string]: string};
 
-    const taskHelper: ITaskHelper = new TaskHelper(debugCreatorMock.target);
+    const taskHelper: ITaskHelper = new TaskHelper(debugCreatorMock.target, new CommonHelper(debugCreatorMock.object));
 
     beforeEach(async () => {
 

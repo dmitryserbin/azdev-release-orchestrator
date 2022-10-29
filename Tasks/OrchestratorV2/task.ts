@@ -16,6 +16,8 @@ import { IApiFactory } from "./interfaces/factories/apifactory";
 import { ApiFactory } from "./factories/apifactory";
 import { IOrchestratorFactory } from "./interfaces/factories/orchestratorfactory";
 import { OrchestratorFactory } from "./factories/orchestratorfactory";
+import { ICommonHelper } from "./interfaces/helpers/commonhelper";
+import { CommonHelper } from "./helpers/commonhelper";
 
 async function run() {
 
@@ -26,7 +28,8 @@ async function run() {
     const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator", forceDebug);
     const consoleLogger: IConsoleLogger = new ConsoleLogger();
 
-    const taskHelper: ITaskHelper = new TaskHelper(debugCreator);
+    const commonHelper: ICommonHelper = new CommonHelper(debugCreator)
+    const taskHelper: ITaskHelper = new TaskHelper(debugCreator, commonHelper);
 
     try {
 
@@ -36,10 +39,8 @@ async function run() {
 
         const apiFactory: IApiFactory = new ApiFactory(endpoint, debugCreator);
         const orchestratorFactory: IOrchestratorFactory = new OrchestratorFactory(apiFactory, debugCreator, consoleLogger);
-
         const orchestrator: IOrchestrator = new Orchestrator(orchestratorFactory, debugCreator, consoleLogger);
 
-        // Run orchestrator
         const releaseProgress: IReleaseProgress = await orchestrator.orchestrate(parameters, details);
 
         await taskHelper.validate(releaseProgress.status);
