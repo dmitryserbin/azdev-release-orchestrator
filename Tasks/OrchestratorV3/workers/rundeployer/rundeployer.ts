@@ -19,7 +19,6 @@ export class RunDeployer implements IRunDeployer {
     private stageDeployer: IStageDeployer;
     private progressMonitor: IProgressMonitor;
     private progressReporter: IProgressReporter;
-    
 
     constructor(commonHelper: ICommonHelper, stageDeployer: IStageDeployer, progressMonitor: IProgressMonitor, progressReporter: IProgressReporter, logger: ILogger) {
 
@@ -49,9 +48,9 @@ export class RunDeployer implements IRunDeployer {
 
         }
 
-        this.logger.log(`Run <${runProgress.name}> (${runProgress.id}) progress <${RunStatus[runProgress.status]}> tracking ${run.settings.skipTracking ? `skipped` : `completed`}`);
+        this.logger.log(`Run <${runProgress.name}> (${runProgress.id}) progress <${RunStatus[runProgress.status]}> tracking ${run.settings.skipTracking ? "skipped" : "completed"}`);
 
-        this.progressReporter.logStagesProgress(runProgress.stages)
+        this.progressReporter.logStagesProgress(runProgress.stages);
 
         return runProgress;
 
@@ -99,9 +98,9 @@ export class RunDeployer implements IRunDeployer {
 
         }
 
-        this.logger.log(`Run <${runProgress.name}> (${runProgress.id}) progress <${RunStatus[runProgress.status]}> tracking ${run.settings.skipTracking ? `skipped` : `completed`}`);
+        this.logger.log(`Run <${runProgress.name}> (${runProgress.id}) progress <${RunStatus[runProgress.status]}> tracking ${run.settings.skipTracking ? "skipped" : "completed"}`);
 
-        this.progressReporter.logStagesProgress(runProgress.stages)
+        this.progressReporter.logStagesProgress(runProgress.stages);
 
         return runProgress;
 

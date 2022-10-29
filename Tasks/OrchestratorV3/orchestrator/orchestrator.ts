@@ -23,7 +23,7 @@ export class Orchestrator implements IOrchestrator {
         this.logger = logger;
         this.debugLogger = logger.extend(this.constructor.name);
 
-        this.runCreator = runCreator; 
+        this.runCreator = runCreator;
         this.runDeployer = runDeployer;
         this.progressReporter = progressReporter;
 

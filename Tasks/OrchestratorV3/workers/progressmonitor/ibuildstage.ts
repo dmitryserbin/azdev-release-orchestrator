@@ -7,20 +7,20 @@ import { IBuildJob } from "./ibuildjob";
 
 export interface IBuildStage {
 
-    id: string,
-    name: string,
-    startTime: Date | null,
-    finishTime: Date | null,
-    state: TimelineRecordState,
-    result: TaskResult | null,
+    id: string;
+    name: string;
+    startTime: Date | null;
+    finishTime: Date | null;
+    state: TimelineRecordState;
+    result: TaskResult | null;
     checkpoint: IBuildCheckpoint | null;
-    approvals: IBuildApproval[],
-    checks: IBuildCheck[],
-    jobs: IBuildJob[],
+    approvals: IBuildApproval[];
+    checks: IBuildCheck[];
+    jobs: IBuildJob[];
     attempt: {
-        stage: number,
-        approval: number,
-        check: number,
-    },
+        stage: number;
+        approval: number;
+        check: number;
+    };
 
 }

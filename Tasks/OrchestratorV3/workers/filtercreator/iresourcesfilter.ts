@@ -5,9 +5,9 @@ export interface IResourcesFilter {
 
     repositories: {
         [key: string]: IRepositoryFilter;
-    },
+    };
     pipelines: {
         [key: string]: IPipelineFilter;
-    },
+    };
 
 }

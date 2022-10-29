@@ -105,7 +105,7 @@ describe("StageApprover", async () => {
 
         //#region ARRANGE
 
-        const approvedResult = { status: `approved` };
+        const approvedResult = { status: "approved" };
 
         stageSelectorMock
             .setup((x) => x.approveStage(buildMock, approvalOneMock, undefined))
@@ -134,7 +134,7 @@ describe("StageApprover", async () => {
 
         //#region ARRANGE
 
-        const approvedResult = { status: `failed` };
+        const approvedResult = { status: "failed" };
 
         stageSelectorMock
             .setup((x) => x.approveStage(buildMock, approvalOneMock, undefined))

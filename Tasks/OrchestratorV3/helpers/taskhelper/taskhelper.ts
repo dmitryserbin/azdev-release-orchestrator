@@ -1,4 +1,4 @@
-import { getInput, getEndpointUrl, getEndpointAuthorizationParameter, getBoolInput, getDelimitedInput, getVariable, setResult, TaskResult } from "azure-pipelines-task-lib/task";
+import { TaskResult, getBoolInput, getDelimitedInput, getEndpointAuthorizationParameter, getEndpointUrl, getInput, getVariable, setResult } from "azure-pipelines-task-lib/task";
 
 import { ITaskHelper } from "./itaskhelper";
 import { IEndpoint } from "./iendpoint";
@@ -54,7 +54,7 @@ export class TaskHelper implements ITaskHelper {
         // When using default system endpoint
         if (endpointType === "integrated") {
 
-            endpointUrl = endpointUrl.replace(`vsrm.`, ``);
+            endpointUrl = endpointUrl.replace("vsrm.", "");
 
         }
 
@@ -170,8 +170,8 @@ export class TaskHelper implements ITaskHelper {
 
         const debug = this.debugLogger.extend(this.validate.name);
 
-        const partialMessage: string = `One or more release stages partially succeeded`;
-        const failedMessage: string = `One or more release stages deployment failed`;
+        const partialMessage: string = "One or more release stages partially succeeded";
+        const failedMessage: string = "One or more release stages deployment failed";
 
         debug(status);
 
@@ -238,7 +238,7 @@ export class TaskHelper implements ITaskHelper {
             requesterName: requesterName ? requesterName : "Release Orchestrator",
             requesterId: requesterId ? requesterId : "Unknown",
 
-        }
+        };
 
         debug(details);
 

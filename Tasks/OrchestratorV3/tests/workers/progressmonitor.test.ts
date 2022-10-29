@@ -42,9 +42,9 @@ describe("ProgressMonitor", async () => {
         id: faker.random.word(),
         _links: {
             web: {
-                href: `https://my.project.uri`
-            }
-        }
+                href: "https://my.project.uri",
+            },
+        },
 
     } as TeamProject;
 
@@ -77,7 +77,7 @@ describe("ProgressMonitor", async () => {
             id: faker.random.word(),
             name: faker.random.word(),
             target: true,
-    
+
         } as IRunStage;
 
         runMock = {
@@ -87,7 +87,7 @@ describe("ProgressMonitor", async () => {
             build: buildMock,
             stages: [],
             settings: {} as ISettings,
-    
+
         } as IRun;
 
         buildStageOneMock = {

@@ -2,8 +2,8 @@ import { TaskResult, TimelineRecordState } from "azure-devops-node-api/interface
 
 export interface IBuildCheckpoint {
 
-    id: string,
-    state: TimelineRecordState,
-    result: TaskResult | null,
+    id: string;
+    state: TimelineRecordState;
+    result: TaskResult | null;
 
 }

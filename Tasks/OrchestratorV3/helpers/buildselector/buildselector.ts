@@ -232,7 +232,7 @@ export class BuildSelector implements IBuildSelector {
 
         }
 
-        debug(`Found <${builds.length}> build(s) matching (${filter.buildStatus.map((status) => BuildStatus[status])?.join(`|`)}) status filter`);
+        debug(`Found <${builds.length}> build(s) matching (${filter.buildStatus.map((status) => BuildStatus[status])?.join("|")}) status filter`);
 
         debug(builds.map(
             (build) => `${build.buildNumber} | ${build.id} | ${BuildStatus[build.status!]}`));
@@ -305,7 +305,6 @@ export class BuildSelector implements IBuildSelector {
             }
 
         }
-
 
         debug(stagesToSkip);
 

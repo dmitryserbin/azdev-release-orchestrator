@@ -23,7 +23,7 @@ export function Retryable(attempts: number = 10, timeout: number = 10000, empty:
 
                 debug(`Executing <${propertyKey}> with <${attempts}> retries`);
 
-                return await retryAsync.apply(this, [originalMethod, args, attempts, timeout, empty]);
+                return await retryAsync.apply(this, [ originalMethod, args, attempts, timeout, empty ]);
 
             } catch (e: any) {
 
@@ -32,6 +32,7 @@ export function Retryable(attempts: number = 10, timeout: number = 10000, empty:
                 throw e;
 
             }
+
         };
 
         return descriptor;
@@ -53,7 +54,7 @@ async function retryAsync(target: Function, args: any[], attempts: number, timeo
 
             if (--attempts <= 0) {
 
-                throw new Error(`Empty result received`);
+                throw new Error("Empty result received");
 
             }
 
@@ -62,7 +63,7 @@ async function retryAsync(target: Function, args: any[], attempts: number, timeo
             await new Promise((resolve) => setTimeout(resolve, timeout));
 
             // @ts-ignore
-            result = retryAsync.apply(this, [target, args, attempts, timeout, empty]);
+            result = retryAsync.apply(this, [ target, args, attempts, timeout, empty ]);
 
         }
 
@@ -83,7 +84,7 @@ async function retryAsync(target: Function, args: any[], attempts: number, timeo
         await new Promise((resolve) => setTimeout(resolve, timeout));
 
         // @ts-ignore
-        return retryAsync.apply(this, [target, args, attempts, timeout]);
+        return retryAsync.apply(this, [ target, args, attempts, timeout ]);
 
     }
 

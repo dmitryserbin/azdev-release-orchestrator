@@ -67,18 +67,16 @@ export class ProgressMonitor implements IProgressMonitor {
         return runProgress;
 
     }
-    
+
     public updateRunProgress(runProgress: IRunProgress): IRunProgress {
 
         const debug = this.debugLogger.extend(this.updateRunProgress.name);
 
         const completedStages: string[] = runProgress.stages.filter(
-            (stage) => this.isStageCompleted(stage)).map(
-                (stage) => stage.name);
+            (stage) => this.isStageCompleted(stage)).map((stage) => stage.name);
 
         const activeStages: string[] = runProgress.stages.filter(
-            (stage) => this.isStageActive(stage)).map(
-                (stage) => stage.name);
+            (stage) => this.isStageActive(stage)).map((stage) => stage.name);
 
         const allStagesCompleted: boolean = completedStages.length === runProgress.stages.length;
 

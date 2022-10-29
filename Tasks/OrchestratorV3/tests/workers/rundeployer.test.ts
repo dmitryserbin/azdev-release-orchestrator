@@ -133,8 +133,7 @@ describe("RunDeployer", async () => {
 
         progressMonitorMock
             .setup((x) => x.updateRunProgress(runProgressMock))
-            .returns(() => 
-                Object.assign({}, runProgressMock, { status: RunStatus.Succeeded }))
+            .returns(() => Object.assign({}, runProgressMock, { status: RunStatus.Succeeded }))
             .verifiable(TypeMoq.Times.once());
 
         progressReporterMock

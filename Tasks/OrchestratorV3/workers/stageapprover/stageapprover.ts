@@ -56,7 +56,7 @@ export class StageApprover implements IStageApprover {
 
                 // No need to approve following request
                 // When at least one approval succeeded
-                if (approvalResult.status === `approved`) {
+                if (approvalResult.status === "approved") {
 
                     this.logger.log(`Stage <${stage.name}> (${stage.id}) approved successfully`);
 

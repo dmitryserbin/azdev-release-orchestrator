@@ -128,7 +128,7 @@ export class ProgressReporter implements IProgressReporter {
 
                 const pipelineResources: string[] = Object.keys(filters.pipelineResources).map(
                     (i) => `${i}|${filters.pipelineResources[i]}`);
-        
+
                 const repositoryResources: string[] = Object.keys(filters.repositoryResources).map(
                     (i) => `${i}|${filters.repositoryResources[i]}`);
 
@@ -155,6 +155,7 @@ export class ProgressReporter implements IProgressReporter {
                 throw new Error(`Strategy <${Strategy[strategy]}> not implemented`);
 
             }
+
         }
 
         const table: Table = this.newTable(columns);
@@ -182,7 +183,7 @@ export class ProgressReporter implements IProgressReporter {
             for (const task of job.tasks) {
 
                 const duration: string | null = (task.startTime && task.finishTime) ?
-                    Moment.duration(new Date(task.startTime).getTime() - new Date (task.finishTime).getTime()).humanize() : null;
+                    Moment.duration(new Date(task.startTime).getTime() - new Date(task.finishTime).getTime()).humanize() : null;
 
                 const result: any[] = [
 
@@ -224,7 +225,7 @@ export class ProgressReporter implements IProgressReporter {
                 (job) => job.tasks.length).reduce((a, b) => a + b, 0);
 
             const duration: string | null = (stage.startTime && stage.finishTime) ?
-                Moment.duration(new Date(stage.startTime).getTime() - new Date (stage.finishTime).getTime()).humanize() : null;
+                Moment.duration(new Date(stage.startTime).getTime() - new Date(stage.finishTime).getTime()).humanize() : null;
 
             const result: any[] = [
 

@@ -25,7 +25,7 @@ export class PipelinesApiRetry implements IPipelinesApiRetry {
     @Retryable()
     public async queueRun(definition: BuildDefinition, request: unknown): Promise<unknown> {
 
-        const run: unknown = await this.apiClient.post(`${definition.project?.name}/_apis/pipelines/${definition.id}/runs`, `5.1-preview.1`, request);
+        const run: unknown = await this.apiClient.post(`${definition.project?.name}/_apis/pipelines/${definition.id}/runs`, "5.1-preview.1", request);
 
         if (!run) {
 
@@ -41,7 +41,7 @@ export class PipelinesApiRetry implements IPipelinesApiRetry {
     // Rely on approval retry mechanism instead
     public async updateApproval(build: Build, request: unknown): Promise<unknown> {
 
-        const approval: any = await this.apiClient.patch(`${build.project?.name}/_apis/pipelines/approvals`, `5.1-preview.1`, [ request ]);
+        const approval: any = await this.apiClient.patch(`${build.project?.name}/_apis/pipelines/approvals`, "5.1-preview.1", [ request ]);
 
         if (!Array.isArray(approval.value) && approval.value.length <= 0) {
 
