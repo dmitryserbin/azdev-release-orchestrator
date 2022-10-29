@@ -1,10 +1,10 @@
 import { ApprovalStatus, Artifact, ArtifactMetadata, Release, ReleaseApproval, ReleaseDefinition, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { IReleaseFilter } from "../common/releasefilter";
-import { IArtifactFilter } from "../common/artifactfilter";
-import { DeploymentType } from "../common/deploymenttype";
-import { IReleaseVariable } from "../common/releasevariable";
-import { IDetails } from "../task/details";
+import { IReleaseFilter } from "../common/ireleasefilter";
+import { IArtifactFilter } from "../common/iartifactfilter";
+import { DeploymentType } from "../common/ideploymenttype";
+import { IReleaseVariable } from "../common/ireleasevariable";
+import { IDetails } from "../task/idetails";
 
 export interface IReleaseHelper {
 

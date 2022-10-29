@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Retryable } from "../../common/retry";
-import { IDebugLogger } from "../../interfaces/loggers/debuglogger";
-import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
+import { IDebugLogger } from "../../interfaces/loggers/idebuglogger";
+import { IDebugCreator } from "../../interfaces/loggers/idebugcreator";
 
 export interface IRetryThis {
 

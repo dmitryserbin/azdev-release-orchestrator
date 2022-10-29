@@ -2,14 +2,14 @@ import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { Artifact, EnvironmentStatus, ReleaseDefinition, ReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
-import { IBuildHelper } from "../interfaces/helpers/buildhelper";
-import { IReleaseFilter } from "../interfaces/common/releasefilter";
-import { IArtifactFilter } from "../interfaces/common/artifactfilter";
-import { IFilters } from "../interfaces/task/filters";
-import { IFiltrator } from "../interfaces/orchestrator/filtrator";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
+import { IReleaseHelper } from "../interfaces/helpers/ireleasehelper";
+import { IBuildHelper } from "../interfaces/helpers/ibuildhelper";
+import { IReleaseFilter } from "../interfaces/common/ireleasefilter";
+import { IArtifactFilter } from "../interfaces/common/iartifactfilter";
+import { IFilters } from "../interfaces/task/ifilters";
+import { IFiltrator } from "../interfaces/orchestrator/ifiltrator";
 
 export class Filtrator implements IFiltrator {
 

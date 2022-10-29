@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-types */
 
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
 import { DebugCreator } from "../loggers/debugcreator";
 
 const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator");

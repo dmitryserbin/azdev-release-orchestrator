@@ -1,4 +1,4 @@
-import { IDebugLogger } from "./debuglogger";
+import { IDebugLogger } from "./idebuglogger";
 
 export interface IDebugCreator {
 

@@ -6,10 +6,10 @@ import { ImportMock } from "ts-mock-imports";
 
 import * as TaskLibrary from "azure-pipelines-task-lib/task";
 
-import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../../interfaces/loggers/debuglogger";
+import { IDebugCreator } from "../../interfaces/loggers/idebugcreator";
+import { IDebugLogger } from "../../interfaces/loggers/idebuglogger";
 import { TaskHelper } from "../../helpers/taskhelper";
-import { ITaskHelper } from "../../interfaces/helpers/taskhelper";
+import { ITaskHelper } from "../../interfaces/helpers/itaskhelper";
 import { CommonHelper } from "../../helpers/commonhelper";
 
 describe("TaskHelper", () => {

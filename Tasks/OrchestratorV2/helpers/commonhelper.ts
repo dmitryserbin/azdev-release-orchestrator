@@ -1,6 +1,6 @@
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { ICommonHelper } from "../interfaces/helpers/commonhelper";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
+import { ICommonHelper } from "../interfaces/helpers/icommonhelper";
 
 export class CommonHelper implements ICommonHelper {
 

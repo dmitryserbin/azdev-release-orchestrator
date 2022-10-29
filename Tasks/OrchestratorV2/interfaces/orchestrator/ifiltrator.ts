@@ -1,9 +1,9 @@
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { IFilters } from "../task/filters";
-import { IArtifactFilter } from "../common/artifactfilter";
-import { IReleaseFilter } from "../common/releasefilter";
+import { IFilters } from "../task/ifilters";
+import { IArtifactFilter } from "../common/iartifactfilter";
+import { IReleaseFilter } from "../common/ireleasefilter";
 
 export interface IFiltrator {
 

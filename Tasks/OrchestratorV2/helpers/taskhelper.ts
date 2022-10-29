@@ -1,17 +1,17 @@
 import { TaskResult, getBoolInput, getDelimitedInput, getEndpointAuthorizationParameter, getEndpointUrl, getInput, getVariable, setResult } from "azure-pipelines-task-lib/task";
 
-import { ITaskHelper } from "../interfaces/helpers/taskhelper";
-import { IEndpoint } from "../interfaces/task/endpoint";
-import { IParameters } from "../interfaces/task/parameters";
-import { ReleaseType } from "../interfaces/common/releasetype";
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { IDetails } from "../interfaces/task/details";
-import { ReleaseStatus } from "../interfaces/common/releasestatus";
-import { IFilters } from "../interfaces/task/filters";
-import { IReleaseVariable } from "../interfaces/common/releasevariable";
-import { ISettings } from "../interfaces/common/settings";
-import { ICommonHelper } from "../interfaces/helpers/commonhelper";
+import { ITaskHelper } from "../interfaces/helpers/itaskhelper";
+import { IEndpoint } from "../interfaces/task/iendpoint";
+import { IParameters } from "../interfaces/task/iparameters";
+import { ReleaseType } from "../interfaces/common/ireleasetype";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
+import { IDetails } from "../interfaces/task/idetails";
+import { ReleaseStatus } from "../interfaces/common/ireleasestatus";
+import { IFilters } from "../interfaces/task/ifilters";
+import { IReleaseVariable } from "../interfaces/common/ireleasevariable";
+import { ISettings } from "../interfaces/common/isettings";
+import { ICommonHelper } from "../interfaces/helpers/icommonhelper";
 
 export class TaskHelper implements ITaskHelper {
 

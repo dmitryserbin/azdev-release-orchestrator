@@ -1,7 +1,7 @@
-import { IFilters } from "./filters";
-import { IReleaseVariable } from "../common/releasevariable";
-import { ReleaseType } from "../common/releasetype";
-import { ISettings } from "../common/settings";
+import { IFilters } from "./ifilters";
+import { IReleaseVariable } from "../common/ireleasevariable";
+import { ReleaseType } from "../common/ireleasetype";
+import { ISettings } from "../common/isettings";
 
 export interface IParameters {
 

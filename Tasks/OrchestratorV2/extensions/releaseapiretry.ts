@@ -2,7 +2,7 @@ import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
 import { ApprovalFilters, ArtifactVersionQueryResult, Release, ReleaseApproval, ReleaseDefinition, ReleaseDefinitionExpands, ReleaseDefinitionQueryOrder, ReleaseEnvironment, ReleaseEnvironmentUpdateMetadata, ReleaseExpands, ReleaseQueryOrder, ReleaseStartMetadata, ReleaseStatus, SingleReleaseExpands } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { Retryable } from "../common/retry";
-import { IReleaseApiRetry } from "../interfaces/extensions/releaseapiretry";
+import { IReleaseApiRetry } from "../interfaces/extensions/ireleaseapiretry";
 
 export class ReleaseApiRetry implements IReleaseApiRetry {
 

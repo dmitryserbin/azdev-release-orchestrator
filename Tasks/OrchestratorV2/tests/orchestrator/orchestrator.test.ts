@@ -5,21 +5,21 @@ import * as TypeMoq from "typemoq";
 
 import { Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { IParameters } from "../../interfaces/task/parameters";
-import { IDetails } from "../../interfaces/task/details";
-import { IOrchestrator } from "../../interfaces/orchestrator/orchestrator";
-import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
-import { IConsoleLogger } from "../../interfaces/loggers/consolelogger";
+import { IParameters } from "../../interfaces/task/iparameters";
+import { IDetails } from "../../interfaces/task/idetails";
+import { IOrchestrator } from "../../interfaces/orchestrator/iorchestrator";
+import { IDebugCreator } from "../../interfaces/loggers/idebugcreator";
+import { IConsoleLogger } from "../../interfaces/loggers/iconsolelogger";
 import { Orchestrator } from "../../orchestrator/orchestrator";
-import { IOrchestratorFactory } from "../../interfaces/factories/orchestratorfactory";
-import { ICreator } from "../../interfaces/orchestrator/creator";
-import { IDeployer } from "../../interfaces/orchestrator/deployer";
-import { IReporter } from "../../interfaces/orchestrator/reporter";
-import { IReleaseJob } from "../../interfaces/common/releasejob";
-import { ReleaseType } from "../../interfaces/common/releasetype";
-import { IDebugLogger } from "../../interfaces/loggers/debuglogger";
-import { DeploymentType } from "../../interfaces/common/deploymenttype";
-import { IReleaseProgress } from "../../interfaces/common/releaseprogress";
+import { IOrchestratorFactory } from "../../interfaces/factories/iorchestratorfactory";
+import { ICreator } from "../../interfaces/orchestrator/icreator";
+import { IDeployer } from "../../interfaces/orchestrator/ideployer";
+import { IReporter } from "../../interfaces/orchestrator/ireporter";
+import { IReleaseJob } from "../../interfaces/common/ireleasejob";
+import { ReleaseType } from "../../interfaces/common/ireleasetype";
+import { IDebugLogger } from "../../interfaces/loggers/idebuglogger";
+import { DeploymentType } from "../../interfaces/common/ideploymenttype";
+import { IReleaseProgress } from "../../interfaces/common/ireleaseprogress";
 
 describe("Orchestrator", () => {
 

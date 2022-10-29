@@ -1,14 +1,14 @@
 import { ApprovalStatus, Artifact, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ConfigurationVariableValue, EnvironmentStatus, Release, ReleaseApproval, ReleaseDefinition, ReleaseEnvironment, ReleaseEnvironmentUpdateMetadata, ReleaseExpands, ReleaseReason, ReleaseStartMetadata, ReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
-import { IReleaseFilter } from "../interfaces/common/releasefilter";
-import { IArtifactFilter } from "../interfaces/common/artifactfilter";
-import { DeploymentType } from "../interfaces/common/deploymenttype";
-import { IReleaseApiRetry } from "../interfaces/extensions/releaseapiretry";
-import { IReleaseVariable } from "../interfaces/common/releasevariable";
-import { IDetails } from "../interfaces/task/details";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
+import { IReleaseHelper } from "../interfaces/helpers/ireleasehelper";
+import { IReleaseFilter } from "../interfaces/common/ireleasefilter";
+import { IArtifactFilter } from "../interfaces/common/iartifactfilter";
+import { DeploymentType } from "../interfaces/common/ideploymenttype";
+import { IReleaseApiRetry } from "../interfaces/extensions/ireleaseapiretry";
+import { IReleaseVariable } from "../interfaces/common/ireleasevariable";
+import { IDetails } from "../interfaces/task/idetails";
 
 export class ReleaseHelper implements IReleaseHelper {
 

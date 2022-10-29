@@ -7,15 +7,15 @@ import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
 import { Artifact, ArtifactMetadata, EnvironmentStatus, ReleaseDefinition, ReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { IParameters } from "../../interfaces/task/parameters";
-import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
-import { IConsoleLogger } from "../../interfaces/loggers/consolelogger";
-import { IDebugLogger } from "../../interfaces/loggers/debuglogger";
-import { IBuildHelper } from "../../interfaces/helpers/buildhelper";
-import { IReleaseHelper } from "../../interfaces/helpers/releasehelper";
-import { IFilters } from "../../interfaces/task/filters";
-import { ISettings } from "../../interfaces/common/settings";
-import { IFiltrator } from "../../interfaces/orchestrator/filtrator";
+import { IParameters } from "../../interfaces/task/iparameters";
+import { IDebugCreator } from "../../interfaces/loggers/idebugcreator";
+import { IConsoleLogger } from "../../interfaces/loggers/iconsolelogger";
+import { IDebugLogger } from "../../interfaces/loggers/idebuglogger";
+import { IBuildHelper } from "../../interfaces/helpers/ibuildhelper";
+import { IReleaseHelper } from "../../interfaces/helpers/ireleasehelper";
+import { IFilters } from "../../interfaces/task/ifilters";
+import { ISettings } from "../../interfaces/common/isettings";
+import { IFiltrator } from "../../interfaces/orchestrator/ifiltrator";
 import { Filtrator } from "../../orchestrator/filtrator";
 
 describe("Filtrator", () => {

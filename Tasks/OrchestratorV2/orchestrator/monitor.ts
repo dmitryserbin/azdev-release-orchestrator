@@ -1,13 +1,13 @@
 import { ApprovalStatus, DeploymentAttempt, EnvironmentStatus, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { IMonitor } from "../interfaces/orchestrator/monitor";
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { IReleaseProgress } from "../interfaces/common/releaseprogress";
-import { IStageApproval } from "../interfaces/common/stageapproval";
-import { IStageProgress } from "../interfaces/common/stageprogress";
-import { ReleaseStatus } from "../interfaces/common/releasestatus";
-import { IReleaseJob } from "../interfaces/common/releasejob";
+import { IMonitor } from "../interfaces/orchestrator/imonitor";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
+import { IReleaseProgress } from "../interfaces/common/ireleaseprogress";
+import { IStageApproval } from "../interfaces/common/istageapproval";
+import { IStageProgress } from "../interfaces/common/istageprogress";
+import { ReleaseStatus } from "../interfaces/common/ireleasestatus";
+import { IReleaseJob } from "../interfaces/common/ireleasejob";
 
 export class Monitor implements IMonitor {
 

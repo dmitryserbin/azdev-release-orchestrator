@@ -5,7 +5,7 @@ import "mocha";
 import * as chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 
-import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
+import { IDebugCreator } from "../../interfaces/loggers/idebugcreator";
 import { DebugCreator } from "../../loggers/debugcreator";
 import { IRetryThis, RetryThis } from "./retrythis";
 

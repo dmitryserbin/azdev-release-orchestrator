@@ -4,16 +4,16 @@ import { BuildApi } from "azure-devops-node-api/BuildApi";
 import { WebApi, getPersonalAccessTokenHandler } from "azure-devops-node-api";
 import { IRequestHandler, IRequestOptions } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
 
-import { IApiFactory } from "../interfaces/factories/apifactory";
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { ICoreApiRetry } from "../interfaces/extensions/coreapiretry";
+import { IApiFactory } from "../interfaces/factories/iapifactory";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
+import { ICoreApiRetry } from "../interfaces/extensions/icoreapiretry";
 import { CoreApiRetry } from "../extensions/coreapiretry";
-import { IReleaseApiRetry } from "../interfaces/extensions/releaseapiretry";
+import { IReleaseApiRetry } from "../interfaces/extensions/ireleaseapiretry";
 import { ReleaseApiRetry } from "../extensions/releaseapiretry";
-import { IBuildApiRetry } from "../interfaces/extensions/buildapiretry";
+import { IBuildApiRetry } from "../interfaces/extensions/ibuildapiretry";
 import { BuildApiRetry } from "../extensions/buildapiretry";
-import { IEndpoint } from "../interfaces/task/endpoint";
+import { IEndpoint } from "../interfaces/task/iendpoint";
 
 export class ApiFactory implements IApiFactory {
 

@@ -5,14 +5,14 @@ import Moment from "moment";
 
 import { ApprovalStatus, DeploymentReason, EnvironmentStatus, Release, ReleaseTask, TaskStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
-import { IReporter } from "../interfaces/orchestrator/reporter";
-import { IReleaseProgress } from "../interfaces/common/releaseprogress";
-import { IStageProgress } from "../interfaces/common/stageprogress";
-import { ReleaseStatus } from "../interfaces/common/releasestatus";
-import { IFilters } from "../interfaces/task/filters";
-import { IReleaseVariable } from "../interfaces/common/releasevariable";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
+import { IReporter } from "../interfaces/orchestrator/ireporter";
+import { IReleaseProgress } from "../interfaces/common/ireleaseprogress";
+import { IStageProgress } from "../interfaces/common/istageprogress";
+import { ReleaseStatus } from "../interfaces/common/ireleasestatus";
+import { IFilters } from "../interfaces/task/ifilters";
+import { IReleaseVariable } from "../interfaces/common/ireleasevariable";
 
 export class Reporter implements IReporter {
 

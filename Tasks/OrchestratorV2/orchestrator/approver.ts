@@ -1,14 +1,14 @@
 import { ApprovalStatus, ReleaseApproval, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
-import { IApprover } from "../interfaces/orchestrator/approver";
-import { IStageProgress } from "../interfaces/common/stageprogress";
-import { IDetails } from "../interfaces/task/details";
-import { ISettings } from "../interfaces/common/settings";
-import { IDebugLogger } from "../interfaces/loggers/debuglogger";
-import { IConsoleLogger } from "../interfaces/loggers/consolelogger";
-import { ICommonHelper } from "../interfaces/helpers/commonhelper";
-import { IReleaseHelper } from "../interfaces/helpers/releasehelper";
-import { IDebugCreator } from "../interfaces/loggers/debugcreator";
+import { IApprover } from "../interfaces/orchestrator/iapprover";
+import { IStageProgress } from "../interfaces/common/istageprogress";
+import { IDetails } from "../interfaces/task/idetails";
+import { ISettings } from "../interfaces/common/isettings";
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
+import { IConsoleLogger } from "../interfaces/loggers/iconsolelogger";
+import { ICommonHelper } from "../interfaces/helpers/icommonhelper";
+import { IReleaseHelper } from "../interfaces/helpers/ireleasehelper";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
 
 export class Approver implements IApprover {
 
