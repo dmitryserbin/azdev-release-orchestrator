@@ -4,8 +4,8 @@
 
 `2022-10-20`
 
-- Update and remove obsolete package dependencies ([TBU](TBU))
-- Normalize code slyling & minor refactoring ([TBU](TBU))
+- Update and remove obsolete dependencies ([84](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/84))
+- Normalize code styling & minor refactoring ([84](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/84))
 - Remove obsolete V1 task ([83](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/83))
 
 ## 3.0.*
