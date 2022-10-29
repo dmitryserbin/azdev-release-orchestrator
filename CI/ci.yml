@@ -10,6 +10,9 @@ pr:
     - Tasks/*
   autoCancel: true
 
+pool:
+  vmImage: ubuntu-latest
+
 jobs:
 - template: templates/build.yml
   parameters:

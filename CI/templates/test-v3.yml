@@ -1,7 +1,5 @@
 jobs:
 - job: OrchestratorV3
-  pool:
-    name: Default
   workspace:
     clean: all
   steps:

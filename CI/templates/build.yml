@@ -6,8 +6,6 @@ parameters:
 jobs:
 - ${{ if eq(parameters.taskV2, true) }}:
   - job: OrchestratorV2
-    pool:
-      name: Default
     workspace:
       clean: all
     variables:
@@ -26,8 +24,6 @@ jobs:
 
 - ${{ if eq(parameters.taskV3, true) }}:
   - job: OrchestratorV3
-    pool:
-      name: Default
     workspace:
       clean: all
     variables:
@@ -46,8 +42,6 @@ jobs:
 
 - ${{ if eq(parameters.extension, true) }}:
   - job: Extension
-    pool:
-      name: Default
     workspace:
       clean: all
     variables:
