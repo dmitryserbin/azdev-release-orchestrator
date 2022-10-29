@@ -4,6 +4,7 @@
 
 `2022-10-20`
 
+- Update package dependencies ([TBU](TBU))
 - Remove obsolete V1 task ([83](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/83))
 
 ## 3.0.*

@@ -135,7 +135,7 @@ export class Reporter implements IReporter {
             release.id ? release.id.toString() : "-",
             release.name ? release.name.toString() : "-",
             releaseStages ? String.Join("|", releaseStages) : "-",
-            release.createdBy!.displayName ? release.createdBy!.displayName : "-",
+            release.createdBy?.displayName ? release.createdBy.displayName : "-",
             releaseDate ? `${releaseDate.toLocaleDateString()} at ${releaseDate.toLocaleTimeString()}` : "-",
 
         ]);
