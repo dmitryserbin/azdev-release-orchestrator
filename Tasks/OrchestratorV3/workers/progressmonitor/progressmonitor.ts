@@ -1,5 +1,3 @@
-import { String } from "typescript-string-operations";
-
 import { TaskResult, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IProgressMonitor } from "./iprogressmonitor";
@@ -86,7 +84,7 @@ export class ProgressMonitor implements IProgressMonitor {
 
         if (allStagesCompleted) {
 
-            debug(`All run stages <${String.Join("|", completedStages)}> completed`);
+            debug(`All run stages <${completedStages?.join("|")}> completed`);
 
             // Get non-succeeded stages
             const nonSucceededStages: boolean = this.isNonSucceededStages(runProgress.stages);
@@ -114,7 +112,7 @@ export class ProgressMonitor implements IProgressMonitor {
 
         } else {
 
-            debug(`Run stages <${String.Join("|", activeStages)}> in progress`);
+            debug(`Run stages <${activeStages?.join("|")}> in progress`);
 
             runProgress.status = RunStatus.InProgress;
 

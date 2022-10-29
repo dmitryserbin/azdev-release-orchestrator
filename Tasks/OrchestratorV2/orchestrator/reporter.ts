@@ -3,8 +3,6 @@
 import Table from "cli-table";
 import Moment from "moment";
 
-import { String } from "typescript-string-operations";
-
 import { ApprovalStatus, EnvironmentStatus, TaskStatus, ReleaseTask, DeploymentReason, Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
@@ -134,7 +132,7 @@ export class Reporter implements IReporter {
 
             release.id ? release.id.toString() : "-",
             release.name ? release.name.toString() : "-",
-            releaseStages ? String.Join("|", releaseStages) : "-",
+            releaseStages ? releaseStages?.join("|") : "-",
             release.createdBy?.displayName ? release.createdBy.displayName : "-",
             releaseDate ? `${releaseDate.toLocaleDateString()} at ${releaseDate.toLocaleTimeString()}` : "-",
 
@@ -243,11 +241,11 @@ export class Reporter implements IReporter {
 
         const result: any[] = [
 
-            filters.releaseTags.length ? String.Join("|", filters.releaseTags) : "-",
+            filters.releaseTags.length ? filters.releaseTags?.join("|") : "-",
             filters.artifactVersion ? filters.artifactVersion : "-",
-            filters.artifactTags.length ? String.Join("|", filters.artifactTags) : "-",
+            filters.artifactTags.length ? filters.artifactTags?.join("|") : "-",
             filters.artifactBranch ? filters.artifactBranch : "-",
-            filters.stageStatuses.length ? String.Join("|", filters.stageStatuses) : "-",
+            filters.stageStatuses.length ? filters.stageStatuses?.join("|") : "-",
 
         ];
 

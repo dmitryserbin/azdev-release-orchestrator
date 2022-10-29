@@ -1,5 +1,3 @@
-import { String } from "typescript-string-operations";
-
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 import { ReleaseDefinition, Artifact, EnvironmentStatus, ReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
@@ -117,7 +115,7 @@ export class Filtrator implements IFiltrator {
         // Add release tag filter
         if (filters.releaseTags.length) {
 
-            debug(`Using <${String.Join("|", filters.releaseTags)}> release tag filter`);
+            debug(`Using <${filters.releaseTags?.join("|")}> release tag filter`);
 
             releaseFilter.tags = filters.releaseTags;
 
@@ -126,7 +124,7 @@ export class Filtrator implements IFiltrator {
         // Add stage status filter
         if (filters.stageStatuses.length) {
 
-            debug(`Using <${String.Join("|", filters.stageStatuses)}> release stage status filter`);
+            debug(`Using <${filters.stageStatuses?.join("|")}> release stage status filter`);
 
             const supportedStatuses: string[] = [
 
@@ -174,7 +172,7 @@ export class Filtrator implements IFiltrator {
 
                     } default: {
 
-                        throw new Error(`Stage status filter <${status}> not supported. Supported statuses: ${String.Join("|", supportedStatuses)}`);
+                        throw new Error(`Stage status filter <${status}> not supported. Supported statuses: ${supportedStatuses?.join("|")}`);
 
                     }
 
@@ -202,7 +200,7 @@ export class Filtrator implements IFiltrator {
 
         if (tags.length) {
 
-            debug(`Using <${String.Join("|", tags)}> artifact tag filter`);
+            debug(`Using <${tags?.join("|")}> artifact tag filter`);
 
         }
 

@@ -1,5 +1,3 @@
-import { String } from "typescript-string-operations";
-
 import { IRunDeployer } from "./irundeployer";
 import { IDebug } from "../../loggers/idebug";
 import { ILogger } from "../../loggers/ilogger";
@@ -71,7 +69,7 @@ export class RunDeployer implements IRunDeployer {
 
         while (inProgress) {
 
-            debug(`Updating <${String.Join("|", runProgress.stages.map((stage) => stage.name))}> active stage(s) progress`);
+            debug(`Updating <${runProgress.stages.map((stage) => stage.name)?.join("|")}> active stage(s) progress`);
 
             const activeStages: IBuildStage[] = this.progressMonitor.getActiveStages(runProgress);
 

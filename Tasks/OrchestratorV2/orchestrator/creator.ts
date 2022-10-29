@@ -1,5 +1,3 @@
-import { String } from "typescript-string-operations";
-
 import { ReleaseDefinition, Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 
@@ -66,7 +64,7 @@ export class Creator implements ICreator {
 
         };
 
-        debug(`Release <${targetRelease.name}> (<${String.Join("|", targetStages)}>) job cleated`);
+        debug(`Release <${targetRelease.name}> (<${targetStages?.join("|")}>) job cleated`);
 
         return releaseJob;
 

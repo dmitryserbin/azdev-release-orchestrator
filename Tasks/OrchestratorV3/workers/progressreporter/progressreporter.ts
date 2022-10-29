@@ -3,8 +3,6 @@
 import Table from "cli-table";
 import Moment from "moment";
 
-import { String } from "typescript-string-operations";
-
 import { TaskResult, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IDebug } from "../../loggers/idebug";
@@ -55,7 +53,7 @@ export class ProgressReporter implements IProgressReporter {
 
             run.build.id ? run.build.id.toString() : "-",
             run.build.buildNumber ? run.build.buildNumber : "",
-            stages.length ? String.Join("|", stages) : "-",
+            stages.length ? stages?.join("|") : "-",
             run.build.requestedFor?.displayName ? run.build.requestedFor.displayName : "-",
             releaseDate ? `${releaseDate.toLocaleDateString()} at ${releaseDate.toLocaleTimeString()}` : "-",
 
@@ -135,8 +133,8 @@ export class ProgressReporter implements IProgressReporter {
                     (i) => `${i}|${filters.repositoryResources[i]}`);
 
                 result.push(filters.branchName ? filters.branchName : "-");
-                result.push(pipelineResources.length ? String.Join("\n", pipelineResources) : "-");
-                result.push(repositoryResources.length ? String.Join("\n", repositoryResources) : "-");
+                result.push(pipelineResources.length ? pipelineResources?.join("\n") : "-");
+                result.push(repositoryResources.length ? repositoryResources?.join("\n") : "-");
 
                 break;
 
@@ -148,7 +146,7 @@ export class ProgressReporter implements IProgressReporter {
 
                 result.push(filters.branchName ? filters.branchName : "-");
                 result.push(filters.buildResult ? filters.buildResult : "-");
-                result.push(filters.buildTags.length ? String.Join("|", filters.buildTags) : "-");
+                result.push(filters.buildTags.length ? filters.buildTags?.join("|") : "-");
 
                 break;
 
@@ -267,7 +265,7 @@ export class ProgressReporter implements IProgressReporter {
 
             runProgress.id ? runProgress.id : "-",
             runProgress.name ? runProgress.name : "-",
-            stages.length ? String.Join("|", stages) : "-",
+            stages.length ? stages?.join("|") : "-",
             runProgress.status ? RunStatus[runProgress.status] : "-",
             runProgress.url ? runProgress.url : "-",
 
