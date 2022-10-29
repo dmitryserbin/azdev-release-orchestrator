@@ -1,4 +1,4 @@
-import { EnvironmentStatus, DeploymentAttempt } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { DeploymentAttempt, EnvironmentStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IStageApproval } from "./stageapproval";
 

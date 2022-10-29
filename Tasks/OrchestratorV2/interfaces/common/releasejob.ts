@@ -1,5 +1,5 @@
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
-import { ReleaseDefinition, Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { Release, ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { ISettings } from "./settings";
 import { DeploymentType } from "./deploymenttype";
@@ -7,10 +7,10 @@ import { DeploymentType } from "./deploymenttype";
 export interface IReleaseJob {
 
     project: TeamProject;
-    definition: ReleaseDefinition
+    definition: ReleaseDefinition;
     release: Release;
     stages: string[];
-    type: DeploymentType,
+    type: DeploymentType;
     settings: ISettings;
 
 }

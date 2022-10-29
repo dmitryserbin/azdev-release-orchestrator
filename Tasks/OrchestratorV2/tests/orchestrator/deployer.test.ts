@@ -23,7 +23,7 @@ import { IStageProgress } from "../../interfaces/common/stageprogress";
 import { ReleaseStatus } from "../../interfaces/common/releasestatus";
 import { ISettings } from "../../interfaces/common/settings";
 
-describe("Deployer", ()  => {
+describe("Deployer", () => {
 
     const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>();
     const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>();
@@ -209,7 +209,7 @@ describe("Deployer", ()  => {
             () => null);
 
         progressMonitorMock.setup((x) => x.isStageCompleted(stageOneProgress.target)).returns(
-            () => true);  
+            () => true);
 
         //#endregion
 

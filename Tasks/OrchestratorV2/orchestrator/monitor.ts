@@ -1,4 +1,4 @@
-import { ApprovalStatus, EnvironmentStatus, ReleaseEnvironment, DeploymentAttempt } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ApprovalStatus, DeploymentAttempt, EnvironmentStatus, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IMonitor } from "../interfaces/orchestrator/monitor";
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
@@ -59,8 +59,9 @@ export class Monitor implements IMonitor {
                 name: stage,
                 id: releaseStage.id,
                 approval: approvalStatus,
-                status: EnvironmentStatus.NotStarted
-            }
+                status: EnvironmentStatus.NotStarted,
+
+            };
 
             releaseProgress.stages.push(stageProgress);
 
@@ -77,12 +78,10 @@ export class Monitor implements IMonitor {
         const debug = this.debugLogger.extend(this.updateReleaseProgress.name);
 
         const completedStages: string[] = releaseProgress.stages.filter(
-            (stage) => this.isStageCompleted(stage)).map(
-                (stage) => stage.name);
+            (stage) => this.isStageCompleted(stage)).map((stage) => stage.name);
 
         const activeStages: string[] = releaseProgress.stages.filter(
-            (stage) => this.isStageActive(stage)).map(
-                (stage) => stage.name);
+            (stage) => this.isStageActive(stage)).map((stage) => stage.name);
 
         // Get stages completion status
         const completed: boolean = completedStages.length === releaseProgress.stages.length;

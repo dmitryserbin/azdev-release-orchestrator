@@ -1,4 +1,4 @@
-import { ReleaseDefinition, Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { Release, ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
 
 import { IParameters } from "../interfaces/task/parameters";
@@ -83,7 +83,7 @@ export class Creator implements ICreator {
                 this.consoleLogger.log(`Creating new <${definition.name}> (${definition.id}) release pipeline release`);
 
                 this.consoleLogger.log(
-                    this.progressReporter.getFilters(parameters.filters)
+                    this.progressReporter.getFilters(parameters.filters),
                 );
 
                 const artifactFilter: IArtifactFilter[] = await this.filterCreator.createArtifactFilter(project, definition, parameters.filters);
@@ -93,7 +93,7 @@ export class Creator implements ICreator {
                     this.consoleLogger.log(`Overridding <${parameters.variables.length}> release pipeline <${definition.name}> variable(s)`);
 
                     this.consoleLogger.log(
-                        this.progressReporter.getVariables(parameters.variables)
+                        this.progressReporter.getVariables(parameters.variables),
                     );
 
                 }
@@ -107,7 +107,7 @@ export class Creator implements ICreator {
                 this.consoleLogger.log(`Targeting latest <${definition.name}> (${definition.id}) release pipeline release`);
 
                 this.consoleLogger.log(
-                    this.progressReporter.getFilters(parameters.filters)
+                    this.progressReporter.getFilters(parameters.filters),
                 );
 
                 const releaseFilter: IReleaseFilter = await this.filterCreator.createReleaseFilter(definition, parameters.stages, parameters.filters);

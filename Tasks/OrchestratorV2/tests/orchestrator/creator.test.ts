@@ -4,7 +4,7 @@ import * as chai from "chai";
 import * as TypeMoq from "typemoq";
 
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
-import { ReleaseDefinition, Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { Release, ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IParameters } from "../../interfaces/task/parameters";
 import { IDetails } from "../../interfaces/task/details";
@@ -25,7 +25,7 @@ import { IReleaseFilter } from "../../interfaces/common/releasefilter";
 import { IFiltrator } from "../../interfaces/orchestrator/filtrator";
 import { IArtifactFilter } from "../../interfaces/common/artifactfilter";
 
-describe("Creator", ()  => {
+describe("Creator", () => {
 
     const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>();
     const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>();
@@ -179,7 +179,7 @@ describe("Creator", ()  => {
         releaseHelperMock.setup((x) => x.getDefinition(projectMock.target.name!, parametersMock.target.definitionName)).returns(
             () => Promise.resolve(definitionMock.target));
 
-        releaseHelperMock.setup((x) => x.getRelease(projectMock.target.name!, definitionMock.target.id!, parametersMock.target.releaseName,  parametersMock.target.stages)).returns(
+        releaseHelperMock.setup((x) => x.getRelease(projectMock.target.name!, definitionMock.target.id!, parametersMock.target.releaseName, parametersMock.target.stages)).returns(
             () => Promise.resolve(releaseMock.target));
 
         releaseHelperMock.setup((x) => x.getReleaseStages(releaseMock.target, parametersMock.target.stages)).returns(

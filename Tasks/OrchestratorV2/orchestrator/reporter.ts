@@ -3,7 +3,7 @@
 import Table from "cli-table";
 import Moment from "moment";
 
-import { ApprovalStatus, EnvironmentStatus, TaskStatus, ReleaseTask, DeploymentReason, Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ApprovalStatus, DeploymentReason, EnvironmentStatus, Release, ReleaseTask, TaskStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
@@ -207,7 +207,7 @@ export class Reporter implements IReporter {
             stage.id ? stage.id : "-",
             stage.name ? stage.name : "-",
             stage.deployment!.reason ? DeploymentReason[stage.deployment!.reason] : "-",
-            stage.release ?  stage.release : "-",
+            stage.release ? stage.release : "-",
             tasksCount > 0 ? tasksCount : "-",
             stage.deployment!.attempt ? stage.deployment!.attempt : "-",
             stage.approval.status ? ApprovalStatus[stage.approval.status] : "-",
@@ -229,7 +229,7 @@ export class Reporter implements IReporter {
             task.name ? task.name : "-",
             task.status ? TaskStatus[task.status] : "-",
             task.startTime && task.finishTime
-                ? Moment.duration(new Date(task.startTime).getTime() - new Date (task.finishTime).getTime()).humanize() : "-",
+                ? Moment.duration(new Date(task.startTime).getTime() - new Date(task.finishTime).getTime()).humanize() : "-",
 
         ];
 

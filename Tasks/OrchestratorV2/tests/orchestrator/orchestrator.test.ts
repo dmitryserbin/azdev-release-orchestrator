@@ -21,7 +21,7 @@ import { IDebugLogger } from "../../interfaces/loggers/debuglogger";
 import { DeploymentType } from "../../interfaces/common/deploymenttype";
 import { IReleaseProgress } from "../../interfaces/common/releaseprogress";
 
-describe("Orchestrator", ()  => {
+describe("Orchestrator", () => {
 
     const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>();
     const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>();

@@ -1,5 +1,5 @@
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
-import { ReleaseDefinition, Artifact, EnvironmentStatus, ReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { Artifact, EnvironmentStatus, ReleaseDefinition, ReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";

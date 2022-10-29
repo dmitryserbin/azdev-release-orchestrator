@@ -5,7 +5,7 @@ export interface IReleaseProgress {
 
     id: number;
     name: string;
-    project: string,
+    project: string;
     url: string;
     stages: IStageProgress[];
     status: ReleaseStatus;

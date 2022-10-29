@@ -28,7 +28,7 @@ async function run() {
     const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator", forceDebug);
     const consoleLogger: IConsoleLogger = new ConsoleLogger();
 
-    const commonHelper: ICommonHelper = new CommonHelper(debugCreator)
+    const commonHelper: ICommonHelper = new CommonHelper(debugCreator);
     const taskHelper: ITaskHelper = new TaskHelper(debugCreator, commonHelper);
 
     try {

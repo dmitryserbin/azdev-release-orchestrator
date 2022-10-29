@@ -7,7 +7,7 @@ import chaiAsPromised from "chai-as-promised";
 
 import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
 import { DebugCreator } from "../../loggers/debugcreator";
-import { RetryThis, IRetryThis } from "./retrythis";
+import { IRetryThis, RetryThis } from "./retrythis";
 
 const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator");
 

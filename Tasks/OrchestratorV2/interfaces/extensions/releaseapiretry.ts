@@ -1,5 +1,5 @@
 import { IReleaseApi } from "azure-devops-node-api/ReleaseApi";
-import { ReleaseDefinition, Release, ReleaseStatus, ReleaseStartMetadata, ArtifactVersionQueryResult, ReleaseEnvironmentUpdateMetadata, ReleaseEnvironment, ReleaseApproval, ApprovalFilters, SingleReleaseExpands, ReleaseQueryOrder, ReleaseExpands, ReleaseDefinitionExpands, ReleaseDefinitionQueryOrder } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ApprovalFilters, ArtifactVersionQueryResult, Release, ReleaseApproval, ReleaseDefinition, ReleaseDefinitionExpands, ReleaseDefinitionQueryOrder, ReleaseEnvironment, ReleaseEnvironmentUpdateMetadata, ReleaseExpands, ReleaseQueryOrder, ReleaseStartMetadata, ReleaseStatus, SingleReleaseExpands } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 export interface IReleaseApiRetry extends Partial<IReleaseApi> {
 

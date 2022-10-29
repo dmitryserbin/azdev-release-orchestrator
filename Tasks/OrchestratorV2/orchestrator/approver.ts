@@ -1,4 +1,4 @@
-import { ReleaseEnvironment, ReleaseApproval, ApprovalStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ApprovalStatus, ReleaseApproval, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IApprover } from "../interfaces/orchestrator/approver";
 import { IStageProgress } from "../interfaces/common/stageprogress";
@@ -96,7 +96,7 @@ export class Approver implements IApprover {
             if (retryLimit) {
 
                 const limitMinutes: number = Math.floor((settings.approvalRetry * settings.approvalSleep) / 60000);
-                const cancelMessage: string = `Approval waiting time limit exceeded`;
+                const cancelMessage: string = "Approval waiting time limit exceeded";
 
                 this.consoleLogger.warn(`Stage <${stageStatus.name}> (${stageStatus.id}) approval <${limitMinutes}> minute(s) time limit exceeded`);
 

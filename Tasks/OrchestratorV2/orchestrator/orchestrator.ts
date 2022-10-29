@@ -24,7 +24,7 @@ export class Orchestrator implements IOrchestrator {
 
         this.debugLogger = debugCreator.extend(this.constructor.name);
         this.consoleLogger = consoleLogger;
-        this.orchestratorFactory = orchestratorFactory; 
+        this.orchestratorFactory = orchestratorFactory;
 
     }
 
@@ -54,7 +54,7 @@ export class Orchestrator implements IOrchestrator {
 
                     case DeploymentType.Automated: {
 
-                        debug(`Release orchestrated automatically as stages deployment conditions are met`);
+                        debug("Release orchestrated automatically as stages deployment conditions are met");
 
                         // Monitor automatically started stages deployment progess
                         releaseProgress = await deployer.deployAutomated(releaseJob, details);
@@ -63,7 +63,7 @@ export class Orchestrator implements IOrchestrator {
 
                     } case DeploymentType.Manual: {
 
-                        debug(`Release orchestrated manually as stages deployment conditions are not met`);
+                        debug("Release orchestrated manually as stages deployment conditions are not met");
 
                         // Manually trigger stages deployment and monitor progress
                         releaseProgress = await deployer.deployManual(releaseJob, details);

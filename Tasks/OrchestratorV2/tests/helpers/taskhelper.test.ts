@@ -12,7 +12,7 @@ import { TaskHelper } from "../../helpers/taskhelper";
 import { ITaskHelper } from "../../interfaces/helpers/taskhelper";
 import { CommonHelper } from "../../helpers/commonhelper";
 
-describe("TaskHelper", ()  => {
+describe("TaskHelper", () => {
 
     const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>();
     const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>();
@@ -20,7 +20,7 @@ describe("TaskHelper", ()  => {
     debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target);
 
     const endpointNameMock: string = "My-Endpoint";
-    const endpointUrlMock: string = `https://dev.azure.com/My-Organization`;
+    const endpointUrlMock: string = "https://dev.azure.com/My-Organization";
     const endpointTokenMock: string = "My-Token";
 
     const orchestratorProjectNameMock: string = "My-Orchestrator-Project";
@@ -40,7 +40,7 @@ describe("TaskHelper", ()  => {
     const artifactBranchMock: string = "My-Branch";
     const stageStatusMock: string = "succeeded,rejected";
 
-    const releaseVariablesMock: string = "My-Variable-One=My-Value-One"
+    const releaseVariablesMock: string = "My-Variable-One=My-Value-One";
 
     const updateIntervalMock: string = "1";
     const approvalRetryMock: string = "1";
@@ -53,16 +53,32 @@ describe("TaskHelper", ()  => {
     beforeEach(async () => {
 
         const getInputMock = ImportMock.mockFunction(TaskLibrary, "getInput");
-        getInputMock.callsFake(i => { return inputs[i] || null; });
+        getInputMock.callsFake(i => {
+
+            return inputs[i] || null;
+
+        });
 
         const getBoolInputMock = ImportMock.mockFunction(TaskLibrary, "getBoolInput");
-        getBoolInputMock.callsFake(i => { return (typeof inputs[i] === "boolean") ? inputs[i] : false; });
+        getBoolInputMock.callsFake(i => {
+
+            return (typeof inputs[i] === "boolean") ? inputs[i] : false;
+
+        });
 
         const getDelimitedInputMock = ImportMock.mockFunction(TaskLibrary, "getDelimitedInput");
-        getDelimitedInputMock.callsFake(i => { return inputs[i] ? inputs[i].toString().split(",") : []; });
+        getDelimitedInputMock.callsFake(i => {
+
+            return inputs[i] ? inputs[i].toString().split(",") : [];
+
+        });
 
         const getVariableMock = ImportMock.mockFunction(TaskLibrary, "getVariable");
-        getVariableMock.callsFake(i => { return variables[i] || null; });
+        getVariableMock.callsFake(i => {
+
+            return variables[i] || null;
+
+        });
 
         inputs = {};
         variables = {};

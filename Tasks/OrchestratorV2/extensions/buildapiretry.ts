@@ -1,5 +1,5 @@
 import { IBuildApi } from "azure-devops-node-api/BuildApi";
-import { Build, BuildReason, BuildStatus, BuildResult, QueryDeletedOption, BuildQueryOrder } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, BuildQueryOrder, BuildReason, BuildResult, BuildStatus, QueryDeletedOption } from "azure-devops-node-api/interfaces/BuildInterfaces";
 
 import { IBuildApiRetry } from "../interfaces/extensions/buildapiretry";
 import { Retryable } from "../common/retry";

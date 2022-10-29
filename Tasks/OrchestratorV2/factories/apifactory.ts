@@ -2,7 +2,7 @@ import { CoreApi } from "azure-devops-node-api/CoreApi";
 import { ReleaseApi } from "azure-devops-node-api/ReleaseApi";
 import { BuildApi } from "azure-devops-node-api/BuildApi";
 import { WebApi, getPersonalAccessTokenHandler } from "azure-devops-node-api";
-import { IRequestOptions, IRequestHandler } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
+import { IRequestHandler, IRequestOptions } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
 
 import { IApiFactory } from "../interfaces/factories/apifactory";
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
@@ -40,7 +40,7 @@ export class ApiFactory implements IApiFactory {
 
         this.webApi = new WebApi(endpoint.url, auth, options);
 
-        this.debugLogger(`Azure DevOps Web API initialized`);
+        this.debugLogger("Azure DevOps Web API initialized");
 
     }
 
@@ -51,7 +51,7 @@ export class ApiFactory implements IApiFactory {
         const coreApi: CoreApi = await this.webApi.getCoreApi();
         const coreApiRetry: ICoreApiRetry = new CoreApiRetry(coreApi);
 
-        debug(`Azure DevOps Core API initialized`);
+        debug("Azure DevOps Core API initialized");
 
         return coreApiRetry;
 
@@ -64,7 +64,7 @@ export class ApiFactory implements IApiFactory {
         const releaseApi: ReleaseApi = await this.webApi.getReleaseApi();
         const releaseApiRetry: IReleaseApiRetry = new ReleaseApiRetry(releaseApi);
 
-        debug(`Azure DevOps Release API initialized`);
+        debug("Azure DevOps Release API initialized");
 
         return releaseApiRetry;
 
@@ -77,7 +77,7 @@ export class ApiFactory implements IApiFactory {
         const buildApi: BuildApi = await this.webApi.getBuildApi();
         const buildApiRetry: IBuildApiRetry = new BuildApiRetry(buildApi);
 
-        debug(`Azure DevOps Build API initialized`);
+        debug("Azure DevOps Build API initialized");
 
         return buildApiRetry;
 

@@ -3,7 +3,7 @@ import "mocha";
 import * as chai from "chai";
 import * as TypeMoq from "typemoq";
 
-import { ReleaseEnvironment, ApprovalStatus, ReleaseApproval } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ApprovalStatus, ReleaseApproval, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
 import { IConsoleLogger } from "../../interfaces/loggers/consolelogger";
@@ -17,7 +17,7 @@ import { ISettings } from "../../interfaces/common/settings";
 import { Approver } from "../../orchestrator/approver";
 import { IStageApproval } from "../../interfaces/common/stageapproval";
 
-describe("Approver", ()  => {
+describe("Approver", () => {
 
     const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>();
     const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>();

@@ -1,4 +1,4 @@
-import { getInput, getEndpointUrl, getEndpointAuthorizationParameter, getBoolInput, getDelimitedInput, getVariable, setResult, TaskResult } from "azure-pipelines-task-lib/task";
+import { TaskResult, getBoolInput, getDelimitedInput, getEndpointAuthorizationParameter, getEndpointUrl, getInput, getVariable, setResult } from "azure-pipelines-task-lib/task";
 
 import { ITaskHelper } from "../interfaces/helpers/taskhelper";
 import { IEndpoint } from "../interfaces/task/endpoint";
@@ -21,7 +21,7 @@ export class TaskHelper implements ITaskHelper {
     constructor(debugCreator: IDebugCreator, commonHelper: ICommonHelper) {
 
         this.debugLogger = debugCreator.extend(this.constructor.name);
-        this.commonHelper = commonHelper
+        this.commonHelper = commonHelper;
 
     }
 
@@ -168,7 +168,7 @@ export class TaskHelper implements ITaskHelper {
             requesterName: requesterName ? requesterName : "Release Orchestrator",
             requesterId: requesterId ? requesterId : "Unknown",
 
-        }
+        };
 
         debug(details);
 
@@ -180,8 +180,8 @@ export class TaskHelper implements ITaskHelper {
 
         const debug = this.debugLogger.extend(this.validate.name);
 
-        const partialMessage: string = `One or more release stages partially succeeded`;
-        const failedMessage: string = `One or more release stages deployment failed`;
+        const partialMessage: string = "One or more release stages partially succeeded";
+        const failedMessage: string = "One or more release stages deployment failed";
 
         debug(status);
 

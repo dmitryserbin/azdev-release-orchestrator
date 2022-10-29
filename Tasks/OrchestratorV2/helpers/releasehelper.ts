@@ -1,4 +1,4 @@
-import { ReleaseDefinition, Release, ReleaseStatus, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ReleaseReason, ReleaseStartMetadata, ReleaseEnvironment, EnvironmentStatus, ReleaseApproval, ReleaseEnvironmentUpdateMetadata, ApprovalStatus, ReleaseExpands, ConfigurationVariableValue, Artifact } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ApprovalStatus, Artifact, ArtifactMetadata, ArtifactVersionQueryResult, BuildVersion, ConfigurationVariableValue, EnvironmentStatus, Release, ReleaseApproval, ReleaseDefinition, ReleaseEnvironment, ReleaseEnvironmentUpdateMetadata, ReleaseExpands, ReleaseReason, ReleaseStartMetadata, ReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugCreator } from "../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../interfaces/loggers/debuglogger";
@@ -67,7 +67,7 @@ export class ReleaseHelper implements IReleaseHelper {
             projectName,
             definitionId,
             undefined,
-            releaseName
+            releaseName,
         );
 
         debug(matchingReleases.map(
@@ -333,6 +333,7 @@ export class ReleaseHelper implements IReleaseHelper {
             };
 
             targetArtifacts.push(targetArtifcat);
+
         }
 
         debug(targetArtifacts);
@@ -348,8 +349,7 @@ export class ReleaseHelper implements IReleaseHelper {
         await this.validateDefinitionStages(definition, stages);
 
         const targetStages: string[] = definition.environments!.map(
-            (stage) => stage.name!).filter(
-                (stage) => stages.indexOf(stage) === -1);
+            (stage) => stage.name!).filter((stage) => stages.indexOf(stage) === -1);
 
         debug(targetStages);
 
@@ -366,7 +366,7 @@ export class ReleaseHelper implements IReleaseHelper {
         if (Array.isArray(definition.artifacts) && definition.artifacts.length) {
 
             artifact = definition.artifacts!.filter(
-                (i) => i.isPrimary === true && i.type === type)[0]
+                (i) => i.isPrimary === true && i.type === type)[0];
 
         }
 
@@ -427,7 +427,6 @@ export class ReleaseHelper implements IReleaseHelper {
             debug(stage.conditions);
 
         }
-
 
         const conditionsMet: boolean = conditionStages.length > 0 ? true : false;
 
@@ -615,7 +614,7 @@ export class ReleaseHelper implements IReleaseHelper {
 
                 value: variable.value,
 
-            }
+            };
 
             releaseVariables[variable.name] = value;
 

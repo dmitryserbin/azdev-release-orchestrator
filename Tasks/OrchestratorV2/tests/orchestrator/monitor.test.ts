@@ -4,7 +4,7 @@ import * as chai from "chai";
 import * as TypeMoq from "typemoq";
 
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
-import { ReleaseEnvironment, Release, ApprovalStatus, EnvironmentStatus, DeploymentAttempt } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { ApprovalStatus, DeploymentAttempt, EnvironmentStatus, Release, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
 
 import { IDebugCreator } from "../../interfaces/loggers/debugcreator";
 import { IDebugLogger } from "../../interfaces/loggers/debuglogger";
@@ -15,7 +15,7 @@ import { ReleaseStatus } from "../../interfaces/common/releasestatus";
 import { IReleaseProgress } from "../../interfaces/common/releaseprogress";
 import { IStageProgress } from "../../interfaces/common/stageprogress";
 
-describe("Monitor", ()  => {
+describe("Monitor", () => {
 
     const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>();
     const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>();
