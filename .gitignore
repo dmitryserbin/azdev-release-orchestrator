@@ -7,4 +7,3 @@
 **/*.log
 **/*.xml
 **/.vs
-**/console*.ts
