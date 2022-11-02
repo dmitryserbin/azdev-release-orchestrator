@@ -6,5 +6,5 @@
 **/*.js
 **/*.log
 **/*.xml
+**/*.env
 **/.vs
-**/console*.ts

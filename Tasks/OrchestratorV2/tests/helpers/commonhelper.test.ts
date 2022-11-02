@@ -2,15 +2,18 @@ import "mocha";
 
 import * as chai from "chai";
 import * as TypeMoq from "typemoq";
-
-import { ILogger } from "../../loggers/ilogger";
-import { CommonHelper } from "../../helpers/commonhelper/commonhelper";
+import { IDebugLogger } from "../../interfaces/loggers/idebuglogger";
+import { IDebugCreator } from "../../interfaces/loggers/idebugcreator";
+import { CommonHelper } from "../../helpers/commonhelper";
 
 describe("CommonHelper", async () => {
 
-    const loggerMock = TypeMoq.Mock.ofType<ILogger>();
+    const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>();
+    const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>();
+    debugCreatorMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target);
+    debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target);
 
-    const commonHelper = new CommonHelper(loggerMock.object);
+    const commonHelper = new CommonHelper(debugCreatorMock.object);
 
     const tests = [
 

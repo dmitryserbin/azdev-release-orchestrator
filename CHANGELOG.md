@@ -2,6 +2,11 @@
 
 ## 3.1.*
 
+`2022-11-03`
+
+- Add V3 empty pipeline parameter value validation ([87](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/87))
+- Add V2 empty release variable value support ([87](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/87))
+
 `2022-10-30`
 
 - Update and remove obsolete dependencies ([84](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/84))

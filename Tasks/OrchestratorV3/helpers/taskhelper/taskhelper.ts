@@ -273,11 +273,13 @@ export class TaskHelper implements ITaskHelper {
 
                 const value: [string, string] = this.commonHelper.parseKeyValue(parameter);
 
-                if (value) {
+                if (!value[1]) {
 
-                    parameters.parameters[value[0]] = value[1];
+                    throw new Error(`Pipeline parameter <${value[0]}> value cannot be empty`);
 
                 }
+
+                parameters.parameters[value[0]] = value[1];
 
             }
 
