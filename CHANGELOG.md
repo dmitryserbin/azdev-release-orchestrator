@@ -2,6 +2,11 @@
 
 ## 3.1.*
 
+`2022-11-03`
+
+- Add empty release variable value support ([TBU](TBU))
+- Add empty pipeline parameter value support ([TBU](TBU))
+
 `2022-10-30`
 
 - Update and remove obsolete dependencies ([84](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/84))

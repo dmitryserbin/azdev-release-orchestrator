@@ -104,7 +104,7 @@ New release deployment uses default stage [triggers](https://docs.microsoft.com/
 - `Artifact version`: target release primary build type artifact version filter (i.e. build number, last 100 builds)
 - `Artifact tag`: target release primary build type artifact tag filter (comma separated, last 100 builds)
 - `Artifact branch`: target release primary artifact source branch filter. Supports build artifact (last 100 builds) or Git artifact
-- `Release variables`: override target release pipeline variables when creating a new release. Specified release variables must be configured to be 'settable at release time'. In 'Name=Value' format, special characters supported, new line separated
+- `Release variables`: override target release pipeline variables when creating a new release. Specified release variables must be configured to be 'settable at release time'. In 'Name=Value' format, special characters and empty value supported, new line separated
 
 ### Latest release
 

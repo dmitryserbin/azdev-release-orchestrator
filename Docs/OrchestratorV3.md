@@ -114,7 +114,7 @@ Create new run and target all stages in default order configured in the pipeline
 Parameter | Description
 :-------- | :----------
 `branchName` | Source branch name filter. Example: `mybranch`
-`parameters` | Override target pipeline parameters when creating a new run. In `Name=Value` format, special characters supported, new line separated
+`parameters` | Override target pipeline parameters when creating a new run. In `Name=Value` format, special characters and empty value supported, new line separated
 
 ### Latest run
 

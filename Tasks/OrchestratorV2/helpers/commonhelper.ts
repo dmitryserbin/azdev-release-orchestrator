@@ -35,7 +35,7 @@ export class CommonHelper implements ICommonHelper {
         }
 
         const key = match[1].trim();
-        const value = match[2].trim();
+        const value = match[2] ? match[2].trim() : "";
 
         return [ key, value ];
 
