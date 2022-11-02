@@ -4,8 +4,8 @@
 
 `2022-11-03`
 
-- Add empty V3 pipeline parameter value support ([87](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/87))
-- Add empty V2 release variable value support ([87](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/87))
+- Add V3 empty pipeline parameter value validation ([87](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/87))
+- Add V2 empty release variable value support ([87](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/87))
 
 `2022-10-30`
 
