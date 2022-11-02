@@ -20,26 +20,26 @@ describe("Console", async () => {
 
     const logger: ILogger = new Logger("release-orchestrator", true);
 
-    const endpontUrl: string | undefined = process.env.ORCHESTRATOR_ENDPOINT_URL;
-
-    if (!endpontUrl) {
-
-        throw new Error("Variable <ORCHESTRATOR_ENDPOINT_URL> not found");
-
-    }
-
-    const endpontToken: string | undefined = process.env.ORCHESTRATOR_ENDPOINT_TOKEN;
-
-    if (!endpontToken) {
-
-        throw new Error("Variable <ORCHESTRATOR_ENDPOINT_TOKEN> not found");
-
-    }
-
     let endpoint: IEndpoint;
     let parameters: IParameters;
 
     beforeEach(() => {
+
+        const endpontUrl: string | undefined = process.env.ORCHESTRATOR_ENDPOINT_URL;
+
+        if (!endpontUrl) {
+
+            throw new Error("Variable <ORCHESTRATOR_ENDPOINT_URL> not found");
+
+        }
+
+        const endpontToken: string | undefined = process.env.ORCHESTRATOR_ENDPOINT_TOKEN;
+
+        if (!endpontToken) {
+
+            throw new Error("Variable <ORCHESTRATOR_ENDPOINT_TOKEN> not found");
+
+        }
 
         endpoint = {
             url: endpontUrl,
