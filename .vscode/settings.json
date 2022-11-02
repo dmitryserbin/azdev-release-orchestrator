@@ -5,6 +5,8 @@
     "**/test-*.xml": true,
     "**/.taskkey": true,
   },
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
   "eslint.workingDirectories": [
     "Tasks/OrchestratorV2",
     "Tasks/OrchestratorV3"
