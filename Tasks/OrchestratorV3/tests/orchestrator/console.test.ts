@@ -20,10 +20,13 @@ describe("Console", async () => {
 
     const logger: ILogger = new Logger("release-orchestrator", true);
 
-    let endpoint: IEndpoint;
-    let parameters: IParameters;
+    let apiFactory: IApiFactory;
+    let workerFactory: IWorkerFactory;
+    let runCreator: IRunCreator;
+    let runDeployer: IRunDeployer;
+    let progressReporter: IProgressReporter;
 
-    beforeEach(() => {
+    beforeEach(async () => {
 
         const endpontUrl: string | undefined = process.env.ORCHESTRATOR_ENDPOINT_URL;
 
@@ -41,12 +44,24 @@ describe("Console", async () => {
 
         }
 
-        endpoint = {
+        const endpoint: IEndpoint = {
             url: endpontUrl,
             token: endpontToken,
         };
 
-        parameters = {
+        apiFactory = new ApiFactory(endpoint, logger);
+        workerFactory = new WorkerFactory(apiFactory, logger);
+        runCreator = await workerFactory.createRunCreator();
+        runDeployer = await workerFactory.createRunDeployer();
+        progressReporter = await workerFactory.createProgressReporter();
+
+    });
+
+    it("Should orchestrate new run @manual", async () => {
+
+        //#region ARRANGE
+
+        const parameters: IParameters = {
             strategy: Strategy.New,
             projectName: "HelloYo",
             definitionName: "HelloYo-release",
@@ -85,20 +100,21 @@ describe("Console", async () => {
             },
         };
 
-    });
-
-    it("Should orchestrate new run @manual", async () => {
-
-        const apiFactory: IApiFactory = new ApiFactory(endpoint, logger);
-        const workerFactory: IWorkerFactory = new WorkerFactory(apiFactory, logger);
-
-        const runCreator: IRunCreator = await workerFactory.createRunCreator();
-        const runDeployer: IRunDeployer = await workerFactory.createRunDeployer();
-        const progressReporter: IProgressReporter = await workerFactory.createProgressReporter();
-
         const orchestrator: IOrchestrator = new Orchestrator(runCreator, runDeployer, progressReporter, logger);
 
+        //#endregion
+
+        //#region ACT
+
         const releaseProgress: IRunProgress = await orchestrator.orchestrate(parameters);
+
+        //#endregion
+
+        //#region ASSERT
+
+        chai.expect(releaseProgress).to.not.eq(null);
+
+        //#endregion
 
     });
 
