@@ -10,5 +10,11 @@
   "eslint.workingDirectories": [
     "Tasks/OrchestratorV2",
     "Tasks/OrchestratorV3"
-  ]
+  ],
+  "mochaExplorer.cwd": ".",
+  "mochaExplorer.files": "Tasks/**/tests/**/*.test.ts",
+  "mochaExplorer.mochaPath": "Tasks/OrchestratorV3/node_modules/mocha",
+  "mochaExplorer.envPath": "local.env",
+  "mochaExplorer.require": "ts-node/register",
+  "mochaExplorer.timeout": 60000
 }
