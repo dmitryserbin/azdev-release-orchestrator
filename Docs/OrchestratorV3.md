@@ -42,7 +42,13 @@ Stop builds | `Allow`
 View build pipeline | `Allow`
 View builds | `Allow`
 
-Use `Project Collection Build Service` for integrated endpoint (do not mix up with Project Build Service) or user specified account for custom service endpoint. You can grant required permissions to all pipelines in the project or to a specific pipeline only.
+Use `Project Collection Build Service (my-organization)` for integrated endpoint (do not mix up with Project Build Service) or user specified account for custom service endpoint. You can grant required permissions to all pipelines in the project or to a specific pipeline only.
+
+For custom runtime pipeline parameters feature to work correctly make sure `Protect access to repositories in YAML pipelines` is disabled in `Azure DevOps > Organization settings > Pipelines > Settings`
+
+Setting | Status
+:--------- | :---
+Protect access to repositories in YAML pipelines | `Off`
 
 Please refer to Azure DevOps [permissions and security roles documentation](https://docs.microsoft.com/en-us/azure/devops/pipelines/policies/permissions) for more details.
 
@@ -114,7 +120,7 @@ Create new run and target all stages in default order configured in the pipeline
 Parameter | Description
 :-------- | :----------
 `branchName` | Source branch name filter. Example: `mybranch`
-`parameters` | Override target pipeline parameters when creating a new run. In `Name=Value` format, special characters, value [must be provided](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/runtime-parameters?view=azure-devops&tabs=script), new line separated
+`parameters` | Override target pipeline parameters when creating a new run. In `Name=Value` format, special characters, value [must be provided](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/runtime-parameters?view=azure-devops&tabs=script), new line separated.<br /><br />**IMPORTANT**: Make sure `Protect access to repositories in YAML pipelines` is disabled in organization pipeline settings (see [Pipeline permissions](#pipeline-permissions)).
 
 ### Latest run
 
