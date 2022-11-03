@@ -5,6 +5,6 @@ jobs:
   steps:
   - template: steps/test-v3.yml
     parameters:
-      projectName: Test
+      projectName: HelloYo
       definitionName: HelloYo-release
-      stages: DEV
+      stages: DEV,TEST,PROD
