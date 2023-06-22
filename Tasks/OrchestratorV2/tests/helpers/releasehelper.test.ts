@@ -35,9 +35,9 @@ describe("ReleaseHelper", () => {
         // The following line set the mocked object as thenable.
         // Otherwise the Promise.resolve(releaseDefinitionMock.object) would never resolve.
         //
-        releaseDefinitionMock.setup((x: any) => x.then).returns(() => undefined);
+        //releaseDefinitionMock.setup((x: any) => x.then).returns(() => undefined);
 
-        const releaseDefinitions: ReleaseDefinition[] = [ releaseDefinitionMock.object ];
+        const releaseDefinitions: ReleaseDefinition[] = [releaseDefinitionMock.target];
 
         releaseApiRetryMock.setup(x => x.getReleaseDefinitions(
             projectName,
@@ -53,7 +53,7 @@ describe("ReleaseHelper", () => {
         ).returns(() => Promise.resolve(releaseDefinitions));
 
         releaseApiRetryMock.setup(x => x.getReleaseDefinition(projectName, releaseDefinitionId))
-            .returns(() => Promise.resolve(releaseDefinitionMock.object));
+            .returns(() => Promise.resolve(releaseDefinitionMock.target));
 
         //#endregion
 
@@ -83,13 +83,7 @@ describe("ReleaseHelper", () => {
         const releaseDefinitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>();
         releaseDefinitionMock.setup(x => x.id).returns(() => releaseDefinitionId);
 
-        //
-        // The following line set the mocked object as thenable.
-        // Otherwise the Promise.resolve(releaseDefinitionMock.object) would never resolve.
-        //
-        releaseDefinitionMock.setup((x: any) => x.then).returns(() => undefined);
-
-        const releaseDefinitions: ReleaseDefinition[] = [ releaseDefinitionMock.object ];
+        const releaseDefinitions: ReleaseDefinition[] = [releaseDefinitionMock.target];
 
         releaseApiRetryMock.setup(x => x.getReleaseDefinitions(
             projectName,
@@ -108,7 +102,7 @@ describe("ReleaseHelper", () => {
         ).returns(() => Promise.resolve(releaseDefinitions));
 
         releaseApiRetryMock.setup(x => x.getReleaseDefinition(projectName, releaseDefinitionId))
-            .returns(() => Promise.resolve(releaseDefinitionMock.object));
+            .returns(() => Promise.resolve(releaseDefinitionMock.target));
 
         //#endregion
 

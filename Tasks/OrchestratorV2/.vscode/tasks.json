@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "test",
+			"group": "test",
+			"problemMatcher": [],
+			"label": "npm: test",
+			"detail": "mocha -r ts-node/register tests/**/*.test.ts --no-timeouts --grep \"@manual\" --invert --reporter mocha-multi-reporters --reporter-options configFile=tests/config.json"
+		}
+	]
+}
