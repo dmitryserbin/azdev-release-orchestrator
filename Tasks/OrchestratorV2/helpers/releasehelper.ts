@@ -31,6 +31,7 @@ export class ReleaseHelper implements IReleaseHelper {
         let matchingDefinitions: ReleaseDefinition[];
 
         if (this.isDefinitionId(definitionName)) {
+
             matchingDefinitions = await this.releaseApi.getReleaseDefinitions(
                 projectName,
                 undefined,
@@ -45,8 +46,9 @@ export class ReleaseHelper implements IReleaseHelper {
                 undefined,
                 undefined,
                 new Array(definitionName));
-        }
-        else {
+
+        } else {
+
             matchingDefinitions = await this.releaseApi.getReleaseDefinitions(
                 projectName,
                 definitionName,
@@ -58,6 +60,7 @@ export class ReleaseHelper implements IReleaseHelper {
                 undefined,
                 undefined,
                 true);
+
         }
 
         debug(matchingDefinitions.map(
@@ -645,7 +648,9 @@ export class ReleaseHelper implements IReleaseHelper {
     }
 
     private isDefinitionId(value: string): boolean {
+
         return /^\d+$/.test(value);
+
     }
 
 }

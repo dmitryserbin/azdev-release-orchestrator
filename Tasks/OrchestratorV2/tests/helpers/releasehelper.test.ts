@@ -37,7 +37,7 @@ describe("ReleaseHelper", () => {
         //
         releaseDefinitionMock.setup((x: any) => x.then).returns(() => undefined);
 
-        const releaseDefinitions: ReleaseDefinition[] = [releaseDefinitionMock.object];
+        const releaseDefinitions: ReleaseDefinition[] = [ releaseDefinitionMock.object ];
 
         releaseApiRetryMock.setup(x => x.getReleaseDefinitions(
             projectName,
@@ -49,8 +49,8 @@ describe("ReleaseHelper", () => {
             undefined,
             undefined,
             undefined,
-            isExactNameMatch)
-        ).returns(() => Promise.resolve(releaseDefinitions))
+            isExactNameMatch),
+        ).returns(() => Promise.resolve(releaseDefinitions));
 
         releaseApiRetryMock.setup(x => x.getReleaseDefinition(projectName, releaseDefinitionId))
             .returns(() => Promise.resolve(releaseDefinitionMock.object));
@@ -70,6 +70,7 @@ describe("ReleaseHelper", () => {
         chai.expect(releaseDefinition.id).to.equal(releaseDefinitionId);
 
         //#endregion
+
     });
 
     it("Should set definitionIdsFilter arg", async () => {
@@ -88,7 +89,7 @@ describe("ReleaseHelper", () => {
         //
         releaseDefinitionMock.setup((x: any) => x.then).returns(() => undefined);
 
-        const releaseDefinitions: ReleaseDefinition[] = [releaseDefinitionMock.object];
+        const releaseDefinitions: ReleaseDefinition[] = [ releaseDefinitionMock.object ];
 
         releaseApiRetryMock.setup(x => x.getReleaseDefinitions(
             projectName,
@@ -103,8 +104,8 @@ describe("ReleaseHelper", () => {
             undefined,
             undefined,
             undefined,
-            TypeMoq.It.is(x => x![0] === numericDefinitionName))
-        ).returns(() => Promise.resolve(releaseDefinitions))
+            TypeMoq.It.is(x => x![0] === numericDefinitionName)),
+        ).returns(() => Promise.resolve(releaseDefinitions));
 
         releaseApiRetryMock.setup(x => x.getReleaseDefinition(projectName, releaseDefinitionId))
             .returns(() => Promise.resolve(releaseDefinitionMock.object));
@@ -124,7 +125,8 @@ describe("ReleaseHelper", () => {
         chai.expect(releaseDefinition.id).to.equal(releaseDefinitionId);
 
         //#endregion
-    }).timeout(999999);
+
+    });
 
 });
 
