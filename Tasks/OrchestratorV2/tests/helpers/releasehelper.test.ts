@@ -31,13 +31,7 @@ describe("ReleaseHelper", () => {
         const releaseDefinitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>();
         releaseDefinitionMock.setup(x => x.id).returns(() => releaseDefinitionId);
 
-        //
-        // The following line set the mocked object as thenable.
-        // Otherwise the Promise.resolve(releaseDefinitionMock.object) would never resolve.
-        //
-        //releaseDefinitionMock.setup((x: any) => x.then).returns(() => undefined);
-
-        const releaseDefinitions: ReleaseDefinition[] = [ releaseDefinitionMock.target ];
+        const releaseDefinitions: ReleaseDefinition[] = [releaseDefinitionMock.target];
 
         releaseApiRetryMock.setup(x => x.getReleaseDefinitions(
             projectName,
@@ -83,7 +77,7 @@ describe("ReleaseHelper", () => {
         const releaseDefinitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>();
         releaseDefinitionMock.setup(x => x.id).returns(() => releaseDefinitionId);
 
-        const releaseDefinitions: ReleaseDefinition[] = [ releaseDefinitionMock.target ];
+        const releaseDefinitions: ReleaseDefinition[] = [releaseDefinitionMock.target];
 
         releaseApiRetryMock.setup(x => x.getReleaseDefinitions(
             projectName,
