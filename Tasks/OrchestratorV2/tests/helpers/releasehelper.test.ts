@@ -31,7 +31,7 @@ describe("ReleaseHelper", () => {
         const releaseDefinitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>();
         releaseDefinitionMock.setup(x => x.id).returns(() => releaseDefinitionId);
 
-        const releaseDefinitions: ReleaseDefinition[] = [releaseDefinitionMock.target];
+        const releaseDefinitions: ReleaseDefinition[] = [ releaseDefinitionMock.target ];
 
         releaseApiRetryMock.setup(x => x.getReleaseDefinitions(
             projectName,
@@ -77,7 +77,7 @@ describe("ReleaseHelper", () => {
         const releaseDefinitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>();
         releaseDefinitionMock.setup(x => x.id).returns(() => releaseDefinitionId);
 
-        const releaseDefinitions: ReleaseDefinition[] = [releaseDefinitionMock.target];
+        const releaseDefinitions: ReleaseDefinition[] = [ releaseDefinitionMock.target ];
 
         releaseApiRetryMock.setup(x => x.getReleaseDefinitions(
             projectName,
