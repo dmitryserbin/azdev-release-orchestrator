@@ -12,7 +12,7 @@ This extension adds [Release Orchestrator](https://marketplace.visualstudio.com/
 
 Extension | Build | Code
 :---------|:------|:----
-[![Extension](https://vsmarketplacebadge.apphb.com/version/dmitryserbin.release-orchestrator.svg)](https://marketplace.visualstudio.com/items?itemName=dmitryserbin.release-orchestrator) | [![Build](https://dev.azure.com/dmitryserbin/Orchestrator/_apis/build/status/Orchestrator-release)](https://dev.azure.com/dmitryserbin/Orchestrator/_build/latest?definitionId=6) | [![CodeFactor](https://www.codefactor.io/repository/github/dmitryserbin/azdev-release-orchestrator/badge)](https://www.codefactor.io/repository/github/dmitryserbin/azdev-release-orchestrator)
+[![Extension](https://vsmarketplacebadges.dev/version/dmitryserbin.release-orchestrator.svg)](https://marketplace.visualstudio.com/items?itemName=dmitryserbin.release-orchestrator) | [![Build](https://dev.azure.com/dmitryserbin/Orchestrator/_apis/build/status/Orchestrator-release)](https://dev.azure.com/dmitryserbin/Orchestrator/_build/latest?definitionId=6) | [![CodeFactor](https://www.codefactor.io/repository/github/dmitryserbin/azdev-release-orchestrator/badge)](https://www.codefactor.io/repository/github/dmitryserbin/azdev-release-orchestrator)
 
 ## Features
 
