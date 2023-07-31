@@ -28,17 +28,40 @@ export class ReleaseHelper implements IReleaseHelper {
 
         const debug = this.debugLogger.extend(this.getDefinition.name);
 
-        const matchingDefinitions: ReleaseDefinition[] = await this.releaseApi.getReleaseDefinitions(
-            projectName,
-            definitionName,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            true);
+        let matchingDefinitions: ReleaseDefinition[];
+
+        if (this.isDefinitionId(definitionName)) {
+
+            matchingDefinitions = await this.releaseApi.getReleaseDefinitions(
+                projectName,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                new Array(definitionName));
+
+        } else {
+
+            matchingDefinitions = await this.releaseApi.getReleaseDefinitions(
+                projectName,
+                definitionName,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                true);
+
+        }
 
         debug(matchingDefinitions.map(
             (definition) => `${definition.name} (${definition.id})`));
@@ -621,6 +644,12 @@ export class ReleaseHelper implements IReleaseHelper {
         }
 
         return releaseVariables;
+
+    }
+
+    private isDefinitionId(value: string): boolean {
+
+        return /^\d+$/.test(value);
 
     }
 
