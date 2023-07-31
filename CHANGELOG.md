@@ -29,6 +29,10 @@
 
 ## 2.0.*
 
+`2023-07-31`
+
+- Fix definitionId filter support ([94](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/94))
+
 `2022-03-03`
 
 - Add Azure DevOps pipelines system diagnostics support ([70](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/70))
