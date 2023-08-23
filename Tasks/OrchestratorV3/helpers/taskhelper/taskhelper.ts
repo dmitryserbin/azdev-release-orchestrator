@@ -332,7 +332,7 @@ export class TaskHelper implements ITaskHelper {
         parameters.strategy = Strategy.Specific;
 
         const stages: string[] = getDelimitedInput("stages", ",", false);
-        const buildNumber: string = getInput("buildName", true)!;
+        const buildNumber: string = getInput("buildNumber", true)!;
 
         if (stages.length) {
 

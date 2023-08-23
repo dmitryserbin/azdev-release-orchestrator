@@ -2,6 +2,10 @@
 
 ## 3.1.*
 
+`2023-08-24`
+
+- Fix buildNumber parameter name ([97]([url](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/97)))
+
 `2022-11-03`
 
 - Add V3 empty pipeline parameter value validation ([87](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/87))
