@@ -58,7 +58,7 @@ export class BuildSelector implements IBuildSelector {
 
         if (parameters && Object.keys(parameters).length) {
 
-            const definitionParameters: string[] = await this.getParameters(definition, resourcesFilter.repositories.self);
+            const definitionParameters: string[] = await this.getParameters(definition, resourcesFilter.repositories.self, parameters);
 
             await this.confirmParameters(definition, definitionParameters, parameters);
 
@@ -312,15 +312,17 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
-    private async getParameters(definition: BuildDefinition, repository?: IRepositoryFilter): Promise<string[]> {
+    private async getParameters(definition: BuildDefinition, repository?: IRepositoryFilter, buildParameters?: IBuildParameters): Promise<string[]> {
 
         const debug = this.debugLogger.extend(this.getParameters.name);
 
-        const result: any = await this.buildWebApi.getRunParameters(definition, repository);
+        const result: any = await this.buildWebApi.getRunParameters(definition, repository, buildParameters);
 
         const templateParameters: unknown[] = result.templateParameters;
 
         if (!Array.isArray(templateParameters) || !templateParameters.length) {
+
+            debug(result)
 
             throw new Error(`Unable to detect <${definition.name}> (${definition.id}) definition template parameters`);
 
