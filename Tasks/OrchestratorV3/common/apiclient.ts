@@ -1,168 +1,131 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { VsoClient } from "azure-devops-node-api/VsoClient";
-import { IRequestOptions, IRestResponse } from "typed-rest-client";
+import { VsoClient } from "azure-devops-node-api/VsoClient"
+import { IRequestOptions, IRestResponse } from "typed-rest-client"
 
-import { IDebug } from "../loggers/idebug";
-import { ILogger } from "../loggers/ilogger";
-import { IApiClient } from "./iapiclient";
+import { IDebug } from "../loggers/idebug"
+import { ILogger } from "../loggers/ilogger"
+import { IApiClient } from "./iapiclient"
 
 export class ApiClient implements IApiClient {
+	private debugLogger: IDebug
 
-    private debugLogger: IDebug;
+	private vsoClient: VsoClient
 
-    private vsoClient: VsoClient;
+	constructor(vsoClient: VsoClient, logger: ILogger) {
+		this.debugLogger = logger.extend(this.constructor.name)
 
-    constructor(vsoClient: VsoClient, logger: ILogger) {
+		this.vsoClient = vsoClient
+	}
 
-        this.debugLogger = logger.extend(this.constructor.name);
+	public async get<T>(path: string): Promise<T> {
+		const debug = this.debugLogger.extend(this.get.name)
 
-        this.vsoClient = vsoClient;
+		const url: string = `${this.vsoClient.baseUrl}/${path}`
 
-    }
+		debug(`Making <${url}> API <GET> call`)
 
-    public async get<T>(path: string): Promise<T> {
+		const response: IRestResponse<any> = await this.vsoClient.restClient.get(url)
 
-        const debug = this.debugLogger.extend(this.get.name);
+		if (response.statusCode) {
+			debug(`Response status code <${response.statusCode}> received`)
+		}
 
-        const url: string = `${this.vsoClient.baseUrl}/${path}`;
+		return response.result
+	}
 
-        debug(`Making <${url}> API <GET> call`);
+	public async post<T>(path: string, apiVersion?: string, body?: any): Promise<T> {
+		const debug = this.debugLogger.extend(this.post.name)
 
-        const response: IRestResponse<any> = await this.vsoClient.restClient.get(url);
+		const url: string = `${this.vsoClient.baseUrl}/${path}`
 
-        if (response.statusCode) {
+		debug(`Making <${url}> API <POST> call`)
 
-            debug(`Response status code <${response.statusCode}> received`);
+		const requestOptions: IRequestOptions = {}
 
-        }
+		if (apiVersion) {
+			requestOptions.acceptHeader = `api-version=${apiVersion}`
+		}
 
-        return response.result;
+		const response: IRestResponse<any> = await this.vsoClient.restClient.create(url, body, requestOptions)
 
-    }
+		if (response.statusCode) {
+			debug(`Response status code <${response.statusCode}> received`)
+		}
 
-    public async post<T>(path: string, apiVersion?: string, body?: any): Promise<T> {
+		return response.result
+	}
 
-        const debug = this.debugLogger.extend(this.post.name);
+	// Ability to return raw response
+	// As updateStage method requires
+	// StatusCode for success validation
+	public async patch<T>(path: string, apiVersion?: string, body?: any, raw?: boolean): Promise<T | IRestResponse<T>> {
+		const debug = this.debugLogger.extend(this.patch.name)
 
-        const url: string = `${this.vsoClient.baseUrl}/${path}`;
+		const url: string = `${this.vsoClient.baseUrl}/${path}`
 
-        debug(`Making <${url}> API <POST> call`);
+		debug(`Making <${url}> API <PATCH> call`)
 
-        const requestOptions: IRequestOptions = {};
+		const requestOptions: IRequestOptions = {}
 
-        if (apiVersion) {
+		if (apiVersion) {
+			requestOptions.acceptHeader = `api-version=${apiVersion}`
+		}
 
-            requestOptions.acceptHeader = `api-version=${apiVersion}`;
+		const response: IRestResponse<any> = await this.vsoClient.restClient.update(url, body, requestOptions)
 
-        }
+		if (response.statusCode) {
+			debug(`Response status code <${response.statusCode}> received`)
+		}
 
-        const response: IRestResponse<any> = await this.vsoClient.restClient.create(url, body, requestOptions);
+		if (raw) {
+			return response
+		} else {
+			return response.result
+		}
+	}
 
-        if (response.statusCode) {
+	public async put<T>(path: string, apiVersion?: string, body?: any): Promise<T> {
+		const debug = this.debugLogger.extend(this.put.name)
 
-            debug(`Response status code <${response.statusCode}> received`);
+		const url: string = `${this.vsoClient.baseUrl}/${path}`
 
-        }
+		debug(`Making <${url}> API <PUT> call`)
 
-        return response.result;
+		const requestOptions: IRequestOptions = {}
 
-    }
+		if (apiVersion) {
+			requestOptions.acceptHeader = `api-version=${apiVersion}`
+		}
 
-    // Ability to return raw response
-    // As updateStage method requires
-    // StatusCode for success validation
-    public async patch<T>(path: string, apiVersion?: string, body?: any, raw?: boolean): Promise<T | IRestResponse<T>> {
+		const response: IRestResponse<any> = await this.vsoClient.restClient.replace(url, body, requestOptions)
 
-        const debug = this.debugLogger.extend(this.patch.name);
+		if (response.statusCode) {
+			debug(`Response status code <${response.statusCode}> received`)
+		}
 
-        const url: string = `${this.vsoClient.baseUrl}/${path}`;
+		return response.result
+	}
 
-        debug(`Making <${url}> API <PATCH> call`);
+	public async delete<T>(path: string, apiVersion?: string): Promise<T> {
+		const debug = this.debugLogger.extend(this.delete.name)
 
-        const requestOptions: IRequestOptions = {};
+		const url: string = `${this.vsoClient.baseUrl}/${path}`
 
-        if (apiVersion) {
+		debug(`Making <${url}> API <DELETE> call`)
 
-            requestOptions.acceptHeader = `api-version=${apiVersion}`;
+		const requestOptions: IRequestOptions = {}
 
-        }
+		if (apiVersion) {
+			requestOptions.acceptHeader = `api-version=${apiVersion}`
+		}
 
-        const response: IRestResponse<any> = await this.vsoClient.restClient.update(url, body, requestOptions);
+		const response: IRestResponse<any> = await this.vsoClient.restClient.del(url, requestOptions)
 
-        if (response.statusCode) {
+		if (response.statusCode) {
+			debug(`Response status code <${response.statusCode}> received`)
+		}
 
-            debug(`Response status code <${response.statusCode}> received`);
-
-        }
-
-        if (raw) {
-
-            return response;
-
-        } else {
-
-            return response.result;
-
-        }
-
-    }
-
-    public async put<T>(path: string, apiVersion?: string, body?: any): Promise<T> {
-
-        const debug = this.debugLogger.extend(this.put.name);
-
-        const url: string = `${this.vsoClient.baseUrl}/${path}`;
-
-        debug(`Making <${url}> API <PUT> call`);
-
-        const requestOptions: IRequestOptions = {};
-
-        if (apiVersion) {
-
-            requestOptions.acceptHeader = `api-version=${apiVersion}`;
-
-        }
-
-        const response: IRestResponse<any> = await this.vsoClient.restClient.replace(url, body, requestOptions);
-
-        if (response.statusCode) {
-
-            debug(`Response status code <${response.statusCode}> received`);
-
-        }
-
-        return response.result;
-
-    }
-
-    public async delete<T>(path: string, apiVersion?: string): Promise<T> {
-
-        const debug = this.debugLogger.extend(this.delete.name);
-
-        const url: string = `${this.vsoClient.baseUrl}/${path}`;
-
-        debug(`Making <${url}> API <DELETE> call`);
-
-        const requestOptions: IRequestOptions = {};
-
-        if (apiVersion) {
-
-            requestOptions.acceptHeader = `api-version=${apiVersion}`;
-
-        }
-
-        const response: IRestResponse<any> = await this.vsoClient.restClient.del(url, requestOptions);
-
-        if (response.statusCode) {
-
-            debug(`Response status code <${response.statusCode}> received`);
-
-        }
-
-        return response.result;
-
-    }
-
+		return response.result
+	}
 }

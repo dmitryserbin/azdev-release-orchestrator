@@ -1,282 +1,244 @@
-import "mocha";
+import "mocha"
 
-import * as chai from "chai";
-import * as TypeMoq from "typemoq";
+import * as chai from "chai"
+import * as TypeMoq from "typemoq"
 
-import { faker } from "@faker-js/faker";
+import { faker } from "@faker-js/faker"
 
-import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
-import { Build, BuildDefinition, TaskResult, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces"
+import { Build, BuildDefinition, TaskResult, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces"
 
-import { ILogger } from "../../loggers/ilogger";
-import { IDebug } from "../../loggers/idebug";
-import { IProgressMonitor } from "../../workers/progressmonitor/iprogressmonitor";
-import { ProgressMonitor } from "../../workers/progressmonitor/progressmonitor";
-import { IRun } from "../../workers/runcreator/irun";
-import { ISettings } from "../../helpers/taskhelper/isettings";
-import { IRunStage } from "../../workers/runcreator/irunstage";
-import { RunStatus } from "../../orchestrator/runstatus";
-import { IRunProgress } from "../../orchestrator/irunprogress";
-import { IBuildStage } from "../../workers/progressmonitor/ibuildstage";
+import { ILogger } from "../../loggers/ilogger"
+import { IDebug } from "../../loggers/idebug"
+import { IProgressMonitor } from "../../workers/progressmonitor/iprogressmonitor"
+import { ProgressMonitor } from "../../workers/progressmonitor/progressmonitor"
+import { IRun } from "../../workers/runcreator/irun"
+import { ISettings } from "../../helpers/taskhelper/isettings"
+import { IRunStage } from "../../workers/runcreator/irunstage"
+import { RunStatus } from "../../orchestrator/runstatus"
+import { IRunProgress } from "../../orchestrator/irunprogress"
+import { IBuildStage } from "../../workers/progressmonitor/ibuildstage"
 
 describe("ProgressMonitor", async () => {
+	const loggerMock = TypeMoq.Mock.ofType<ILogger>()
+	const debugMock = TypeMoq.Mock.ofType<IDebug>()
+
+	loggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null)
 
-    const loggerMock = TypeMoq.Mock.ofType<ILogger>();
-    const debugMock = TypeMoq.Mock.ofType<IDebug>();
+	loggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
 
-    loggerMock
-        .setup((x) => x.log(TypeMoq.It.isAny()))
-        .returns(() => null);
+	debugMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
 
-    loggerMock
-        .setup((x) => x.extend(TypeMoq.It.isAnyString()))
-        .returns(() => debugMock.object);
+	const projectMock = {
+		name: faker.word.sample(),
+		id: faker.word.sample(),
+		_links: {
+			web: {
+				href: "https://my.project.uri",
+			},
+		},
+	} as TeamProject
 
-    debugMock
-        .setup((x) => x.extend(TypeMoq.It.isAnyString()))
-        .returns(() => debugMock.object);
+	const definitionMock = {
+		name: faker.word.sample(),
+		id: faker.number.int(),
+	} as BuildDefinition
 
-    const projectMock = {
+	const buildMock = {
+		buildNumber: faker.word.sample(),
+		id: faker.number.int(),
+	} as Build
 
-        name: faker.word.sample(),
-        id: faker.word.sample(),
-        _links: {
-            web: {
-                href: "https://my.project.uri",
-            },
-        },
+	let runMock: IRun
+	let runStageOneMock: IRunStage
 
-    } as TeamProject;
+	let runProgressMock: IRunProgress
+	let buildStageOneMock: IBuildStage
 
-    const definitionMock = {
+	const progressMonitor: IProgressMonitor = new ProgressMonitor(loggerMock.object)
 
-        name: faker.word.sample(),
-        id: faker.number.int(),
+	beforeEach(async () => {
+		runStageOneMock = {
+			id: faker.word.sample(),
+			name: faker.word.sample(),
+			target: true,
+		} as IRunStage
 
-    } as BuildDefinition;
+		runMock = {
+			project: projectMock,
+			definition: definitionMock,
+			build: buildMock,
+			stages: [],
+			settings: {} as ISettings,
+		} as IRun
 
-    const buildMock = {
+		buildStageOneMock = {
+			id: runStageOneMock.id,
+			name: runStageOneMock.name,
+			state: TimelineRecordState.Pending,
+		} as IBuildStage
 
-        buildNumber: faker.word.sample(),
-        id: faker.number.int(),
+		runProgressMock = {
+			id: faker.number.int(),
+			name: faker.word.sample(),
+			project: faker.word.sample(),
+			url: faker.word.sample(),
+			stages: [],
+			status: RunStatus.InProgress,
+		} as IRunProgress
+	})
 
-    } as Build;
+	it("Should create run progress", async () => {
+		//#region ARRANGE
 
-    let runMock: IRun;
-    let runStageOneMock: IRunStage;
+		runMock.stages = [runStageOneMock]
 
-    let runProgressMock: IRunProgress;
-    let buildStageOneMock: IBuildStage;
+		//#endregion
 
-    const progressMonitor: IProgressMonitor = new ProgressMonitor(loggerMock.object);
+		//#region ACT
 
-    beforeEach(async () => {
+		const result = progressMonitor.createRunProgress(runMock)
 
-        runStageOneMock = {
+		//#endregion
 
-            id: faker.word.sample(),
-            name: faker.word.sample(),
-            target: true,
+		//#region ASSERT
 
-        } as IRunStage;
+		chai.expect(result).to.not.eq(null)
+		chai.expect(result.name).to.eq(buildMock.buildNumber)
+		chai.expect(result.id).to.eq(buildMock.id)
+		chai.expect(result.project).to.eq(projectMock.name)
+		chai.expect(result.status).to.eq(RunStatus.InProgress)
 
-        runMock = {
+		chai.expect(result.stages).to.lengthOf(1)
+		chai.expect(result.stages[0].name).to.eq(runStageOneMock.name)
+		chai.expect(result.stages[0].id).to.eq(runStageOneMock.id)
+		chai.expect(result.stages[0].state).to.eq(TimelineRecordState.Pending)
 
-            project: projectMock,
-            definition: definitionMock,
-            build: buildMock,
-            stages: [],
-            settings: {} as ISettings,
+		//#endregion
+	})
 
-        } as IRun;
+	it("Should update run progress (succeeded)", async () => {
+		//#region ARRANGE
 
-        buildStageOneMock = {
+		buildStageOneMock.state = TimelineRecordState.Completed
+		buildStageOneMock.result = TaskResult.Succeeded
 
-            id: runStageOneMock.id,
-            name: runStageOneMock.name,
-            state: TimelineRecordState.Pending,
+		runProgressMock.stages = [buildStageOneMock]
 
-        } as IBuildStage;
+		//#endregion
 
-        runProgressMock = {
+		//#region ACT
 
-            id: faker.number.int(),
-            name: faker.word.sample(),
-            project: faker.word.sample(),
-            url: faker.word.sample(),
-            stages: [],
-            status: RunStatus.InProgress,
+		const result = progressMonitor.updateRunProgress(runProgressMock)
 
-        } as IRunProgress;
+		//#endregion
 
-    });
+		//#region ASSERT
 
-    it("Should create run progress", async () => {
+		chai.expect(result).to.not.eq(null)
+		chai.expect(result.status).to.eq(RunStatus.Succeeded)
 
-        //#region ARRANGE
+		//#endregion
+	})
 
-        runMock.stages = [ runStageOneMock ];
+	it("Should update run progress (partially succeeded)", async () => {
+		//#region ARRANGE
 
-        //#endregion
+		buildStageOneMock.state = TimelineRecordState.Completed
+		buildStageOneMock.result = TaskResult.SucceededWithIssues
 
-        //#region ACT
+		runProgressMock.stages = [buildStageOneMock]
 
-        const result = progressMonitor.createRunProgress(runMock);
+		//#endregion
 
-        //#endregion
+		//#region ACT
 
-        //#region ASSERT
+		const result = progressMonitor.updateRunProgress(runProgressMock)
 
-        chai.expect(result).to.not.eq(null);
-        chai.expect(result.name).to.eq(buildMock.buildNumber);
-        chai.expect(result.id).to.eq(buildMock.id);
-        chai.expect(result.project).to.eq(projectMock.name);
-        chai.expect(result.status).to.eq(RunStatus.InProgress);
+		//#endregion
 
-        chai.expect(result.stages).to.lengthOf(1);
-        chai.expect(result.stages[0].name).to.eq(runStageOneMock.name);
-        chai.expect(result.stages[0].id).to.eq(runStageOneMock.id);
-        chai.expect(result.stages[0].state).to.eq(TimelineRecordState.Pending);
+		//#region ASSERT
 
-        //#endregion
+		chai.expect(result).to.not.eq(null)
+		chai.expect(result.status).to.eq(RunStatus.PartiallySucceeded)
 
-    });
+		//#endregion
+	})
 
-    it("Should update run progress (succeeded)", async () => {
+	it("Should update run progress (failed)", async () => {
+		//#region ARRANGE
 
-        //#region ARRANGE
+		buildStageOneMock.state = TimelineRecordState.Completed
+		buildStageOneMock.result = TaskResult.Failed
 
-        buildStageOneMock.state = TimelineRecordState.Completed;
-        buildStageOneMock.result = TaskResult.Succeeded;
+		runProgressMock.stages = [buildStageOneMock]
 
-        runProgressMock.stages = [ buildStageOneMock ];
+		//#endregion
 
-        //#endregion
+		//#region ACT
 
-        //#region ACT
+		const result = progressMonitor.updateRunProgress(runProgressMock)
 
-        const result = progressMonitor.updateRunProgress(runProgressMock);
+		//#endregion
 
-        //#endregion
+		//#region ASSERT
 
-        //#region ASSERT
+		chai.expect(result).to.not.eq(null)
+		chai.expect(result.status).to.eq(RunStatus.Failed)
 
-        chai.expect(result).to.not.eq(null);
-        chai.expect(result.status).to.eq(RunStatus.Succeeded);
+		//#endregion
+	})
 
-        //#endregion
+	it("Should update run progress (in progress)", async () => {
+		//#region ARRANGE
 
-    });
+		buildStageOneMock.state = TimelineRecordState.InProgress
+		buildStageOneMock.result = null
 
-    it("Should update run progress (partially succeeded)", async () => {
+		runProgressMock.stages = [buildStageOneMock]
 
-        //#region ARRANGE
+		//#endregion
 
-        buildStageOneMock.state = TimelineRecordState.Completed;
-        buildStageOneMock.result = TaskResult.SucceededWithIssues;
+		//#region ACT
 
-        runProgressMock.stages = [ buildStageOneMock ];
+		const result = progressMonitor.updateRunProgress(runProgressMock)
 
-        //#endregion
+		//#endregion
 
-        //#region ACT
+		//#region ASSERT
 
-        const result = progressMonitor.updateRunProgress(runProgressMock);
+		chai.expect(result).to.not.eq(null)
+		chai.expect(result.status).to.eq(RunStatus.InProgress)
 
-        //#endregion
+		//#endregion
+	})
 
-        //#region ASSERT
+	it("Should get active stages", async () => {
+		//#region ARRANGE
 
-        chai.expect(result).to.not.eq(null);
-        chai.expect(result.status).to.eq(RunStatus.PartiallySucceeded);
+		buildStageOneMock.state = TimelineRecordState.InProgress
 
-        //#endregion
+		runProgressMock.stages = [buildStageOneMock]
 
-    });
+		//#endregion
 
-    it("Should update run progress (failed)", async () => {
+		//#region ACT
 
-        //#region ARRANGE
+		const result = progressMonitor.getActiveStages(runProgressMock)
 
-        buildStageOneMock.state = TimelineRecordState.Completed;
-        buildStageOneMock.result = TaskResult.Failed;
+		//#endregion
 
-        runProgressMock.stages = [ buildStageOneMock ];
+		//#region ASSERT
 
-        //#endregion
+		chai.expect(result).to.not.eq(null)
+		chai.expect(result).lengthOf(1)
+		chai.expect(result[0].state).eq(TimelineRecordState.InProgress)
 
-        //#region ACT
-
-        const result = progressMonitor.updateRunProgress(runProgressMock);
-
-        //#endregion
-
-        //#region ASSERT
-
-        chai.expect(result).to.not.eq(null);
-        chai.expect(result.status).to.eq(RunStatus.Failed);
-
-        //#endregion
-
-    });
-
-    it("Should update run progress (in progress)", async () => {
-
-        //#region ARRANGE
-
-        buildStageOneMock.state = TimelineRecordState.InProgress;
-        buildStageOneMock.result = null;
-
-        runProgressMock.stages = [ buildStageOneMock ];
-
-        //#endregion
-
-        //#region ACT
-
-        const result = progressMonitor.updateRunProgress(runProgressMock);
-
-        //#endregion
-
-        //#region ASSERT
-
-        chai.expect(result).to.not.eq(null);
-        chai.expect(result.status).to.eq(RunStatus.InProgress);
-
-        //#endregion
-
-    });
-
-    it("Should get active stages", async () => {
-
-        //#region ARRANGE
-
-        buildStageOneMock.state = TimelineRecordState.InProgress;
-
-        runProgressMock.stages = [ buildStageOneMock ];
-
-        //#endregion
-
-        //#region ACT
-
-        const result = progressMonitor.getActiveStages(runProgressMock);
-
-        //#endregion
-
-        //#region ASSERT
-
-        chai.expect(result).to.not.eq(null);
-        chai.expect(result).lengthOf(1);
-        chai.expect(result[0].state).eq(TimelineRecordState.InProgress);
-
-        //#endregion
-
-    });
-
-});
+		//#endregion
+	})
+})
 
 process.on("unhandledRejection", (error: unknown) => {
-
-    console.error(error);
-    process.exit(1);
-
-});
+	console.error(error)
+	process.exit(1)
+})

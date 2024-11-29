@@ -1,361 +1,278 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Build, BuildDefinition, BuildQueryOrder, BuildStatus } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, BuildDefinition, BuildQueryOrder, BuildStatus } from "azure-devops-node-api/interfaces/BuildInterfaces"
 
-import { ILogger } from "../../loggers/ilogger";
-import { IDebug } from "../../loggers/idebug";
-import { IBuildSelector } from "./ibuildselector";
-import { IBuildApiRetry } from "../../extensions/buildapiretry/ibuildapiretry";
-import { IBuildParameters } from "../taskhelper/ibuildparameters";
-import { IBuildFilter } from "../../workers/filtercreator/ibuildfilter";
-import { IResourcesFilter } from "../../workers/filtercreator/iresourcesfilter";
-import { IRepositoryFilter } from "../../workers/filtercreator/irepositoryfilter";
-import { IBuildWebApiRetry } from "../../extensions/buildwebapiretry/ibuildwebapiretry";
-import { IRunStage } from "../../workers/runcreator/irunstage";
-import { IPipelinesApiRetry } from "../../extensions/pipelinesapiretry/ipipelineapiretry";
+import { ILogger } from "../../loggers/ilogger"
+import { IDebug } from "../../loggers/idebug"
+import { IBuildSelector } from "./ibuildselector"
+import { IBuildApiRetry } from "../../extensions/buildapiretry/ibuildapiretry"
+import { IBuildParameters } from "../taskhelper/ibuildparameters"
+import { IBuildFilter } from "../../workers/filtercreator/ibuildfilter"
+import { IResourcesFilter } from "../../workers/filtercreator/iresourcesfilter"
+import { IRepositoryFilter } from "../../workers/filtercreator/irepositoryfilter"
+import { IBuildWebApiRetry } from "../../extensions/buildwebapiretry/ibuildwebapiretry"
+import { IRunStage } from "../../workers/runcreator/irunstage"
+import { IPipelinesApiRetry } from "../../extensions/pipelinesapiretry/ipipelineapiretry"
 
 export class BuildSelector implements IBuildSelector {
+	private debugLogger: IDebug
 
-    private debugLogger: IDebug;
+	private buildApi: IBuildApiRetry
+	private pipelinesApi: IPipelinesApiRetry
+	private buildWebApi: IBuildWebApiRetry
 
-    private buildApi: IBuildApiRetry;
-    private pipelinesApi: IPipelinesApiRetry;
-    private buildWebApi: IBuildWebApiRetry;
+	constructor(buildApi: IBuildApiRetry, pipelinesApi: IPipelinesApiRetry, buildWebApi: IBuildWebApiRetry, logger: ILogger) {
+		this.debugLogger = logger.extend(this.constructor.name)
 
-    constructor(buildApi: IBuildApiRetry, pipelinesApi: IPipelinesApiRetry, buildWebApi: IBuildWebApiRetry, logger: ILogger) {
+		this.buildApi = buildApi
+		this.pipelinesApi = pipelinesApi
+		this.buildWebApi = buildWebApi
+	}
 
-        this.debugLogger = logger.extend(this.constructor.name);
+	public async createBuild(definition: BuildDefinition, resourcesFilter: IResourcesFilter, stages?: string[], parameters?: IBuildParameters): Promise<Build> {
+		const debug = this.debugLogger.extend(this.createBuild.name)
 
-        this.buildApi = buildApi;
-        this.pipelinesApi = pipelinesApi;
-        this.buildWebApi = buildWebApi;
+		const request: any = {
+			resources: resourcesFilter,
+			templateParameters: {},
+			stagesToSkip: [],
+		}
 
-    }
+		if (Array.isArray(stages) && stages.length) {
+			const definitionStages: string[] = await this.getStages(definition, resourcesFilter.repositories.self, parameters)
 
-    public async createBuild(definition: BuildDefinition, resourcesFilter: IResourcesFilter, stages?: string[], parameters?: IBuildParameters): Promise<Build> {
+			await this.confirmRequiredStages(definition, definitionStages, stages)
 
-        const debug = this.debugLogger.extend(this.createBuild.name);
+			const stagesToSkip: string[] = await this.getStagesToSkip(definitionStages, stages)
 
-        const request: any = {
+			request.stagesToSkip = stagesToSkip
+		}
 
-            resources: resourcesFilter,
-            templateParameters: {},
-            stagesToSkip: [],
+		if (parameters && Object.keys(parameters).length) {
+			const definitionParameters: string[] = await this.getParameters(definition, resourcesFilter.repositories.self)
 
-        };
+			await this.confirmParameters(definition, definitionParameters, parameters)
 
-        if (Array.isArray(stages) && stages.length) {
+			request.templateParameters = parameters
+		}
 
-            const definitionStages: string[] = await this.getStages(definition, resourcesFilter.repositories.self, parameters);
+		const run: any = await this.pipelinesApi.queueRun(definition, request)
 
-            await this.confirmRequiredStages(definition, definitionStages, stages);
+		const build: Build = await this.buildApi.getBuild(definition.project!.name!, run.id)
 
-            const stagesToSkip: string[] = await this.getStagesToSkip(definitionStages, stages);
+		debug(build)
 
-            request.stagesToSkip = stagesToSkip;
+		return build
+	}
 
-        }
+	public async getLatestBuild(definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build> {
+		const debug = this.debugLogger.extend(this.getLatestBuild.name)
 
-        if (parameters && Object.keys(parameters).length) {
+		const filteredBuilds: Build[] = await this.findBuilds(definition, filter, top)
 
-            const definitionParameters: string[] = await this.getParameters(definition, resourcesFilter.repositories.self);
+		const latestBuild: Build = filteredBuilds.sort((left, right) => left.id! - right.id!).reverse()[0]
 
-            await this.confirmParameters(definition, definitionParameters, parameters);
+		const build: Build = await this.buildApi.getBuild(definition.project!.name!, latestBuild.id!)
 
-            request.templateParameters = parameters;
+		debug(build)
 
-        }
+		return build
+	}
 
-        const run: any = await this.pipelinesApi.queueRun(definition, request);
+	public async getSpecificBuild(definition: BuildDefinition, buildNumber: string): Promise<Build> {
+		const debug = this.debugLogger.extend(this.getSpecificBuild.name)
 
-        const build: Build = await this.buildApi.getBuild(definition.project!.name!, run.id);
+		const matchingBuilds: Build[] = await this.buildApi.getBuilds(definition.project!.name!, [definition.id!], undefined, buildNumber)
 
-        debug(build);
+		debug(matchingBuilds.map((build) => `${build.buildNumber} (${build.id})`))
 
-        return build;
+		if (matchingBuilds.length <= 0) {
+			throw new Error(`Build <${buildNumber}> not found`)
+		}
 
-    }
+		const build: Build = await this.buildApi.getBuild(definition.project!.name!, matchingBuilds[0].id!)
 
-    public async getLatestBuild(definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build> {
+		debug(build)
 
-        const debug = this.debugLogger.extend(this.getLatestBuild.name);
+		return build
+	}
 
-        const filteredBuilds: Build[] = await this.findBuilds(definition, filter, top);
+	public async getBuildStages(build: Build, stages: string[]): Promise<IRunStage[]> {
+		const debug = this.debugLogger.extend(this.getBuildStages.name)
 
-        const latestBuild: Build = filteredBuilds.sort(
-            (left, right) => left.id! - right.id!).reverse()[0];
+		const buildStages: IRunStage[] = []
 
-        const build: Build = await this.buildApi.getBuild(definition.project!.name!, latestBuild.id!);
+		const runDetails: any = await this.buildWebApi.getRunDetails(build)
 
-        debug(build);
+		if (Array.isArray(runDetails.stages) && runDetails.stages.length) {
+			debug(runDetails.stages)
 
-        return build;
+			for (const stage of runDetails.stages) {
+				const skipped: boolean = stage.result === 4 ? true : false
 
-    }
+				// Do not auto-target skipped stages
+				// Applicable to existing runs only
+				const buildStage: IRunStage = {
+					id: stage.id!,
+					name: stage.name!,
+					target: skipped ? false : true,
+				}
 
-    public async getSpecificBuild(definition: BuildDefinition, buildNumber: string): Promise<Build> {
+				if (stages.length) {
+					const match: string | undefined = stages.find((targetStage) => targetStage.toLowerCase() === buildStage.name.toLowerCase())
 
-        const debug = this.debugLogger.extend(this.getSpecificBuild.name);
+					if (match) {
+						buildStage.target = true
+					} else {
+						buildStage.target = false
+					}
+				}
 
-        const matchingBuilds: Build[] = await this.buildApi.getBuilds(
-            definition.project!.name!,
-            [ definition.id! ],
-            undefined,
-            buildNumber);
+				buildStages.push(buildStage)
+			}
+		}
 
-        debug(matchingBuilds.map(
-            (build) => `${build.buildNumber} (${build.id})`));
+		debug(buildStages)
 
-        if (matchingBuilds.length <= 0) {
+		return buildStages
+	}
 
-            throw new Error(`Build <${buildNumber}> not found`);
+	public async cancelBuild(build: Build): Promise<Build> {
+		const debug = this.debugLogger.extend(this.cancelBuild.name)
 
-        }
+		const cancelRequest: Build = {
+			status: BuildStatus.Cancelling,
+		}
 
-        const build: Build = await this.buildApi.getBuild(definition.project!.name!, matchingBuilds[0].id!);
+		const canceledBuild: Build = await this.buildApi.updateBuild(cancelRequest, build.project!.id!, build.id!, false)
 
-        debug(build);
+		debug(canceledBuild)
 
-        return build;
+		return canceledBuild
+	}
 
-    }
+	private async findBuilds(definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build[]> {
+		const debug = this.debugLogger.extend(this.findBuilds.name)
 
-    public async getBuildStages(build: Build, stages: string[]): Promise<IRunStage[]> {
+		debug(filter)
 
-        const debug = this.debugLogger.extend(this.getBuildStages.name);
+		let builds: Build[] = await this.buildApi.getBuilds(
+			definition.project!.name!,
+			[definition.id!],
+			undefined,
+			undefined,
+			undefined,
+			undefined,
+			undefined,
+			undefined,
+			undefined,
+			filter.buildResult,
+			filter.tagFilters.length ? filter.tagFilters : undefined,
+			undefined,
+			top,
+			undefined,
+			undefined,
+			undefined,
+			BuildQueryOrder.QueueTimeDescending,
+			filter.branchName,
+			undefined,
+			undefined,
+			undefined,
+		)
 
-        const buildStages: IRunStage[] = [];
+		// Apply build status filter
+		builds = builds.filter((build) => filter.buildStatus.find((status) => status === build.status))
 
-        const runDetails: any = await this.buildWebApi.getRunDetails(build);
+		if (!builds.length) {
+			throw new Error(`No definition <${definition.name}> (${definition.id}) builds matching filter found`)
+		}
 
-        if (Array.isArray(runDetails.stages) && runDetails.stages.length) {
+		debug(`Found <${builds.length}> build(s) matching (${filter.buildStatus.map((status) => BuildStatus[status])?.join("|")}) status filter`)
 
-            debug(runDetails.stages);
+		debug(builds.map((build) => `${build.buildNumber} | ${build.id} | ${BuildStatus[build.status!]}`))
 
-            for (const stage of runDetails.stages) {
+		return builds
+	}
 
-                const skipped: boolean = stage.result === 4 ? true : false;
+	private async getStages(definition: BuildDefinition, repository?: IRepositoryFilter, parameters?: IBuildParameters): Promise<string[]> {
+		const debug = this.debugLogger.extend(this.getStages.name)
 
-                // Do not auto-target skipped stages
-                // Applicable to existing runs only
-                const buildStage: IRunStage = {
+		const result: any = await this.buildWebApi.getRunParameters(definition, repository, parameters)
 
-                    id: stage.id!,
-                    name: stage.name!,
-                    target: skipped ? false : true,
+		const definitionStages: unknown[] = result.stages
 
-                };
+		if (!Array.isArray(definitionStages) || !definitionStages.length) {
+			throw new Error(`Unable to detect <${definition.name}> (${definition.id}) definition stages`)
+		}
 
-                if (stages.length) {
+		const stages: string[] = definitionStages.map((i: any) => i.name)
 
-                    const match: string | undefined = stages.find(
-                        (targetStage) => targetStage.toLowerCase() === buildStage.name.toLowerCase());
+		debug(stages)
 
-                    if (match) {
+		return stages
+	}
 
-                        buildStage.target = true;
+	private async confirmRequiredStages(definition: BuildDefinition, stages: string[], required: string[]): Promise<void> {
+		if (!stages.length) {
+			throw new Error(`No stages found in <${definition.name}> (${definition.id}) definition`)
+		}
 
-                    } else {
+		for (const stage of required) {
+			const match: string | undefined = stages.find((i) => i.toLowerCase() === stage.toLowerCase())
 
-                        buildStage.target = false;
+			if (!match) {
+				throw new Error(`Definition <${definition.name}> (${definition.id}) does not contain <${stage}> stage`)
+			}
+		}
+	}
 
-                    }
+	private async getStagesToSkip(stages: string[], required: string[]): Promise<string[]> {
+		const debug = this.debugLogger.extend(this.getStagesToSkip.name)
 
-                }
+		const stagesToSkip: string[] = []
 
-                buildStages.push(buildStage);
+		for (const stage of stages) {
+			const match: string | undefined = required.find((i) => i.toLowerCase() === stage.toLowerCase())
 
-            }
+			if (!match) {
+				stagesToSkip.push(stage)
+			}
+		}
 
-        }
+		debug(stagesToSkip)
 
-        debug(buildStages);
+		return stagesToSkip
+	}
 
-        return buildStages;
+	private async getParameters(definition: BuildDefinition, repository?: IRepositoryFilter): Promise<string[]> {
+		const debug = this.debugLogger.extend(this.getParameters.name)
 
-    }
+		const result: any = await this.buildWebApi.getRunParameters(definition, repository)
 
-    public async cancelBuild(build: Build): Promise<Build> {
+		const templateParameters: unknown[] = result.templateParameters
 
-        const debug = this.debugLogger.extend(this.cancelBuild.name);
+		if (!Array.isArray(templateParameters) || !templateParameters.length) {
+			throw new Error(`Unable to detect <${definition.name}> (${definition.id}) definition template parameters`)
+		}
 
-        const cancelRequest: Build = {
+		const parameters: string[] = templateParameters.map((parameter: any) => parameter.name)
 
-            status: BuildStatus.Cancelling,
+		debug(parameters)
 
-        };
+		return parameters
+	}
 
-        const canceledBuild: Build = await this.buildApi.updateBuild(cancelRequest, build.project!.id!, build.id!, false);
+	private async confirmParameters(definition: BuildDefinition, definitionParameters: string[], parameters: IBuildParameters): Promise<void> {
+		if (!definitionParameters.length) {
+			throw new Error(`No template parameters found in <${definition.name}> (${definition.id}) definition`)
+		}
 
-        debug(canceledBuild);
+		for (const parameter of Object.keys(parameters)) {
+			const match: string | undefined = definitionParameters.find((i) => i.toLowerCase() === parameter.toLowerCase())
 
-        return canceledBuild;
-
-    }
-
-    private async findBuilds(definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build[]> {
-
-        const debug = this.debugLogger.extend(this.findBuilds.name);
-
-        debug(filter);
-
-        let builds: Build[] = await this.buildApi.getBuilds(
-            definition.project!.name!,
-            [ definition.id! ],
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            filter.buildResult,
-            filter.tagFilters.length ? filter.tagFilters : undefined,
-            undefined,
-            top,
-            undefined,
-            undefined,
-            undefined,
-            BuildQueryOrder.QueueTimeDescending,
-            filter.branchName,
-            undefined,
-            undefined,
-            undefined);
-
-        // Apply build status filter
-        builds = builds.filter((build) => filter.buildStatus.find(
-            (status) => status === build.status));
-
-        if (!builds.length) {
-
-            throw new Error(`No definition <${definition.name}> (${definition.id}) builds matching filter found`);
-
-        }
-
-        debug(`Found <${builds.length}> build(s) matching (${filter.buildStatus.map((status) => BuildStatus[status])?.join("|")}) status filter`);
-
-        debug(builds.map(
-            (build) => `${build.buildNumber} | ${build.id} | ${BuildStatus[build.status!]}`));
-
-        return builds;
-
-    }
-
-    private async getStages(definition: BuildDefinition, repository?: IRepositoryFilter, parameters?: IBuildParameters): Promise<string[]> {
-
-        const debug = this.debugLogger.extend(this.getStages.name);
-
-        const result: any = await this.buildWebApi.getRunParameters(definition, repository, parameters);
-
-        const definitionStages: unknown[] = result.stages;
-
-        if (!Array.isArray(definitionStages) || !definitionStages.length) {
-
-            throw new Error(`Unable to detect <${definition.name}> (${definition.id}) definition stages`);
-
-        }
-
-        const stages: string[] = definitionStages.map(
-            (i: any) => i.name);
-
-        debug(stages);
-
-        return stages;
-
-    }
-
-    private async confirmRequiredStages(definition: BuildDefinition, stages: string[], required: string[]): Promise<void> {
-
-        if (!stages.length) {
-
-            throw new Error(`No stages found in <${definition.name}> (${definition.id}) definition`);
-
-        }
-
-        for (const stage of required) {
-
-            const match: string | undefined = stages.find(
-                (i) => i.toLowerCase() === stage.toLowerCase());
-
-            if (!match) {
-
-                throw new Error(`Definition <${definition.name}> (${definition.id}) does not contain <${stage}> stage`);
-
-            }
-
-        }
-
-    }
-
-    private async getStagesToSkip(stages: string[], required: string[]): Promise<string[]> {
-
-        const debug = this.debugLogger.extend(this.getStagesToSkip.name);
-
-        const stagesToSkip: string[] = [];
-
-        for (const stage of stages) {
-
-            const match: string | undefined = required.find(
-                (i) => i.toLowerCase() === stage.toLowerCase());
-
-            if (!match) {
-
-                stagesToSkip.push(stage);
-
-            }
-
-        }
-
-        debug(stagesToSkip);
-
-        return stagesToSkip;
-
-    }
-
-    private async getParameters(definition: BuildDefinition, repository?: IRepositoryFilter): Promise<string[]> {
-
-        const debug = this.debugLogger.extend(this.getParameters.name);
-
-        const result: any = await this.buildWebApi.getRunParameters(definition, repository);
-
-        const templateParameters: unknown[] = result.templateParameters;
-
-        if (!Array.isArray(templateParameters) || !templateParameters.length) {
-
-            throw new Error(`Unable to detect <${definition.name}> (${definition.id}) definition template parameters`);
-
-        }
-
-        const parameters: string[] = templateParameters.map(
-            (parameter: any) => parameter.name);
-
-        debug(parameters);
-
-        return parameters;
-
-    }
-
-    private async confirmParameters(definition: BuildDefinition, definitionParameters: string[], parameters: IBuildParameters): Promise<void> {
-
-        if (!definitionParameters.length) {
-
-            throw new Error(`No template parameters found in <${definition.name}> (${definition.id}) definition`);
-
-        }
-
-        for (const parameter of Object.keys(parameters)) {
-
-            const match: string | undefined = definitionParameters.find(
-                (i) => i.toLowerCase() === parameter.toLowerCase());
-
-            if (!match) {
-
-                throw new Error(`Definition <${definition.name}> (${definition.id}) does not contain <${parameter}> parameter`);
-
-            }
-
-        }
-
-    }
-
+			if (!match) {
+				throw new Error(`Definition <${definition.name}> (${definition.id}) does not contain <${parameter}> parameter`)
+			}
+		}
+	}
 }

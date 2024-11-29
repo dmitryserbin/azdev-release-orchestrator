@@ -1,154 +1,126 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Build, BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces"
 
-import { IApiClient } from "../../common/iapiclient";
-import { Retryable } from "../../common/retry";
-import { IBuildParameters } from "../../helpers/taskhelper/ibuildparameters";
-import { IDebug } from "../../loggers/idebug";
-import { ILogger } from "../../loggers/ilogger";
-import { IRepositoryFilter } from "../../workers/filtercreator/irepositoryfilter";
-import { IBuildStage } from "../../workers/progressmonitor/ibuildstage";
-import { IBuildWebApiRetry } from "./ibuildwebapiretry";
+import { IApiClient } from "../../common/iapiclient"
+import { Retryable } from "../../common/retry"
+import { IBuildParameters } from "../../helpers/taskhelper/ibuildparameters"
+import { IDebug } from "../../loggers/idebug"
+import { ILogger } from "../../loggers/ilogger"
+import { IRepositoryFilter } from "../../workers/filtercreator/irepositoryfilter"
+import { IBuildStage } from "../../workers/progressmonitor/ibuildstage"
+import { IBuildWebApiRetry } from "./ibuildwebapiretry"
 
 export class BuildWebApiRetry implements IBuildWebApiRetry {
+	private debugLogger: IDebug
 
-    private debugLogger: IDebug;
+	private apiClient: IApiClient
 
-    private apiClient: IApiClient;
+	constructor(apiClient: IApiClient, logger: ILogger) {
+		this.debugLogger = logger.extend(this.constructor.name)
 
-    constructor(apiClient: IApiClient, logger: ILogger) {
+		this.apiClient = apiClient
+	}
 
-        this.debugLogger = logger.extend(this.constructor.name);
+	@Retryable()
+	public async getRunDetails(build: Build): Promise<unknown> {
+		const debug = this.debugLogger.extend(this.getRunDetails.name)
 
-        this.apiClient = apiClient;
+		const body: unknown = {
+			contributionIds: ["ms.vss-build-web.run-details-data-provider"],
+			dataProviderContext: {
+				properties: {
+					buildId: `${build.id}`,
+					sourcePage: {
+						routeId: "ms.vss-build-web.ci-results-hub-route",
+						routeValues: {
+							project: build.project?.name,
+						},
+					},
+				},
+			},
+		}
 
-    }
+		const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${build.project?.id}`, "5.0-preview.1", body)
 
-    @Retryable()
-    public async getRunDetails(build: Build): Promise<unknown> {
+		const runDetails: unknown = result.dataProviders["ms.vss-build-web.run-details-data-provider"]
 
-        const debug = this.debugLogger.extend(this.getRunDetails.name);
+		if (!runDetails || result.dataProviderExceptions) {
+			debug(result)
 
-        const body: unknown = {
+			throw new Error(`Unable to retrieve <${build.buildNumber}> (${build.id}) run details`)
+		}
 
-            contributionIds: [
-                "ms.vss-build-web.run-details-data-provider",
-            ],
-            dataProviderContext: {
-                properties: {
-                    buildId: `${build.id}`,
-                    sourcePage: {
-                        routeId: "ms.vss-build-web.ci-results-hub-route",
-                        routeValues: {
-                            project: build.project?.name,
-                        },
-                    },
-                },
-            },
+		return runDetails
+	}
 
-        };
+	@Retryable()
+	public async getRunParameters(definition: BuildDefinition, repository?: IRepositoryFilter, parameters?: IBuildParameters): Promise<unknown> {
+		const debug = this.debugLogger.extend(this.getRunParameters.name)
 
-        const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${build.project?.id}`, "5.0-preview.1", body);
+		const body: unknown = {
+			contributionIds: ["ms.vss-build-web.pipeline-run-parameters-data-provider"],
+			dataProviderContext: {
+				properties: {
+					onlyFetchTemplateParameters: false,
+					pipelineId: definition.id,
+					sourceBranch: repository ? repository.refName : "",
+					sourceVersion: repository ? repository.version : "",
+					sourcePage: {
+						routeId: "ms.vss-build-web.pipeline-details-route",
+						routeValues: {
+							project: definition.project?.name,
+						},
+					},
+					templateParameters: parameters && Object.keys(parameters).length ? parameters : {},
+				},
+			},
+		}
 
-        const runDetails: unknown = result.dataProviders["ms.vss-build-web.run-details-data-provider"];
+		const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${definition.project?.id}`, "5.0-preview.1", body)
 
-        if (!runDetails || result.dataProviderExceptions) {
+		const runParameters: unknown = result.dataProviders["ms.vss-build-web.pipeline-run-parameters-data-provider"]
 
-            debug(result);
+		if (!runParameters || result.dataProviderExceptions) {
+			debug(result)
 
-            throw new Error(`Unable to retrieve <${build.buildNumber}> (${build.id}) run details`);
+			throw new Error(`Unable to retrieve <${definition.name}> (${definition.id}) run parameters`)
+		}
 
-        }
+		return runParameters
+	}
 
-        return runDetails;
+	@Retryable()
+	public async getRunStageChecks(build: Build, stage: IBuildStage): Promise<unknown> {
+		const debug = this.debugLogger.extend(this.getRunStageChecks.name)
 
-    }
+		const body: unknown = {
+			contributionIds: ["ms.vss-build-web.checks-panel-data-provider"],
+			dataProviderContext: {
+				properties: {
+					buildId: `${build.id}`,
+					stageIds: stage.id,
+					checkListItemType: 3,
+					sourcePage: {
+						routeId: "ms.vss-build-web.ci-results-hub-route",
+						routeValues: {
+							project: build.project?.name,
+						},
+					},
+				},
+			},
+		}
 
-    @Retryable()
-    public async getRunParameters(definition: BuildDefinition, repository?: IRepositoryFilter, parameters?: IBuildParameters): Promise<unknown> {
+		const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${build.project?.id}`, "5.0-preview.1", body)
 
-        const debug = this.debugLogger.extend(this.getRunParameters.name);
+		const runStageChecks: unknown = result.dataProviders["ms.vss-build-web.checks-panel-data-provider"][0]
 
-        const body: unknown = {
+		if (!runStageChecks || result.dataProviderExceptions) {
+			debug(result)
 
-            contributionIds: [
-                "ms.vss-build-web.pipeline-run-parameters-data-provider",
-            ],
-            dataProviderContext: {
-                properties: {
-                    onlyFetchTemplateParameters: false,
-                    pipelineId: definition.id,
-                    sourceBranch: repository ? repository.refName : "",
-                    sourceVersion: repository ? repository.version : "",
-                    sourcePage: {
-                        routeId: "ms.vss-build-web.pipeline-details-route",
-                        routeValues: {
-                            project: definition.project?.name,
-                        },
-                    },
-                    templateParameters: (parameters && Object.keys(parameters).length) ? parameters : {},
-                },
-            },
+			throw new Error(`Unable to retrieve <${build.buildNumber}> (${build.id}) run stage <${stage.name}> (${stage.id}) checks`)
+		}
 
-        };
-
-        const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${definition.project?.id}`, "5.0-preview.1", body);
-
-        const runParameters: unknown = result.dataProviders["ms.vss-build-web.pipeline-run-parameters-data-provider"];
-
-        if (!runParameters || result.dataProviderExceptions) {
-
-            debug(result);
-
-            throw new Error(`Unable to retrieve <${definition.name}> (${definition.id}) run parameters`);
-
-        }
-
-        return runParameters;
-
-    }
-
-    @Retryable()
-    public async getRunStageChecks(build: Build, stage: IBuildStage): Promise<unknown> {
-
-        const debug = this.debugLogger.extend(this.getRunStageChecks.name);
-
-        const body: unknown = {
-
-            contributionIds: [
-                "ms.vss-build-web.checks-panel-data-provider",
-            ],
-            dataProviderContext: {
-                properties: {
-                    buildId: `${build.id}`,
-                    stageIds: stage.id,
-                    checkListItemType: 3,
-                    sourcePage: {
-                        routeId: "ms.vss-build-web.ci-results-hub-route",
-                        routeValues: {
-                            project: build.project?.name,
-                        },
-                    },
-                },
-            },
-
-        };
-
-        const result: any = await this.apiClient.post(`_apis/Contribution/HierarchyQuery/project/${build.project?.id}`, "5.0-preview.1", body);
-
-        const runStageChecks: unknown = result.dataProviders["ms.vss-build-web.checks-panel-data-provider"][0];
-
-        if (!runStageChecks || result.dataProviderExceptions) {
-
-            debug(result);
-
-            throw new Error(`Unable to retrieve <${build.buildNumber}> (${build.id}) run stage <${stage.name}> (${stage.id}) checks`);
-
-        }
-
-        return runStageChecks;
-
-    }
-
+		return runStageChecks
+	}
 }

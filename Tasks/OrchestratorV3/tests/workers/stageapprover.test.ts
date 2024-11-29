@@ -1,252 +1,218 @@
-import "mocha";
+import "mocha"
 
-import * as chai from "chai";
-import * as TypeMoq from "typemoq";
+import * as chai from "chai"
+import * as TypeMoq from "typemoq"
 
-import { faker } from "@faker-js/faker";
+import { faker } from "@faker-js/faker"
 
-import { Build, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces"
 
-import { ILogger } from "../../loggers/ilogger";
-import { IDebug } from "../../loggers/idebug";
-import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper";
-import { ISettings } from "../../helpers/taskhelper/isettings";
-import { IBuildStage } from "../../workers/progressmonitor/ibuildstage";
-import { IStageSelector } from "../../helpers/stageselector/istageselector";
-import { IStageApprover } from "../../workers/stageapprover/istageapprover";
-import { StageApprover } from "../../workers/stageapprover/stageapprover";
-import { IBuildSelector } from "../../helpers/buildselector/ibuildselector";
-import { IBuildApproval } from "../../workers/progressmonitor/ibuildapproval";
-import { IBuildCheck } from "../../workers/progressmonitor/ibuildcheck";
+import { ILogger } from "../../loggers/ilogger"
+import { IDebug } from "../../loggers/idebug"
+import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper"
+import { ISettings } from "../../helpers/taskhelper/isettings"
+import { IBuildStage } from "../../workers/progressmonitor/ibuildstage"
+import { IStageSelector } from "../../helpers/stageselector/istageselector"
+import { IStageApprover } from "../../workers/stageapprover/istageapprover"
+import { StageApprover } from "../../workers/stageapprover/stageapprover"
+import { IBuildSelector } from "../../helpers/buildselector/ibuildselector"
+import { IBuildApproval } from "../../workers/progressmonitor/ibuildapproval"
+import { IBuildCheck } from "../../workers/progressmonitor/ibuildcheck"
 
 describe("StageApprover", async () => {
+	const loggerMock = TypeMoq.Mock.ofType<ILogger>()
+	const debugMock = TypeMoq.Mock.ofType<IDebug>()
 
-    const loggerMock = TypeMoq.Mock.ofType<ILogger>();
-    const debugMock = TypeMoq.Mock.ofType<IDebug>();
+	loggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null)
 
-    loggerMock
-        .setup((x) => x.log(TypeMoq.It.isAny()))
-        .returns(() => null);
+	loggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
 
-    loggerMock
-        .setup((x) => x.extend(TypeMoq.It.isAnyString()))
-        .returns(() => debugMock.object);
+	debugMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
 
-    debugMock
-        .setup((x) => x.extend(TypeMoq.It.isAnyString()))
-        .returns(() => debugMock.object);
+	const buildMock = {
+		buildNumber: faker.word.sample(),
+		id: faker.number.int(),
+	} as Build
 
-    const buildMock = {
+	let settingsMock: ISettings
+	let stageOneMock: IBuildStage
+	let approvalOneMock: IBuildApproval
+	let checkOneMock: IBuildCheck
 
-        buildNumber: faker.word.sample(),
-        id: faker.number.int(),
+	const commonHelperMock = TypeMoq.Mock.ofType<ICommonHelper>()
+	const buildSelectorMock = TypeMoq.Mock.ofType<IBuildSelector>()
+	const stageSelectorMock = TypeMoq.Mock.ofType<IStageSelector>()
 
-    } as Build;
+	const stageApprover: IStageApprover = new StageApprover(buildSelectorMock.object, stageSelectorMock.object, commonHelperMock.object, loggerMock.object)
 
-    let settingsMock: ISettings;
-    let stageOneMock: IBuildStage;
-    let approvalOneMock: IBuildApproval;
-    let checkOneMock: IBuildCheck;
+	beforeEach(async () => {
+		commonHelperMock.reset()
+		buildSelectorMock.reset()
+		stageSelectorMock.reset()
 
-    const commonHelperMock = TypeMoq.Mock.ofType<ICommonHelper>();
-    const buildSelectorMock = TypeMoq.Mock.ofType<IBuildSelector>();
-    const stageSelectorMock = TypeMoq.Mock.ofType<IStageSelector>();
+		settingsMock = {
+			proceedSkippedStages: false,
+			cancelFailedCheckpoint: true,
+			updateInterval: 1,
+			approvalAttempts: 0,
+		} as ISettings
 
-    const stageApprover: IStageApprover = new StageApprover(buildSelectorMock.object, stageSelectorMock.object, commonHelperMock.object, loggerMock.object);
+		approvalOneMock = {
+			id: faker.word.sample(),
+			state: TimelineRecordState.Pending,
+			result: null,
+		} as IBuildApproval
 
-    beforeEach(async () => {
+		checkOneMock = {
+			id: faker.word.sample(),
+			state: TimelineRecordState.Pending,
+			result: null,
+		} as IBuildCheck
 
-        commonHelperMock.reset();
-        buildSelectorMock.reset();
-        stageSelectorMock.reset();
+		stageOneMock = {
+			id: faker.word.sample(),
+			name: faker.word.sample(),
+			state: TimelineRecordState.Pending,
+			attempt: {
+				approval: 0,
+				check: 0,
+			},
+			approvals: [approvalOneMock],
+			checks: [checkOneMock],
+		} as IBuildStage
+	})
 
-        settingsMock = {
+	it("Should successfully approve stage", async () => {
+		//#region ARRANGE
 
-            proceedSkippedStages: false,
-            cancelFailedCheckpoint: true,
-            updateInterval: 1,
-            approvalAttempts: 0,
+		const approvedResult = { status: "approved" }
 
-        } as ISettings;
+		stageSelectorMock
+			.setup((x) => x.approveStage(buildMock, approvalOneMock, undefined))
+			.returns(() => Promise.resolve(approvedResult))
+			.verifiable(TypeMoq.Times.once())
 
-        approvalOneMock = {
+		//#endregion
 
-            id: faker.word.sample(),
-            state: TimelineRecordState.Pending,
-            result: null,
+		//#region ACT
 
-        } as IBuildApproval;
+		const result = await stageApprover.approve(stageOneMock, buildMock, settingsMock)
 
-        checkOneMock = {
+		//#endregion
 
-            id: faker.word.sample(),
-            state: TimelineRecordState.Pending,
-            result: null,
+		//#region ASSERT
 
-        } as IBuildCheck;
+		chai.expect(result).to.not.eq(null)
 
-        stageOneMock = {
+		stageSelectorMock.verifyAll()
 
-            id: faker.word.sample(),
-            name: faker.word.sample(),
-            state: TimelineRecordState.Pending,
-            attempt: {
-                approval: 0,
-                check: 0,
-            },
-            approvals: [ approvalOneMock ],
-            checks: [ checkOneMock ],
+		//#endregion
+	})
 
-        } as IBuildStage;
+	it("Should fail approval and cancel stage", async () => {
+		//#region ARRANGE
 
-    });
+		const approvedResult = { status: "failed" }
 
-    it("Should successfully approve stage", async () => {
+		stageSelectorMock
+			.setup((x) => x.approveStage(buildMock, approvalOneMock, undefined))
+			.returns(() => Promise.resolve(approvedResult))
+			.verifiable(TypeMoq.Times.once())
 
-        //#region ARRANGE
+		buildSelectorMock
+			.setup((x) => x.cancelBuild(buildMock))
+			.returns(() => Promise.resolve(buildMock))
+			.verifiable(TypeMoq.Times.once())
 
-        const approvedResult = { status: "approved" };
+		//#endregion
 
-        stageSelectorMock
-            .setup((x) => x.approveStage(buildMock, approvalOneMock, undefined))
-            .returns(() => Promise.resolve(approvedResult))
-            .verifiable(TypeMoq.Times.once());
+		//#region ACT
 
-        //#endregion
+		await chai.expect(stageApprover.approve(stageOneMock, buildMock, settingsMock)).to.be.rejected
 
-        //#region ACT
+		//#endregion
 
-        const result = await stageApprover.approve(stageOneMock, buildMock, settingsMock);
+		//#region ASSERT
 
-        //#endregion
+		stageSelectorMock.verifyAll()
+		buildSelectorMock.verifyAll()
 
-        //#region ASSERT
+		//#endregion
+	})
 
-        chai.expect(result).to.not.eq(null);
+	it("Should successfully validate stage check", async () => {
+		//#region ARRANGE
 
-        stageSelectorMock.verifyAll();
+		checkOneMock.state = TimelineRecordState.Completed
 
-        //#endregion
+		//#endregion
 
-    });
+		//#region ACT
 
-    it("Should fail approval and cancel stage", async () => {
+		const result = await stageApprover.check(stageOneMock, buildMock, settingsMock)
 
-        //#region ARRANGE
+		//#endregion
 
-        const approvedResult = { status: "failed" };
+		//#region ASSERT
 
-        stageSelectorMock
-            .setup((x) => x.approveStage(buildMock, approvalOneMock, undefined))
-            .returns(() => Promise.resolve(approvedResult))
-            .verifiable(TypeMoq.Times.once());
+		chai.expect(result).to.not.eq(null)
 
-        buildSelectorMock
-            .setup((x) => x.cancelBuild(buildMock))
-            .returns(() => Promise.resolve(buildMock))
-            .verifiable(TypeMoq.Times.once());
+		//#endregion
+	})
 
-        //#endregion
+	it("Should fail validating and cancel stage", async () => {
+		//#region ARRANGE
 
-        //#region ACT
+		buildSelectorMock
+			.setup((x) => x.cancelBuild(buildMock))
+			.returns(() => Promise.resolve(buildMock))
+			.verifiable(TypeMoq.Times.once())
 
-        await chai.expect(stageApprover.approve(stageOneMock, buildMock, settingsMock)).to.be.rejected;
+		//#endregion
 
-        //#endregion
+		//#region ACT
 
-        //#region ASSERT
+		await chai.expect(stageApprover.check(stageOneMock, buildMock, settingsMock)).to.be.rejected
 
-        stageSelectorMock.verifyAll();
-        buildSelectorMock.verifyAll();
+		//#endregion
 
-        //#endregion
+		//#region ASSERT
 
-    });
+		buildSelectorMock.verifyAll()
 
-    it("Should successfully validate stage check", async () => {
+		//#endregion
+	})
 
-        //#region ARRANGE
+	it("Confirm pending approval", async () => {
+		//#region ACT
 
-        checkOneMock.state = TimelineRecordState.Completed;
+		const result = stageApprover.isApprovalPending(stageOneMock)
 
-        //#endregion
+		//#endregion
 
-        //#region ACT
+		//#region ASSERT
 
-        const result = await stageApprover.check(stageOneMock, buildMock, settingsMock);
+		chai.expect(result).to.eq(true)
 
-        //#endregion
+		//#endregion
+	})
 
-        //#region ASSERT
+	it("Confirm pending check", async () => {
+		//#region ACT
 
-        chai.expect(result).to.not.eq(null);
+		const result = stageApprover.isCheckPending(stageOneMock)
 
-        //#endregion
+		//#endregion
 
-    });
+		//#region ASSERT
 
-    it("Should fail validating and cancel stage", async () => {
+		chai.expect(result).to.eq(true)
 
-        //#region ARRANGE
-
-        buildSelectorMock
-            .setup((x) => x.cancelBuild(buildMock))
-            .returns(() => Promise.resolve(buildMock))
-            .verifiable(TypeMoq.Times.once());
-
-        //#endregion
-
-        //#region ACT
-
-        await chai.expect(stageApprover.check(stageOneMock, buildMock, settingsMock)).to.be.rejected;
-
-        //#endregion
-
-        //#region ASSERT
-
-        buildSelectorMock.verifyAll();
-
-        //#endregion
-
-    });
-
-    it("Confirm pending approval", async () => {
-
-        //#region ACT
-
-        const result = stageApprover.isApprovalPending(stageOneMock);
-
-        //#endregion
-
-        //#region ASSERT
-
-        chai.expect(result).to.eq(true);
-
-        //#endregion
-
-    });
-
-    it("Confirm pending check", async () => {
-
-        //#region ACT
-
-        const result = stageApprover.isCheckPending(stageOneMock);
-
-        //#endregion
-
-        //#region ASSERT
-
-        chai.expect(result).to.eq(true);
-
-        //#endregion
-
-    });
-
-});
+		//#endregion
+	})
+})
 
 process.on("unhandledRejection", (error: unknown) => {
-
-    console.error(error);
-    process.exit(1);
-
-});
+	console.error(error)
+	process.exit(1)
+})

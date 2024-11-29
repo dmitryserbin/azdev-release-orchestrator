@@ -1,44 +1,34 @@
-import { IDebug } from "../../loggers/idebug";
-import { ICommonHelper } from "./icommonhelper";
-import { ILogger } from "../../loggers/ilogger";
+import { IDebug } from "../../loggers/idebug"
+import { ICommonHelper } from "./icommonhelper"
+import { ILogger } from "../../loggers/ilogger"
 
 export class CommonHelper implements ICommonHelper {
+	private debugLogger: IDebug
 
-    private debugLogger: IDebug;
+	constructor(logger: ILogger) {
+		this.debugLogger = logger.extend(this.constructor.name)
+	}
 
-    constructor(logger: ILogger) {
+	public async wait(count: number): Promise<void> {
+		const debug = this.debugLogger.extend(this.wait.name)
 
-        this.debugLogger = logger.extend(this.constructor.name);
+		debug(`Waiting <${count}> milliseconds`)
 
-    }
+		return new Promise((resolve) => setTimeout(resolve, count))
+	}
 
-    public async wait(count: number): Promise<void> {
+	public parseKeyValue(input: string): [string, string] {
+		const matchRegex = /^\s*([\w\\.\\-\s]+)\s*=\s*(.*)?\s*$/
 
-        const debug = this.debugLogger.extend(this.wait.name);
+		const match: RegExpMatchArray | null = input.match(matchRegex)
 
-        debug(`Waiting <${count}> milliseconds`);
+		if (match === null) {
+			throw new Error(`Unable to parse <${input}> input`)
+		}
 
-        return new Promise((resolve) => setTimeout(resolve, count));
+		const key = match[1].trim()
+		const value = match[2] ? match[2].trim() : ""
 
-    }
-
-    public parseKeyValue(input: string): [string, string] {
-
-        const matchRegex = /^\s*([\w\\.\\-\s]+)\s*=\s*(.*)?\s*$/;
-
-        const match: RegExpMatchArray | null = input.match(matchRegex);
-
-        if (match === null) {
-
-            throw new Error(`Unable to parse <${input}> input`);
-
-        }
-
-        const key = match[1].trim();
-        const value = match[2] ? match[2].trim() : "";
-
-        return [ key, value ];
-
-    }
-
+		return [key, value]
+	}
 }
