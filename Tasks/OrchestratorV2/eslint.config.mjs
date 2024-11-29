@@ -13,8 +13,6 @@ export default [
 		rules: {
 			semi: ["error", "never"],
 			"@typescript-eslint/no-non-null-assertion": "off",
-			// "@typescript-eslint/no-inferrable-types": "error",
-			// "@typescript-eslint/typedef": "error",
 		},
 	},
 ]
