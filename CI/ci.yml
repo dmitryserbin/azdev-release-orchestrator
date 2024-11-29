@@ -6,8 +6,8 @@ pr:
     - master
   paths:
     include:
-    - CI/*
-    - Tasks/*
+    - ci/*
+    - tasks/*
   autoCancel: true
 
 pool:

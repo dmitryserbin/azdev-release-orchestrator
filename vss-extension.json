@@ -22,7 +22,7 @@
     "Microservices"
   ],
   "icons": {
-    "default": "Images/icon.png"
+    "default": "images/icon.png"
   },
   "content": {
     "details": {
@@ -58,14 +58,14 @@
   },
   "files": [
     {
-      "path": "Tasks"
+      "path": "tasks"
     },
     {
-      "path": "Docs",
+      "path": "docs",
       "addressable": true
     },
     {
-      "path": "Images",
+      "path": "images",
       "addressable": true
     }
   ],
@@ -77,7 +77,7 @@
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "Tasks"
+        "name": "tasks"
       }
     }
   ]

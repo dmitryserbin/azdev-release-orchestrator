@@ -8,12 +8,12 @@
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
   "eslint.workingDirectories": [
-    "Tasks/OrchestratorV2",
-    "Tasks/OrchestratorV3"
+    "tasks/OrchestratorV2",
+    "tasks/OrchestratorV3"
   ],
   "mochaExplorer.cwd": ".",
-  "mochaExplorer.files": "Tasks/**/tests/**/*.test.ts",
-  "mochaExplorer.mochaPath": "Tasks/OrchestratorV3/node_modules/mocha",
+  "mochaExplorer.files": "tasks/**/tests/**/*.test.ts",
+  "mochaExplorer.mochaPath": "tasks/OrchestratorV3/node_modules/mocha",
   "mochaExplorer.envPath": ".env",
   "mochaExplorer.require": "ts-node/register",
   "mochaExplorer.timeout": 60000

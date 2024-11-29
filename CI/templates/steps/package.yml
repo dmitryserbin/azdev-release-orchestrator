@@ -18,14 +18,14 @@ steps:
   displayName: Copy tasks
   inputs:
     source: current
-    path: ${{ parameters.path }}/Tasks
+    path: ${{ parameters.path }}/tasks
 
 - ${{ if ne(parameters.version, '') }}:
   - task: PowerShell@2
     displayName: Version extension
     inputs:
       targetType: filePath
-      filePath: CI/scripts/Set-Version.ps1
+      filePath: ci/scripts/Set-Version.ps1
       arguments: >
         -Path ${{ parameters.path }}
         -Patch ${{ parameters.version }}

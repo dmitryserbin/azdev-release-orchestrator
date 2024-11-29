@@ -1,7 +1,7 @@
 variables:
   taskNameV2: OrchestratorV2
   taskNameV3: OrchestratorV3
-  tasksPath: Tasks
+  tasksPath: tasks
   artifactsPath: $(Build.ArtifactStagingDirectory)
   extensionArtifactPath: $(Pipeline.Workspace)/Extension/*.vsix
   extensionPreviewVisibility: privatepreview
