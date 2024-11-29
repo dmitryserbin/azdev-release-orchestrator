@@ -39,8 +39,8 @@ describe("StageDeployer", async () => {
 
     const buildMock = {
 
-        buildNumber: faker.random.word(),
-        id: faker.datatype.number(),
+        buildNumber: faker.word.sample(),
+        id: faker.number.int(),
 
     } as Build;
 
@@ -73,16 +73,16 @@ describe("StageDeployer", async () => {
 
         jobOneMock = {
 
-            id: faker.random.word(),
-            name: faker.random.word(),
+            id: faker.word.sample(),
+            name: faker.word.sample(),
             tasks: [] as IBuildTask[],
 
         } as IBuildJob;
 
         stageOneMock = {
 
-            id: faker.random.word(),
-            name: faker.random.word(),
+            id: faker.word.sample(),
+            name: faker.word.sample(),
             state: TimelineRecordState.Pending,
             jobs: [ jobOneMock ],
 

@@ -40,8 +40,8 @@ describe("Orchestrator", async () => {
 
     const parametersMock = {
 
-        projectName: faker.random.word(),
-        definitionName: faker.random.word(),
+        projectName: faker.word.sample(),
+        definitionName: faker.word.sample(),
 
     } as IParameters;
 
@@ -55,7 +55,7 @@ describe("Orchestrator", async () => {
 
     const runProgressMock = {
 
-        id: faker.datatype.number(),
+        id: faker.number.int(),
 
     } as IRunProgress;
 

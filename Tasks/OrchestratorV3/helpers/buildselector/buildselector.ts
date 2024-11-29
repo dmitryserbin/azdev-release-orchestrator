@@ -256,7 +256,7 @@ export class BuildSelector implements IBuildSelector {
         }
 
         const stages: string[] = definitionStages.map(
-            (i) => i.name);
+            (i: any) => i.name);
 
         debug(stages);
 
@@ -327,7 +327,7 @@ export class BuildSelector implements IBuildSelector {
         }
 
         const parameters: string[] = templateParameters.map(
-            (parameter) => parameter.name);
+            (parameter: any) => parameter.name);
 
         debug(parameters);
 

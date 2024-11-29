@@ -48,22 +48,22 @@ describe("RunDeployer", async () => {
 
     const projectMock = {
 
-        name: faker.random.word(),
-        id: faker.random.word(),
+        name: faker.word.sample(),
+        id: faker.word.sample(),
 
     } as TeamProject;
 
     const definitionMock = {
 
-        name: faker.random.word(),
-        id: faker.datatype.number(),
+        name: faker.word.sample(),
+        id: faker.number.int(),
 
     } as BuildDefinition;
 
     const buildMock = {
 
-        buildNumber: faker.random.word(),
-        id: faker.datatype.number(),
+        buildNumber: faker.word.sample(),
+        id: faker.number.int(),
 
     } as Build;
 
@@ -96,8 +96,8 @@ describe("RunDeployer", async () => {
 
         stageOneMock = {
 
-            id: faker.random.word(),
-            name: faker.random.word(),
+            id: faker.word.sample(),
+            name: faker.word.sample(),
             state: TimelineRecordState.Pending,
             jobs: [] as IBuildJob[],
 
@@ -105,10 +105,10 @@ describe("RunDeployer", async () => {
 
         runProgressMock = {
 
-            id: faker.datatype.number(),
-            name: faker.random.word(),
-            project: faker.random.word(),
-            url: faker.random.word(),
+            id: faker.number.int(),
+            name: faker.word.sample(),
+            project: faker.word.sample(),
+            url: faker.word.sample(),
             stages: [ stageOneMock ],
             status: RunStatus.InProgress,
 

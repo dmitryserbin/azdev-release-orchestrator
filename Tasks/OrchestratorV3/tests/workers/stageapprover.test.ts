@@ -38,8 +38,8 @@ describe("StageApprover", async () => {
 
     const buildMock = {
 
-        buildNumber: faker.random.word(),
-        id: faker.datatype.number(),
+        buildNumber: faker.word.sample(),
+        id: faker.number.int(),
 
     } as Build;
 
@@ -71,7 +71,7 @@ describe("StageApprover", async () => {
 
         approvalOneMock = {
 
-            id: faker.random.word(),
+            id: faker.word.sample(),
             state: TimelineRecordState.Pending,
             result: null,
 
@@ -79,7 +79,7 @@ describe("StageApprover", async () => {
 
         checkOneMock = {
 
-            id: faker.random.word(),
+            id: faker.word.sample(),
             state: TimelineRecordState.Pending,
             result: null,
 
@@ -87,8 +87,8 @@ describe("StageApprover", async () => {
 
         stageOneMock = {
 
-            id: faker.random.word(),
-            name: faker.random.word(),
+            id: faker.word.sample(),
+            name: faker.word.sample(),
             state: TimelineRecordState.Pending,
             attempt: {
                 approval: 0,

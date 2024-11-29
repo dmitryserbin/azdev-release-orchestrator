@@ -40,36 +40,36 @@ describe("RunCreator", async () => {
 
     const filtersMock = {
 
-        buildNumber: faker.random.word(),
+        buildNumber: faker.word.sample(),
 
     } as IFilters;
 
     const parametersMock = {
 
-        projectName: faker.random.word(),
-        definitionName: faker.random.word(),
+        projectName: faker.word.sample(),
+        definitionName: faker.word.sample(),
         filters: filtersMock,
 
     } as IParameters;
 
     const projectMock = {
 
-        name: faker.random.word(),
-        id: faker.random.word(),
+        name: faker.word.sample(),
+        id: faker.word.sample(),
 
     } as TeamProject;
 
     const definitionMock = {
 
-        name: faker.random.word(),
-        id: faker.datatype.number(),
+        name: faker.word.sample(),
+        id: faker.number.int(),
 
     } as BuildDefinition;
 
     const buildMock = {
 
-        buildNumber: faker.random.word(),
-        id: faker.datatype.number(),
+        buildNumber: faker.word.sample(),
+        id: faker.number.int(),
 
     } as Build;
 
