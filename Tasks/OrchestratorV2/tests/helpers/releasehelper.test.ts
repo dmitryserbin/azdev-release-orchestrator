@@ -1,126 +1,124 @@
-import "mocha";
+import "mocha"
 
-import * as chai from "chai";
-import * as TypeMoq from "typemoq";
-import { IDebugLogger } from "../../interfaces/loggers/idebuglogger";
-import { IDebugCreator } from "../../interfaces/loggers/idebugcreator";
-import { ReleaseHelper } from "../../helpers/releasehelper";
-import { IReleaseApiRetry } from "../../interfaces/extensions/ireleaseapiretry";
-import { ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import * as chai from "chai"
+import * as TypeMoq from "typemoq"
+import { IDebugLogger } from "../../interfaces/loggers/idebuglogger"
+import { IDebugCreator } from "../../interfaces/loggers/idebugcreator"
+import { ReleaseHelper } from "../../helpers/releasehelper"
+import { IReleaseApiRetry } from "../../interfaces/extensions/ireleaseapiretry"
+import { ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces"
 
 describe("ReleaseHelper", () => {
+	const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>()
+	const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>()
+	const releaseApiRetryMock = TypeMoq.Mock.ofType<IReleaseApiRetry>()
 
-    const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>();
-    const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>();
-    const releaseApiRetryMock = TypeMoq.Mock.ofType<IReleaseApiRetry>();
+	debugCreatorMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
+	debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
 
-    debugCreatorMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target);
-    debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target);
+	const releaseHelper = new ReleaseHelper(releaseApiRetryMock.object, debugCreatorMock.object)
+	const projectName = "projectName"
 
-    const releaseHelper = new ReleaseHelper(releaseApiRetryMock.object, debugCreatorMock.object);
-    const projectName = "projectName";
+	it("Should set searchText arg", async () => {
+		//#region Arrange
 
-    it("Should set searchText arg", async () => {
+		const alphanumericDefinitionName = "abcdfe123"
+		const isExactNameMatch = true
+		const releaseDefinitionId = 123
 
-        //#region Arrange
+		const releaseDefinitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>()
+		releaseDefinitionMock.setup((x) => x.id).returns(() => releaseDefinitionId)
 
-        const alphanumericDefinitionName = "abcdfe123";
-        const isExactNameMatch = true;
-        const releaseDefinitionId = 123;
+		const releaseDefinitions: ReleaseDefinition[] = [releaseDefinitionMock.target]
 
-        const releaseDefinitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>();
-        releaseDefinitionMock.setup(x => x.id).returns(() => releaseDefinitionId);
+		releaseApiRetryMock
+			.setup((x) =>
+				x.getReleaseDefinitions(
+					projectName,
+					alphanumericDefinitionName,
+					undefined,
+					undefined,
+					undefined,
+					undefined,
+					undefined,
+					undefined,
+					undefined,
+					isExactNameMatch,
+				),
+			)
+			.returns(() => Promise.resolve(releaseDefinitions))
 
-        const releaseDefinitions: ReleaseDefinition[] = [ releaseDefinitionMock.target ];
+		releaseApiRetryMock.setup((x) => x.getReleaseDefinition(projectName, releaseDefinitionId)).returns(() => Promise.resolve(releaseDefinitionMock.target))
 
-        releaseApiRetryMock.setup(x => x.getReleaseDefinitions(
-            projectName,
-            alphanumericDefinitionName,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            isExactNameMatch),
-        ).returns(() => Promise.resolve(releaseDefinitions));
+		//#endregion
 
-        releaseApiRetryMock.setup(x => x.getReleaseDefinition(projectName, releaseDefinitionId))
-            .returns(() => Promise.resolve(releaseDefinitionMock.target));
+		//#region Act
 
-        //#endregion
+		const releaseDefinition = await releaseHelper.getDefinition(projectName, alphanumericDefinitionName)
 
-        //#region Act
+		//#endregion
 
-        const releaseDefinition = await releaseHelper.getDefinition(
-            projectName,
-            alphanumericDefinitionName);
+		//#region Assert
 
-        //#endregion
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		chai.expect(releaseDefinition).is.not.undefined
+		chai.expect(releaseDefinition.id).to.equal(releaseDefinitionId)
 
-        //#region Assert
-        chai.expect(releaseDefinition).is.not.undefined;
-        chai.expect(releaseDefinition.id).to.equal(releaseDefinitionId);
+		//#endregion
+	})
 
-        //#endregion
+	it("Should set definitionIdsFilter arg", async () => {
+		//#region Arrange
 
-    });
+		const numericDefinitionName = "101"
+		const releaseDefinitionId = 101
 
-    it("Should set definitionIdsFilter arg", async () => {
+		const releaseDefinitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>()
+		releaseDefinitionMock.setup((x) => x.id).returns(() => releaseDefinitionId)
 
-        //#region Arrange
+		const releaseDefinitions: ReleaseDefinition[] = [releaseDefinitionMock.target]
 
-        const numericDefinitionName = "101";
-        const releaseDefinitionId = 101;
+		releaseApiRetryMock
+			.setup((x) =>
+				x.getReleaseDefinitions(
+					projectName,
+					undefined,
+					undefined,
+					undefined,
+					undefined,
+					undefined,
+					undefined,
+					undefined,
+					undefined,
+					undefined,
+					undefined,
+					undefined,
+					TypeMoq.It.is((x) => x![0] === numericDefinitionName),
+				),
+			)
+			.returns(() => Promise.resolve(releaseDefinitions))
 
-        const releaseDefinitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>();
-        releaseDefinitionMock.setup(x => x.id).returns(() => releaseDefinitionId);
+		releaseApiRetryMock.setup((x) => x.getReleaseDefinition(projectName, releaseDefinitionId)).returns(() => Promise.resolve(releaseDefinitionMock.target))
 
-        const releaseDefinitions: ReleaseDefinition[] = [ releaseDefinitionMock.target ];
+		//#endregion
 
-        releaseApiRetryMock.setup(x => x.getReleaseDefinitions(
-            projectName,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            TypeMoq.It.is(x => x![0] === numericDefinitionName)),
-        ).returns(() => Promise.resolve(releaseDefinitions));
+		//#region Act
 
-        releaseApiRetryMock.setup(x => x.getReleaseDefinition(projectName, releaseDefinitionId))
-            .returns(() => Promise.resolve(releaseDefinitionMock.target));
+		const releaseDefinition = await releaseHelper.getDefinition(projectName, numericDefinitionName)
 
-        //#endregion
+		//#endregion
 
-        //#region Act
+		//#region Assert
 
-        const releaseDefinition = await releaseHelper.getDefinition(
-            projectName,
-            numericDefinitionName);
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		chai.expect(releaseDefinition).is.not.undefined
+		chai.expect(releaseDefinition.id).to.equal(releaseDefinitionId)
 
-        //#endregion
-
-        //#region Assert
-        chai.expect(releaseDefinition).is.not.undefined;
-        chai.expect(releaseDefinition.id).to.equal(releaseDefinitionId);
-
-        //#endregion
-
-    });
-
-});
+		//#endregion
+	})
+})
 
 process.on("unhandledRejection", (error: unknown) => {
-
-    console.error(error);
-    process.exit(1);
-
-});
+	console.error(error)
+	process.exit(1)
+})

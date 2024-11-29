@@ -1,6 +1,4 @@
 export enum DeploymentType {
-
-    Automated = "Automated",
-    Manual = "Manual",
-
+	Automated = "Automated",
+	Manual = "Manual",
 }

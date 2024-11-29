@@ -1,44 +1,34 @@
-import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
-import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
-import { ICommonHelper } from "../interfaces/helpers/icommonhelper";
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator"
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger"
+import { ICommonHelper } from "../interfaces/helpers/icommonhelper"
 
 export class CommonHelper implements ICommonHelper {
+	private debugLogger: IDebugLogger
 
-    private debugLogger: IDebugLogger;
+	constructor(debugCreator: IDebugCreator) {
+		this.debugLogger = debugCreator.extend(this.constructor.name)
+	}
 
-    constructor(debugCreator: IDebugCreator) {
+	public async wait(count: number): Promise<void> {
+		const debug = this.debugLogger.extend(this.wait.name)
 
-        this.debugLogger = debugCreator.extend(this.constructor.name);
+		debug(`Waiting <${count}> milliseconds`)
 
-    }
+		return new Promise((resolve) => setTimeout(resolve, count))
+	}
 
-    public async wait(count: number): Promise<void> {
+	public parseKeyValue(input: string): [string, string] {
+		const matchRegex = /^\s*([\w\\.\\-\s]+)\s*=\s*(.*)?\s*$/
 
-        const debug = this.debugLogger.extend(this.wait.name);
+		const match: RegExpMatchArray | null = input.match(matchRegex)
 
-        debug(`Waiting <${count}> milliseconds`);
+		if (match === null) {
+			throw new Error(`Unable to parse <${input}> input`)
+		}
 
-        return new Promise((resolve) => setTimeout(resolve, count));
+		const key = match[1].trim()
+		const value = match[2] ? match[2].trim() : ""
 
-    }
-
-    public parseKeyValue(input: string): [string, string] {
-
-        const matchRegex = /^\s*([\w\\.\\-\s]+)\s*=\s*(.*)?\s*$/;
-
-        const match: RegExpMatchArray | null = input.match(matchRegex);
-
-        if (match === null) {
-
-            throw new Error(`Unable to parse <${input}> input`);
-
-        }
-
-        const key = match[1].trim();
-        const value = match[2] ? match[2].trim() : "";
-
-        return [ key, value ];
-
-    }
-
+		return [key, value]
+	}
 }

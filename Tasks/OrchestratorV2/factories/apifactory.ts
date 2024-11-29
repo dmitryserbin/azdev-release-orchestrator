@@ -1,86 +1,74 @@
-import { CoreApi } from "azure-devops-node-api/CoreApi";
-import { ReleaseApi } from "azure-devops-node-api/ReleaseApi";
-import { BuildApi } from "azure-devops-node-api/BuildApi";
-import { WebApi, getPersonalAccessTokenHandler } from "azure-devops-node-api";
-import { IRequestHandler, IRequestOptions } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
+import { CoreApi } from "azure-devops-node-api/CoreApi"
+import { ReleaseApi } from "azure-devops-node-api/ReleaseApi"
+import { BuildApi } from "azure-devops-node-api/BuildApi"
+import { WebApi, getPersonalAccessTokenHandler } from "azure-devops-node-api"
+import { IRequestHandler, IRequestOptions } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces"
 
-import { IApiFactory } from "../interfaces/factories/iapifactory";
-import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
-import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
-import { ICoreApiRetry } from "../interfaces/extensions/icoreapiretry";
-import { CoreApiRetry } from "../extensions/coreapiretry";
-import { IReleaseApiRetry } from "../interfaces/extensions/ireleaseapiretry";
-import { ReleaseApiRetry } from "../extensions/releaseapiretry";
-import { IBuildApiRetry } from "../interfaces/extensions/ibuildapiretry";
-import { BuildApiRetry } from "../extensions/buildapiretry";
-import { IEndpoint } from "../interfaces/task/iendpoint";
+import { IApiFactory } from "../interfaces/factories/iapifactory"
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator"
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger"
+import { ICoreApiRetry } from "../interfaces/extensions/icoreapiretry"
+import { CoreApiRetry } from "../extensions/coreapiretry"
+import { IReleaseApiRetry } from "../interfaces/extensions/ireleaseapiretry"
+import { ReleaseApiRetry } from "../extensions/releaseapiretry"
+import { IBuildApiRetry } from "../interfaces/extensions/ibuildapiretry"
+import { BuildApiRetry } from "../extensions/buildapiretry"
+import { IEndpoint } from "../interfaces/task/iendpoint"
 
 export class ApiFactory implements IApiFactory {
+	private webApi: WebApi
+	private debugLogger: IDebugLogger
 
-    private webApi: WebApi;
-    private debugLogger: IDebugLogger;
+	constructor(endpoint: IEndpoint, debugCreator: IDebugCreator) {
+		this.debugLogger = debugCreator.extend(this.constructor.name)
 
-    constructor(endpoint: IEndpoint, debugCreator: IDebugCreator) {
+		const auth: IRequestHandler = getPersonalAccessTokenHandler(endpoint.token)
 
-        this.debugLogger = debugCreator.extend(this.constructor.name);
+		// Use integrated retry mechanism to address
+		// Intermittent Azure DevOps connectivity errors
+		const options = {
+			allowRetries: true,
+			maxRetries: 100,
+			socketTimeout: 30000,
+		} as IRequestOptions
 
-        const auth: IRequestHandler = getPersonalAccessTokenHandler(endpoint.token);
+		this.debugLogger(options)
 
-        // Use integrated retry mechanism to address
-        // Intermittent Azure DevOps connectivity errors
-        const options = {
+		this.webApi = new WebApi(endpoint.url, auth, options)
 
-            allowRetries: true,
-            maxRetries: 100,
-            socketTimeout: 30000,
+		this.debugLogger("Azure DevOps Web API initialized")
+	}
 
-        } as IRequestOptions;
+	public async createCoreApi(): Promise<ICoreApiRetry> {
+		const debug = this.debugLogger.extend(this.createCoreApi.name)
 
-        this.debugLogger(options);
+		const coreApi: CoreApi = await this.webApi.getCoreApi()
+		const coreApiRetry: ICoreApiRetry = new CoreApiRetry(coreApi)
 
-        this.webApi = new WebApi(endpoint.url, auth, options);
+		debug("Azure DevOps Core API initialized")
 
-        this.debugLogger("Azure DevOps Web API initialized");
+		return coreApiRetry
+	}
 
-    }
+	public async createReleaseApi(): Promise<IReleaseApiRetry> {
+		const debug = this.debugLogger.extend(this.createReleaseApi.name)
 
-    public async createCoreApi(): Promise<ICoreApiRetry> {
+		const releaseApi: ReleaseApi = await this.webApi.getReleaseApi()
+		const releaseApiRetry: IReleaseApiRetry = new ReleaseApiRetry(releaseApi)
 
-        const debug = this.debugLogger.extend(this.createCoreApi.name);
+		debug("Azure DevOps Release API initialized")
 
-        const coreApi: CoreApi = await this.webApi.getCoreApi();
-        const coreApiRetry: ICoreApiRetry = new CoreApiRetry(coreApi);
+		return releaseApiRetry
+	}
 
-        debug("Azure DevOps Core API initialized");
+	public async createBuildApi(): Promise<IBuildApiRetry> {
+		const debug = this.debugLogger.extend(this.createBuildApi.name)
 
-        return coreApiRetry;
+		const buildApi: BuildApi = await this.webApi.getBuildApi()
+		const buildApiRetry: IBuildApiRetry = new BuildApiRetry(buildApi)
 
-    }
+		debug("Azure DevOps Build API initialized")
 
-    public async createReleaseApi(): Promise<IReleaseApiRetry> {
-
-        const debug = this.debugLogger.extend(this.createReleaseApi.name);
-
-        const releaseApi: ReleaseApi = await this.webApi.getReleaseApi();
-        const releaseApiRetry: IReleaseApiRetry = new ReleaseApiRetry(releaseApi);
-
-        debug("Azure DevOps Release API initialized");
-
-        return releaseApiRetry;
-
-    }
-
-    public async createBuildApi(): Promise<IBuildApiRetry> {
-
-        const debug = this.debugLogger.extend(this.createBuildApi.name);
-
-        const buildApi: BuildApi = await this.webApi.getBuildApi();
-        const buildApiRetry: IBuildApiRetry = new BuildApiRetry(buildApi);
-
-        debug("Azure DevOps Build API initialized");
-
-        return buildApiRetry;
-
-    }
-
+		return buildApiRetry
+	}
 }

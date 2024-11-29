@@ -4,15 +4,17 @@ import tseslint from "typescript-eslint"
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
-  {files: ["**/*.{ts}"]},
-  {ignores: ["**/*.js"]},
-  {languageOptions: { globals: globals.node }},
-  pluginJs.configs.recommended,
-  ...tseslint.configs.strict,
-  {rules: {
-    semi: ["error", "never"],
-    "@typescript-eslint/no-non-null-assertion": "off",
-    "@typescript-eslint/no-inferrable-types": "error",
-    "@typescript-eslint/typedef": "error",
-  }}
+	{ files: ["**/*.{ts}"] },
+	{ ignores: ["**/*.js"] },
+	{ languageOptions: { globals: globals.node } },
+	pluginJs.configs.recommended,
+	...tseslint.configs.strict,
+	{
+		rules: {
+			semi: ["error", "never"],
+			"@typescript-eslint/no-non-null-assertion": "off",
+			// "@typescript-eslint/no-inferrable-types": "error",
+			// "@typescript-eslint/typedef": "error",
+		},
+	},
 ]

@@ -1,200 +1,176 @@
-import { EnvironmentStatus, Release, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { EnvironmentStatus, Release, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces"
 
-import { IDetails } from "../interfaces/task/idetails";
-import { IDeployer } from "../interfaces/orchestrator/ideployer";
-import { IDebugCreator } from "../interfaces/loggers/idebugcreator";
-import { IDebugLogger } from "../interfaces/loggers/idebuglogger";
-import { IConsoleLogger } from "../interfaces/loggers/iconsolelogger";
-import { ICommonHelper } from "../interfaces/helpers/icommonhelper";
-import { IReleaseHelper } from "../interfaces/helpers/ireleasehelper";
-import { IReleaseJob } from "../interfaces/common/ireleasejob";
-import { IMonitor } from "../interfaces/orchestrator/imonitor";
-import { IStageProgress } from "../interfaces/common/istageprogress";
-import { IReleaseProgress } from "../interfaces/common/ireleaseprogress";
-import { ReleaseStatus } from "../interfaces/common/ireleasestatus";
-import { IApprover } from "../interfaces/orchestrator/iapprover";
-import { IReporter } from "../interfaces/orchestrator/ireporter";
+import { IDetails } from "../interfaces/task/idetails"
+import { IDeployer } from "../interfaces/orchestrator/ideployer"
+import { IDebugCreator } from "../interfaces/loggers/idebugcreator"
+import { IDebugLogger } from "../interfaces/loggers/idebuglogger"
+import { IConsoleLogger } from "../interfaces/loggers/iconsolelogger"
+import { ICommonHelper } from "../interfaces/helpers/icommonhelper"
+import { IReleaseHelper } from "../interfaces/helpers/ireleasehelper"
+import { IReleaseJob } from "../interfaces/common/ireleasejob"
+import { IMonitor } from "../interfaces/orchestrator/imonitor"
+import { IStageProgress } from "../interfaces/common/istageprogress"
+import { IReleaseProgress } from "../interfaces/common/ireleaseprogress"
+import { ReleaseStatus } from "../interfaces/common/ireleasestatus"
+import { IApprover } from "../interfaces/orchestrator/iapprover"
+import { IReporter } from "../interfaces/orchestrator/ireporter"
 
 export class Deployer implements IDeployer {
+	private debugLogger: IDebugLogger
+	private consoleLogger: IConsoleLogger
 
-    private debugLogger: IDebugLogger;
-    private consoleLogger: IConsoleLogger;
+	private commonHelper: ICommonHelper
+	private releaseHelper: IReleaseHelper
+	private releaseApprover: IApprover
+	private progressMonitor: IMonitor
+	private progressReporter: IReporter
 
-    private commonHelper: ICommonHelper;
-    private releaseHelper: IReleaseHelper;
-    private releaseApprover: IApprover;
-    private progressMonitor: IMonitor;
-    private progressReporter: IReporter;
+	constructor(
+		commonHelper: ICommonHelper,
+		releaseHelper: IReleaseHelper,
+		releaseApprover: IApprover,
+		progressMonitor: IMonitor,
+		progressReporter: IReporter,
+		debugCreator: IDebugCreator,
+		consoleLogger: IConsoleLogger,
+	) {
+		this.debugLogger = debugCreator.extend(this.constructor.name)
+		this.consoleLogger = consoleLogger
 
-    constructor(commonHelper: ICommonHelper, releaseHelper: IReleaseHelper, releaseApprover: IApprover, progressMonitor: IMonitor, progressReporter: IReporter, debugCreator: IDebugCreator, consoleLogger: IConsoleLogger) {
+		this.commonHelper = commonHelper
+		this.releaseHelper = releaseHelper
+		this.releaseApprover = releaseApprover
+		this.progressMonitor = progressMonitor
+		this.progressReporter = progressReporter
+	}
 
-        this.debugLogger = debugCreator.extend(this.constructor.name);
-        this.consoleLogger = consoleLogger;
+	public async deployManual(releaseJob: IReleaseJob, details: IDetails): Promise<IReleaseProgress> {
+		const debug = this.debugLogger.extend(this.deployManual.name)
 
-        this.commonHelper = commonHelper;
-        this.releaseHelper = releaseHelper;
-        this.releaseApprover = releaseApprover;
-        this.progressMonitor = progressMonitor;
-        this.progressReporter = progressReporter;
+		const releaseProgress: IReleaseProgress = this.progressMonitor.createProgress(releaseJob)
 
-    }
+		const pendingStages: IStageProgress[] = this.progressMonitor.getPendingStages(releaseProgress)
 
-    public async deployManual(releaseJob: IReleaseJob, details: IDetails): Promise<IReleaseProgress> {
+		debug(`Starting <${releaseProgress.name}> (${releaseProgress.id}) release <${ReleaseStatus[releaseProgress.status]}> progress tracking`)
 
-        const debug = this.debugLogger.extend(this.deployManual.name);
+		for (const stage of pendingStages) {
+			debug(`Monitoring <${stage.name}> (${stage.id}) stage deployment <${EnvironmentStatus[stage.status]}> progress`)
 
-        const releaseProgress: IReleaseProgress = this.progressMonitor.createProgress(releaseJob);
+			let releaseStatus: Release = await this.releaseHelper.getReleaseStatus(releaseJob.project.name!, releaseJob.release.id!)
+			let stageStatus: ReleaseEnvironment = await this.releaseHelper.getStageStatus(releaseStatus, stage.name)
 
-        const pendingStages: IStageProgress[] = this.progressMonitor.getPendingStages(releaseProgress);
+			this.progressMonitor.updateStageProgress(stage, stageStatus)
 
-        debug(`Starting <${releaseProgress.name}> (${releaseProgress.id}) release <${ReleaseStatus[releaseProgress.status]}> progress tracking`);
+			const pending: boolean = this.progressMonitor.isStagePending(stage)
 
-        for (const stage of pendingStages) {
+			// Start pending stage deployment process
+			// Or skip deployment if stage in progress
+			if (pending) {
+				this.consoleLogger.log(`Manually starting <${stage.name}> (${stage.id}) stage deployment`)
 
-            debug(`Monitoring <${stage.name}> (${stage.id}) stage deployment <${EnvironmentStatus[stage.status]}> progress`);
+				const startMessage: string = `Requested via <${details.releaseName}> (${details.projectName}) by ${details.requesterName}`
 
-            let releaseStatus: Release = await this.releaseHelper.getReleaseStatus(releaseJob.project.name!, releaseJob.release.id!);
-            let stageStatus: ReleaseEnvironment = await this.releaseHelper.getStageStatus(releaseStatus, stage.name);
+				// Start stage deployment
+				stageStatus = await this.releaseHelper.startStage(stageStatus, releaseJob.project.name!, startMessage)
 
-            this.progressMonitor.updateStageProgress(stage, stageStatus);
+				this.progressMonitor.updateStageProgress(stage, stageStatus)
+			}
 
-            const pending: boolean = this.progressMonitor.isStagePending(stage);
+			let completed: boolean = this.progressMonitor.isStageCompleted(stage)
 
-            // Start pending stage deployment process
-            // Or skip deployment if stage in progress
-            if (pending) {
+			do {
+				debug(`Updating <${stage.name}> (${stage.id}) stage <${EnvironmentStatus[stage.status]}> status`)
 
-                this.consoleLogger.log(`Manually starting <${stage.name}> (${stage.id}) stage deployment`);
+				releaseStatus = await this.releaseHelper.getReleaseStatus(releaseJob.project.name!, releaseJob.release.id!)
+				stageStatus = await this.releaseHelper.getStageStatus(releaseStatus, stage.name)
 
-                const startMessage: string = `Requested via <${details.releaseName}> (${details.projectName}) by ${details.requesterName}`;
+				const approved: boolean = await this.releaseApprover.isStageApproved(stage, stageStatus)
 
-                // Start stage deployment
-                stageStatus = await this.releaseHelper.startStage(stageStatus, releaseJob.project.name!, startMessage);
+				if (!approved) {
+					// Approve stage deployment and validate outcome
+					// Use retry mechanism to check manual approval status
+					// Cancel stage deployment when retry count exceeded
+					await this.releaseApprover.approveStage(stage, stageStatus, releaseJob.project.name!, details, releaseJob.settings)
+				}
 
-                this.progressMonitor.updateStageProgress(stage, stageStatus);
+				this.progressMonitor.updateStageProgress(stage, stageStatus)
+				this.progressMonitor.updateReleaseProgress(releaseProgress)
 
-            }
+				completed = this.progressMonitor.isStageCompleted(stage)
 
-            let completed: boolean = this.progressMonitor.isStageCompleted(stage);
+				if (completed) {
+					this.consoleLogger.log(`Stage <${stage.name}> (${stage.id}) reported <${EnvironmentStatus[stage.status]}> status`)
 
-            do {
+					this.consoleLogger.log(this.progressReporter.getStageProgress(stage))
 
-                debug(`Updating <${stage.name}> (${stage.id}) stage <${EnvironmentStatus[stage.status]}> status`);
+					break
+				}
 
-                releaseStatus = await this.releaseHelper.getReleaseStatus(releaseJob.project.name!, releaseJob.release.id!);
-                stageStatus = await this.releaseHelper.getStageStatus(releaseStatus, stage.name);
+				// Wait before next stage status update
+				await this.commonHelper.wait(releaseJob.settings.sleep)
+			} while (!completed)
+		}
 
-                const approved: boolean = await this.releaseApprover.isStageApproved(stage, stageStatus);
+		this.consoleLogger.log(`All release stages <${releaseJob.stages?.join("|")}> deployment completed`)
 
-                if (!approved) {
+		this.consoleLogger.log(this.progressReporter.getStagesProgress(releaseProgress.stages))
 
-                    // Approve stage deployment and validate outcome
-                    // Use retry mechanism to check manual approval status
-                    // Cancel stage deployment when retry count exceeded
-                    await this.releaseApprover.approveStage(stage, stageStatus, releaseJob.project.name!, details, releaseJob.settings);
+		return releaseProgress
+	}
 
-                }
+	public async deployAutomated(releaseJob: IReleaseJob, details: IDetails): Promise<IReleaseProgress> {
+		const debug = this.debugLogger.extend(this.deployAutomated.name)
 
-                this.progressMonitor.updateStageProgress(stage, stageStatus);
-                this.progressMonitor.updateReleaseProgress(releaseProgress);
+		const releaseProgress: IReleaseProgress = this.progressMonitor.createProgress(releaseJob)
 
-                completed = this.progressMonitor.isStageCompleted(stage);
+		debug(`Starting <${releaseProgress.name}> (${releaseProgress.id}) release <${ReleaseStatus[releaseProgress.status]}> progress tracking`)
 
-                if (completed) {
+		do {
+			debug(`Monitoring <${releaseProgress.stages.map((stage) => stage.name)?.join("|")}> stage(s) deployment progress`)
 
-                    this.consoleLogger.log(`Stage <${stage.name}> (${stage.id}) reported <${EnvironmentStatus[stage.status]}> status`);
+			const releaseStatus: Release = await this.releaseHelper.getReleaseStatus(releaseJob.project.name!, releaseJob.release.id!)
 
-                    this.consoleLogger.log(
-                        this.progressReporter.getStageProgress(stage));
+			const activeStages: IStageProgress[] = this.progressMonitor.getActiveStages(releaseProgress)
 
-                    break;
+			for (const stage of activeStages) {
+				debug(`Updating <${stage.name}> (${stage.id}) stage <${EnvironmentStatus[stage.status]}> status`)
 
-                }
+				const stageStatus: ReleaseEnvironment = await this.releaseHelper.getStageStatus(releaseStatus, stage.name)
 
-                // Wait before next stage status update
-                await this.commonHelper.wait(releaseJob.settings.sleep);
+				const approved: boolean = await this.releaseApprover.isStageApproved(stage, stageStatus)
 
-            } while (!completed);
+				if (!approved) {
+					// Approve stage deployment and validate outcome
+					// Use retry mechanism to check manual approval status
+					// Cancel stage deployment when retry count exceeded
+					await this.releaseApprover.approveStage(stage, stageStatus, releaseJob.project.name!, details, releaseJob.settings)
+				}
 
-        }
+				this.progressMonitor.updateStageProgress(stage, stageStatus)
 
-        this.consoleLogger.log(`All release stages <${releaseJob.stages?.join("|")}> deployment completed`);
+				const completed: boolean = this.progressMonitor.isStageCompleted(stage)
 
-        this.consoleLogger.log(
-            this.progressReporter.getStagesProgress(releaseProgress.stages));
+				if (completed) {
+					this.consoleLogger.log(`Stage <${stage.name}> (${stage.id}) reported <${EnvironmentStatus[stage.status]}> status`)
 
-        return releaseProgress;
+					this.consoleLogger.log(this.progressReporter.getStageProgress(stage))
 
-    }
+					break
+				}
+			}
 
-    public async deployAutomated(releaseJob: IReleaseJob, details: IDetails): Promise<IReleaseProgress> {
+			this.progressMonitor.updateReleaseProgress(releaseProgress)
 
-        const debug = this.debugLogger.extend(this.deployAutomated.name);
+			// Wait before next release status update
+			if (releaseProgress.status === ReleaseStatus.InProgress) {
+				await this.commonHelper.wait(releaseJob.settings.sleep)
+			}
+		} while (releaseProgress.status === ReleaseStatus.InProgress)
 
-        const releaseProgress: IReleaseProgress = this.progressMonitor.createProgress(releaseJob);
+		this.consoleLogger.log(`All release stages <${releaseJob.stages?.join("|")}> deployment completed`)
 
-        debug(`Starting <${releaseProgress.name}> (${releaseProgress.id}) release <${ReleaseStatus[releaseProgress.status]}> progress tracking`);
+		this.consoleLogger.log(this.progressReporter.getStagesProgress(releaseProgress.stages))
 
-        do {
-
-            debug(`Monitoring <${releaseProgress.stages.map((stage) => stage.name)?.join("|")}> stage(s) deployment progress`);
-
-            const releaseStatus: Release = await this.releaseHelper.getReleaseStatus(releaseJob.project.name!, releaseJob.release.id!);
-
-            const activeStages: IStageProgress[] = this.progressMonitor.getActiveStages(releaseProgress);
-
-            for (const stage of activeStages) {
-
-                debug(`Updating <${stage.name}> (${stage.id}) stage <${EnvironmentStatus[stage.status]}> status`);
-
-                const stageStatus: ReleaseEnvironment = await this.releaseHelper.getStageStatus(releaseStatus, stage.name);
-
-                const approved: boolean = await this.releaseApprover.isStageApproved(stage, stageStatus);
-
-                if (!approved) {
-
-                    // Approve stage deployment and validate outcome
-                    // Use retry mechanism to check manual approval status
-                    // Cancel stage deployment when retry count exceeded
-                    await this.releaseApprover.approveStage(stage, stageStatus, releaseJob.project.name!, details, releaseJob.settings);
-
-                }
-
-                this.progressMonitor.updateStageProgress(stage, stageStatus);
-
-                const completed: boolean = this.progressMonitor.isStageCompleted(stage);
-
-                if (completed) {
-
-                    this.consoleLogger.log(`Stage <${stage.name}> (${stage.id}) reported <${EnvironmentStatus[stage.status]}> status`);
-
-                    this.consoleLogger.log(
-                        this.progressReporter.getStageProgress(stage));
-
-                    break;
-
-                }
-
-            }
-
-            this.progressMonitor.updateReleaseProgress(releaseProgress);
-
-            // Wait before next release status update
-            if (releaseProgress.status === ReleaseStatus.InProgress) {
-
-                await this.commonHelper.wait(releaseJob.settings.sleep);
-
-            }
-
-        } while (releaseProgress.status === ReleaseStatus.InProgress);
-
-        this.consoleLogger.log(`All release stages <${releaseJob.stages?.join("|")}> deployment completed`);
-
-        this.consoleLogger.log(
-            this.progressReporter.getStagesProgress(releaseProgress.stages));
-
-        return releaseProgress;
-
-    }
-
+		return releaseProgress
+	}
 }

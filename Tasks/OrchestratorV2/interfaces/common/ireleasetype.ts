@@ -1,7 +1,5 @@
 export enum ReleaseType {
-
-    New = "New",
-    Specific = "Specific",
-    Latest = "Latest",
-
+	New = "New",
+	Specific = "Specific",
+	Latest = "Latest",
 }

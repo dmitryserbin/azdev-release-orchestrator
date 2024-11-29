@@ -1,6 +1,4 @@
 export interface IReleaseVariable {
-
-    name: string;
-    value: string;
-
+	name: string
+	value: string
 }
