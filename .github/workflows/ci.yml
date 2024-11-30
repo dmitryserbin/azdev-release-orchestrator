@@ -117,8 +117,11 @@ jobs:
             echo "No extension found"
             exit 1
           fi
-
-          tfx extension isvalid --vsix $extensionPath --token ${{ secrets.MARKETPLACE_TOKEN }}
+          if [ "${{ github.ref == 'refs/heads/master' }}" = true ]; then
+            tfx extension isvalid --vsix $extensionPath --publisher dmitryserbin --extension-id release-orchestrator --token ${{ secrets.MARKETPLACE_TOKEN }}
+          else
+            tfx extension isvalid --vsix $extensionPath --publisher dmitryserbin --extension-id release-orchestrator-preview --token ${{ secrets.MARKETPLACE_TOKEN }}
+          fi
       # - name: Publish extension
       #   run: |
       #     extensionPath=$(find Extension -name "*.vsix")
@@ -126,7 +129,6 @@ jobs:
       #       echo "No extension found"
       #       exit 1
       #     fi
-
       #     if [ "${{ github.ref == 'refs/heads/master' }}" = true ]; then
       #       tfx extension publish --vsix $extensionPath --token ${{ secrets.MARKETPLACE_TOKEN }}
       #     else
