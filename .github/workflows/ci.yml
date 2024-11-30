@@ -102,14 +102,11 @@ jobs:
         with:
           name: Extension
           path: Extension
-      - name: Set preview flag
+      - name: Set private preview
         run: |
           sed -i 's/"galleryFlags": \[\],/"galleryFlags": \["Preview"\],/' Extension/vss-extension.json
+          sed -i 's/"public": true,/"public": false,/' Extension/vss-extension.json
         if: ${{ github.ref != 'refs/heads/master' }}
-      - name: Set public flag
-        run: |
-          sed -i 's/"galleryFlags": \[\],/"galleryFlags": \["Public"\],/' Extension/vss-extension.json
-        if: ${{ github.ref == 'refs/heads/master' }}
       - name: Package extension
         run: |
           tfx extension create --root Extension

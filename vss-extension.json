@@ -4,6 +4,7 @@
   "name": "Release Orchestrator",
   "version": "3.2.0",
   "publisher": "dmitryserbin",
+  "galleryFlags": [],
   "public": true,
   "targets": [
     {
@@ -14,7 +15,6 @@
   "categories": [
     "Azure Pipelines"
   ],
-  "galleryFlags": [],
   "tags": [
     "Build",
     "Release",
