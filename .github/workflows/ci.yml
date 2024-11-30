@@ -24,7 +24,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Restore packages
-        run: npm install
+        run: |
+          ls -la
+          npm install
         working-directory: tasks/OrchestratorV2
       - name: Run lint
         run: npm run lint
@@ -52,7 +54,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Restore packages
-        run: npm install
+        run: |
+          ls -la
+          npm install
         working-directory: tasks/OrchestratorV3
       - name: Run lint
         run: npm run lint
