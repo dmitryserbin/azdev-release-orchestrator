@@ -92,6 +92,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
+          name: Extension
           path: "*.vsix"
   # release:
   #   name: Release
