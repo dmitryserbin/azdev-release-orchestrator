@@ -80,49 +80,62 @@ jobs:
       - name: Version extension
         run: |
           pwsh -File ci/scripts/Set-Version.ps1 -Path extension -Patch ${{ github.run_number }}${{ github.run_attempt }}
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Extension
-          path: extension
-  release:
-    name: Release
-    runs-on: ubuntu-latest
-    environment:
-      name: ${{ github.ref == 'refs/heads/master' && 'Production' || 'Preview' }}
-    needs:
-      - package
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Install TFX CLI
-        run: npm install -g tfx-cli
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: Extension
-          path: Extension
       - name: Set private preview
         run: |
-          sed -i 's/"id": "release-orchestrator",/"id": "release-orchestrator-preview",/' Extension/vss-extension.json
-          sed -i 's/"galleryFlags": \[\],/"galleryFlags": \["Preview"\],/' Extension/vss-extension.json
-          sed -i 's/"public": true,/"public": false,/' Extension/vss-extension.json
+          sed -i 's/"id": "release-orchestrator",/"id": "release-orchestrator-preview",/' extension/vss-extension.json
+          sed -i 's/"galleryFlags": \[\],/"galleryFlags": \["Preview"\],/' extension/vss-extension.json
+          sed -i 's/"public": true,/"public": false,/' extension/vss-extension.json
         if: ${{ github.ref != 'refs/heads/master' }}
       - name: Package extension
         run: |
           tfx extension create --root Extension
-      - name: Validate extension
-        run: |
           extensionPath=$(find . -name "*.vsix")
           if [ -z "$extensionPath" ]; then
             echo "No extension found"
             exit 1
           fi
-          tfx extension isvalid --publisher dmitryserbin --extension-id release-orchestrator-preview --vsix $extensionPath --token ${{ secrets.MARKETPLACE_TOKEN }}
-      # - name: Publish extension
-      #   run: |
-      #     tfx extension publish --vsix *.vsix --token ${{ secrets.MARKETPLACE_TOKEN }}
-      # - name: Share preview extension
-      #   run: |
-      #     tfx extension share --publisher dmitryserbin --extension-id release-orchestrator --share-with dmitryserbin,iag --token ${{ secrets.MARKETPLACE_TOKEN }}
-      #   if: ${{ github.ref != 'refs/heads/master' }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: ${{ extensionPath }}
+  # release:
+  #   name: Release
+  #   runs-on: ubuntu-latest
+  #   environment:
+  #     name: ${{ github.ref == 'refs/heads/master' && 'Production' || 'Preview' }}
+  #   needs:
+  #     - package
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     - name: Install TFX CLI
+  #       run: npm install -g tfx-cli
+  #     - name: Download artifacts
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: Extension
+  #         path: Extension
+  #     - name: Set private preview
+  #       run: |
+  #         sed -i 's/"id": "release-orchestrator",/"id": "release-orchestrator-preview",/' Extension/vss-extension.json
+  #         sed -i 's/"galleryFlags": \[\],/"galleryFlags": \["Preview"\],/' Extension/vss-extension.json
+  #         sed -i 's/"public": true,/"public": false,/' Extension/vss-extension.json
+  #       if: ${{ github.ref != 'refs/heads/master' }}
+  #     - name: Package extension
+  #       run: |
+  #         tfx extension create --root Extension
+  #     - name: Validate extension
+  #       run: |
+  #         extensionPath=$(find . -name "*.vsix")
+  #         if [ -z "$extensionPath" ]; then
+  #           echo "No extension found"
+  #           exit 1
+  #         fi
+  #         tfx extension isvalid --publisher dmitryserbin --extension-id release-orchestrator-preview --vsix $extensionPath --token ${{ secrets.MARKETPLACE_TOKEN }}
+  #     - name: Publish extension
+  #       run: |
+  #         tfx extension publish --vsix *.vsix --token ${{ secrets.MARKETPLACE_TOKEN }}
+  #     - name: Share preview extension
+  #       run: |
+  #         tfx extension share --publisher dmitryserbin --extension-id release-orchestrator --share-with dmitryserbin,iag --token ${{ secrets.MARKETPLACE_TOKEN }}
+  #       if: ${{ github.ref != 'refs/heads/master' }}
