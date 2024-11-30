@@ -96,7 +96,7 @@ jobs:
           cp *.json extension/
       - name: Version extension
         run: |
-          pwsh -File ci/scripts/Set-Version.ps1 -Path extension -Patch ${{ github.run_number }} -UpdateBuildNumber
+          pwsh -File ci/scripts/Set-Version.ps1 -Path extension -Patch ${{ github.run_number }}
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
