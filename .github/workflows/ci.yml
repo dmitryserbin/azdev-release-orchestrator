@@ -72,8 +72,9 @@ jobs:
           path: extension/tasks
       - name: Copy extension
         run: |
-          cp docs/** extension/
+          mkdir -p extension/images
           cp images/** extension/images/
+          cp docs/** extension/
           cp LICENSE extension/
           cp *.md extension/
           cp *.json extension/
