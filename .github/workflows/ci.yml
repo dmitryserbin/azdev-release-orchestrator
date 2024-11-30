@@ -16,6 +16,7 @@ on:
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -43,12 +44,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}
+          path: tasks/${{ matrix.name }}
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: success() || failure()
         with:
           files: tasks/${{ matrix.name }}/tests/*.xml
   package:
+    name: Package
     runs-on: ubuntu-latest
     needs:
       - build
