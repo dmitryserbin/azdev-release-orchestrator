@@ -101,14 +101,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: Extension
-          path: Extension
       - name: Set preview flag
         run: |
-          sed -i 's/"galleryFlags": \[\],/"galleryFlags": \["Preview"\],/' Extension/extension.json
+          sed -i 's/"galleryFlags": \[\],/"galleryFlags": \["Preview"\],/' Extension/vss-extension.json
         if: ${{ github.ref != 'refs/heads/master' }}
       - name: Set public flag
         run: |
-          sed -i 's/"galleryFlags": \[\],/"galleryFlags": \["Public"\],/' Extension/extension.json
+          sed -i 's/"galleryFlags": \[\],/"galleryFlags": \["Public"\],/' Extension/vss-extension.json
         if: ${{ github.ref == 'refs/heads/master' }}
       - name: Package extension
         run: |
