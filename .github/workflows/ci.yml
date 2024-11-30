@@ -44,7 +44,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}
-          path: tasks/${{ matrix.name }}
+          path: |
+            tasks/${{ matrix.name }}
+            !tasks/${{ matrix.name }}/tests
+            !tasks/${{ matrix.name }}/tsconfig.json
+            !tasks/${{ matrix.name }}/*.config.mjs
+            !tasks/${{ matrix.name }}/*.svg
+            !tasks/${{ matrix.name }}/**/*.ts
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: success() || failure()
@@ -64,17 +70,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: extension/tasks
-      - name: Cleanup tasks
-        run: |
-          find extension/tasks -type f -name "*.ts" -delete
-          rm -rf extension/tasks/OrchestratorV2/tests
-          rm -rf extension/tasks/OrchestratorV3/tests
-          rm -rf extension/tasks/OrchestratorV2/*.config.mjs
-          rm -rf extension/tasks/OrchestratorV3/*.config.mjs
-          rm -rf extension/tasks/OrchestratorV2/tsconfig.json
-          rm -rf extension/tasks/OrchestratorV3/tsconfig.json
-          rm -rf extension/tasks/OrchestratorV2/*.svg
-          rm -rf extension/tasks/OrchestratorV3/*.svg
       - name: Copy extension
         run: |
           cp docs/** extension/
