@@ -38,7 +38,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: success() || failure()
         with:
-          files: tests/*.xml
+          files: tasks/OrchestratorV2/tests/*.xml
   build-v3:
     runs-on: ubuntu-latest
     defaults:
@@ -62,7 +62,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: success() || failure()
         with:
-          files: tests/*.xml
+          files: tasks/OrchestratorV3/tests/*.xml
   package:
     runs-on: ubuntu-latest
     needs:
