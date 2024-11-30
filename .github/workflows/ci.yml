@@ -112,12 +112,11 @@ jobs:
           tfx extension create --root Extension
       - name: Validate extension
         run: |
-          extensionPath=$(find Extension -name "*.vsix")
+          extensionPath=$(find . -name "*.vsix")
           if [ -z "$extensionPath" ]; then
             echo "No extension found"
             exit 1
           fi
-
           tfx extension isvalid --publisher dmitryserbin --extension-id release-orchestrator --vsix $extensionPath --token ${{ secrets.MARKETPLACE_TOKEN }}
       # - name: Publish extension
       #   run: |
