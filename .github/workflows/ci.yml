@@ -17,54 +17,52 @@ on:
 jobs:
   build-v2:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: tasks/OrchestratorV2
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Restore packages
         run: npm install
-        working-directory: tasks/OrchestratorV2
       - name: Run lint
         run: npm run lint
-        working-directory: tasks/OrchestratorV2
       - name: Run build
         run: npm run build
-        working-directory: tasks/OrchestratorV2
       - name: Run tests
         run: npm run test
-        working-directory: tasks/OrchestratorV2
       - name: Run clean
         run: npm run clean
-        working-directory: tasks/OrchestratorV2
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: success() || failure()
         with:
-          files: tasks/OrchestratorV2/tests/*.xml
+          files: tests/*.xml
   build-v3:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: tasks/OrchestratorV3
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Restore packages
         run: npm install
-        working-directory: tasks/OrchestratorV3
       - name: Run lint
         run: npm run lint
-        working-directory: tasks/OrchestratorV3
       - name: Run build
         run: npm run build
-        working-directory: tasks/OrchestratorV3
       - name: Run tests
         run: npm run test
-        working-directory: tasks/OrchestratorV3
       - name: Run clean
         run: npm run clean
-        working-directory: tasks/OrchestratorV3
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: success() || failure()
         with:
-          files: tasks/OrchestratorV3/tests/*.xml
+          files: tests/*.xml
   package:
     runs-on: ubuntu-latest
     needs:
