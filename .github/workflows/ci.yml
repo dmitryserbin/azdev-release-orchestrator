@@ -79,9 +79,9 @@ jobs:
           cp *.json extension/
       - name: Version extension
         run: |
-          pwsh -File ci/scripts/Set-Version.ps1 -Path extension -Patch ${{ github.run_id }}${{ github.run_number }}${{ github.run_attempt }}
+          pwsh -File ci/scripts/Set-Version.ps1 -Path extension -Patch ${{ github.run_number }}${{ github.run_attempt }}
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Extension-${{ github.run_id }}${{ github.run_number }}${{ github.run_attempt }}
+          name: Extension-${{ github.run_number }}${{ github.run_attempt }}
           path: extension
