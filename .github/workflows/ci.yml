@@ -89,7 +89,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     environment:
-      name: ${{ github.ref == 'refs/heads/master' && 'Production' || 'Staging' }}
+      name: ${{ github.ref == 'refs/heads/master' && 'Production' || 'Preview' }}
     needs:
       - package
     steps:
@@ -101,3 +101,24 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: Extension-${{ github.run_number }}${{ github.run_attempt }}
+      - name: Set preview flag
+        run: |
+          sed -i 's/"galleryFlags": \[\],/"galleryFlags": \["Preview"\],/' Extension-${{ github.run_number }}${{ github.run_attempt }}/extension.json
+        if: ${{ github.ref != 'refs/heads/master' }}
+      - name: Set public flag
+        run: |
+          sed -i 's/"galleryFlags": \[\],/"galleryFlags": \["Public"\],/' Extension-${{ github.run_number }}${{ github.run_attempt }}/extension.json
+        if: ${{ github.ref == 'refs/heads/master' }}
+      - name: Package extension
+        run: |
+          tfx extension create --root Extension-${{ github.run_number }}${{ github.run_attempt }}
+      - name: Validate extension
+        run: |
+          tfx extension validate --path *.vsix
+      # - name: Publish extension
+      #   run: |
+      #     tfx extension publish --vsix *.vsix --token ${{ secrets.MARKETPLACE_TOKEN }}
+      # - name: Share preview extension
+      #   run: |
+      #     tfx extension share --publisher dmitryserbin --extension-id release-orchestrator --share-with dmitryserbin,iag --token ${{ secrets.MARKETPLACE_TOKEN }}
+      #   if: ${{ github.ref != 'refs/heads/master' }}
