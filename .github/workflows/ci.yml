@@ -34,6 +34,11 @@ jobs:
         run: npm run test
       - name: Run clean
         run: npm run clean
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OrchestratorV2
+          path: tasks/OrchestratorV2
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: success() || failure()
@@ -58,6 +63,11 @@ jobs:
         run: npm run test
       - name: Run clean
         run: npm run clean
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OrchestratorV3
+          path: tasks/OrchestratorV3
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: success() || failure()
@@ -73,3 +83,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Install TFX CLI
         run: npm install -g tfx-cli
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: extension
