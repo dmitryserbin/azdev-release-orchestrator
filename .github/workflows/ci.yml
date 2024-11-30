@@ -104,7 +104,7 @@ jobs:
           path: Extension
       - name: Set private preview
         run: |
-          swd -i 's/"id": "release-orchestrator",/"id": "release-orchestrator-preview",/' Extension/vss-extension.json
+          sed -i 's/"id": "release-orchestrator",/"id": "release-orchestrator-preview",/' Extension/vss-extension.json
           sed -i 's/"galleryFlags": \[\],/"galleryFlags": \["Preview"\],/' Extension/vss-extension.json
           sed -i 's/"public": true,/"public": false,/' Extension/vss-extension.json
         if: ${{ github.ref != 'refs/heads/master' }}
