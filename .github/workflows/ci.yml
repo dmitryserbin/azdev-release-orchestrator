@@ -26,7 +26,6 @@ jobs:
     defaults:
       run:
         working-directory: tasks/${{ matrix.name }}
-        shell: bash
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -94,44 +93,30 @@ jobs:
         with:
           name: Extension
           path: "*.vsix"
-  # release:
-  #   name: Release
-  #   runs-on: ubuntu-latest
-  #   environment:
-  #     name: ${{ github.ref == 'refs/heads/master' && 'Production' || 'Preview' }}
-  #   needs:
-  #     - package
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #     - name: Install TFX CLI
-  #       run: npm install -g tfx-cli
-  #     - name: Download artifacts
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: Extension
-  #         path: Extension
-  #     - name: Set private preview
-  #       run: |
-  #         sed -i 's/"id": "release-orchestrator",/"id": "release-orchestrator-preview",/' Extension/vss-extension.json
-  #         sed -i 's/"galleryFlags": \[\],/"galleryFlags": \["Preview"\],/' Extension/vss-extension.json
-  #         sed -i 's/"public": true,/"public": false,/' Extension/vss-extension.json
-  #       if: ${{ github.ref != 'refs/heads/master' }}
-  #     - name: Package extension
-  #       run: |
-  #         tfx extension create --root Extension
-  #     - name: Validate extension
-  #       run: |
-  #         extensionPath=$(find . -name "*.vsix")
-  #         if [ -z "$extensionPath" ]; then
-  #           echo "No extension found"
-  #           exit 1
-  #         fi
-  #         tfx extension isvalid --publisher dmitryserbin --extension-id release-orchestrator-preview --vsix $extensionPath --token ${{ secrets.MARKETPLACE_TOKEN }}
-  #     - name: Publish extension
-  #       run: |
-  #         tfx extension publish --vsix *.vsix --token ${{ secrets.MARKETPLACE_TOKEN }}
-  #     - name: Share preview extension
-  #       run: |
-  #         tfx extension share --publisher dmitryserbin --extension-id release-orchestrator --share-with dmitryserbin,iag --token ${{ secrets.MARKETPLACE_TOKEN }}
-  #       if: ${{ github.ref != 'refs/heads/master' }}
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref == 'refs/heads/master' && 'Production' || 'Preview' }}
+    needs:
+      - package
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install TFX CLI
+        run: npm install -g tfx-cli
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: Extension
+          path: Extension
+      - name: Validate extension
+        run: |
+          tfx extension isvalid --vsix *.vsix --token ${{ secrets.MARKETPLACE_TOKEN }}
+      # - name: Publish extension
+      #   run: |
+      #     if [ "${{ github.ref == 'refs/heads/master' }}" = true ]; then
+      #       tfx extension publish --vsix *.vsix --token ${{ secrets.MARKETPLACE_TOKEN }}
+      #     else
+      #       tfx extension publish --vsix *.vsix --share-with ${{ secrets.PREVIEW_SHARE_WITH }} --token ${{ secrets.MARKETPLACE_TOKEN }}
+      #     fi
