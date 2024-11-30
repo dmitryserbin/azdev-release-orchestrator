@@ -112,11 +112,23 @@ jobs:
           path: Extension
       - name: Validate extension
         run: |
-          tfx extension isvalid --vsix Extension/*.vsix --token ${{ secrets.MARKETPLACE_TOKEN }}
+          extensionPath=$(find Extension -name "*.vsix")
+          if [ -z "$extensionPath" ]; then
+            echo "No extension found"
+            exit 1
+          fi
+
+          tfx extension isvalid --vsix $extensionPath --token ${{ secrets.MARKETPLACE_TOKEN }}
       # - name: Publish extension
       #   run: |
+      #     extensionPath=$(find Extension -name "*.vsix")
+      #     if [ -z "$extensionPath" ]; then
+      #       echo "No extension found"
+      #       exit 1
+      #     fi
+
       #     if [ "${{ github.ref == 'refs/heads/master' }}" = true ]; then
-      #       tfx extension publish --vsix Extension/*.vsix --token ${{ secrets.MARKETPLACE_TOKEN }}
+      #       tfx extension publish --vsix $extensionPath --token ${{ secrets.MARKETPLACE_TOKEN }}
       #     else
-      #       tfx extension publish --vsix Extension/*.vsix --share-with ${{ secrets.PREVIEW_SHARE_WITH }} --token ${{ secrets.MARKETPLACE_TOKEN }}
+      #       tfx extension publish --vsix $extensionPath --share-with ${{ secrets.PREVIEW_SHARE_WITH }} --token ${{ secrets.MARKETPLACE_TOKEN }}
       #     fi
