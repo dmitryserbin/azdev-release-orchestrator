@@ -15,12 +15,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-v2:
+  build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: tasks/OrchestratorV2
+    strategy:
+      matrix:
+        name:
+          - OrchestratorV2
+          - OrchestratorV3
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -37,47 +38,16 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: OrchestratorV2
-          path: tasks/OrchestratorV2
+          name: ${{ matrix.name }}
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: success() || failure()
         with:
-          files: tasks/OrchestratorV2/tests/*.xml
-  build-v3:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: tasks/OrchestratorV3
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Restore packages
-        run: npm install
-      - name: Run lint
-        run: npm run lint
-      - name: Run build
-        run: npm run build
-      - name: Run tests
-        run: npm run test
-      - name: Run clean
-        run: npm run clean
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: OrchestratorV3
-          path: tasks/OrchestratorV3
-      - name: Publish test results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: success() || failure()
-        with:
-          files: tasks/OrchestratorV3/tests/*.xml
+          files: tasks/${{ matrix.name }}/tests/*.xml
   package:
     runs-on: ubuntu-latest
     needs:
-      - build-v2
-      - build-v3
+      - build
     steps:
       - name: Checkout
         uses: actions/checkout@v4
