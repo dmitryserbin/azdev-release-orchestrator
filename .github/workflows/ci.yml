@@ -80,7 +80,7 @@ jobs:
       - name: Version extension
         run: |
           pwsh -File ci/scripts/Set-Version.ps1 -Path extension -Patch ${{ github.run_number }}${{ github.run_attempt }}
-      - name: Set private preview
+      - name: Set preview
         run: |
           sed -i 's/"id": "release-orchestrator",/"id": "release-orchestrator-preview",/' extension/vss-extension.json
           sed -i 's/"galleryFlags": \[\],/"galleryFlags": \["Preview"\],/' extension/vss-extension.json
