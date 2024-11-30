@@ -73,7 +73,7 @@ jobs:
       - name: Copy extension
         run: |
           cp docs/** extension/
-          cp images/** extension/
+          cp images/** extension/images/
           cp LICENSE extension/
           cp *.md extension/
           cp *.json extension/
