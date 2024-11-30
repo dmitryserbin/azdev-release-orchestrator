@@ -89,15 +89,10 @@ jobs:
       - name: Package extension
         run: |
           tfx extension create --root extension
-          extensionPath=$(find . -name "*.vsix")
-          if [ -z "$extensionPath" ]; then
-            echo "No extension found"
-            exit 1
-          fi
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          path: ${{ env.extensionPath }}
+          path: "*.vsix"
   # release:
   #   name: Release
   #   runs-on: ubuntu-latest
