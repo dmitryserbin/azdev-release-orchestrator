@@ -22,6 +22,10 @@ jobs:
         name:
           - OrchestratorV2
           - OrchestratorV3
+    defaults:
+      run:
+        working-directory: tasks/${{ matrix.name }}
+        shell: bash
     steps:
       - name: Checkout
         uses: actions/checkout@v4
