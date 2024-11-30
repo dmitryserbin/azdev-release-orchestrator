@@ -101,6 +101,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: Extension
+          path: Extension
       - name: Set preview flag
         run: |
           sed -i 's/"galleryFlags": \[\],/"galleryFlags": \["Preview"\],/' Extension/extension.json
