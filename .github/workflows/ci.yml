@@ -112,11 +112,11 @@ jobs:
           path: Extension
       - name: Validate extension
         run: |
-          tfx extension isvalid --vsix *.vsix --token ${{ secrets.MARKETPLACE_TOKEN }}
+          tfx extension isvalid --vsix Extension/*.vsix --token ${{ secrets.MARKETPLACE_TOKEN }}
       # - name: Publish extension
       #   run: |
       #     if [ "${{ github.ref == 'refs/heads/master' }}" = true ]; then
-      #       tfx extension publish --vsix *.vsix --token ${{ secrets.MARKETPLACE_TOKEN }}
+      #       tfx extension publish --vsix Extension/*.vsix --token ${{ secrets.MARKETPLACE_TOKEN }}
       #     else
-      #       tfx extension publish --vsix *.vsix --share-with ${{ secrets.PREVIEW_SHARE_WITH }} --token ${{ secrets.MARKETPLACE_TOKEN }}
+      #       tfx extension publish --vsix Extension/*.vsix --share-with ${{ secrets.PREVIEW_SHARE_WITH }} --token ${{ secrets.MARKETPLACE_TOKEN }}
       #     fi
