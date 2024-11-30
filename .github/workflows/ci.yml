@@ -46,11 +46,11 @@ jobs:
           name: ${{ matrix.name }}
           path: |
             tasks/${{ matrix.name }}
+            !tasks/${{ matrix.name }}/**/*.ts
             !tasks/${{ matrix.name }}/tests
             !tasks/${{ matrix.name }}/tsconfig.json
             !tasks/${{ matrix.name }}/*.config.mjs
             !tasks/${{ matrix.name }}/*.svg
-            !tasks/${{ matrix.name }}/**/*.ts
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: success() || failure()
@@ -79,9 +79,9 @@ jobs:
           cp *.json extension/
       - name: Version extension
         run: |
-          pwsh -File ci/scripts/Set-Version.ps1 -Path extension -Patch ${{ github.run_number }}
+          pwsh -File ci/scripts/Set-Version.ps1 -Path extension -Patch ${{ github.run_id }}${{ github.run_number }}${{ github.run_attempt }}
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Extension
+          name: Extension-${{ github.run_id }}${{ github.run_number }}${{ github.run_attempt }}
           path: extension
