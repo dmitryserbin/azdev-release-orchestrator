@@ -3,9 +3,14 @@ jobs:
   workspace:
     clean: all
   steps:
-  - template: steps/test-cleanup.yml
-    parameters:
-      organizationName: dmitryserbin
-      projectName: HelloYo
-      definitionName: HelloYo-V2
-      accessToken: $(System.AccessToken)
+    - task: PowerShell@2
+      displayName: Cleanup releases
+      inputs:
+        targetType: filePath
+        filePath: scripts/Clear-Releases.ps1
+        arguments: >
+          -OrganizationName dmitryserbin
+          -ProjectName HelloYo
+          -DefinitionName HelloYo-V2
+          -AccessToken $(System.AccessToken)
+        pwsh: true

@@ -3,8 +3,20 @@ jobs:
   workspace:
     clean: all
   steps:
-  - template: steps/test-v3.yml
-    parameters:
-      projectName: HelloYo
-      definitionName: HelloYo-release
-      stages: DEV,TEST,PROD
+    - task: releaseorchestrator@3
+      displayName: New release (auto)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-release
+        strategy: new
+        stages: DEV,TEST,PROD
+
+    - task: releaseorchestrator@3
+      displayName: New release (parameters)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-release
+        strategy: new
+        stages: DEV,TEST,PROD
+        parameters: |
+          message=Test!
