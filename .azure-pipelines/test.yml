@@ -5,9 +5,11 @@ pool:
 
 stages:
 - stage: OrchestratorV2
+  dependsOn: []
   jobs:
     - template: templates/test-v2.yml
 - stage: OrchestratorV3
+  dependsOn: []
   jobs:
     - template: templates/test-v3.yml
 - stage: Cleanup
