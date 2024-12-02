@@ -2,7 +2,8 @@
 
 ## 3.2.*
 
-- TBC ([TBC](TBC))
+- Update to Node 20.1 ([109](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/109))
+- Update dependencies ([109](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/109))
 
 ## 3.1.*
 
