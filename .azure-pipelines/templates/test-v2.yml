@@ -24,7 +24,7 @@ jobs:
         projectName: HelloYo
         definitionName: HelloYo-V2
         releaseStrategy: specific
-        releaseName: HelloYo-V2-20221030.1-2
+        releaseName: HelloYo-V2-20241203.1-3
         releaseStage: DEV,TEST,PROD
     - task: releaseorchestrator@2
       displayName: Specific release (failed)
@@ -55,7 +55,7 @@ jobs:
         definitionName: HelloYo-V2
         releaseStrategy: create
         definitionStage: DEV
-        artifactVersion: 20221030.3
+        artifactVersion: 20241203.1
     - task: releaseorchestrator@2
       displayName: Create release (artifact tag)
       inputs:
@@ -71,7 +71,7 @@ jobs:
         definitionName: HelloYo-V2
         releaseStrategy: create
         definitionStage: DEV
-        artifactBranch: refs/heads/working/test
+        artifactBranch: refs/heads/test
     - task: releaseorchestrator@2
       displayName: Create release (release variables)
       inputs:
@@ -110,7 +110,7 @@ jobs:
         definitionName: HelloYo-V2
         releaseStrategy: latest
         releaseStage: DEV
-        artifactVersion: 20221030.3
+        artifactVersion: 20241203.1
     - task: releaseorchestrator@2
       displayName: Latest release (artifact tag)
       inputs:
@@ -126,7 +126,7 @@ jobs:
         definitionName: HelloYo-V2
         releaseStrategy: latest
         releaseStage: PROD
-        artifactBranch: refs/heads/working/test
+        artifactBranch: refs/heads/test
     - task: releaseorchestrator@2
       displayName: Latest release (rejected stage)
       inputs:
