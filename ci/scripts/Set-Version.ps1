@@ -121,12 +121,10 @@ function Update-ExtensionVersion
 			-Depth 100 `
 			-ErrorAction Stop
 
-	# Update version
 	$ExtensionDefinition = Set-ExtensionVersion `
 		-Definition $ExtensionDefinition `
 		-Patch $Patch
 
-	# Update JSON file
 	$ExtensionDefinition | ConvertTo-Json `
 		-Depth 100 `
 		-ErrorAction Stop | Set-Content `
@@ -172,12 +170,10 @@ function Update-ExtensionVersion
 					-Depth 100 `
 					-ErrorAction Stop
 
-			# Update version
 			$TaskDefinition = Set-TaskVersion `
 				-Definition $TaskDefinition `
 				-Patch $Patch
 
-			# Update JSON file
 			$TaskDefinition | ConvertTo-Json `
 				-Depth 100 `
 				-ErrorAction Stop | Set-Content `
