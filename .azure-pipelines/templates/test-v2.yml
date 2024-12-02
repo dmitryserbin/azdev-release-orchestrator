@@ -9,14 +9,14 @@ jobs:
         projectName: HelloYo
         definitionName: HelloYo-V2
         releaseStrategy: specific
-        releaseName: HelloYo-V2-20221030.1-1
+        releaseName: HelloYo-V2-20241203.1-1
     - task: releaseorchestrator@2
       displayName: Specific release (manual)
       inputs:
         projectName: HelloYo
         definitionName: HelloYo-V2
         releaseStrategy: specific
-        releaseName: HelloYo-V2-20221030.1-1
+        releaseName: HelloYo-V2-20241203.1-1
         releaseStage: DEV,TEST,PROD
     - task: releaseorchestrator@2
       displayName: Specific release (partial)
