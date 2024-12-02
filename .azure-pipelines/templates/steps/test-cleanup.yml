@@ -9,7 +9,7 @@ steps:
   displayName: Cleanup releases
   inputs:
     targetType: filePath
-    filePath: ci/scripts/Clear-Releases.ps1
+    filePath: scripts/Clear-Releases.ps1
     arguments: >
       -OrganizationName ${{ parameters.organizationName }}
       -ProjectName ${{ parameters.projectName }}
