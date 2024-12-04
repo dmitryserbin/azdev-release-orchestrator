@@ -2,9 +2,8 @@
 
 ## 3.2.*
 
-- Update tasks to use Node 20.1 ([109](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/109))
-- Update dependencies ([109](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/109))
-- Fix triggering YAML pipelines with parameters bug ([107](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/107))
+- Update tasks to use Node 20.1 ([110](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/110))
+- Update dependencies ([110](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/110))
 
 ## 3.1.*
 
