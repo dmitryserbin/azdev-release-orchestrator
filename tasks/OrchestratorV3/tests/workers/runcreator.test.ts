@@ -1,13 +1,7 @@
 import "mocha"
-
-import * as chai from "chai"
-import * as TypeMoq from "typemoq"
-
 import { faker } from "@faker-js/faker"
-
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces"
 import { Build, BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces"
-
 import { ILogger } from "../../loggers/ilogger"
 import { IDebug } from "../../loggers/idebug"
 import { IBuildSelector } from "../../helpers/buildselector/ibuildselector"
@@ -20,16 +14,18 @@ import { RunCreator } from "../../workers/runcreator/runcreator"
 import { IParameters } from "../../helpers/taskhelper/iparameters"
 import { Strategy } from "../../helpers/taskhelper/strategy"
 import { IFilters } from "../../helpers/taskhelper/ifilters"
+import assert from "assert"
+import { Mock, It, Times } from "typemoq"
 
 describe("RunCreator", async () => {
-	const loggerMock = TypeMoq.Mock.ofType<ILogger>()
-	const debugMock = TypeMoq.Mock.ofType<IDebug>()
+	const loggerMock = Mock.ofType<ILogger>()
+	const debugMock = Mock.ofType<IDebug>()
 
-	loggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null)
+	loggerMock.setup((x) => x.log(It.isAny())).returns(() => null)
 
-	loggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
+	loggerMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugMock.object)
 
-	debugMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
+	debugMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugMock.object)
 
 	const filtersMock = {
 		buildNumber: faker.word.sample(),
@@ -56,11 +52,11 @@ describe("RunCreator", async () => {
 		id: faker.number.int(),
 	} as Build
 
-	const projectSelectorMock = TypeMoq.Mock.ofType<IProjectSelector>()
-	const definitionSelectorMock = TypeMoq.Mock.ofType<IDefinitionSelector>()
-	const buildSelectorMock = TypeMoq.Mock.ofType<IBuildSelector>()
-	const filterCreatorMock = TypeMoq.Mock.ofType<IFilterCreator>()
-	const progressReporterMock = TypeMoq.Mock.ofType<IProgressReporter>()
+	const projectSelectorMock = Mock.ofType<IProjectSelector>()
+	const definitionSelectorMock = Mock.ofType<IDefinitionSelector>()
+	const buildSelectorMock = Mock.ofType<IBuildSelector>()
+	const filterCreatorMock = Mock.ofType<IFilterCreator>()
+	const progressReporterMock = Mock.ofType<IProgressReporter>()
 
 	const runCreator: IRunCreator = new RunCreator(
 		projectSelectorMock.object,
@@ -79,14 +75,14 @@ describe("RunCreator", async () => {
 		progressReporterMock.reset()
 
 		projectSelectorMock
-			.setup((x) => x.getProject(TypeMoq.It.isAnyString()))
+			.setup((x) => x.getProject(It.isAnyString()))
 			.returns(() => Promise.resolve(projectMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		definitionSelectorMock
-			.setup((x) => x.getDefinition(TypeMoq.It.isAnyString(), TypeMoq.It.isAnyString()))
+			.setup((x) => x.getDefinition(It.isAnyString(), It.isAnyString()))
 			.returns(() => Promise.resolve(definitionMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 	})
 
 	it("Should create new run", async () => {
@@ -95,9 +91,9 @@ describe("RunCreator", async () => {
 		parametersMock.strategy = Strategy.New
 
 		buildSelectorMock
-			.setup((x) => x.createBuild(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAny()))
+			.setup((x) => x.createBuild(It.isAny(), It.isAny(), It.isAny(), It.isAny()))
 			.returns(() => Promise.resolve(buildMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		//#endregion
 
@@ -109,7 +105,7 @@ describe("RunCreator", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
+		assert.notStrictEqual(result, null, "Result should not be null")
 
 		projectSelectorMock.verifyAll()
 		definitionSelectorMock.verifyAll()
@@ -124,9 +120,9 @@ describe("RunCreator", async () => {
 		parametersMock.strategy = Strategy.Latest
 
 		buildSelectorMock
-			.setup((x) => x.getLatestBuild(TypeMoq.It.isAny(), TypeMoq.It.isAny(), TypeMoq.It.isAnyNumber()))
+			.setup((x) => x.getLatestBuild(It.isAny(), It.isAny(), It.isAnyNumber()))
 			.returns(() => Promise.resolve(buildMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		//#endregion
 
@@ -138,7 +134,7 @@ describe("RunCreator", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
+		assert.notStrictEqual(result, null, "Result should not be null")
 
 		projectSelectorMock.verifyAll()
 		definitionSelectorMock.verifyAll()
@@ -153,9 +149,9 @@ describe("RunCreator", async () => {
 		parametersMock.strategy = Strategy.Specific
 
 		buildSelectorMock
-			.setup((x) => x.getSpecificBuild(TypeMoq.It.isAny(), TypeMoq.It.isAnyString()))
+			.setup((x) => x.getSpecificBuild(It.isAny(), It.isAnyString()))
 			.returns(() => Promise.resolve(buildMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		//#endregion
 
@@ -167,7 +163,7 @@ describe("RunCreator", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
+		assert.notStrictEqual(result, null, "Result should not be null")
 
 		projectSelectorMock.verifyAll()
 		definitionSelectorMock.verifyAll()

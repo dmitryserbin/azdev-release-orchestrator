@@ -1,25 +1,22 @@
 import "mocha"
-
-import * as chai from "chai"
-import * as TypeMoq from "typemoq"
-
 import { BuildResult } from "azure-devops-node-api/interfaces/BuildInterfaces"
-
 import { ILogger } from "../../loggers/ilogger"
 import { IDebug } from "../../loggers/idebug"
 import { IFilterCreator } from "../../workers/filtercreator/ifiltercreator"
 import { FilterCreator } from "../../workers/filtercreator/filtercreator"
 import { IFilters } from "../../helpers/taskhelper/ifilters"
+import assert from "assert"
+import { Mock, It } from "typemoq"
 
 describe("FilterCreator", async () => {
-	const loggerMock = TypeMoq.Mock.ofType<ILogger>()
-	const debugMock = TypeMoq.Mock.ofType<IDebug>()
+	const loggerMock = Mock.ofType<ILogger>()
+	const debugMock = Mock.ofType<IDebug>()
 
-	loggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null)
+	loggerMock.setup((x) => x.log(It.isAny())).returns(() => null)
 
-	loggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
+	loggerMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugMock.object)
 
-	debugMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
+	debugMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugMock.object)
 
 	let filtersMock: IFilters
 
@@ -51,9 +48,9 @@ describe("FilterCreator", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.repositories.self).to.not.eq(null)
-		chai.expect(result.repositories.self.refName).to.eq(`refs/heads/${filtersMock.branchName}`)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.notStrictEqual(result.repositories.self, null, "Repository self should not be null")
+		assert.strictEqual(result.repositories.self.refName, `refs/heads/${filtersMock.branchName}`, "Branch name should match")
 
 		//#endregion
 	})
@@ -73,8 +70,8 @@ describe("FilterCreator", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.buildResult).to.eq(BuildResult.Succeeded)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.buildResult, BuildResult.Succeeded, "Build result should be succeeded")
 
 		//#endregion
 	})
@@ -94,9 +91,9 @@ describe("FilterCreator", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.tagFilters).to.not.eq(null)
-		chai.expect(result.tagFilters).to.eq(filtersMock.buildTags)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.notStrictEqual(result.tagFilters, null, "Tag filters should not be null")
+		assert.strictEqual(result.tagFilters, filtersMock.buildTags, "Build tags should match")
 
 		//#endregion
 	})
@@ -116,8 +113,8 @@ describe("FilterCreator", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.branchName).to.eq(`refs/heads/${filtersMock.branchName}`)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.branchName, `refs/heads/${filtersMock.branchName}`, "Branch name should match")
 
 		//#endregion
 	})

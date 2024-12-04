@@ -1,12 +1,6 @@
 import "mocha"
-
-import * as chai from "chai"
-import * as TypeMoq from "typemoq"
-
 import { faker } from "@faker-js/faker"
-
 import { Build, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces"
-
 import { ILogger } from "../../loggers/ilogger"
 import { IDebug } from "../../loggers/idebug"
 import { IProgressReporter } from "../../workers/progressreporter/iprogressreporter"
@@ -19,16 +13,18 @@ import { StageDeployer } from "../../workers/stagedeployer/stagedeployer"
 import { IStageSelector } from "../../helpers/stageselector/istageselector"
 import { IStageApprover } from "../../workers/stageapprover/istageapprover"
 import { IBuildTask } from "../../workers/progressmonitor/ibuildtask"
+import { Mock, It, Times } from "typemoq"
+import assert from "assert"
 
 describe("StageDeployer", async () => {
-	const loggerMock = TypeMoq.Mock.ofType<ILogger>()
-	const debugMock = TypeMoq.Mock.ofType<IDebug>()
+	const loggerMock = Mock.ofType<ILogger>()
+	const debugMock = Mock.ofType<IDebug>()
 
-	loggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null)
+	loggerMock.setup((x) => x.log(It.isAny())).returns(() => null)
 
-	loggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
+	loggerMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugMock.object)
 
-	debugMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
+	debugMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugMock.object)
 
 	const buildMock = {
 		buildNumber: faker.word.sample(),
@@ -39,10 +35,10 @@ describe("StageDeployer", async () => {
 	let stageOneMock: IBuildStage
 	let jobOneMock: IBuildJob
 
-	const commonHelperMock = TypeMoq.Mock.ofType<ICommonHelper>()
-	const stageSelectorMock = TypeMoq.Mock.ofType<IStageSelector>()
-	const stageApproverMock = TypeMoq.Mock.ofType<IStageApprover>()
-	const progressReporterMock = TypeMoq.Mock.ofType<IProgressReporter>()
+	const commonHelperMock = Mock.ofType<ICommonHelper>()
+	const stageSelectorMock = Mock.ofType<IStageSelector>()
+	const stageApproverMock = Mock.ofType<IStageApprover>()
+	const progressReporterMock = Mock.ofType<IProgressReporter>()
 
 	const stageDeployer: IStageDeployer = new StageDeployer(
 		commonHelperMock.object,
@@ -85,44 +81,44 @@ describe("StageDeployer", async () => {
 		const startedStageOneMock = Object.assign({}, stageOneMock, { state: TimelineRecordState.InProgress })
 		const completedStageOneMock = Object.assign({}, stageOneMock, { state: TimelineRecordState.Completed })
 
-		stageSelectorMock.setup((x) => x.startStage(buildMock, stageOneMock)).verifiable(TypeMoq.Times.once())
+		stageSelectorMock.setup((x) => x.startStage(buildMock, stageOneMock)).verifiable(Times.once())
 
 		stageSelectorMock
 			.setup((x) => x.confirmStage(buildMock, stageOneMock, settingsMock.stageStartAttempts, settingsMock.stageStartInterval))
 			.returns(() => Promise.resolve(startedStageOneMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		stageSelectorMock
 			.setup((x) => x.getStage(buildMock, startedStageOneMock))
 			.returns(() => Promise.resolve(startedStageOneMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		stageApproverMock
 			.setup((x) => x.isApprovalPending(startedStageOneMock))
 			.returns(() => true)
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		stageApproverMock
 			.setup((x) => x.approve(startedStageOneMock, buildMock, settingsMock))
 			.returns(() => Promise.resolve(startedStageOneMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		stageApproverMock
 			.setup((x) => x.isCheckPending(startedStageOneMock))
 			.returns(() => true)
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		stageApproverMock
 			.setup((x) => x.check(startedStageOneMock, buildMock, settingsMock))
 			.returns(() => Promise.resolve(completedStageOneMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
-		progressReporterMock.setup((x) => x.logStageProgress(completedStageOneMock)).verifiable(TypeMoq.Times.once())
+		progressReporterMock.setup((x) => x.logStageProgress(completedStageOneMock)).verifiable(Times.once())
 
 		commonHelperMock
 			.setup((x) => x.wait(settingsMock.updateInterval))
 			.returns(() => Promise.resolve())
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		//#endregion
 
@@ -134,8 +130,8 @@ describe("StageDeployer", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.state).to.eq(TimelineRecordState.Completed)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.equal(result.state, TimelineRecordState.Completed, "Result state should be Completed")
 
 		commonHelperMock.verifyAll()
 		stageSelectorMock.verifyAll()
@@ -152,17 +148,17 @@ describe("StageDeployer", async () => {
 
 		const startedStageOneMock = Object.assign({}, stageOneMock, { state: TimelineRecordState.InProgress })
 
-		stageSelectorMock.setup((x) => x.startStage(buildMock, stageOneMock)).verifiable(TypeMoq.Times.once())
+		stageSelectorMock.setup((x) => x.startStage(buildMock, stageOneMock)).verifiable(Times.once())
 
 		stageSelectorMock
 			.setup((x) => x.confirmStage(buildMock, stageOneMock, settingsMock.stageStartAttempts, settingsMock.stageStartInterval))
 			.returns(() => Promise.resolve(startedStageOneMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		stageSelectorMock
 			.setup((x) => x.getStage(buildMock, startedStageOneMock))
 			.returns(() => Promise.resolve(startedStageOneMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		//#endregion
 
@@ -174,8 +170,8 @@ describe("StageDeployer", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.state).to.eq(TimelineRecordState.InProgress)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.equal(result.state, TimelineRecordState.InProgress, "Result state should be InProgress")
 
 		stageSelectorMock.verifyAll()
 
@@ -191,29 +187,29 @@ describe("StageDeployer", async () => {
 		stageSelectorMock
 			.setup((x) => x.getStage(buildMock, stageOneMock))
 			.returns(() => Promise.resolve(startedStageOneMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		stageApproverMock
 			.setup((x) => x.isApprovalPending(startedStageOneMock))
 			.returns(() => true)
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		stageApproverMock
 			.setup((x) => x.approve(startedStageOneMock, buildMock, settingsMock))
 			.returns(() => Promise.resolve(startedStageOneMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		stageApproverMock
 			.setup((x) => x.isCheckPending(startedStageOneMock))
 			.returns(() => true)
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		stageApproverMock
 			.setup((x) => x.check(startedStageOneMock, buildMock, settingsMock))
 			.returns(() => Promise.resolve(completedStageOneMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
-		progressReporterMock.setup((x) => x.logStageProgress(completedStageOneMock)).verifiable(TypeMoq.Times.once())
+		progressReporterMock.setup((x) => x.logStageProgress(completedStageOneMock)).verifiable(Times.once())
 
 		//#endregion
 
@@ -225,8 +221,8 @@ describe("StageDeployer", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.state).to.eq(TimelineRecordState.Completed)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.equal(result.state, TimelineRecordState.Completed, "Result state should be Completed")
 
 		stageSelectorMock.verifyAll()
 		stageApproverMock.verifyAll()
@@ -245,7 +241,7 @@ describe("StageDeployer", async () => {
 		stageSelectorMock
 			.setup((x) => x.getStage(buildMock, stageOneMock))
 			.returns(() => Promise.resolve(startedStageOneMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		//#endregion
 
@@ -257,8 +253,8 @@ describe("StageDeployer", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.state).to.eq(TimelineRecordState.InProgress)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.equal(result.state, TimelineRecordState.InProgress, "Result state should be InProgress")
 
 		stageSelectorMock.verifyAll()
 		stageApproverMock.verifyAll()

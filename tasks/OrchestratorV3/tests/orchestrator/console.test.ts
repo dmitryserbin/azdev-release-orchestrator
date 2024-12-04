@@ -1,5 +1,4 @@
 import "mocha"
-
 import { IRunCreator } from "../../workers/runcreator/iruncreator"
 import { IRunDeployer } from "../../workers/rundeployer/irundeployer"
 import { IProgressReporter } from "../../workers/progressreporter/iprogressreporter"
@@ -15,6 +14,7 @@ import { IApiFactory } from "../../factories/apifactory/iapifactory"
 import { IWorkerFactory } from "../../factories/workerfactory/iworkerfactory"
 import { WorkerFactory } from "../../factories/workerfactory/workerfactory"
 import { Strategy } from "../../helpers/taskhelper/strategy"
+import assert from "assert"
 
 describe("Console", async () => {
 	const logger: ILogger = new Logger("release-orchestrator", true)
@@ -100,7 +100,7 @@ describe("Console", async () => {
 
 		//#region ASSERT
 
-		chai.expect(releaseProgress).to.not.eq(null)
+		assert.notStrictEqual(releaseProgress, null, "Release progress should not be null")
 
 		//#endregion
 	})

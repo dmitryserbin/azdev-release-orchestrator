@@ -1,13 +1,12 @@
 import "mocha"
 
-import * as chai from "chai"
-import * as TypeMoq from "typemoq"
-
 import { ILogger } from "../../loggers/ilogger"
 import { CommonHelper } from "../../helpers/commonhelper/commonhelper"
+import assert from "assert"
+import { Mock } from "typemoq"
 
 describe("CommonHelper", async () => {
-	const loggerMock = TypeMoq.Mock.ofType<ILogger>()
+	const loggerMock = Mock.ofType<ILogger>()
 
 	const commonHelper = new CommonHelper(loggerMock.object)
 
@@ -33,9 +32,9 @@ describe("CommonHelper", async () => {
 
 			//#region ASSERT
 
-			chai.expect(result).to.not.eq(null)
-			chai.expect(result[0]).to.eq(expected[0])
-			chai.expect(result[1]).to.eq(expected[1])
+			assert.notStrictEqual(result, null, "Result should not be null")
+			assert.strictEqual(result[0], expected[0], "Key should match")
+			assert.strictEqual(result[1], expected[1], "Value should match")
 
 			//#endregion
 		})
@@ -53,7 +52,7 @@ describe("CommonHelper", async () => {
 
 		//#region ACT & ASSERT
 
-		chai.expect(() => commonHelper.parseKeyValue(keyValueMock)).to.throw()
+		assert.throws(() => commonHelper.parseKeyValue(keyValueMock), "Parsing should throw an error")
 
 		//#endregion
 	})
