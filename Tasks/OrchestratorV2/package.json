@@ -1,50 +1,50 @@
 {
-  "name": "releaseorchestrator",
-  "version": "2.0.0",
-  "description": "Manage and orchestrate Azure DevOps release pipelines",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://dev.azure.com/dmitryserbin/Orchestrator/_git/Orchestrator"
-  },
-  "scripts": {
-    "build": "tsc",
-    "lint": "eslint . --ext .ts",
-    "test": "mocha -r ts-node/register tests/**/*.test.ts --no-timeouts --grep \"@manual\" --invert --reporter mocha-multi-reporters --reporter-options configFile=tests/config.json",
-    "manual": "set DEBUG=release-orchestrator:* & mocha -r ts-node/register tests/**/*.test.ts --no-timeouts --grep @manual",
-    "clean": "npm prune --production"
-  },
-  "author": "Dmitry Serbin",
-  "license": "MIT",
-  "dependencies": {
-    "azure-devops-node-api": "^11.2.0",
-    "azure-pipelines-task-lib": "^3.3.1",
-    "cli-table": "^0.3.11",
-    "debug": "^4.3.4",
-    "moment": "^2.29.4"
-  },
-  "devDependencies": {
-    "@types/chai": "^4.3.3",
-    "@types/chai-as-promised": "^7.1.5",
-    "@types/cli-table": "^0.3.1",
-    "@types/debug": "^4.1.7",
-    "@types/mocha": "^10.0.0",
-    "@types/node": "^18.11.9",
-    "@types/q": "^1.5.5",
-    "@types/sinon": "^10.0.13",
-    "@typescript-eslint/eslint-plugin": "^5.42.0",
-    "@typescript-eslint/parser": "^5.42.0",
-    "chai": "^4.3.6",
-    "chai-as-promised": "^7.1.1",
-    "eslint": "^8.26.0",
-    "eslint-config-standard": "^17.0.0",
-    "mocha": "^10.1.0",
-    "mocha-junit-reporter": "^2.1.1",
-    "mocha-multi-reporters": "^1.5.1",
-    "sinon": "^14.0.1",
-    "ts-mock-imports": "^1.3.8",
-    "ts-node": "^10.9.1",
-    "typemoq": "^2.1.0",
-    "typescript": "^4.8.4"
-  }
+	"name": "releaseorchestrator",
+	"version": "2.0.0",
+	"description": "Manage and orchestrate Azure DevOps release pipelines",
+	"main": "index.js",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/dmitryserbin/azdev-release-orchestrator.git"
+	},
+	"scripts": {
+		"build": "tsc",
+		"lint": "eslint .",
+		"test": "mocha -r ts-node/register tests/**/*.test.ts --no-timeouts --grep \"@manual\" --invert --reporter mocha-multi-reporters --reporter-options configFile=tests/config.json",
+		"manual": "set DEBUG=release-orchestrator:* & mocha -r ts-node/register tests/**/*.test.ts --no-timeouts --grep @manual",
+		"clean": "npm prune --production"
+	},
+	"author": "Dmitry Serbin",
+	"license": "MIT",
+	"dependencies": {
+		"azure-devops-node-api": "^14.1.0",
+		"azure-pipelines-task-lib": "^4.17.3",
+		"cli-table": "^0.3.11",
+		"debug": "^4.3.7",
+		"moment": "^2.30.1"
+	},
+	"devDependencies": {
+		"@types/chai": "^4.3.3",
+		"@types/chai-as-promised": "^7.1.8",
+		"@types/cli-table": "^0.3.4",
+		"@types/debug": "^4.1.12",
+		"@types/mocha": "^10.0.10",
+		"@types/node": "^22.10.1",
+		"@types/q": "^1.5.8",
+		"@types/sinon": "^17.0.3",
+		"chai": "^4.4.1",
+		"chai-as-promised": "^7.1.2",
+		"eslint": "^9.16.0",
+		"globals": "^15.12.0",
+		"mocha": "^10.8.2",
+		"mocha-junit-reporter": "^2.2.1",
+		"mocha-multi-reporters": "^1.5.1",
+		"prettier": "3.4.1",
+		"sinon": "^19.0.2",
+		"ts-mock-imports": "^1.3.16",
+		"ts-node": "^10.9.2",
+		"typemoq": "^2.1.0",
+		"typescript": "^5.7.2",
+		"typescript-eslint": "^8.16.0"
+	}
 }

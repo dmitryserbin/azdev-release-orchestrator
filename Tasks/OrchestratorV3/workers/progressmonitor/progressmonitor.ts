@@ -1,191 +1,144 @@
-import { TaskResult, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { TaskResult, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces"
 
-import { IProgressMonitor } from "./iprogressmonitor";
-import { IDebug } from "../../loggers/idebug";
-import { ILogger } from "../../loggers/ilogger";
-import { IRun } from "../runcreator/irun";
-import { IRunProgress } from "../../orchestrator/irunprogress";
-import { RunStatus } from "../../orchestrator/runstatus";
-import { IRunStage } from "../runcreator/irunstage";
-import { IBuildStage } from "./ibuildstage";
+import { IProgressMonitor } from "./iprogressmonitor"
+import { IDebug } from "../../loggers/idebug"
+import { ILogger } from "../../loggers/ilogger"
+import { IRun } from "../runcreator/irun"
+import { IRunProgress } from "../../orchestrator/irunprogress"
+import { RunStatus } from "../../orchestrator/runstatus"
+import { IRunStage } from "../runcreator/irunstage"
+import { IBuildStage } from "./ibuildstage"
 
 export class ProgressMonitor implements IProgressMonitor {
+	private debugLogger: IDebug
 
-    private debugLogger: IDebug;
+	constructor(logger: ILogger) {
+		this.debugLogger = logger.extend(this.constructor.name)
+	}
 
-    constructor(logger: ILogger) {
+	public createRunProgress(run: IRun): IRunProgress {
+		const debug = this.debugLogger.extend(this.createRunProgress.name)
 
-        this.debugLogger = logger.extend(this.constructor.name);
+		const runProgress: IRunProgress = {
+			id: run.build.id!,
+			name: run.build.buildNumber!,
+			project: run.project.name!,
+			url: `${run.project._links.web.href}/_build/results?buildId=${run.build.id}`,
+			stages: [],
+			status: RunStatus.InProgress,
+		}
 
-    }
+		const targetStages: IRunStage[] = run.stages.filter((stage) => stage.target === true)
 
-    public createRunProgress(run: IRun): IRunProgress {
+		for (const stage of targetStages) {
+			const buildStage: IBuildStage = {
+				id: stage.id,
+				name: stage.name,
+				startTime: null,
+				finishTime: null,
+				state: TimelineRecordState.Pending,
+				result: null,
+				checkpoint: null,
+				approvals: [],
+				checks: [],
+				jobs: [],
+				attempt: {
+					stage: 0,
+					approval: 0,
+					check: 0,
+				},
+			}
 
-        const debug = this.debugLogger.extend(this.createRunProgress.name);
+			runProgress.stages.push(buildStage)
+		}
 
-        const runProgress: IRunProgress = {
+		debug(runProgress)
 
-            id: run.build.id!,
-            name: run.build.buildNumber!,
-            project: run.project.name!,
-            url: `${run.project._links.web.href}/_build/results?buildId=${run.build.id}`,
-            stages: [],
-            status: RunStatus.InProgress,
+		return runProgress
+	}
 
-        };
+	public updateRunProgress(runProgress: IRunProgress): IRunProgress {
+		const debug = this.debugLogger.extend(this.updateRunProgress.name)
 
-        const targetStages: IRunStage[] = run.stages.filter((stage) => stage.target === true);
+		const completedStages: string[] = runProgress.stages.filter((stage) => this.isStageCompleted(stage)).map((stage) => stage.name)
 
-        for (const stage of targetStages) {
+		const activeStages: string[] = runProgress.stages.filter((stage) => this.isStageActive(stage)).map((stage) => stage.name)
 
-            const buildStage: IBuildStage = {
+		const allStagesCompleted: boolean = completedStages.length === runProgress.stages.length
 
-                id: stage.id,
-                name: stage.name,
-                startTime: null,
-                finishTime: null,
-                state: TimelineRecordState.Pending,
-                result: null,
-                checkpoint: null,
-                approvals: [],
-                checks: [],
-                jobs: [],
-                attempt: {
-                    stage: 0,
-                    approval: 0,
-                    check: 0,
-                },
+		if (allStagesCompleted) {
+			debug(`All run stages <${completedStages?.join("|")}> completed`)
 
-            };
+			// Get non-succeeded stages
+			const nonSucceededStages: boolean = this.isNonSucceededStages(runProgress.stages)
 
-            runProgress.stages.push(buildStage);
+			if (nonSucceededStages) {
+				runProgress.status = RunStatus.Failed
+			} else {
+				// Get succeeded with issues stages
+				const succeededWithIssuesStages: boolean = this.isSucceededWithIssuesStages(runProgress.stages)
 
-        }
+				if (succeededWithIssuesStages) {
+					runProgress.status = RunStatus.PartiallySucceeded
+				} else {
+					runProgress.status = RunStatus.Succeeded
+				}
+			}
+		} else {
+			debug(`Run stages <${activeStages?.join("|")}> in progress`)
 
-        debug(runProgress);
+			runProgress.status = RunStatus.InProgress
+		}
 
-        return runProgress;
+		debug(`Run status <${RunStatus[runProgress.status]}> updated`)
 
-    }
+		return runProgress
+	}
 
-    public updateRunProgress(runProgress: IRunProgress): IRunProgress {
+	public getActiveStages(runProgress: IRunProgress): IBuildStage[] {
+		const debug = this.debugLogger.extend(this.getActiveStages.name)
 
-        const debug = this.debugLogger.extend(this.updateRunProgress.name);
+		const activeStages: IBuildStage[] = runProgress.stages.filter((stage) => !this.isStageCompleted(stage))
 
-        const completedStages: string[] = runProgress.stages.filter(
-            (stage) => this.isStageCompleted(stage)).map((stage) => stage.name);
+		debug(activeStages)
 
-        const activeStages: string[] = runProgress.stages.filter(
-            (stage) => this.isStageActive(stage)).map((stage) => stage.name);
+		return activeStages
+	}
 
-        const allStagesCompleted: boolean = completedStages.length === runProgress.stages.length;
+	private isStageCompleted(stage: IBuildStage): boolean {
+		const debug = this.debugLogger.extend(this.isStageCompleted.name)
 
-        if (allStagesCompleted) {
+		const status: boolean = stage.state === TimelineRecordState.Completed
 
-            debug(`All run stages <${completedStages?.join("|")}> completed`);
+		if (status) {
+			debug(`Stage <${stage.name}> (${TimelineRecordState[stage.state!]}) is completed`)
+		}
 
-            // Get non-succeeded stages
-            const nonSucceededStages: boolean = this.isNonSucceededStages(runProgress.stages);
+		return status
+	}
 
-            if (nonSucceededStages) {
+	private isStageActive(stage: IBuildStage): boolean {
+		const debug = this.debugLogger.extend(this.isStageActive.name)
 
-                runProgress.status = RunStatus.Failed;
+		const status: boolean = stage.state !== TimelineRecordState.Completed
 
-            } else {
+		if (status) {
+			debug(`Stage <${stage.name}> (${TimelineRecordState[stage.state!]}) is active`)
+		}
 
-                // Get succeeded with issues stages
-                const succeededWithIssuesStages: boolean = this.isSucceededWithIssuesStages(runProgress.stages);
+		return status
+	}
 
-                if (succeededWithIssuesStages) {
+	private isNonSucceededStages(stages: IBuildStage[]): boolean {
+		const nonSucceeded: boolean =
+			stages.filter((stage) => stage.result === TaskResult.Failed || stage.result === TaskResult.Canceled || stage.result === TaskResult.Abandoned).length > 0
 
-                    runProgress.status = RunStatus.PartiallySucceeded;
+		return nonSucceeded
+	}
 
-                } else {
+	private isSucceededWithIssuesStages(stages: IBuildStage[]): boolean {
+		const succeededWithIssues: boolean = stages.filter((stage) => stage.result === TaskResult.SucceededWithIssues).length > 0
 
-                    runProgress.status = RunStatus.Succeeded;
-
-                }
-
-            }
-
-        } else {
-
-            debug(`Run stages <${activeStages?.join("|")}> in progress`);
-
-            runProgress.status = RunStatus.InProgress;
-
-        }
-
-        debug(`Run status <${RunStatus[runProgress.status]}> updated`);
-
-        return runProgress;
-
-    }
-
-    public getActiveStages(runProgress: IRunProgress): IBuildStage[] {
-
-        const debug = this.debugLogger.extend(this.getActiveStages.name);
-
-        const activeStages: IBuildStage[] = runProgress.stages.filter(
-            (stage) => !this.isStageCompleted(stage));
-
-        debug(activeStages);
-
-        return activeStages;
-
-    }
-
-    private isStageCompleted(stage: IBuildStage): boolean {
-
-        const debug = this.debugLogger.extend(this.isStageCompleted.name);
-
-        const status: boolean = stage.state === TimelineRecordState.Completed;
-
-        if (status) {
-
-            debug(`Stage <${stage.name}> (${TimelineRecordState[stage.state!]}) is completed`);
-
-        }
-
-        return status;
-
-    }
-
-    private isStageActive(stage: IBuildStage): boolean {
-
-        const debug = this.debugLogger.extend(this.isStageActive.name);
-
-        const status: boolean = stage.state !== TimelineRecordState.Completed;
-
-        if (status) {
-
-            debug(`Stage <${stage.name}> (${TimelineRecordState[stage.state!]}) is active`);
-
-        }
-
-        return status;
-
-    }
-
-    private isNonSucceededStages(stages: IBuildStage[]): boolean {
-
-        const nonSucceeded: boolean = stages.filter(
-            (stage) =>
-                stage.result === TaskResult.Failed ||
-                stage.result === TaskResult.Canceled ||
-                stage.result === TaskResult.Abandoned).length > 0;
-
-        return nonSucceeded;
-
-    }
-
-    private isSucceededWithIssuesStages(stages: IBuildStage[]): boolean {
-
-        const succeededWithIssues: boolean = stages.filter(
-            (stage) => stage.result === TaskResult.SucceededWithIssues).length > 0;
-
-        return succeededWithIssues;
-
-    }
-
+		return succeededWithIssues
+	}
 }

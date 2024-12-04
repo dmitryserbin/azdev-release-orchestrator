@@ -1,5 +1,3 @@
 export interface IPipelineFilter {
-
-    version: string;
-
+	version: string
 }

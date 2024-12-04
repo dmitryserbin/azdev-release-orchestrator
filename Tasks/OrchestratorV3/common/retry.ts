@@ -1,91 +1,70 @@
+/* eslint-disable @typescript-eslint/no-wrapper-object-types */
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-types */
 
-import { IDebug } from "../loggers/idebug";
-import { ILogger } from "../loggers/ilogger";
-import { Logger } from "../loggers/logger";
+import { IDebug } from "../loggers/idebug"
+import { ILogger } from "../loggers/ilogger"
+import { Logger } from "../loggers/logger"
 
-const logger: ILogger = new Logger("release-orchestrator");
-const debugLogger: IDebug = logger.extend("Retry");
+const logger: ILogger = new Logger("release-orchestrator")
+const debugLogger: IDebug = logger.extend("Retry")
 
 export function Retryable(attempts: number = 10, timeout: number = 10000, empty: boolean = false): Function {
+	const debug = debugLogger.extend("retryable")
 
-    const debug = debugLogger.extend("retryable");
+	return function (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
+		const originalMethod: Function = descriptor.value
 
-    return function(target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {
+		descriptor.value = async function (...args: any[]) {
+			try {
+				debug(`Executing <${propertyKey}> with <${attempts}> retries`)
 
-        const originalMethod: Function = descriptor.value;
+				return await retryAsync.apply(this, [originalMethod, args, attempts, timeout, empty])
+			} catch (e: any) {
+				e.message = `Failed retrying <${propertyKey}> for <${attempts}> times. ${e.message}`
 
-        descriptor.value = async function(...args: any[]) {
+				throw e
+			}
+		}
 
-            try {
-
-                debug(`Executing <${propertyKey}> with <${attempts}> retries`);
-
-                return await retryAsync.apply(this, [ originalMethod, args, attempts, timeout, empty ]);
-
-            } catch (e: any) {
-
-                e.message = `Failed retrying <${propertyKey}> for <${attempts}> times. ${e.message}`;
-
-                throw e;
-
-            }
-
-        };
-
-        return descriptor;
-
-    };
-
+		return descriptor
+	}
 }
 
 async function retryAsync(target: Function, args: any[], attempts: number, timeout: number, empty: boolean): Promise<any> {
+	const debug = debugLogger.extend("retryAsync")
 
-    const debug = debugLogger.extend("retryAsync");
+	try {
+		// @ts-ignore
+		let result: any = await target.apply(this, args)
 
-    try {
+		if (!result && empty) {
+			if (--attempts <= 0) {
+				throw new Error("Empty result received")
+			}
 
-        // @ts-ignore
-        let result: any = await target.apply(this, args);
+			debug(`Retrying <${target.name}> (empty) in <${timeout / 1000}> seconds`)
 
-        if (!result && empty) {
+			await new Promise((resolve) => setTimeout(resolve, timeout))
 
-            if (--attempts <= 0) {
+			// @ts-ignore
+			result = retryAsync.apply(this, [target, args, attempts, timeout, empty])
+		}
 
-                throw new Error("Empty result received");
+		return result
+	} catch (e: any) {
+		if (--attempts <= 0) {
+			throw new Error(e)
+		}
 
-            }
+		debug(`Retrying <${target.name}> (exception) in <${timeout / 1000}> seconds`)
 
-            debug(`Retrying <${target.name}> (empty) in <${timeout / 1000}> seconds`);
+		debug(e)
 
-            await new Promise((resolve) => setTimeout(resolve, timeout));
+		await new Promise((resolve) => setTimeout(resolve, timeout))
 
-            // @ts-ignore
-            result = retryAsync.apply(this, [ target, args, attempts, timeout, empty ]);
-
-        }
-
-        return result;
-
-    } catch (e: any) {
-
-        if (--attempts <= 0) {
-
-            throw new Error(e);
-
-        }
-
-        debug(`Retrying <${target.name}> (exception) in <${timeout / 1000}> seconds`);
-
-        debug(e);
-
-        await new Promise((resolve) => setTimeout(resolve, timeout));
-
-        // @ts-ignore
-        return retryAsync.apply(this, [ target, args, attempts, timeout ]);
-
-    }
-
+		// @ts-ignore
+		return retryAsync.apply(this, [target, args, attempts, timeout])
+	}
 }

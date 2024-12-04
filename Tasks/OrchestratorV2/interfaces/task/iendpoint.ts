@@ -1,6 +1,4 @@
 export interface IEndpoint {
-
-    url: string;
-    token: string;
-
+	url: string
+	token: string
 }

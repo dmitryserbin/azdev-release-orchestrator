@@ -1,40 +1,32 @@
-import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
+import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces"
 
-import { IDebug } from "../../loggers/idebug";
-import { IProjectSelector } from "./iprojectselector";
-import { ICoreApiRetry } from "../../extensions/coreapiretry/icoreapiretry";
-import { ILogger } from "../../loggers/ilogger";
+import { IDebug } from "../../loggers/idebug"
+import { IProjectSelector } from "./iprojectselector"
+import { ICoreApiRetry } from "../../extensions/coreapiretry/icoreapiretry"
+import { ILogger } from "../../loggers/ilogger"
 
 export class ProjectSelector implements IProjectSelector {
+	private debugLogger: IDebug
 
-    private debugLogger: IDebug;
+	private coreApi: ICoreApiRetry
 
-    private coreApi: ICoreApiRetry;
+	constructor(coreApi: ICoreApiRetry, logger: ILogger) {
+		this.debugLogger = logger.extend(this.constructor.name)
 
-    constructor(coreApi: ICoreApiRetry, logger: ILogger) {
+		this.coreApi = coreApi
+	}
 
-        this.debugLogger = logger.extend(this.constructor.name);
+	public async getProject(projectId: string): Promise<TeamProject> {
+		const debug = this.debugLogger.extend(this.getProject.name)
 
-        this.coreApi = coreApi;
+		const targetProject: TeamProject = await this.coreApi.getProject(projectId)
 
-    }
+		if (!targetProject) {
+			throw new Error(`Project <${projectId}> not found`)
+		}
 
-    public async getProject(projectId: string): Promise<TeamProject> {
+		debug(targetProject)
 
-        const debug = this.debugLogger.extend(this.getProject.name);
-
-        const targetProject: TeamProject = await this.coreApi.getProject(projectId);
-
-        if (!targetProject) {
-
-            throw new Error(`Project <${projectId}> not found`);
-
-        }
-
-        debug(targetProject);
-
-        return targetProject;
-
-    }
-
+		return targetProject
+	}
 }

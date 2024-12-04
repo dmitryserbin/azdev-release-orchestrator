@@ -1,304 +1,274 @@
-import "mocha";
+import "mocha"
 
-import * as chai from "chai";
-import * as TypeMoq from "typemoq";
+import * as chai from "chai"
+import * as TypeMoq from "typemoq"
 
-import { faker } from "@faker-js/faker";
+import { faker } from "@faker-js/faker"
 
-import { Build, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { Build, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces"
 
-import { ILogger } from "../../loggers/ilogger";
-import { IDebug } from "../../loggers/idebug";
-import { IProgressReporter } from "../../workers/progressreporter/iprogressreporter";
-import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper";
-import { ISettings } from "../../helpers/taskhelper/isettings";
-import { IBuildStage } from "../../workers/progressmonitor/ibuildstage";
-import { IBuildJob } from "../../workers/progressmonitor/ibuildjob";
-import { IStageDeployer } from "../../workers/stagedeployer/istagedeployer";
-import { StageDeployer } from "../../workers/stagedeployer/stagedeployer";
-import { IStageSelector } from "../../helpers/stageselector/istageselector";
-import { IStageApprover } from "../../workers/stageapprover/istageapprover";
-import { IBuildTask } from "../../workers/progressmonitor/ibuildtask";
+import { ILogger } from "../../loggers/ilogger"
+import { IDebug } from "../../loggers/idebug"
+import { IProgressReporter } from "../../workers/progressreporter/iprogressreporter"
+import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper"
+import { ISettings } from "../../helpers/taskhelper/isettings"
+import { IBuildStage } from "../../workers/progressmonitor/ibuildstage"
+import { IBuildJob } from "../../workers/progressmonitor/ibuildjob"
+import { IStageDeployer } from "../../workers/stagedeployer/istagedeployer"
+import { StageDeployer } from "../../workers/stagedeployer/stagedeployer"
+import { IStageSelector } from "../../helpers/stageselector/istageselector"
+import { IStageApprover } from "../../workers/stageapprover/istageapprover"
+import { IBuildTask } from "../../workers/progressmonitor/ibuildtask"
 
 describe("StageDeployer", async () => {
+	const loggerMock = TypeMoq.Mock.ofType<ILogger>()
+	const debugMock = TypeMoq.Mock.ofType<IDebug>()
+
+	loggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null)
+
+	loggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
+
+	debugMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
+
+	const buildMock = {
+		buildNumber: faker.word.sample(),
+		id: faker.number.int(),
+	} as Build
+
+	let settingsMock: ISettings
+	let stageOneMock: IBuildStage
+	let jobOneMock: IBuildJob
+
+	const commonHelperMock = TypeMoq.Mock.ofType<ICommonHelper>()
+	const stageSelectorMock = TypeMoq.Mock.ofType<IStageSelector>()
+	const stageApproverMock = TypeMoq.Mock.ofType<IStageApprover>()
+	const progressReporterMock = TypeMoq.Mock.ofType<IProgressReporter>()
+
+	const stageDeployer: IStageDeployer = new StageDeployer(
+		commonHelperMock.object,
+		stageSelectorMock.object,
+		stageApproverMock.object,
+		progressReporterMock.object,
+		loggerMock.object,
+	)
 
-    const loggerMock = TypeMoq.Mock.ofType<ILogger>();
-    const debugMock = TypeMoq.Mock.ofType<IDebug>();
+	beforeEach(async () => {
+		commonHelperMock.reset()
+		stageSelectorMock.reset()
+		stageApproverMock.reset()
+		progressReporterMock.reset()
 
-    loggerMock
-        .setup((x) => x.log(TypeMoq.It.isAny()))
-        .returns(() => null);
+		settingsMock = {
+			proceedSkippedStages: false,
+			updateInterval: 1,
+			stageStartAttempts: 1,
+			stageStartInterval: 1,
+		} as ISettings
 
-    loggerMock
-        .setup((x) => x.extend(TypeMoq.It.isAnyString()))
-        .returns(() => debugMock.object);
+		jobOneMock = {
+			id: faker.word.sample(),
+			name: faker.word.sample(),
+			tasks: [] as IBuildTask[],
+		} as IBuildJob
 
-    debugMock
-        .setup((x) => x.extend(TypeMoq.It.isAnyString()))
-        .returns(() => debugMock.object);
+		stageOneMock = {
+			id: faker.word.sample(),
+			name: faker.word.sample(),
+			state: TimelineRecordState.Pending,
+			jobs: [jobOneMock],
+		} as IBuildStage
+	})
 
-    const buildMock = {
+	it("Should deploy manual", async () => {
+		//#region ARRANGE
 
-        buildNumber: faker.random.word(),
-        id: faker.datatype.number(),
+		const startedStageOneMock = Object.assign({}, stageOneMock, { state: TimelineRecordState.InProgress })
+		const completedStageOneMock = Object.assign({}, stageOneMock, { state: TimelineRecordState.Completed })
 
-    } as Build;
+		stageSelectorMock.setup((x) => x.startStage(buildMock, stageOneMock)).verifiable(TypeMoq.Times.once())
 
-    let settingsMock: ISettings;
-    let stageOneMock: IBuildStage;
-    let jobOneMock: IBuildJob;
+		stageSelectorMock
+			.setup((x) => x.confirmStage(buildMock, stageOneMock, settingsMock.stageStartAttempts, settingsMock.stageStartInterval))
+			.returns(() => Promise.resolve(startedStageOneMock))
+			.verifiable(TypeMoq.Times.once())
 
-    const commonHelperMock = TypeMoq.Mock.ofType<ICommonHelper>();
-    const stageSelectorMock = TypeMoq.Mock.ofType<IStageSelector>();
-    const stageApproverMock = TypeMoq.Mock.ofType<IStageApprover>();
-    const progressReporterMock = TypeMoq.Mock.ofType<IProgressReporter>();
+		stageSelectorMock
+			.setup((x) => x.getStage(buildMock, startedStageOneMock))
+			.returns(() => Promise.resolve(startedStageOneMock))
+			.verifiable(TypeMoq.Times.once())
 
-    const stageDeployer: IStageDeployer = new StageDeployer(commonHelperMock.object, stageSelectorMock.object, stageApproverMock.object, progressReporterMock.object, loggerMock.object);
+		stageApproverMock
+			.setup((x) => x.isApprovalPending(startedStageOneMock))
+			.returns(() => true)
+			.verifiable(TypeMoq.Times.once())
 
-    beforeEach(async () => {
+		stageApproverMock
+			.setup((x) => x.approve(startedStageOneMock, buildMock, settingsMock))
+			.returns(() => Promise.resolve(startedStageOneMock))
+			.verifiable(TypeMoq.Times.once())
 
-        commonHelperMock.reset();
-        stageSelectorMock.reset();
-        stageApproverMock.reset();
-        progressReporterMock.reset();
+		stageApproverMock
+			.setup((x) => x.isCheckPending(startedStageOneMock))
+			.returns(() => true)
+			.verifiable(TypeMoq.Times.once())
 
-        settingsMock = {
+		stageApproverMock
+			.setup((x) => x.check(startedStageOneMock, buildMock, settingsMock))
+			.returns(() => Promise.resolve(completedStageOneMock))
+			.verifiable(TypeMoq.Times.once())
 
-            proceedSkippedStages: false,
-            updateInterval: 1,
-            stageStartAttempts: 1,
-            stageStartInterval: 1,
+		progressReporterMock.setup((x) => x.logStageProgress(completedStageOneMock)).verifiable(TypeMoq.Times.once())
 
-        } as ISettings;
+		commonHelperMock
+			.setup((x) => x.wait(settingsMock.updateInterval))
+			.returns(() => Promise.resolve())
+			.verifiable(TypeMoq.Times.once())
 
-        jobOneMock = {
+		//#endregion
 
-            id: faker.random.word(),
-            name: faker.random.word(),
-            tasks: [] as IBuildTask[],
+		//#region ACT
 
-        } as IBuildJob;
+		const result = await stageDeployer.deployManual(stageOneMock, buildMock, settingsMock)
 
-        stageOneMock = {
+		//#endregion
 
-            id: faker.random.word(),
-            name: faker.random.word(),
-            state: TimelineRecordState.Pending,
-            jobs: [ jobOneMock ],
+		//#region ASSERT
 
-        } as IBuildStage;
+		chai.expect(result).to.not.eq(null)
+		chai.expect(result.state).to.eq(TimelineRecordState.Completed)
 
-    });
+		commonHelperMock.verifyAll()
+		stageSelectorMock.verifyAll()
+		stageApproverMock.verifyAll()
+		progressReporterMock.verifyAll()
 
-    it("Should deploy manual", async () => {
+		//#endregion
+	})
 
-        //#region ARRANGE
+	it("Should deploy manual (skip tracking)", async () => {
+		//#region ARRANGE
 
-        const startedStageOneMock = Object.assign({}, stageOneMock, { state: TimelineRecordState.InProgress });
-        const completedStageOneMock = Object.assign({}, stageOneMock, { state: TimelineRecordState.Completed });
+		settingsMock.skipTracking = true
 
-        stageSelectorMock
-            .setup((x) => x.startStage(buildMock, stageOneMock))
-            .verifiable(TypeMoq.Times.once());
+		const startedStageOneMock = Object.assign({}, stageOneMock, { state: TimelineRecordState.InProgress })
 
-        stageSelectorMock
-            .setup((x) => x.confirmStage(buildMock, stageOneMock, settingsMock.stageStartAttempts, settingsMock.stageStartInterval))
-            .returns(() => Promise.resolve(startedStageOneMock))
-            .verifiable(TypeMoq.Times.once());
+		stageSelectorMock.setup((x) => x.startStage(buildMock, stageOneMock)).verifiable(TypeMoq.Times.once())
 
-        stageSelectorMock
-            .setup((x) => x.getStage(buildMock, startedStageOneMock))
-            .returns(() => Promise.resolve(startedStageOneMock))
-            .verifiable(TypeMoq.Times.once());
+		stageSelectorMock
+			.setup((x) => x.confirmStage(buildMock, stageOneMock, settingsMock.stageStartAttempts, settingsMock.stageStartInterval))
+			.returns(() => Promise.resolve(startedStageOneMock))
+			.verifiable(TypeMoq.Times.once())
 
-        stageApproverMock
-            .setup((x) => x.isApprovalPending(startedStageOneMock))
-            .returns(() => true)
-            .verifiable(TypeMoq.Times.once());
+		stageSelectorMock
+			.setup((x) => x.getStage(buildMock, startedStageOneMock))
+			.returns(() => Promise.resolve(startedStageOneMock))
+			.verifiable(TypeMoq.Times.once())
 
-        stageApproverMock
-            .setup((x) => x.approve(startedStageOneMock, buildMock, settingsMock))
-            .returns(() => Promise.resolve(startedStageOneMock))
-            .verifiable(TypeMoq.Times.once());
+		//#endregion
 
-        stageApproverMock
-            .setup((x) => x.isCheckPending(startedStageOneMock))
-            .returns(() => true)
-            .verifiable(TypeMoq.Times.once());
+		//#region ACT
 
-        stageApproverMock
-            .setup((x) => x.check(startedStageOneMock, buildMock, settingsMock))
-            .returns(() => Promise.resolve(completedStageOneMock))
-            .verifiable(TypeMoq.Times.once());
+		const result = await stageDeployer.deployManual(stageOneMock, buildMock, settingsMock)
 
-        progressReporterMock
-            .setup((x) => x.logStageProgress(completedStageOneMock))
-            .verifiable(TypeMoq.Times.once());
+		//#endregion
 
-        commonHelperMock
-            .setup((x) => x.wait(settingsMock.updateInterval))
-            .returns(() => Promise.resolve())
-            .verifiable(TypeMoq.Times.once());
+		//#region ASSERT
 
-        //#endregion
+		chai.expect(result).to.not.eq(null)
+		chai.expect(result.state).to.eq(TimelineRecordState.InProgress)
 
-        //#region ACT
+		stageSelectorMock.verifyAll()
 
-        const result = await stageDeployer.deployManual(stageOneMock, buildMock, settingsMock);
+		//#endregion
+	})
 
-        //#endregion
+	it("Should deploy automated", async () => {
+		//#region ARRANGE
 
-        //#region ASSERT
+		const startedStageOneMock = Object.assign({}, stageOneMock, { state: TimelineRecordState.InProgress, checkpoint: { state: TimelineRecordState.Pending } })
+		const completedStageOneMock = Object.assign({}, stageOneMock, { state: TimelineRecordState.Completed })
 
-        chai.expect(result).to.not.eq(null);
-        chai.expect(result.state).to.eq(TimelineRecordState.Completed);
+		stageSelectorMock
+			.setup((x) => x.getStage(buildMock, stageOneMock))
+			.returns(() => Promise.resolve(startedStageOneMock))
+			.verifiable(TypeMoq.Times.once())
 
-        commonHelperMock.verifyAll();
-        stageSelectorMock.verifyAll();
-        stageApproverMock.verifyAll();
-        progressReporterMock.verifyAll();
+		stageApproverMock
+			.setup((x) => x.isApprovalPending(startedStageOneMock))
+			.returns(() => true)
+			.verifiable(TypeMoq.Times.once())
 
-        //#endregion
+		stageApproverMock
+			.setup((x) => x.approve(startedStageOneMock, buildMock, settingsMock))
+			.returns(() => Promise.resolve(startedStageOneMock))
+			.verifiable(TypeMoq.Times.once())
 
-    });
+		stageApproverMock
+			.setup((x) => x.isCheckPending(startedStageOneMock))
+			.returns(() => true)
+			.verifiable(TypeMoq.Times.once())
 
-    it("Should deploy manual (skip tracking)", async () => {
+		stageApproverMock
+			.setup((x) => x.check(startedStageOneMock, buildMock, settingsMock))
+			.returns(() => Promise.resolve(completedStageOneMock))
+			.verifiable(TypeMoq.Times.once())
 
-        //#region ARRANGE
+		progressReporterMock.setup((x) => x.logStageProgress(completedStageOneMock)).verifiable(TypeMoq.Times.once())
 
-        settingsMock.skipTracking = true;
+		//#endregion
 
-        const startedStageOneMock = Object.assign({}, stageOneMock, { state: TimelineRecordState.InProgress });
+		//#region ACT
 
-        stageSelectorMock
-            .setup((x) => x.startStage(buildMock, stageOneMock))
-            .verifiable(TypeMoq.Times.once());
+		const result = await stageDeployer.deployAutomated(stageOneMock, buildMock, settingsMock)
 
-        stageSelectorMock
-            .setup((x) => x.confirmStage(buildMock, stageOneMock, settingsMock.stageStartAttempts, settingsMock.stageStartInterval))
-            .returns(() => Promise.resolve(startedStageOneMock))
-            .verifiable(TypeMoq.Times.once());
+		//#endregion
 
-        stageSelectorMock
-            .setup((x) => x.getStage(buildMock, startedStageOneMock))
-            .returns(() => Promise.resolve(startedStageOneMock))
-            .verifiable(TypeMoq.Times.once());
+		//#region ASSERT
 
-        //#endregion
+		chai.expect(result).to.not.eq(null)
+		chai.expect(result.state).to.eq(TimelineRecordState.Completed)
 
-        //#region ACT
+		stageSelectorMock.verifyAll()
+		stageApproverMock.verifyAll()
+		progressReporterMock.verifyAll()
 
-        const result = await stageDeployer.deployManual(stageOneMock, buildMock, settingsMock);
+		//#endregion
+	})
 
-        //#endregion
+	it("Should deploy automated (skip tracking)", async () => {
+		//#region ARRANGE
 
-        //#region ASSERT
+		settingsMock.skipTracking = true
 
-        chai.expect(result).to.not.eq(null);
-        chai.expect(result.state).to.eq(TimelineRecordState.InProgress);
+		const startedStageOneMock = Object.assign({}, stageOneMock, { state: TimelineRecordState.InProgress })
 
-        stageSelectorMock.verifyAll();
+		stageSelectorMock
+			.setup((x) => x.getStage(buildMock, stageOneMock))
+			.returns(() => Promise.resolve(startedStageOneMock))
+			.verifiable(TypeMoq.Times.once())
 
-        //#endregion
+		//#endregion
 
-    });
+		//#region ACT
 
-    it("Should deploy automated", async () => {
+		const result = await stageDeployer.deployAutomated(stageOneMock, buildMock, settingsMock)
 
-        //#region ARRANGE
+		//#endregion
 
-        const startedStageOneMock = Object.assign({}, stageOneMock, { state: TimelineRecordState.InProgress, checkpoint: { state: TimelineRecordState.Pending } });
-        const completedStageOneMock = Object.assign({}, stageOneMock, { state: TimelineRecordState.Completed });
+		//#region ASSERT
 
-        stageSelectorMock
-            .setup((x) => x.getStage(buildMock, stageOneMock))
-            .returns(() => Promise.resolve(startedStageOneMock))
-            .verifiable(TypeMoq.Times.once());
+		chai.expect(result).to.not.eq(null)
+		chai.expect(result.state).to.eq(TimelineRecordState.InProgress)
 
-        stageApproverMock
-            .setup((x) => x.isApprovalPending(startedStageOneMock))
-            .returns(() => true)
-            .verifiable(TypeMoq.Times.once());
+		stageSelectorMock.verifyAll()
+		stageApproverMock.verifyAll()
+		progressReporterMock.verifyAll()
 
-        stageApproverMock
-            .setup((x) => x.approve(startedStageOneMock, buildMock, settingsMock))
-            .returns(() => Promise.resolve(startedStageOneMock))
-            .verifiable(TypeMoq.Times.once());
-
-        stageApproverMock
-            .setup((x) => x.isCheckPending(startedStageOneMock))
-            .returns(() => true)
-            .verifiable(TypeMoq.Times.once());
-
-        stageApproverMock
-            .setup((x) => x.check(startedStageOneMock, buildMock, settingsMock))
-            .returns(() => Promise.resolve(completedStageOneMock))
-            .verifiable(TypeMoq.Times.once());
-
-        progressReporterMock
-            .setup((x) => x.logStageProgress(completedStageOneMock))
-            .verifiable(TypeMoq.Times.once());
-
-        //#endregion
-
-        //#region ACT
-
-        const result = await stageDeployer.deployAutomated(stageOneMock, buildMock, settingsMock);
-
-        //#endregion
-
-        //#region ASSERT
-
-        chai.expect(result).to.not.eq(null);
-        chai.expect(result.state).to.eq(TimelineRecordState.Completed);
-
-        stageSelectorMock.verifyAll();
-        stageApproverMock.verifyAll();
-        progressReporterMock.verifyAll();
-
-        //#endregion
-
-    });
-
-    it("Should deploy automated (skip tracking)", async () => {
-
-        //#region ARRANGE
-
-        settingsMock.skipTracking = true;
-
-        const startedStageOneMock = Object.assign({}, stageOneMock, { state: TimelineRecordState.InProgress });
-
-        stageSelectorMock
-            .setup((x) => x.getStage(buildMock, stageOneMock))
-            .returns(() => Promise.resolve(startedStageOneMock))
-            .verifiable(TypeMoq.Times.once());
-
-        //#endregion
-
-        //#region ACT
-
-        const result = await stageDeployer.deployAutomated(stageOneMock, buildMock, settingsMock);
-
-        //#endregion
-
-        //#region ASSERT
-
-        chai.expect(result).to.not.eq(null);
-        chai.expect(result.state).to.eq(TimelineRecordState.InProgress);
-
-        stageSelectorMock.verifyAll();
-        stageApproverMock.verifyAll();
-        progressReporterMock.verifyAll();
-
-        //#endregion
-
-    });
-
-});
+		//#endregion
+	})
+})
 
 process.on("unhandledRejection", (error: unknown) => {
-
-    console.error(error);
-    process.exit(1);
-
-});
+	console.error(error)
+	process.exit(1)
+})

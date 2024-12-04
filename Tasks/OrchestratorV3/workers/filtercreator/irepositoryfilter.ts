@@ -1,6 +1,4 @@
 export interface IRepositoryFilter {
-
-    refName: string;
-    version: string;
-
+	refName: string
+	version: string
 }

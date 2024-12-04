@@ -1,207 +1,212 @@
-import "mocha";
+import "mocha"
 
-import * as chai from "chai";
-import * as TypeMoq from "typemoq";
+import * as chai from "chai"
+import * as TypeMoq from "typemoq"
 
-import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces";
-import { Release, ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces";
+import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces"
+import { Release, ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces"
 
-import { IParameters } from "../../interfaces/task/iparameters";
-import { IDetails } from "../../interfaces/task/idetails";
-import { IDebugCreator } from "../../interfaces/loggers/idebugcreator";
-import { IConsoleLogger } from "../../interfaces/loggers/iconsolelogger";
-import { ICreator } from "../../interfaces/orchestrator/icreator";
-import { IReporter } from "../../interfaces/orchestrator/ireporter";
-import { IDebugLogger } from "../../interfaces/loggers/idebuglogger";
-import { Creator } from "../../orchestrator/creator";
-import { ICoreHelper } from "../../interfaces/helpers/icorehelper";
-import { IBuildHelper } from "../../interfaces/helpers/ibuildhelper";
-import { IReleaseHelper } from "../../interfaces/helpers/ireleasehelper";
-import { ReleaseType } from "../../interfaces/common/ireleasetype";
-import { DeploymentType } from "../../interfaces/common/ideploymenttype";
-import { IFilters } from "../../interfaces/task/ifilters";
-import { ISettings } from "../../interfaces/common/isettings";
-import { IReleaseFilter } from "../../interfaces/common/ireleasefilter";
-import { IFiltrator } from "../../interfaces/orchestrator/ifiltrator";
-import { IArtifactFilter } from "../../interfaces/common/iartifactfilter";
+import { IParameters } from "../../interfaces/task/iparameters"
+import { IDetails } from "../../interfaces/task/idetails"
+import { IDebugCreator } from "../../interfaces/loggers/idebugcreator"
+import { IConsoleLogger } from "../../interfaces/loggers/iconsolelogger"
+import { ICreator } from "../../interfaces/orchestrator/icreator"
+import { IReporter } from "../../interfaces/orchestrator/ireporter"
+import { IDebugLogger } from "../../interfaces/loggers/idebuglogger"
+import { Creator } from "../../orchestrator/creator"
+import { ICoreHelper } from "../../interfaces/helpers/icorehelper"
+import { IBuildHelper } from "../../interfaces/helpers/ibuildhelper"
+import { IReleaseHelper } from "../../interfaces/helpers/ireleasehelper"
+import { ReleaseType } from "../../interfaces/common/ireleasetype"
+import { DeploymentType } from "../../interfaces/common/ideploymenttype"
+import { IFilters } from "../../interfaces/task/ifilters"
+import { ISettings } from "../../interfaces/common/isettings"
+import { IReleaseFilter } from "../../interfaces/common/ireleasefilter"
+import { IFiltrator } from "../../interfaces/orchestrator/ifiltrator"
+import { IArtifactFilter } from "../../interfaces/common/iartifactfilter"
 
 describe("Creator", () => {
+	const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>()
+	const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>()
+	debugCreatorMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
+	debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
 
-    const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>();
-    const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>();
-    debugCreatorMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target);
-    debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target);
+	const consoleLoggerMock = TypeMoq.Mock.ofType<IConsoleLogger>()
+	consoleLoggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null)
 
-    const consoleLoggerMock = TypeMoq.Mock.ofType<IConsoleLogger>();
-    consoleLoggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null);
+	const reporterMock = TypeMoq.Mock.ofType<IReporter>()
+	reporterMock.setup((x) => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => "")
+	reporterMock.setup((x) => x.getReleaseProgress(TypeMoq.It.isAny())).returns(() => "")
+	reporterMock.setup((x) => x.getFilters(TypeMoq.It.isAny())).returns(() => "")
+	reporterMock.setup((x) => x.getVariables(TypeMoq.It.isAny())).returns(() => "")
 
-    const reporterMock = TypeMoq.Mock.ofType<IReporter>();
-    reporterMock.setup((x) => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => "");
-    reporterMock.setup((x) => x.getReleaseProgress(TypeMoq.It.isAny())).returns(() => "");
-    reporterMock.setup((x) => x.getFilters(TypeMoq.It.isAny())).returns(() => "");
-    reporterMock.setup((x) => x.getVariables(TypeMoq.It.isAny())).returns(() => "");
+	const coreHelperMock = TypeMoq.Mock.ofType<ICoreHelper>()
+	const buildHelperMock = TypeMoq.Mock.ofType<IBuildHelper>()
+	const releaseHelperMock = TypeMoq.Mock.ofType<IReleaseHelper>()
+	const filterCreatorMock = TypeMoq.Mock.ofType<IFiltrator>()
 
-    const coreHelperMock = TypeMoq.Mock.ofType<ICoreHelper>();
-    const buildHelperMock = TypeMoq.Mock.ofType<IBuildHelper>();
-    const releaseHelperMock = TypeMoq.Mock.ofType<IReleaseHelper>();
-    const filterCreatorMock = TypeMoq.Mock.ofType<IFiltrator>();
+	const releaseCount: number = 1
 
-    const releaseCount: number = 1;
+	let detailsMock: TypeMoq.IMock<IDetails>
+	let parametersMock: TypeMoq.IMock<IParameters>
+	let filtersMock: TypeMoq.IMock<IFilters>
+	let settingsMock: TypeMoq.IMock<ISettings>
 
-    let detailsMock: TypeMoq.IMock<IDetails>;
-    let parametersMock: TypeMoq.IMock<IParameters>;
-    let filtersMock: TypeMoq.IMock<IFilters>;
-    let settingsMock: TypeMoq.IMock<ISettings>;
+	const creator: ICreator = new Creator(
+		coreHelperMock.target,
+		releaseHelperMock.target,
+		filterCreatorMock.target,
+		reporterMock.target,
+		debugCreatorMock.target,
+		consoleLoggerMock.target,
+	)
 
-    const creator: ICreator = new Creator(coreHelperMock.target, releaseHelperMock.target, filterCreatorMock.target, reporterMock.target, debugCreatorMock.target, consoleLoggerMock.target);
+	beforeEach(async () => {
+		detailsMock = TypeMoq.Mock.ofType<IDetails>()
+		parametersMock = TypeMoq.Mock.ofType<IParameters>()
+		filtersMock = TypeMoq.Mock.ofType<IFilters>()
+		settingsMock = TypeMoq.Mock.ofType<ISettings>()
 
-    beforeEach(async () => {
+		parametersMock.target.filters = filtersMock.target
+		parametersMock.target.settings = settingsMock.target
 
-        detailsMock = TypeMoq.Mock.ofType<IDetails>();
-        parametersMock = TypeMoq.Mock.ofType<IParameters>();
-        filtersMock = TypeMoq.Mock.ofType<IFilters>();
-        settingsMock = TypeMoq.Mock.ofType<ISettings>();
+		coreHelperMock.reset()
+		buildHelperMock.reset()
+		releaseHelperMock.reset()
+		filterCreatorMock.reset()
+		reporterMock.reset()
+	})
 
-        parametersMock.target.filters = filtersMock.target;
-        parametersMock.target.settings = settingsMock.target;
+	it("Should create new release job", async () => {
+		//#region ARRANGE
 
-        coreHelperMock.reset();
-        buildHelperMock.reset();
-        releaseHelperMock.reset();
-        filterCreatorMock.reset();
-        reporterMock.reset();
+		parametersMock.target.releaseType = ReleaseType.New
 
-    });
+		const projectMock = TypeMoq.Mock.ofType<TeamProject>()
+		const definitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>()
+		const releaseMock = TypeMoq.Mock.ofType<Release>()
+		const artifactFilterMock = TypeMoq.Mock.ofType<IArtifactFilter[]>()
 
-    it("Should create new release job", async () => {
+		coreHelperMock.setup((x) => x.getProject(parametersMock.target.projectName)).returns(() => Promise.resolve(projectMock.target))
 
-        //#region ARRANGE
+		releaseHelperMock
+			.setup((x) => x.getDefinition(projectMock.target.name!, parametersMock.target.definitionName))
+			.returns(() => Promise.resolve(definitionMock.target))
 
-        parametersMock.target.releaseType = ReleaseType.New;
+		filterCreatorMock
+			.setup((x) => x.createArtifactFilter(projectMock.target, definitionMock.target, parametersMock.target.filters))
+			.returns(() => Promise.resolve(artifactFilterMock.target))
 
-        const projectMock = TypeMoq.Mock.ofType<TeamProject>();
-        const definitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>();
-        const releaseMock = TypeMoq.Mock.ofType<Release>();
-        const artifactFilterMock = TypeMoq.Mock.ofType<IArtifactFilter[]>();
+		releaseHelperMock
+			.setup((x) => x.createRelease(projectMock.target.name!, definitionMock.target, detailsMock.target))
+			.returns(() => Promise.resolve(releaseMock.target))
 
-        coreHelperMock.setup((x) => x.getProject(parametersMock.target.projectName)).returns(
-            () => Promise.resolve(projectMock.target));
+		releaseHelperMock.setup((x) => x.getReleaseStages(releaseMock.target, parametersMock.target.stages)).returns(() => Promise.resolve([]))
 
-        releaseHelperMock.setup((x) => x.getDefinition(projectMock.target.name!, parametersMock.target.definitionName)).returns(
-            () => Promise.resolve(definitionMock.target));
+		releaseHelperMock.setup((x) => x.getReleaseType(releaseMock.target)).returns(() => Promise.resolve(DeploymentType.Automated))
 
-        filterCreatorMock.setup((x) => x.createArtifactFilter(projectMock.target, definitionMock.target, parametersMock.target.filters)).returns(
-            () => Promise.resolve(artifactFilterMock.target));
+		//#endregion
 
-        releaseHelperMock.setup((x) => x.createRelease(projectMock.target.name!, definitionMock.target, detailsMock.target)).returns(
-            () => Promise.resolve(releaseMock.target));
+		//#region ACT
 
-        releaseHelperMock.setup((x) => x.getReleaseStages(releaseMock.target, parametersMock.target.stages)).returns(
-            () => Promise.resolve([]));
+		const result = await creator.createJob(parametersMock.target, detailsMock.target)
 
-        releaseHelperMock.setup((x) => x.getReleaseType(releaseMock.target)).returns(
-            () => Promise.resolve(DeploymentType.Automated));
+		//#endregion
 
-        //#endregion
+		//#region ASSERT
 
-        //#region ACT
+		chai.expect(result).to.not.eq(null)
 
-        const result = await creator.createJob(parametersMock.target, detailsMock.target);
+		//#endregion
+	})
 
-        //#endregion
+	it("Should create latest release job", async () => {
+		//#region ARRANGE
 
-        //#region ASSERT
+		parametersMock.target.releaseType = ReleaseType.Latest
 
-        chai.expect(result).to.not.eq(null);
+		const projectMock = TypeMoq.Mock.ofType<TeamProject>()
+		const definitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>()
+		const releaseMock = TypeMoq.Mock.ofType<Release>()
+		const releaseFilterMock = TypeMoq.Mock.ofType<IReleaseFilter>()
 
-        //#endregion
+		coreHelperMock.setup((x) => x.getProject(parametersMock.target.projectName)).returns(() => Promise.resolve(projectMock.target))
 
-    });
+		releaseHelperMock
+			.setup((x) => x.getDefinition(projectMock.target.name!, parametersMock.target.definitionName))
+			.returns(() => Promise.resolve(definitionMock.target))
 
-    it("Should create latest release job", async () => {
+		filterCreatorMock
+			.setup((x) => x.createReleaseFilter(definitionMock.target, parametersMock.target.stages, parametersMock.target.filters))
+			.returns(() => Promise.resolve(releaseFilterMock.target))
 
-        //#region ARRANGE
+		releaseHelperMock
+			.setup((x) =>
+				x.getLastRelease(
+					projectMock.target.name!,
+					definitionMock.target.name!,
+					definitionMock.target.id!,
+					parametersMock.target.stages,
+					releaseFilterMock.target,
+					releaseCount,
+				),
+			)
+			.returns(() => Promise.resolve(releaseMock.target))
 
-        parametersMock.target.releaseType = ReleaseType.Latest;
+		releaseHelperMock.setup((x) => x.getReleaseStages(releaseMock.target, parametersMock.target.stages)).returns(() => Promise.resolve([]))
 
-        const projectMock = TypeMoq.Mock.ofType<TeamProject>();
-        const definitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>();
-        const releaseMock = TypeMoq.Mock.ofType<Release>();
-        const releaseFilterMock = TypeMoq.Mock.ofType<IReleaseFilter>();
+		releaseHelperMock.setup((x) => x.getReleaseType(releaseMock.target)).returns(() => Promise.resolve(DeploymentType.Automated))
 
-        coreHelperMock.setup((x) => x.getProject(parametersMock.target.projectName)).returns(
-            () => Promise.resolve(projectMock.target));
+		//#endregion
 
-        releaseHelperMock.setup((x) => x.getDefinition(projectMock.target.name!, parametersMock.target.definitionName)).returns(
-            () => Promise.resolve(definitionMock.target));
+		//#region ACT
 
-        filterCreatorMock.setup((x) => x.createReleaseFilter(definitionMock.target, parametersMock.target.stages, parametersMock.target.filters)).returns(
-            () => Promise.resolve(releaseFilterMock.target));
+		const result = await creator.createJob(parametersMock.target, detailsMock.target)
 
-        releaseHelperMock.setup((x) => x.getLastRelease(projectMock.target.name!, definitionMock.target.name!, definitionMock.target.id!, parametersMock.target.stages, releaseFilterMock.target, releaseCount)).returns(
-            () => Promise.resolve(releaseMock.target));
+		//#endregion
 
-        releaseHelperMock.setup((x) => x.getReleaseStages(releaseMock.target, parametersMock.target.stages)).returns(
-            () => Promise.resolve([]));
+		//#region ASSERT
 
-        releaseHelperMock.setup((x) => x.getReleaseType(releaseMock.target)).returns(
-            () => Promise.resolve(DeploymentType.Automated));
+		chai.expect(result).to.not.eq(null)
 
-        //#endregion
+		//#endregion
+	})
 
-        //#region ACT
+	it("Should create specific release job", async () => {
+		//#region ARRANGE
 
-        const result = await creator.createJob(parametersMock.target, detailsMock.target);
+		parametersMock.target.releaseType = ReleaseType.Specific
 
-        //#endregion
+		const projectMock = TypeMoq.Mock.ofType<TeamProject>()
+		const definitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>()
+		const releaseMock = TypeMoq.Mock.ofType<Release>()
 
-        //#region ASSERT
+		coreHelperMock.setup((x) => x.getProject(parametersMock.target.projectName)).returns(() => Promise.resolve(projectMock.target))
 
-        chai.expect(result).to.not.eq(null);
+		releaseHelperMock
+			.setup((x) => x.getDefinition(projectMock.target.name!, parametersMock.target.definitionName))
+			.returns(() => Promise.resolve(definitionMock.target))
 
-        //#endregion
+		releaseHelperMock
+			.setup((x) => x.getRelease(projectMock.target.name!, definitionMock.target.id!, parametersMock.target.releaseName, parametersMock.target.stages))
+			.returns(() => Promise.resolve(releaseMock.target))
 
-    });
+		releaseHelperMock.setup((x) => x.getReleaseStages(releaseMock.target, parametersMock.target.stages)).returns(() => Promise.resolve([]))
 
-    it("Should create specific release job", async () => {
+		releaseHelperMock.setup((x) => x.getReleaseType(releaseMock.target)).returns(() => Promise.resolve(DeploymentType.Automated))
 
-        //#region ARRANGE
+		//#endregion
 
-        parametersMock.target.releaseType = ReleaseType.Specific;
+		//#region ACT
 
-        const projectMock = TypeMoq.Mock.ofType<TeamProject>();
-        const definitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>();
-        const releaseMock = TypeMoq.Mock.ofType<Release>();
+		const result = await creator.createJob(parametersMock.target, detailsMock.target)
 
-        coreHelperMock.setup((x) => x.getProject(parametersMock.target.projectName)).returns(
-            () => Promise.resolve(projectMock.target));
+		//#endregion
 
-        releaseHelperMock.setup((x) => x.getDefinition(projectMock.target.name!, parametersMock.target.definitionName)).returns(
-            () => Promise.resolve(definitionMock.target));
+		//#region ASSERT
 
-        releaseHelperMock.setup((x) => x.getRelease(projectMock.target.name!, definitionMock.target.id!, parametersMock.target.releaseName, parametersMock.target.stages)).returns(
-            () => Promise.resolve(releaseMock.target));
+		chai.expect(result).to.not.eq(null)
 
-        releaseHelperMock.setup((x) => x.getReleaseStages(releaseMock.target, parametersMock.target.stages)).returns(
-            () => Promise.resolve([]));
-
-        releaseHelperMock.setup((x) => x.getReleaseType(releaseMock.target)).returns(
-            () => Promise.resolve(DeploymentType.Automated));
-
-        //#endregion
-
-        //#region ACT
-
-        const result = await creator.createJob(parametersMock.target, detailsMock.target);
-
-        //#endregion
-
-        //#region ASSERT
-
-        chai.expect(result).to.not.eq(null);
-
-        //#endregion
-
-    });
-
-});
+		//#endregion
+	})
+})

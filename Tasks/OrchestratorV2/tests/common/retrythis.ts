@@ -1,64 +1,50 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Retryable } from "../../common/retry";
-import { IDebugLogger } from "../../interfaces/loggers/idebuglogger";
-import { IDebugCreator } from "../../interfaces/loggers/idebugcreator";
+import { Retryable } from "../../common/retry"
+import { IDebugLogger } from "../../interfaces/loggers/idebuglogger"
+import { IDebugCreator } from "../../interfaces/loggers/idebugcreator"
 
 export interface IRetryThis {
-
-    retry(failTimes: number): Promise<number>;
-    retryEmpty(failTimes: number): Promise<number>;
-
+	retry(failTimes: number): Promise<number>
+	retryEmpty(failTimes: number): Promise<number>
 }
 
 export class RetryThis implements IRetryThis {
+	private debugLogger: IDebugLogger
 
-    private debugLogger: IDebugLogger;
+	private attempt: number = 0
 
-    private attempt: number = 0;
+	constructor(debugCreator: IDebugCreator) {
+		this.debugLogger = debugCreator.extend(this.constructor.name)
+	}
 
-    constructor(debugCreator: IDebugCreator) {
+	@Retryable(5, 100)
+	public async retry(failAttempts: number): Promise<number> {
+		const debug = this.debugLogger.extend("retry")
 
-        this.debugLogger = debugCreator.extend(this.constructor.name);
+		this.attempt++
 
-    }
+		debug(`Executing <${this.attempt}/${failAttempts}> attempt`)
 
-    @Retryable(5, 100)
-    public async retry(failAttempts: number): Promise<number> {
+		if (this.attempt < failAttempts) {
+			throw new Error("Ooops!")
+		}
 
-        const debug = this.debugLogger.extend("retry");
+		return this.attempt
+	}
 
-        this.attempt++;
+	@Retryable(5, 100, true)
+	public async retryEmpty(failAttempts: number): Promise<any> {
+		const debug = this.debugLogger.extend("retryEmpty")
 
-        debug(`Executing <${this.attempt}/${failAttempts}> attempt`);
+		this.attempt++
 
-        if (this.attempt < failAttempts) {
+		debug(`Executing <${this.attempt}/${failAttempts}> attempt`)
 
-            throw new Error("Ooops!");
+		if (this.attempt < failAttempts) {
+			return null
+		}
 
-        }
-
-        return this.attempt;
-
-    }
-
-    @Retryable(5, 100, true)
-    public async retryEmpty(failAttempts: number): Promise<any> {
-
-        const debug = this.debugLogger.extend("retryEmpty");
-
-        this.attempt++;
-
-        debug(`Executing <${this.attempt}/${failAttempts}> attempt`);
-
-        if (this.attempt < failAttempts) {
-
-            return null;
-
-        }
-
-        return this.attempt;
-
-    }
-
+		return this.attempt
+	}
 }

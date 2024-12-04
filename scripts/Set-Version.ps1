@@ -5,10 +5,7 @@ Param
 	[String]$Path,
 
 	[Parameter(Mandatory = $True)]
-	[Int]$Patch,
-
-	[Parameter(Mandatory = $False)]
-	[Switch]$UpdateBuildNumber
+	[Int]$Patch
 )
 
 function Get-MarketplaceExtension
@@ -124,12 +121,10 @@ function Update-ExtensionVersion
 			-Depth 100 `
 			-ErrorAction Stop
 
-	# Update version
 	$ExtensionDefinition = Set-ExtensionVersion `
 		-Definition $ExtensionDefinition `
 		-Patch $Patch
 
-	# Update JSON file
 	$ExtensionDefinition | ConvertTo-Json `
 		-Depth 100 `
 		-ErrorAction Stop | Set-Content `
@@ -175,12 +170,10 @@ function Update-ExtensionVersion
 					-Depth 100 `
 					-ErrorAction Stop
 
-			# Update version
 			$TaskDefinition = Set-TaskVersion `
 				-Definition $TaskDefinition `
 				-Patch $Patch
 
-			# Update JSON file
 			$TaskDefinition | ConvertTo-Json `
 				-Depth 100 `
 				-ErrorAction Stop | Set-Content `
@@ -265,19 +258,6 @@ function Set-TaskVersion
 	return $Definition
 }
 
-function Set-BuildNumber
-{
-	[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "")]
-	[CmdletBinding()]
-	Param
-	(
-		[Parameter(Mandatory = $True)]
-		[String]$Value
-	)
-
-	Write-Host ("##vso[build.updatebuildnumber]{0}" -f $Value)
-}
-
 $ExtensionPath = Find-ExtensionPath `
 	-Path $Path
 
@@ -295,15 +275,4 @@ if ($LatestExtension)
 		-Release $ReleaseExtension `
 		-Latest $LatestExtension `
 		-Required
-}
-
-if ($UpdateBuildNumber)
-{
-	if (-not $Env:BUILD_BUILDNUMBER)
-	{
-		throw "Variable <BUILD_BUILDNUMBER> not found"
-	}
-
-	Set-BuildNumber `
-		-Value ("{0}-{1}" -f $ReleaseExtension.version, $Env:BUILD_BUILDNUMBER)
 }

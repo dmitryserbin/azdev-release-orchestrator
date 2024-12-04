@@ -1,7 +1,5 @@
-import { IDebugLogger } from "./idebuglogger";
+import { IDebugLogger } from "./idebuglogger"
 
 export interface IDebugCreator {
-
-    extend(name: string): IDebugLogger;
-
+	extend(name: string): IDebugLogger
 }

@@ -1,7 +1,5 @@
 export enum Strategy {
-
-    New = "New",
-    Latest = "Latest",
-    Specific = "Specific",
-
+	New = "New",
+	Latest = "Latest",
+	Specific = "Specific",
 }

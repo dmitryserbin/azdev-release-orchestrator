@@ -1,291 +1,267 @@
-import "mocha";
+import "mocha"
 
-import * as chai from "chai";
-import * as TypeMoq from "typemoq";
-import { ImportMock } from "ts-mock-imports";
+import * as chai from "chai"
+import * as TypeMoq from "typemoq"
+import { ImportMock } from "ts-mock-imports"
 
-import * as TaskLibrary from "azure-pipelines-task-lib/task";
+import * as TaskLibrary from "azure-pipelines-task-lib/task"
 
-import { IDebugCreator } from "../../interfaces/loggers/idebugcreator";
-import { IDebugLogger } from "../../interfaces/loggers/idebuglogger";
-import { TaskHelper } from "../../helpers/taskhelper";
-import { ITaskHelper } from "../../interfaces/helpers/itaskhelper";
-import { CommonHelper } from "../../helpers/commonhelper";
+import { IDebugCreator } from "../../interfaces/loggers/idebugcreator"
+import { IDebugLogger } from "../../interfaces/loggers/idebuglogger"
+import { TaskHelper } from "../../helpers/taskhelper"
+import { ITaskHelper } from "../../interfaces/helpers/itaskhelper"
+import { CommonHelper } from "../../helpers/commonhelper"
 
 describe("TaskHelper", () => {
+	const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>()
+	const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>()
+	debugCreatorMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
+	debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
 
-    const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>();
-    const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>();
-    debugCreatorMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target);
-    debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target);
+	const endpointNameMock: string = "My-Endpoint"
+	const endpointUrlMock: string = "https://dev.azure.com/My-Organization"
+	const endpointTokenMock: string = "My-Token"
 
-    const endpointNameMock: string = "My-Endpoint";
-    const endpointUrlMock: string = "https://dev.azure.com/My-Organization";
-    const endpointTokenMock: string = "My-Token";
+	const orchestratorProjectNameMock: string = "My-Orchestrator-Project"
+	const orchestratorReleaseNameMock: string = "My-Orchestrator-Release"
+	const orchestratorRequesterNameMock: string = "My-Requester-Name"
+	const orchestratorRequesterIdMock: string = "My-Requester-Id"
 
-    const orchestratorProjectNameMock: string = "My-Orchestrator-Project";
-    const orchestratorReleaseNameMock: string = "My-Orchestrator-Release";
-    const orchestratorRequesterNameMock: string = "My-Requester-Name";
-    const orchestratorRequesterIdMock: string = "My-Requester-Id";
+	const projectNameMock: string = "My-Project"
+	const definitionNameMock: string = "My-Definition"
+	const definitionStageMock: string = "DEV,TEST,PROD"
+	const releaseNameMock: string = "My-Release"
+	const releaseStageMock: string = "DEV,TEST,PROD"
 
-    const projectNameMock: string = "My-Project";
-    const definitionNameMock: string = "My-Definition";
-    const definitionStageMock: string = "DEV,TEST,PROD";
-    const releaseNameMock: string = "My-Release";
-    const releaseStageMock: string = "DEV,TEST,PROD";
+	const releaseTagMock: string = "My-Tag-One,My-Tag-Two"
+	const artifactVersionMock: string = "My-Build-01"
+	const artifactTagMock: string = "My-Artifact-Tag-One,My-Artifact-Tag-Two"
+	const artifactBranchMock: string = "My-Branch"
+	const stageStatusMock: string = "succeeded,rejected"
 
-    const releaseTagMock: string = "My-Tag-One,My-Tag-Two";
-    const artifactVersionMock: string = "My-Build-01";
-    const artifactTagMock: string = "My-Artifact-Tag-One,My-Artifact-Tag-Two";
-    const artifactBranchMock: string = "My-Branch";
-    const stageStatusMock: string = "succeeded,rejected";
+	const releaseVariablesMock: string = "My-Variable-One=My-Value-One"
 
-    const releaseVariablesMock: string = "My-Variable-One=My-Value-One";
+	const updateIntervalMock: string = "1"
+	const approvalRetryMock: string = "1"
 
-    const updateIntervalMock: string = "1";
-    const approvalRetryMock: string = "1";
+	let inputs: { [key: string]: string | boolean }
+	let variables: { [key: string]: string }
 
-    let inputs: {[key: string]: string | boolean};
-    let variables: {[key: string]: string};
+	const taskHelper: ITaskHelper = new TaskHelper(debugCreatorMock.target, new CommonHelper(debugCreatorMock.object))
 
-    const taskHelper: ITaskHelper = new TaskHelper(debugCreatorMock.target, new CommonHelper(debugCreatorMock.object));
+	beforeEach(async () => {
+		const getInputMock = ImportMock.mockFunction(TaskLibrary, "getInput")
+		getInputMock.callsFake((i) => {
+			return inputs[i] || null
+		})
 
-    beforeEach(async () => {
+		const getBoolInputMock = ImportMock.mockFunction(TaskLibrary, "getBoolInput")
+		getBoolInputMock.callsFake((i) => {
+			return typeof inputs[i] === "boolean" ? inputs[i] : false
+		})
 
-        const getInputMock = ImportMock.mockFunction(TaskLibrary, "getInput");
-        getInputMock.callsFake(i => {
+		const getDelimitedInputMock = ImportMock.mockFunction(TaskLibrary, "getDelimitedInput")
+		getDelimitedInputMock.callsFake((i) => {
+			return inputs[i] ? inputs[i].toString().split(",") : []
+		})
 
-            return inputs[i] || null;
+		const getVariableMock = ImportMock.mockFunction(TaskLibrary, "getVariable")
+		getVariableMock.callsFake((i) => {
+			return variables[i] || null
+		})
 
-        });
+		inputs = {}
+		variables = {}
+	})
 
-        const getBoolInputMock = ImportMock.mockFunction(TaskLibrary, "getBoolInput");
-        getBoolInputMock.callsFake(i => {
+	afterEach(async () => {
+		ImportMock.restore()
+	})
 
-            return (typeof inputs[i] === "boolean") ? inputs[i] : false;
+	it("Should get service endpoint", async () => {
+		//#region ARRANGE
 
-        });
+		inputs["endpointName"] = endpointNameMock
+		inputs["endpointType"] = "service"
 
-        const getDelimitedInputMock = ImportMock.mockFunction(TaskLibrary, "getDelimitedInput");
-        getDelimitedInputMock.callsFake(i => {
+		const getEndpointUrlMock = ImportMock.mockFunction(TaskLibrary, "getEndpointUrl")
+		getEndpointUrlMock.callsFake(() => endpointUrlMock)
 
-            return inputs[i] ? inputs[i].toString().split(",") : [];
+		const getEndpointAuthorizationParameterMock = ImportMock.mockFunction(TaskLibrary, "getEndpointAuthorizationParameter")
+		getEndpointAuthorizationParameterMock.callsFake(() => endpointTokenMock)
 
-        });
+		//#endregion
 
-        const getVariableMock = ImportMock.mockFunction(TaskLibrary, "getVariable");
-        getVariableMock.callsFake(i => {
+		//#region ACT
 
-            return variables[i] || null;
+		const result = await taskHelper.getEndpoint()
 
-        });
+		//#endregion
 
-        inputs = {};
-        variables = {};
+		//#region ASSERT
 
-    });
+		chai.expect(result).to.not.eq(null)
+		chai.expect(result.url).to.eq(endpointUrlMock)
+		chai.expect(result.token).to.eq(endpointTokenMock)
 
-    afterEach(async () => {
+		//#endregion
+	})
 
-        ImportMock.restore();
+	it("Should get new release parameters", async () => {
+		//#region ARRANGE
 
-    });
+		inputs["releaseStrategy"] = "create"
+		inputs["projectName"] = projectNameMock
+		inputs["definitionName"] = definitionNameMock
 
-    it("Should get service endpoint", async () => {
+		inputs["definitionStage"] = definitionStageMock
+		inputs["artifactVersion"] = artifactVersionMock
+		inputs["artifactTag"] = artifactTagMock
+		inputs["artifactBranch"] = artifactBranchMock
+		inputs["releaseVariables"] = releaseVariablesMock
 
-        //#region ARRANGE
+		inputs["updateInterval"] = updateIntervalMock
+		inputs["approvalRetry"] = approvalRetryMock
 
-        inputs["endpointName"] = endpointNameMock;
-        inputs["endpointType"] = "service";
+		//#endregion
 
-        const getEndpointUrlMock = ImportMock.mockFunction(TaskLibrary, "getEndpointUrl");
-        getEndpointUrlMock.callsFake(() => endpointUrlMock);
+		//#region ACT
 
-        const getEndpointAuthorizationParameterMock = ImportMock.mockFunction(TaskLibrary, "getEndpointAuthorizationParameter");
-        getEndpointAuthorizationParameterMock.callsFake(() => endpointTokenMock);
+		const result = await taskHelper.getParameters()
 
-        //#endregion
+		//#endregion
 
-        //#region ACT
+		//#region ASSERT
 
-        const result = await taskHelper.getEndpoint();
+		chai.expect(result).to.not.eq(null)
+		chai.expect(result.releaseType).to.eq("New")
+		chai.expect(result.projectName).to.eq(projectNameMock)
+		chai.expect(result.definitionName).to.eq(definitionNameMock)
 
-        //#endregion
+		chai.expect(result.settings.sleep).to.eq(Number(updateIntervalMock) * 1000)
+		chai.expect(result.settings.approvalRetry).to.eq(Number(approvalRetryMock))
 
-        //#region ASSERT
+		chai.expect(result.stages).to.eql(["DEV", "TEST", "PROD"])
+		chai.expect(result.filters.artifactVersion).to.eq(artifactVersionMock)
+		chai.expect(result.filters.artifactTags).to.eql(["My-Artifact-Tag-One", "My-Artifact-Tag-Two"])
+		chai.expect(result.filters.artifactBranch).to.eq(artifactBranchMock)
 
-        chai.expect(result).to.not.eq(null);
-        chai.expect(result.url).to.eq(endpointUrlMock);
-        chai.expect(result.token).to.eq(endpointTokenMock);
+		chai.expect(result.variables.length).to.eq(1)
+		chai.expect(result.variables[0].name).to.eq("My-Variable-One")
+		chai.expect(result.variables[0].value).to.eq("My-Value-One")
 
-        //#endregion
+		//#endregion
+	})
 
-    });
+	it("Should get latest release parameters", async () => {
+		//#region ARRANGE
 
-    it("Should get new release parameters", async () => {
+		inputs["releaseStrategy"] = "latest"
+		inputs["projectName"] = projectNameMock
+		inputs["definitionName"] = definitionNameMock
 
-        //#region ARRANGE
+		inputs["releaseStage"] = releaseStageMock
+		inputs["releaseTag"] = releaseTagMock
+		inputs["artifactVersion"] = artifactVersionMock
+		inputs["artifactTag"] = artifactTagMock
+		inputs["artifactBranch"] = artifactBranchMock
+		inputs["stageStatus"] = stageStatusMock
 
-        inputs["releaseStrategy"] = "create";
-        inputs["projectName"] = projectNameMock;
-        inputs["definitionName"] = definitionNameMock;
+		inputs["updateInterval"] = updateIntervalMock
+		inputs["approvalRetry"] = approvalRetryMock
 
-        inputs["definitionStage"] = definitionStageMock;
-        inputs["artifactVersion"] = artifactVersionMock;
-        inputs["artifactTag"] = artifactTagMock;
-        inputs["artifactBranch"] = artifactBranchMock;
-        inputs["releaseVariables"] = releaseVariablesMock;
+		//#endregion
 
-        inputs["updateInterval"] = updateIntervalMock;
-        inputs["approvalRetry"] = approvalRetryMock;
+		//#region ACT
 
-        //#endregion
+		const result = await taskHelper.getParameters()
 
-        //#region ACT
+		//#endregion
 
-        const result = await taskHelper.getParameters();
+		//#region ASSERT
 
-        //#endregion
+		chai.expect(result).to.not.eq(null)
+		chai.expect(result.releaseType).to.eq("Latest")
+		chai.expect(result.projectName).to.eq(projectNameMock)
+		chai.expect(result.definitionName).to.eq(definitionNameMock)
 
-        //#region ASSERT
+		chai.expect(result.settings.sleep).to.eq(Number(updateIntervalMock) * 1000)
+		chai.expect(result.settings.approvalRetry).to.eq(Number(approvalRetryMock))
 
-        chai.expect(result).to.not.eq(null);
-        chai.expect(result.releaseType).to.eq("New");
-        chai.expect(result.projectName).to.eq(projectNameMock);
-        chai.expect(result.definitionName).to.eq(definitionNameMock);
+		chai.expect(result.stages).to.eql(["DEV", "TEST", "PROD"])
+		chai.expect(result.filters.releaseTags).to.eql(["My-Tag-One", "My-Tag-Two"])
+		chai.expect(result.filters.artifactVersion).to.eq(artifactVersionMock)
+		chai.expect(result.filters.artifactTags).to.eql(["My-Artifact-Tag-One", "My-Artifact-Tag-Two"])
+		chai.expect(result.filters.artifactBranch).to.eq(artifactBranchMock)
+		chai.expect(result.filters.stageStatuses).to.eql(["succeeded", "rejected"])
 
-        chai.expect(result.settings.sleep).to.eq(Number(updateIntervalMock) * 1000);
-        chai.expect(result.settings.approvalRetry).to.eq(Number(approvalRetryMock));
+		//#endregion
+	})
 
-        chai.expect(result.stages).to.eql([ "DEV", "TEST", "PROD" ]);
-        chai.expect(result.filters.artifactVersion).to.eq(artifactVersionMock);
-        chai.expect(result.filters.artifactTags).to.eql([ "My-Artifact-Tag-One", "My-Artifact-Tag-Two" ]);
-        chai.expect(result.filters.artifactBranch).to.eq(artifactBranchMock);
+	it("Should get specific release parameters", async () => {
+		//#region ARRANGE
 
-        chai.expect(result.variables.length).to.eq(1);
-        chai.expect(result.variables[0].name).to.eq("My-Variable-One");
-        chai.expect(result.variables[0].value).to.eq("My-Value-One");
+		inputs["releaseStrategy"] = "specific"
+		inputs["projectName"] = projectNameMock
+		inputs["definitionName"] = definitionNameMock
 
-        //#endregion
+		inputs["releaseName"] = releaseNameMock
+		inputs["releaseStage"] = releaseStageMock
 
-    });
+		inputs["updateInterval"] = updateIntervalMock
+		inputs["approvalRetry"] = approvalRetryMock
 
-    it("Should get latest release parameters", async () => {
+		//#endregion
 
-        //#region ARRANGE
+		//#region ACT
 
-        inputs["releaseStrategy"] = "latest";
-        inputs["projectName"] = projectNameMock;
-        inputs["definitionName"] = definitionNameMock;
+		const result = await taskHelper.getParameters()
 
-        inputs["releaseStage"] = releaseStageMock;
-        inputs["releaseTag"] = releaseTagMock;
-        inputs["artifactVersion"] = artifactVersionMock;
-        inputs["artifactTag"] = artifactTagMock;
-        inputs["artifactBranch"] = artifactBranchMock;
-        inputs["stageStatus"] = stageStatusMock;
+		//#endregion
 
-        inputs["updateInterval"] = updateIntervalMock;
-        inputs["approvalRetry"] = approvalRetryMock;
+		//#region ASSERT
 
-        //#endregion
+		chai.expect(result).to.not.eq(null)
+		chai.expect(result.releaseType).to.eq("Specific")
+		chai.expect(result.projectName).to.eq(projectNameMock)
+		chai.expect(result.definitionName).to.eq(definitionNameMock)
 
-        //#region ACT
+		chai.expect(result.settings.sleep).to.eq(Number(updateIntervalMock) * 1000)
+		chai.expect(result.settings.approvalRetry).to.eq(Number(approvalRetryMock))
 
-        const result = await taskHelper.getParameters();
+		chai.expect(result.releaseName).to.eq(releaseNameMock)
+		chai.expect(result.stages).to.eql(["DEV", "TEST", "PROD"])
 
-        //#endregion
+		//#endregion
+	})
 
-        //#region ASSERT
+	it("Should get orchestrator details", async () => {
+		//#region ARRANGE
 
-        chai.expect(result).to.not.eq(null);
-        chai.expect(result.releaseType).to.eq("Latest");
-        chai.expect(result.projectName).to.eq(projectNameMock);
-        chai.expect(result.definitionName).to.eq(definitionNameMock);
+		inputs["endpointName"] = endpointNameMock
 
-        chai.expect(result.settings.sleep).to.eq(Number(updateIntervalMock) * 1000);
-        chai.expect(result.settings.approvalRetry).to.eq(Number(approvalRetryMock));
+		variables["SYSTEM_TEAMPROJECT"] = orchestratorProjectNameMock
+		variables["RELEASE_RELEASENAME"] = orchestratorReleaseNameMock
+		variables["RELEASE_DEPLOYMENT_REQUESTEDFOR"] = orchestratorRequesterNameMock
+		variables["RELEASE_DEPLOYMENT_REQUESTEDFORID"] = orchestratorRequesterIdMock
 
-        chai.expect(result.stages).to.eql([ "DEV", "TEST", "PROD" ]);
-        chai.expect(result.filters.releaseTags).to.eql([ "My-Tag-One", "My-Tag-Two" ]);
-        chai.expect(result.filters.artifactVersion).to.eq(artifactVersionMock);
-        chai.expect(result.filters.artifactTags).to.eql([ "My-Artifact-Tag-One", "My-Artifact-Tag-Two" ]);
-        chai.expect(result.filters.artifactBranch).to.eq(artifactBranchMock);
-        chai.expect(result.filters.stageStatuses).to.eql([ "succeeded", "rejected" ]);
+		//#endregion
 
-        //#endregion
+		//#region ACT
 
-    });
+		const result = await taskHelper.getDetails()
 
-    it("Should get specific release parameters", async () => {
+		//#endregion
 
-        //#region ARRANGE
+		//#region ASSERT
 
-        inputs["releaseStrategy"] = "specific";
-        inputs["projectName"] = projectNameMock;
-        inputs["definitionName"] = definitionNameMock;
+		chai.expect(result).to.not.eq(null)
+		chai.expect(result.endpointName).to.eq(endpointNameMock)
+		chai.expect(result.projectName).to.eq(orchestratorProjectNameMock)
+		chai.expect(result.releaseName).to.eq(orchestratorReleaseNameMock)
+		chai.expect(result.requesterName).to.eq(orchestratorRequesterNameMock)
+		chai.expect(result.requesterId).to.eq(orchestratorRequesterIdMock)
 
-        inputs["releaseName"] = releaseNameMock;
-        inputs["releaseStage"] = releaseStageMock;
-
-        inputs["updateInterval"] = updateIntervalMock;
-        inputs["approvalRetry"] = approvalRetryMock;
-
-        //#endregion
-
-        //#region ACT
-
-        const result = await taskHelper.getParameters();
-
-        //#endregion
-
-        //#region ASSERT
-
-        chai.expect(result).to.not.eq(null);
-        chai.expect(result.releaseType).to.eq("Specific");
-        chai.expect(result.projectName).to.eq(projectNameMock);
-        chai.expect(result.definitionName).to.eq(definitionNameMock);
-
-        chai.expect(result.settings.sleep).to.eq(Number(updateIntervalMock) * 1000);
-        chai.expect(result.settings.approvalRetry).to.eq(Number(approvalRetryMock));
-
-        chai.expect(result.releaseName).to.eq(releaseNameMock);
-        chai.expect(result.stages).to.eql([ "DEV", "TEST", "PROD" ]);
-
-        //#endregion
-
-    });
-
-    it("Should get orchestrator details", async () => {
-
-        //#region ARRANGE
-
-        inputs["endpointName"] = endpointNameMock;
-
-        variables["SYSTEM_TEAMPROJECT"] = orchestratorProjectNameMock;
-        variables["RELEASE_RELEASENAME"] = orchestratorReleaseNameMock;
-        variables["RELEASE_DEPLOYMENT_REQUESTEDFOR"] = orchestratorRequesterNameMock;
-        variables["RELEASE_DEPLOYMENT_REQUESTEDFORID"] = orchestratorRequesterIdMock;
-
-        //#endregion
-
-        //#region ACT
-
-        const result = await taskHelper.getDetails();
-
-        //#endregion
-
-        //#region ASSERT
-
-        chai.expect(result).to.not.eq(null);
-        chai.expect(result.endpointName).to.eq(endpointNameMock);
-        chai.expect(result.projectName).to.eq(orchestratorProjectNameMock);
-        chai.expect(result.releaseName).to.eq(orchestratorReleaseNameMock);
-        chai.expect(result.requesterName).to.eq(orchestratorRequesterNameMock);
-        chai.expect(result.requesterId).to.eq(orchestratorRequesterIdMock);
-
-        //#endregion
-
-    });
-
-});
+		//#endregion
+	})
+})

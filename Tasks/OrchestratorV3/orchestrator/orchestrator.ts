@@ -1,84 +1,72 @@
-import { IOrchestrator } from "./iorchestrator";
-import { IRunDeployer } from "../workers/rundeployer/irundeployer";
-import { IParameters } from "../helpers/taskhelper/iparameters";
-import { Strategy } from "../helpers/taskhelper/strategy";
-import { IDebug } from "../loggers/idebug";
-import { ILogger } from "../loggers/ilogger";
-import { IRun } from "../workers/runcreator/irun";
-import { IRunCreator } from "../workers/runcreator/iruncreator";
-import { IRunProgress } from "./irunprogress";
-import { IProgressReporter } from "../workers/progressreporter/iprogressreporter";
+import { IOrchestrator } from "./iorchestrator"
+import { IRunDeployer } from "../workers/rundeployer/irundeployer"
+import { IParameters } from "../helpers/taskhelper/iparameters"
+import { Strategy } from "../helpers/taskhelper/strategy"
+import { IDebug } from "../loggers/idebug"
+import { ILogger } from "../loggers/ilogger"
+import { IRun } from "../workers/runcreator/irun"
+import { IRunCreator } from "../workers/runcreator/iruncreator"
+import { IRunProgress } from "./irunprogress"
+import { IProgressReporter } from "../workers/progressreporter/iprogressreporter"
 
 export class Orchestrator implements IOrchestrator {
+	private logger: ILogger
+	private debugLogger: IDebug
 
-    private logger: ILogger;
-    private debugLogger: IDebug;
+	private runCreator: IRunCreator
+	private runDeployer: IRunDeployer
+	private progressReporter: IProgressReporter
 
-    private runCreator: IRunCreator;
-    private runDeployer: IRunDeployer;
-    private progressReporter: IProgressReporter;
+	constructor(runCreator: IRunCreator, runDeployer: IRunDeployer, progressReporter: IProgressReporter, logger: ILogger) {
+		this.logger = logger
+		this.debugLogger = logger.extend(this.constructor.name)
 
-    constructor(runCreator: IRunCreator, runDeployer: IRunDeployer, progressReporter: IProgressReporter, logger: ILogger) {
+		this.runCreator = runCreator
+		this.runDeployer = runDeployer
+		this.progressReporter = progressReporter
+	}
 
-        this.logger = logger;
-        this.debugLogger = logger.extend(this.constructor.name);
+	public async orchestrate(parameters: IParameters): Promise<IRunProgress> {
+		const debug = this.debugLogger.extend(this.orchestrate.name)
 
-        this.runCreator = runCreator;
-        this.runDeployer = runDeployer;
-        this.progressReporter = progressReporter;
+		let runProgress: IRunProgress
 
-    }
+		const run: IRun = await this.runCreator.create(parameters)
 
-    public async orchestrate(parameters: IParameters): Promise<IRunProgress> {
+		debug(`Starting <${Strategy[parameters.strategy]}> pipeline orchestration strategy`)
 
-        const debug = this.debugLogger.extend(this.orchestrate.name);
+		switch (parameters.strategy) {
+			case Strategy.New: {
+				this.logger.log(`Executing new <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`)
 
-        let runProgress: IRunProgress;
+				this.progressReporter.logRun(run)
 
-        const run: IRun = await this.runCreator.create(parameters);
+				runProgress = await this.runDeployer.deployAutomated(run)
 
-        debug(`Starting <${Strategy[parameters.strategy]}> pipeline orchestration strategy`);
+				break
+			}
+			case Strategy.Latest: {
+				this.logger.log(`Executing latest <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`)
 
-        switch (parameters.strategy) {
+				this.progressReporter.logRun(run)
 
-            case Strategy.New: {
+				runProgress = await this.runDeployer.deployManual(run)
 
-                this.logger.log(`Executing new <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`);
+				break
+			}
+			case Strategy.Specific: {
+				this.logger.log(`Executing specific <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`)
 
-                this.progressReporter.logRun(run);
+				this.progressReporter.logRun(run)
 
-                runProgress = await this.runDeployer.deployAutomated(run);
+				runProgress = await this.runDeployer.deployManual(run)
 
-                break;
+				break
+			}
+		}
 
-            } case Strategy.Latest: {
+		this.progressReporter.logRunProgress(runProgress)
 
-                this.logger.log(`Executing latest <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`);
-
-                this.progressReporter.logRun(run);
-
-                runProgress = await this.runDeployer.deployManual(run);
-
-                break;
-
-            } case Strategy.Specific: {
-
-                this.logger.log(`Executing specific <${run.definition.name}> pipeline <${run.build.buildNumber}> (${run.build.id}) run`);
-
-                this.progressReporter.logRun(run);
-
-                runProgress = await this.runDeployer.deployManual(run);
-
-                break;
-
-            }
-
-        }
-
-        this.progressReporter.logRunProgress(runProgress);
-
-        return runProgress;
-
-    }
-
+		return runProgress
+	}
 }

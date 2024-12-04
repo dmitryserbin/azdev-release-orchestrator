@@ -1,47 +1,36 @@
-import { BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces";
+import { BuildDefinition } from "azure-devops-node-api/interfaces/BuildInterfaces"
 
-import { ILogger } from "../../loggers/ilogger";
-import { IDebug } from "../../loggers/idebug";
-import { IDefinitionSelector } from "./idefinitionselector";
-import { IBuildApiRetry } from "../../extensions/buildapiretry/ibuildapiretry";
+import { ILogger } from "../../loggers/ilogger"
+import { IDebug } from "../../loggers/idebug"
+import { IDefinitionSelector } from "./idefinitionselector"
+import { IBuildApiRetry } from "../../extensions/buildapiretry/ibuildapiretry"
 
 export class DefinitionSelector implements IDefinitionSelector {
+	private debugLogger: IDebug
 
-    private debugLogger: IDebug;
+	private buildApi: IBuildApiRetry
 
-    private buildApi: IBuildApiRetry;
+	constructor(buildApi: IBuildApiRetry, logger: ILogger) {
+		this.debugLogger = logger.extend(this.constructor.name)
 
-    constructor(buildApi: IBuildApiRetry, logger: ILogger) {
+		this.buildApi = buildApi
+	}
 
-        this.debugLogger = logger.extend(this.constructor.name);
+	public async getDefinition(projectName: string, definitionName: string): Promise<BuildDefinition> {
+		const debug = this.debugLogger.extend(this.getDefinition.name)
 
-        this.buildApi = buildApi;
+		const matchingDefinitions: BuildDefinition[] = await this.buildApi.getDefinitions(projectName, definitionName)
 
-    }
+		debug(matchingDefinitions.map((definition) => `${definition.name} (${definition.id})`))
 
-    public async getDefinition(projectName: string, definitionName: string): Promise<BuildDefinition> {
+		if (matchingDefinitions.length <= 0) {
+			throw new Error(`Definition <${definitionName}> not found`)
+		}
 
-        const debug = this.debugLogger.extend(this.getDefinition.name);
+		const targetDefinition: BuildDefinition = await this.buildApi.getDefinition(projectName, matchingDefinitions[0].id!)
 
-        const matchingDefinitions: BuildDefinition[] = await this.buildApi.getDefinitions(projectName, definitionName);
+		debug(targetDefinition)
 
-        debug(matchingDefinitions.map(
-            (definition) => `${definition.name} (${definition.id})`));
-
-        if (matchingDefinitions.length <= 0) {
-
-            throw new Error(`Definition <${definitionName}> not found`);
-
-        }
-
-        const targetDefinition: BuildDefinition = await this.buildApi.getDefinition(
-            projectName,
-            matchingDefinitions[0].id!);
-
-        debug(targetDefinition);
-
-        return targetDefinition;
-
-    }
-
+		return targetDefinition
+	}
 }

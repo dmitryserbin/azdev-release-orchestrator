@@ -20,8 +20,8 @@ The **Release Orchestrator** tasks perform classic or YAML pipeline execution, p
 
 Task | Description
 :-------|:-----------
-[Release Orchestrator V3](Docs/OrchestratorV3.md) * | Execute and monitor [YAML](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/pipelines-get-started) pipelines
-[Release Orchestrator V2](Docs/OrchestratorV2.md) | Execute and monitor [classic](https://docs.microsoft.com/en-us/azure/devops/pipelines/release) release pipelines
+[Release Orchestrator V3](docs/OrchestratorV3.md) * | Execute and monitor [YAML](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/pipelines-get-started) pipelines
+[Release Orchestrator V2](docs/OrchestratorV2.md) | Execute and monitor [classic](https://docs.microsoft.com/en-us/azure/devops/pipelines/release) release pipelines
 
 > \* NOTE: task in public preview and some features may suddenly change
 
@@ -31,7 +31,7 @@ Task | Description
 2. Select prefered Azure DevOps service endpoint type
 3. Select target project and define target pipeline
 
-> Release Orchestrator V3 task (target YAML pipeline), please refer to task [version 3 documentation](Docs/OrchestratorV3.md) for more details.
+> Release Orchestrator V3 task (target YAML pipeline), please refer to task [version 3 documentation](docs/OrchestratorV3.md) for more details.
 
 ```yaml
 - task: releaseorchestrator@3
@@ -43,7 +43,7 @@ Task | Description
     stages: DEV
 ```
 
-> Release Orchestrator V2 task (target classic pipeline), please refer to task [version 2 documentation](Docs/OrchestratorV2.md) for more details.
+> Release Orchestrator V2 task (target classic pipeline), please refer to task [version 2 documentation](docs/OrchestratorV2.md) for more details.
 
 ```yaml
 - task: releaseorchestrator@2
