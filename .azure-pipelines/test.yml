@@ -1,0 +1,20 @@
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: OrchestratorV2
+  dependsOn: []
+  jobs:
+    - template: templates/test-v2.yml
+- stage: OrchestratorV3
+  dependsOn: []
+  jobs:
+    - template: templates/test-v3.yml
+- stage: Cleanup
+  dependsOn:
+    - OrchestratorV2
+    - OrchestratorV3
+  jobs:
+    - template: templates/test-cleanup.yml
