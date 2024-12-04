@@ -1,10 +1,5 @@
 import "mocha"
-
-import * as chai from "chai"
-import * as TypeMoq from "typemoq"
-
 import { ApprovalStatus, ReleaseApproval, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces"
-
 import { IDebugCreator } from "../../interfaces/loggers/idebugcreator"
 import { IConsoleLogger } from "../../interfaces/loggers/iconsolelogger"
 import { IDebugLogger } from "../../interfaces/loggers/idebuglogger"
@@ -16,48 +11,50 @@ import { IStageProgress } from "../../interfaces/common/istageprogress"
 import { ISettings } from "../../interfaces/common/isettings"
 import { Approver } from "../../orchestrator/approver"
 import { IStageApproval } from "../../interfaces/common/istageapproval"
+import assert from "assert"
+import { IMock, It, Mock } from "typemoq"
 
 describe("Approver", () => {
-	const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>()
-	const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>()
-	debugCreatorMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
-	debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
+	const debugLoggerMock = Mock.ofType<IDebugLogger>()
+	const debugCreatorMock = Mock.ofType<IDebugCreator>()
+	debugCreatorMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugLoggerMock.target)
+	debugLoggerMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugLoggerMock.target)
 
-	const consoleLoggerMock = TypeMoq.Mock.ofType<IConsoleLogger>()
-	consoleLoggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null)
-	consoleLoggerMock.setup((x) => x.warn(TypeMoq.It.isAny())).returns(() => null)
+	const consoleLoggerMock = Mock.ofType<IConsoleLogger>()
+	consoleLoggerMock.setup((x) => x.log(It.isAny())).returns(() => null)
+	consoleLoggerMock.setup((x) => x.warn(It.isAny())).returns(() => null)
 
-	const commonHelperMock = TypeMoq.Mock.ofType<ICommonHelper>()
-	const releaseHelperMock = TypeMoq.Mock.ofType<IReleaseHelper>()
+	const commonHelperMock = Mock.ofType<ICommonHelper>()
+	const releaseHelperMock = Mock.ofType<IReleaseHelper>()
 
 	const projectName: string = "My-Project"
 
-	let detailsMock: TypeMoq.IMock<IDetails>
-	let settingsMock: TypeMoq.IMock<ISettings>
-	let stageProgressMock: TypeMoq.IMock<IStageProgress>
-	let stageStatusMock: TypeMoq.IMock<ReleaseEnvironment>
-	let stageApprovalMock: TypeMoq.IMock<IStageApproval>
-	let releaseApprovalMock: TypeMoq.IMock<ReleaseApproval>
+	let detailsMock: IMock<IDetails>
+	let settingsMock: IMock<ISettings>
+	let stageProgressMock: IMock<IStageProgress>
+	let stageStatusMock: IMock<ReleaseEnvironment>
+	let stageApprovalMock: IMock<IStageApproval>
+	let releaseApprovalMock: IMock<ReleaseApproval>
 
 	const releaseApprover: IApprover = new Approver(commonHelperMock.target, releaseHelperMock.target, debugCreatorMock.target, consoleLoggerMock.target)
 
 	beforeEach(async () => {
-		detailsMock = TypeMoq.Mock.ofType<IDetails>()
+		detailsMock = Mock.ofType<IDetails>()
 
-		settingsMock = TypeMoq.Mock.ofType<ISettings>()
+		settingsMock = Mock.ofType<ISettings>()
 		settingsMock.setup((x) => x.approvalRetry).returns(() => 1)
 
-		stageStatusMock = TypeMoq.Mock.ofType<ReleaseEnvironment>()
+		stageStatusMock = Mock.ofType<ReleaseEnvironment>()
 
-		stageApprovalMock = TypeMoq.Mock.ofType<IStageApproval>()
+		stageApprovalMock = Mock.ofType<IStageApproval>()
 		stageApprovalMock.target.retry = 0
 		stageApprovalMock.target.status = ApprovalStatus.Pending
 
-		stageProgressMock = TypeMoq.Mock.ofType<IStageProgress>()
+		stageProgressMock = Mock.ofType<IStageProgress>()
 		stageProgressMock.setup((x) => x.name).returns(() => "My-Stage")
 		stageProgressMock.setup((x) => x.approval).returns(() => stageApprovalMock.target)
 
-		releaseApprovalMock = TypeMoq.Mock.ofType<ReleaseApproval>()
+		releaseApprovalMock = Mock.ofType<ReleaseApproval>()
 
 		commonHelperMock.reset()
 		releaseHelperMock.reset()
@@ -71,7 +68,7 @@ describe("Approver", () => {
 			.returns(() => Promise.resolve([releaseApprovalMock.target]))
 
 		releaseHelperMock
-			.setup((x) => x.approveStage(releaseApprovalMock.target, projectName, TypeMoq.It.isAnyString()))
+			.setup((x) => x.approveStage(releaseApprovalMock.target, projectName, It.isAnyString()))
 			.returns(() => Promise.resolve(releaseApprovalMock.target))
 
 		releaseApprovalMock.setup((x) => x.status).returns(() => ApprovalStatus.Approved)
@@ -86,7 +83,7 @@ describe("Approver", () => {
 
 		//#region ASSERT
 
-		chai.expect(stageProgressMock.target.approval.status).to.eq(ApprovalStatus.Approved)
+		assert.equal(stageProgressMock.target.approval.status, ApprovalStatus.Approved, "Approval status should be Approved")
 
 		//#endregion
 	})
@@ -112,7 +109,7 @@ describe("Approver", () => {
 
 		//#region ASSERT
 
-		chai.expect(stageProgressMock.target.approval.status).to.eq(ApprovalStatus.Skipped)
+		assert.equal(stageProgressMock.target.approval.status, ApprovalStatus.Skipped, "Approval status should be Skipped")
 
 		//#endregion
 	})
@@ -125,13 +122,13 @@ describe("Approver", () => {
 			.returns(() => Promise.resolve([releaseApprovalMock.target]))
 
 		releaseHelperMock
-			.setup((x) => x.approveStage(releaseApprovalMock.target, projectName, TypeMoq.It.isAnyString()))
+			.setup((x) => x.approveStage(releaseApprovalMock.target, projectName, It.isAnyString()))
 			.returns(() => Promise.resolve(releaseApprovalMock.target))
 
 		releaseApprovalMock.setup((x) => x.status).returns(() => ApprovalStatus.Rejected)
 
 		releaseHelperMock
-			.setup((x) => x.cancelStage(stageStatusMock.target, projectName, TypeMoq.It.isAnyString()))
+			.setup((x) => x.cancelStage(stageStatusMock.target, projectName, It.isAnyString()))
 			.returns(() => Promise.resolve(stageStatusMock.target))
 
 		//#endregion
@@ -144,7 +141,7 @@ describe("Approver", () => {
 
 		//#region ASSERT
 
-		chai.expect(stageProgressMock.target.approval.status).to.eq(ApprovalStatus.Rejected)
+		assert.equal(stageProgressMock.target.approval.status, ApprovalStatus.Rejected, "Approval status should be Rejected")
 
 		//#endregion
 	})

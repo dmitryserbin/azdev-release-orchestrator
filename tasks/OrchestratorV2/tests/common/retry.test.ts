@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import "mocha"
-
-import * as chai from "chai"
-import chaiAsPromised from "chai-as-promised"
-
+import assert from "assert"
 import { IDebugCreator } from "../../interfaces/loggers/idebugcreator"
 import { DebugCreator } from "../../loggers/debugcreator"
 import { IRetryThis, RetryThis } from "./retrythis"
@@ -12,8 +9,6 @@ import { IRetryThis, RetryThis } from "./retrythis"
 const debugCreator: IDebugCreator = new DebugCreator("release-orchestrator")
 
 describe("Retryable", () => {
-	chai.use(chaiAsPromised)
-
 	it("Should pass immediately", async () => {
 		//#region ARRANGE
 
@@ -24,7 +19,7 @@ describe("Retryable", () => {
 
 		//#region ACT & ASSERT
 
-		await chai.expect(retryThis.retry(retryCount)).not.to.be.rejected
+		await assert.doesNotReject(async () => retryThis.retry(retryCount), "Should pass immediately")
 
 		//#endregion
 	})
@@ -39,7 +34,7 @@ describe("Retryable", () => {
 
 		//#region ACT & ASSERT
 
-		await chai.expect(retryThis.retry(retryCount)).not.to.be.rejected
+		await assert.doesNotReject(async () => retryThis.retry(retryCount), "Should retry and pass")
 
 		//#endregion
 	})
@@ -54,7 +49,7 @@ describe("Retryable", () => {
 
 		//#region ACT & ASSERT
 
-		await chai.expect(retryThis.retry(retryCount)).to.be.rejected
+		await assert.rejects(async () => retryThis.retry(retryCount), "Should retry and fail")
 
 		//#endregion
 	})
@@ -71,9 +66,8 @@ describe("Retryable", () => {
 
 		const result: any = await retryThis.retryEmpty(retryCount)
 
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		chai.expect(result).not.to.be.null
-		chai.expect(result).to.eq(3)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result, 3, "Result should be 3")
 
 		//#endregion
 	})
@@ -88,7 +82,7 @@ describe("Retryable", () => {
 
 		//#region ACT & ASSERT
 
-		await chai.expect(retryThis.retryEmpty(retryCount)).to.be.rejected
+		await assert.rejects(async () => retryThis.retry(retryCount), "Should retry and fail")
 
 		//#endregion
 	})

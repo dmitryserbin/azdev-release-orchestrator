@@ -1,16 +1,15 @@
 import "mocha"
-
-import * as chai from "chai"
-import * as TypeMoq from "typemoq"
+import assert from "assert"
 import { IDebugLogger } from "../../interfaces/loggers/idebuglogger"
 import { IDebugCreator } from "../../interfaces/loggers/idebugcreator"
 import { CommonHelper } from "../../helpers/commonhelper"
+import { It, Mock } from "typemoq"
 
 describe("CommonHelper", async () => {
-	const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>()
-	const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>()
-	debugCreatorMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
-	debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
+	const debugLoggerMock = Mock.ofType<IDebugLogger>()
+	const debugCreatorMock = Mock.ofType<IDebugCreator>()
+	debugCreatorMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugLoggerMock.target)
+	debugLoggerMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugLoggerMock.target)
 
 	const commonHelper = new CommonHelper(debugCreatorMock.object)
 
@@ -36,9 +35,9 @@ describe("CommonHelper", async () => {
 
 			//#region ASSERT
 
-			chai.expect(result).to.not.eq(null)
-			chai.expect(result[0]).to.eq(expected[0])
-			chai.expect(result[1]).to.eq(expected[1])
+			assert.notStrictEqual(result, null, "Result is null")
+			assert.strictEqual(result[0], expected[0], `Expected key: ${expected[0]}, Actual key: ${result[0]}`)
+			assert.strictEqual(result[1], expected[1], `Expected value: ${expected[1]}, Actual value: ${result[1]}`)
 
 			//#endregion
 		})
@@ -56,7 +55,7 @@ describe("CommonHelper", async () => {
 
 		//#region ACT & ASSERT
 
-		chai.expect(() => commonHelper.parseKeyValue(keyValueMock)).to.throw()
+		assert.throws(() => commonHelper.parseKeyValue(keyValueMock), "Error not thrown")
 
 		//#endregion
 	})

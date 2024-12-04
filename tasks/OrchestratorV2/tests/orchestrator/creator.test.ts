@@ -1,11 +1,6 @@
 import "mocha"
-
-import * as chai from "chai"
-import * as TypeMoq from "typemoq"
-
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces"
 import { Release, ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces"
-
 import { IParameters } from "../../interfaces/task/iparameters"
 import { IDetails } from "../../interfaces/task/idetails"
 import { IDebugCreator } from "../../interfaces/loggers/idebugcreator"
@@ -24,33 +19,35 @@ import { ISettings } from "../../interfaces/common/isettings"
 import { IReleaseFilter } from "../../interfaces/common/ireleasefilter"
 import { IFiltrator } from "../../interfaces/orchestrator/ifiltrator"
 import { IArtifactFilter } from "../../interfaces/common/iartifactfilter"
+import * as assert from "assert"
+import { IMock, It, Mock } from "typemoq"
 
 describe("Creator", () => {
-	const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>()
-	const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>()
-	debugCreatorMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
-	debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
+	const debugLoggerMock = Mock.ofType<IDebugLogger>()
+	const debugCreatorMock = Mock.ofType<IDebugCreator>()
+	debugCreatorMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugLoggerMock.target)
+	debugLoggerMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugLoggerMock.target)
 
-	const consoleLoggerMock = TypeMoq.Mock.ofType<IConsoleLogger>()
-	consoleLoggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null)
+	const consoleLoggerMock = Mock.ofType<IConsoleLogger>()
+	consoleLoggerMock.setup((x) => x.log(It.isAny())).returns(() => null)
 
-	const reporterMock = TypeMoq.Mock.ofType<IReporter>()
-	reporterMock.setup((x) => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => "")
-	reporterMock.setup((x) => x.getReleaseProgress(TypeMoq.It.isAny())).returns(() => "")
-	reporterMock.setup((x) => x.getFilters(TypeMoq.It.isAny())).returns(() => "")
-	reporterMock.setup((x) => x.getVariables(TypeMoq.It.isAny())).returns(() => "")
+	const reporterMock = Mock.ofType<IReporter>()
+	reporterMock.setup((x) => x.getRelease(It.isAny(), It.isAny())).returns(() => "")
+	reporterMock.setup((x) => x.getReleaseProgress(It.isAny())).returns(() => "")
+	reporterMock.setup((x) => x.getFilters(It.isAny())).returns(() => "")
+	reporterMock.setup((x) => x.getVariables(It.isAny())).returns(() => "")
 
-	const coreHelperMock = TypeMoq.Mock.ofType<ICoreHelper>()
-	const buildHelperMock = TypeMoq.Mock.ofType<IBuildHelper>()
-	const releaseHelperMock = TypeMoq.Mock.ofType<IReleaseHelper>()
-	const filterCreatorMock = TypeMoq.Mock.ofType<IFiltrator>()
+	const coreHelperMock = Mock.ofType<ICoreHelper>()
+	const buildHelperMock = Mock.ofType<IBuildHelper>()
+	const releaseHelperMock = Mock.ofType<IReleaseHelper>()
+	const filterCreatorMock = Mock.ofType<IFiltrator>()
 
 	const releaseCount: number = 1
 
-	let detailsMock: TypeMoq.IMock<IDetails>
-	let parametersMock: TypeMoq.IMock<IParameters>
-	let filtersMock: TypeMoq.IMock<IFilters>
-	let settingsMock: TypeMoq.IMock<ISettings>
+	let detailsMock: IMock<IDetails>
+	let parametersMock: IMock<IParameters>
+	let filtersMock: IMock<IFilters>
+	let settingsMock: IMock<ISettings>
 
 	const creator: ICreator = new Creator(
 		coreHelperMock.target,
@@ -62,10 +59,10 @@ describe("Creator", () => {
 	)
 
 	beforeEach(async () => {
-		detailsMock = TypeMoq.Mock.ofType<IDetails>()
-		parametersMock = TypeMoq.Mock.ofType<IParameters>()
-		filtersMock = TypeMoq.Mock.ofType<IFilters>()
-		settingsMock = TypeMoq.Mock.ofType<ISettings>()
+		detailsMock = Mock.ofType<IDetails>()
+		parametersMock = Mock.ofType<IParameters>()
+		filtersMock = Mock.ofType<IFilters>()
+		settingsMock = Mock.ofType<ISettings>()
 
 		parametersMock.target.filters = filtersMock.target
 		parametersMock.target.settings = settingsMock.target
@@ -82,10 +79,10 @@ describe("Creator", () => {
 
 		parametersMock.target.releaseType = ReleaseType.New
 
-		const projectMock = TypeMoq.Mock.ofType<TeamProject>()
-		const definitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>()
-		const releaseMock = TypeMoq.Mock.ofType<Release>()
-		const artifactFilterMock = TypeMoq.Mock.ofType<IArtifactFilter[]>()
+		const projectMock = Mock.ofType<TeamProject>()
+		const definitionMock = Mock.ofType<ReleaseDefinition>()
+		const releaseMock = Mock.ofType<Release>()
+		const artifactFilterMock = Mock.ofType<IArtifactFilter[]>()
 
 		coreHelperMock.setup((x) => x.getProject(parametersMock.target.projectName)).returns(() => Promise.resolve(projectMock.target))
 
@@ -115,7 +112,7 @@ describe("Creator", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
+		assert.notStrictEqual(result, null, "Result should not be null")
 
 		//#endregion
 	})
@@ -125,10 +122,10 @@ describe("Creator", () => {
 
 		parametersMock.target.releaseType = ReleaseType.Latest
 
-		const projectMock = TypeMoq.Mock.ofType<TeamProject>()
-		const definitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>()
-		const releaseMock = TypeMoq.Mock.ofType<Release>()
-		const releaseFilterMock = TypeMoq.Mock.ofType<IReleaseFilter>()
+		const projectMock = Mock.ofType<TeamProject>()
+		const definitionMock = Mock.ofType<ReleaseDefinition>()
+		const releaseMock = Mock.ofType<Release>()
+		const releaseFilterMock = Mock.ofType<IReleaseFilter>()
 
 		coreHelperMock.setup((x) => x.getProject(parametersMock.target.projectName)).returns(() => Promise.resolve(projectMock.target))
 
@@ -167,7 +164,7 @@ describe("Creator", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
+		assert.notStrictEqual(result, null, "Result should not be null")
 
 		//#endregion
 	})
@@ -177,9 +174,9 @@ describe("Creator", () => {
 
 		parametersMock.target.releaseType = ReleaseType.Specific
 
-		const projectMock = TypeMoq.Mock.ofType<TeamProject>()
-		const definitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>()
-		const releaseMock = TypeMoq.Mock.ofType<Release>()
+		const projectMock = Mock.ofType<TeamProject>()
+		const definitionMock = Mock.ofType<ReleaseDefinition>()
+		const releaseMock = Mock.ofType<Release>()
 
 		coreHelperMock.setup((x) => x.getProject(parametersMock.target.projectName)).returns(() => Promise.resolve(projectMock.target))
 
@@ -205,7 +202,7 @@ describe("Creator", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
+		assert.notStrictEqual(result, null, "Result should not be null")
 
 		//#endregion
 	})

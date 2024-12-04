@@ -1,11 +1,6 @@
 import "mocha"
-
-import * as chai from "chai"
-import * as TypeMoq from "typemoq"
-
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces"
 import { Release, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces"
-
 import { IDebugCreator } from "../../interfaces/loggers/idebugcreator"
 import { IConsoleLogger } from "../../interfaces/loggers/iconsolelogger"
 import { IDebugLogger } from "../../interfaces/loggers/idebuglogger"
@@ -22,34 +17,36 @@ import { IReleaseProgress } from "../../interfaces/common/ireleaseprogress"
 import { IStageProgress } from "../../interfaces/common/istageprogress"
 import { ReleaseStatus } from "../../interfaces/common/ireleasestatus"
 import { ISettings } from "../../interfaces/common/isettings"
+import assert from "assert"
+import { Mock, It, IMock } from "typemoq"
 
 describe("Deployer", () => {
-	const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>()
-	const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>()
-	debugCreatorMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
-	debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
+	const debugLoggerMock = Mock.ofType<IDebugLogger>()
+	const debugCreatorMock = Mock.ofType<IDebugCreator>()
+	debugCreatorMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugLoggerMock.target)
+	debugLoggerMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugLoggerMock.target)
 
-	const consoleLoggerMock = TypeMoq.Mock.ofType<IConsoleLogger>()
-	consoleLoggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null)
+	const consoleLoggerMock = Mock.ofType<IConsoleLogger>()
+	consoleLoggerMock.setup((x) => x.log(It.isAny())).returns(() => null)
 
-	const commonHelperMock = TypeMoq.Mock.ofType<ICommonHelper>()
-	const releaseHelperMock = TypeMoq.Mock.ofType<IReleaseHelper>()
-	const releaseApproverMock = TypeMoq.Mock.ofType<IApprover>()
-	const progressMonitorMock = TypeMoq.Mock.ofType<IMonitor>()
+	const commonHelperMock = Mock.ofType<ICommonHelper>()
+	const releaseHelperMock = Mock.ofType<IReleaseHelper>()
+	const releaseApproverMock = Mock.ofType<IApprover>()
+	const progressMonitorMock = Mock.ofType<IMonitor>()
 
-	const progressReporterMock = TypeMoq.Mock.ofType<IReporter>()
-	progressReporterMock.setup((x) => x.getStageProgress(TypeMoq.It.isAny())).returns(() => "")
-	progressReporterMock.setup((x) => x.getStagesProgress(TypeMoq.It.isAny())).returns(() => "")
+	const progressReporterMock = Mock.ofType<IReporter>()
+	progressReporterMock.setup((x) => x.getStageProgress(It.isAny())).returns(() => "")
+	progressReporterMock.setup((x) => x.getStagesProgress(It.isAny())).returns(() => "")
 
-	let detailsMock: TypeMoq.IMock<IDetails>
-	let releaseJobMock: TypeMoq.IMock<IReleaseJob>
-	let settingsMock: TypeMoq.IMock<ISettings>
-	let projectMock: TypeMoq.IMock<TeamProject>
-	let releaseMock: TypeMoq.IMock<Release>
-	let releaseProgressMock: TypeMoq.IMock<IReleaseProgress>
-	let releaseStatusMock: TypeMoq.IMock<Release>
-	let stageOneProgress: TypeMoq.IMock<IStageProgress>
-	let stageTwoProgress: TypeMoq.IMock<IStageProgress>
+	let detailsMock: IMock<IDetails>
+	let releaseJobMock: IMock<IReleaseJob>
+	let settingsMock: IMock<ISettings>
+	let projectMock: IMock<TeamProject>
+	let releaseMock: IMock<Release>
+	let releaseProgressMock: IMock<IReleaseProgress>
+	let releaseStatusMock: IMock<Release>
+	let stageOneProgress: IMock<IStageProgress>
+	let stageTwoProgress: IMock<IStageProgress>
 
 	const deployer: IDeployer = new Deployer(
 		commonHelperMock.target,
@@ -62,23 +59,23 @@ describe("Deployer", () => {
 	)
 
 	beforeEach(async () => {
-		detailsMock = TypeMoq.Mock.ofType<IDetails>()
-		releaseJobMock = TypeMoq.Mock.ofType<IReleaseJob>()
-		settingsMock = TypeMoq.Mock.ofType<ISettings>()
+		detailsMock = Mock.ofType<IDetails>()
+		releaseJobMock = Mock.ofType<IReleaseJob>()
+		settingsMock = Mock.ofType<ISettings>()
 
-		projectMock = TypeMoq.Mock.ofType<TeamProject>()
+		projectMock = Mock.ofType<TeamProject>()
 		projectMock.target.id = "1"
 
-		releaseMock = TypeMoq.Mock.ofType<Release>()
+		releaseMock = Mock.ofType<Release>()
 		releaseMock.target.id = 1
 
-		releaseProgressMock = TypeMoq.Mock.ofType<IReleaseProgress>()
-		releaseStatusMock = TypeMoq.Mock.ofType<Release>()
+		releaseProgressMock = Mock.ofType<IReleaseProgress>()
+		releaseStatusMock = Mock.ofType<Release>()
 
-		stageOneProgress = TypeMoq.Mock.ofType<IStageProgress>()
+		stageOneProgress = Mock.ofType<IStageProgress>()
 		stageOneProgress.setup((x) => x.name).returns(() => "My-Stage-One")
 
-		stageTwoProgress = TypeMoq.Mock.ofType<IStageProgress>()
+		stageTwoProgress = Mock.ofType<IStageProgress>()
 		stageTwoProgress.setup((x) => x.name).returns(() => "My-Stage-Two")
 
 		releaseJobMock.target.settings = settingsMock.target
@@ -103,7 +100,7 @@ describe("Deployer", () => {
 
 		//#region STAGE
 
-		const stageStatusMock = TypeMoq.Mock.ofType<ReleaseEnvironment>()
+		const stageStatusMock = Mock.ofType<ReleaseEnvironment>()
 
 		releaseHelperMock
 			.setup((x) => x.getReleaseStatus(releaseJobMock.target.project.name!, releaseJobMock.target.release.id!))
@@ -120,7 +117,7 @@ describe("Deployer", () => {
 		//#region START
 
 		releaseHelperMock
-			.setup((x) => x.startStage(stageStatusMock.target, releaseJobMock.target.project.name!, TypeMoq.It.isAnyString()))
+			.setup((x) => x.startStage(stageStatusMock.target, releaseJobMock.target.project.name!, It.isAnyString()))
 			.returns(() => Promise.resolve(stageStatusMock.target))
 
 		progressMonitorMock.setup((x) => x.updateStageProgress(stageOneProgress.target, stageStatusMock.target)).returns(() => null)
@@ -175,8 +172,8 @@ describe("Deployer", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.status).to.eq(ReleaseStatus.Succeeded)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.status, ReleaseStatus.Succeeded, "Release status should be Succeeded")
 
 		//#endregion
 	})
@@ -196,7 +193,7 @@ describe("Deployer", () => {
 
 		//#region STAGE
 
-		const stageStatusMock = TypeMoq.Mock.ofType<ReleaseEnvironment>()
+		const stageStatusMock = Mock.ofType<ReleaseEnvironment>()
 
 		releaseHelperMock
 			.setup((x) => x.getStageStatus(releaseStatusMock.target, stageOneProgress.target.name))
@@ -240,8 +237,8 @@ describe("Deployer", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.status).to.eq(ReleaseStatus.Succeeded)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.status, ReleaseStatus.Succeeded, "Release status should be Succeeded")
 
 		//#endregion
 	})
