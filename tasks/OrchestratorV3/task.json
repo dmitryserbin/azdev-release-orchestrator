@@ -1,0 +1,263 @@
+{
+	"id": "5d38d46b-4c0a-4c14-8f0c-04df59e4dc27",
+	"name": "releaseorchestrator",
+	"friendlyName": "Release Orchestrator",
+	"instanceNameFormat": "Release Orchestrator",
+	"description": "Manage and orchestrate Azure DevOps pipelines",
+	"helpMarkDown": "For aditional information and support please refer to <https://github.com/dmitryserbin/azdev-release-orchestrator> project repository",
+	"category": "Azure Pipelines",
+	"author": "Dmitry Serbin",
+	"deprecated": false,
+	"preview": false,
+	"version": {
+		"Major": 3,
+		"Minor": 2,
+		"Patch": 0
+	},
+	"groups": [
+		{
+			"name": "Advanced",
+			"displayName": "Advanced",
+			"isExpanded": true
+		}
+	],
+	"inputs": [
+		{
+			"name": "endpointType",
+			"type": "radio",
+			"label": "Azure DevOps endpoint type",
+			"helpMarkDown": "Endpoint type to connect to Azure DevOps\n\n- `integrated` – system `SYSTEMVSSCONNECTION` service endpoint for `Project Collection Build Service` account\n- `service` – user-defined Azure DevOps service endpoint using personal access token (PAT)",
+			"required": true,
+			"defaultValue": "integrated",
+			"options": {
+				"integrated": "Integrated endpoint",
+				"service": "Service endpoint"
+			}
+		},
+		{
+			"name": "endpointName",
+			"type": "connectedService:ExternalTfs",
+			"label": "Azure DevOps service endpoint",
+			"required": true,
+			"helpMarkDown": "Service endpoint for Azure DevOps connection",
+			"visibleRule": "endpointType = service"
+		},
+		{
+			"name": "projectName",
+			"type": "pickList",
+			"label": "Project name",
+			"helpMarkDown": "Target project name or project ID",
+			"required": true,
+			"properties": {
+				"EditableOptions": true
+			}
+		},
+		{
+			"name": "definitionName",
+			"type": "pickList",
+			"label": "Definition name",
+			"helpMarkDown": "Target pipeline definition name",
+			"required": true,
+			"properties": {
+				"EditableOptions": true
+			}
+		},
+		{
+			"name": "strategy",
+			"type": "radio",
+			"label": "Run strategy",
+			"helpMarkDown": "Strategy to perform target run orchestration\n\n- `new` – create new run\n- `latest` – select latest run\n- `specific` – target specific run",
+			"required": true,
+			"defaultValue": "new",
+			"options": {
+				"new": "New run",
+				"latest": "Latest run",
+				"specific": "Specific run"
+			}
+		},
+		{
+			"name": "stages",
+			"type": "string",
+			"label": "Stages",
+			"helpMarkDown": "Target definition or run stages (comma separated)",
+			"required": false
+		},
+		{
+			"name": "buildNumber",
+			"type": "string",
+			"label": "Build number",
+			"helpMarkDown": "Target build number (i.e. build name)",
+			"required": true,
+			"visibleRule": "strategy = specific"
+		},
+		{
+			"name": "branchName",
+			"type": "string",
+			"label": "Branch name",
+			"helpMarkDown": "Source branch name filter. Example: `mybranch`",
+			"required": false,
+			"visibleRule": "strategy = new || strategy = latest"
+		},
+		{
+			"name": "buildResult",
+			"type": "pickList",
+			"label": "Build result",
+			"helpMarkDown": "Target build result filter. Options: `Succeeded`, `PartiallySucceeded`, `Failed` or `Canceled`",
+			"properties": {
+				"EditableOptions": true
+			},
+			"options": {
+				"Succeeded": "Succeeded",
+				"PartiallySucceeded": "Partially succeeded",
+				"Failed": "Failed",
+				"Canceled": "Canceled"
+			},
+			"required": false,
+			"visibleRule": "strategy = latest"
+		},
+		{
+			"name": "buildTags",
+			"type": "string",
+			"label": "Build tags",
+			"helpMarkDown": "Target build tags filter (comma separated)",
+			"required": false,
+			"visibleRule": "strategy = latest"
+		},
+		{
+			"name": "parameters",
+			"type": "multiLine",
+			"label": "Parameters",
+			"helpMarkDown": "Override target pipeline parameters when creating a new run. In `Name=Value` format, special characters supported, new line separated",
+			"properties": {
+				"rows": 8,
+				"maxLength": 10000,
+				"resizable": true
+			},
+			"required": false,
+			"visibleRule": "strategy = new"
+		},
+		{
+			"name": "ignoreFailure",
+			"type": "boolean",
+			"label": "Ignore progress failure",
+			"helpMarkDown": "Suppress progress errors and set task result to partially succeeded in case of a failure. Default: `false`",
+			"defaultValue": false,
+			"required": false,
+			"groupName": "Advanced"
+		},
+		{
+			"name": "skipTracking",
+			"type": "boolean",
+			"label": "Skip progress tracking",
+			"helpMarkDown": "Skip target run stage progress tracking (i.e. do not wait for run to complete). Default: `false`",
+			"defaultValue": false,
+			"required": false,
+			"groupName": "Advanced"
+		},
+		{
+			"name": "cancelFailedCheckpoint",
+			"type": "boolean",
+			"label": "Cancel failed checkpoint",
+			"helpMarkDown": "Cancel run progress when stage approval or check fails. Default: `false`",
+			"defaultValue": false,
+			"required": false,
+			"groupName": "Advanced"
+		},
+		{
+			"name": "proceedSkippedStages",
+			"type": "boolean",
+			"label": "Ignore skipped stages",
+			"helpMarkDown": "Proceed as normal when targeting existing run with skipped stages or stages pending dependencies. Default: `false`",
+			"defaultValue": false,
+			"required": false,
+			"visibleRule": "strategy = latest || strategy = specific",
+			"groupName": "Advanced"
+		},
+		{
+			"name": "updateInterval",
+			"type": "int",
+			"label": "Update interval",
+			"helpMarkDown": "Number of seconds to wait before next run progress update. Default: `5` (seconds)",
+			"defaultValue": 5,
+			"required": true,
+			"validation": {
+				"expression": "isInRange(value, 1, 300)",
+				"message": "Update interval must be within 1 <=> 300 range"
+			},
+			"groupName": "Advanced"
+		},
+		{
+			"name": "stageStartAttempts",
+			"type": "int",
+			"label": "Stage start attempts",
+			"helpMarkDown": "Number of attempts to retry starting target stage (if unsuccessful) before failing. Default: `10` (times)",
+			"defaultValue": 10,
+			"required": true,
+			"validation": {
+				"expression": "isInRange(value, 0, 100)",
+				"message": "Stage start attempts must be within 0 <=> 100 range"
+			},
+			"groupName": "Advanced"
+		},
+		{
+			"name": "stageStartInterval",
+			"type": "int",
+			"label": "Stage start interval",
+			"helpMarkDown": "Number of seconds to wait before next stage start attempt. Default: `60` (seconds)",
+			"defaultValue": 60,
+			"required": true,
+			"validation": {
+				"expression": "isInRange(value, 1, 300)",
+				"message": "Stage start interval must be within 1 <=> 300 range"
+			},
+			"groupName": "Advanced"
+		},
+		{
+			"name": "approvalInterval",
+			"type": "int",
+			"label": "Approval interval",
+			"helpMarkDown": "Number of seconds to wait before next stage approval attempt. Default: `60` (seconds)",
+			"defaultValue": 60,
+			"required": true,
+			"validation": {
+				"expression": "isInRange(value, 1, 300)",
+				"message": "Approval interval must be within 1 <=> 300 range"
+			},
+			"groupName": "Advanced"
+		},
+		{
+			"name": "approvalAttempts",
+			"type": "int",
+			"label": "Approval attempts",
+			"helpMarkDown": "Number of attempts to retry approving target stage (if unsuccessful) before failing. Default: `10` (times)",
+			"defaultValue": 10,
+			"required": true,
+			"validation": {
+				"expression": "isInRange(value, 0, 100)",
+				"message": "Approval attempts must be within 0 <=> 100 range"
+			},
+			"groupName": "Advanced"
+		}
+	],
+	"dataSourceBindings": [
+		{
+			"target": "projectName",
+			"endpointId": "tfs:teamfoundation",
+			"endpointUrl": "{{endpoint.url}}/_apis/projects",
+			"resultSelector": "jsonpath:$.value[?(@.state == 'wellFormed')]",
+			"resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+		},
+		{
+			"target": "definitionName",
+			"endpointId": "tfs:teamfoundation",
+			"endpointUrl": "{{endpoint.url}}/$(projectName)/_apis/build/definitions",
+			"resultSelector": "jsonpath:$.value[?(@.quality == 'definition')]",
+			"resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+		}
+	],
+	"execution": {
+		"Node20_1": {
+			"target": "task.js"
+		}
+	}
+}
