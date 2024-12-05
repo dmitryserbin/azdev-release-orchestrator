@@ -1,12 +1,7 @@
 import "mocha"
-
-import * as chai from "chai"
-import * as TypeMoq from "typemoq"
-
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces"
 import { Build } from "azure-devops-node-api/interfaces/BuildInterfaces"
 import { Artifact, ArtifactMetadata, EnvironmentStatus, ReleaseDefinition, ReleaseStatus } from "azure-devops-node-api/interfaces/ReleaseInterfaces"
-
 import { IParameters } from "../../interfaces/task/iparameters"
 import { IDebugCreator } from "../../interfaces/loggers/idebugcreator"
 import { IConsoleLogger } from "../../interfaces/loggers/iconsolelogger"
@@ -17,18 +12,20 @@ import { IFilters } from "../../interfaces/task/ifilters"
 import { ISettings } from "../../interfaces/common/isettings"
 import { IFiltrator } from "../../interfaces/orchestrator/ifiltrator"
 import { Filtrator } from "../../orchestrator/filtrator"
+import { IMock, It, Mock } from "typemoq"
+import assert from "assert"
 
 describe("Filtrator", () => {
-	const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>()
-	const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>()
-	debugCreatorMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
-	debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
+	const debugLoggerMock = Mock.ofType<IDebugLogger>()
+	const debugCreatorMock = Mock.ofType<IDebugCreator>()
+	debugCreatorMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugLoggerMock.target)
+	debugLoggerMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugLoggerMock.target)
 
-	const consoleLoggerMock = TypeMoq.Mock.ofType<IConsoleLogger>()
-	consoleLoggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null)
+	const consoleLoggerMock = Mock.ofType<IConsoleLogger>()
+	consoleLoggerMock.setup((x) => x.log(It.isAny())).returns(() => null)
 
-	const buildHelperMock = TypeMoq.Mock.ofType<IBuildHelper>()
-	const releaseHelperMock = TypeMoq.Mock.ofType<IReleaseHelper>()
+	const buildHelperMock = Mock.ofType<IBuildHelper>()
+	const releaseHelperMock = Mock.ofType<IReleaseHelper>()
 
 	const buildCount: number = 1
 
@@ -50,20 +47,20 @@ describe("Filtrator", () => {
 		project: projectReferenceMock,
 	}
 
-	let projectMock: TypeMoq.IMock<TeamProject>
-	let definitionMock: TypeMoq.IMock<ReleaseDefinition>
-	let parametersMock: TypeMoq.IMock<IParameters>
-	let filtersMock: TypeMoq.IMock<IFilters>
-	let settingsMock: TypeMoq.IMock<ISettings>
+	let projectMock: IMock<TeamProject>
+	let definitionMock: IMock<ReleaseDefinition>
+	let parametersMock: IMock<IParameters>
+	let filtersMock: IMock<IFilters>
+	let settingsMock: IMock<ISettings>
 
 	const filterCreator: IFiltrator = new Filtrator(buildHelperMock.target, releaseHelperMock.target, debugCreatorMock.target)
 
 	beforeEach(async () => {
-		projectMock = TypeMoq.Mock.ofType<TeamProject>()
-		definitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>()
-		parametersMock = TypeMoq.Mock.ofType<IParameters>()
-		filtersMock = TypeMoq.Mock.ofType<IFilters>()
-		settingsMock = TypeMoq.Mock.ofType<ISettings>()
+		projectMock = Mock.ofType<TeamProject>()
+		definitionMock = Mock.ofType<ReleaseDefinition>()
+		parametersMock = Mock.ofType<IParameters>()
+		filtersMock = Mock.ofType<IFilters>()
+		settingsMock = Mock.ofType<ISettings>()
 
 		parametersMock.target.filters = filtersMock.target
 		parametersMock.target.settings = settingsMock.target
@@ -79,13 +76,13 @@ describe("Filtrator", () => {
 		filtersMock.target.artifactBranch = "My-Branch"
 		filtersMock.target.artifactTags = ["My-Tag-One", "My-Tag-Two"]
 
-		const artifactsMock = TypeMoq.Mock.ofType<ArtifactMetadata[]>()
+		const artifactsMock = Mock.ofType<ArtifactMetadata[]>()
 
-		const primaryBuildArtifactMock = TypeMoq.Mock.ofType<Artifact>()
+		const primaryBuildArtifactMock = Mock.ofType<Artifact>()
 		primaryBuildArtifactMock.target.sourceId = "1"
 		primaryBuildArtifactMock.target.definitionReference = buildDefinitionReferenceMock
 
-		const buildArtifactMock = TypeMoq.Mock.ofType<Build>()
+		const buildArtifactMock = Mock.ofType<Build>()
 		buildArtifactMock.target.id = 1
 
 		releaseHelperMock
@@ -127,7 +124,7 @@ describe("Filtrator", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
+		assert.notStrictEqual(result, null, "Result should not be null")
 
 		//#endregion
 	})
@@ -141,11 +138,11 @@ describe("Filtrator", () => {
 		filtersMock.target.artifactBranch = "My-Branch"
 		filtersMock.target.stageStatuses = ["succeeded", "rejected"]
 
-		const primaryBuildArtifactMock = TypeMoq.Mock.ofType<Artifact>()
+		const primaryBuildArtifactMock = Mock.ofType<Artifact>()
 		primaryBuildArtifactMock.target.sourceId = "1"
 		primaryBuildArtifactMock.target.definitionReference = buildDefinitionReferenceMock
 
-		const buildArtifactMock = TypeMoq.Mock.ofType<Build>()
+		const buildArtifactMock = Mock.ofType<Build>()
 		buildArtifactMock.target.id = 1
 
 		releaseHelperMock
@@ -175,13 +172,13 @@ describe("Filtrator", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.artifactVersionId).to.eq(buildArtifactMock.target.id)
-		chai.expect(result.artifactBranch).to.eq(filtersMock.target.artifactBranch)
-		chai.expect(result.tags).to.eql(filtersMock.target.releaseTags)
-		chai.expect(result.stages).to.eql(parametersMock.target.stages)
-		chai.expect(result.stageStatuses).to.eql([EnvironmentStatus.Succeeded, EnvironmentStatus.Rejected])
-		chai.expect(result.releaseStatus).to.eq(ReleaseStatus.Active)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.artifactVersionId, buildArtifactMock.target.id, "Artifact version ID should match")
+		assert.strictEqual(result.artifactBranch, filtersMock.target.artifactBranch, "Artifact branch should match")
+		assert.deepStrictEqual(result.tags, filtersMock.target.releaseTags, "Release tags should match")
+		assert.deepStrictEqual(result.stages, parametersMock.target.stages, "Stages should match")
+		assert.deepStrictEqual(result.stageStatuses, [EnvironmentStatus.Succeeded, EnvironmentStatus.Rejected], "Stage statuses should match")
+		assert.strictEqual(result.releaseStatus, ReleaseStatus.Active, "Release status should be Active")
 
 		//#endregion
 	})

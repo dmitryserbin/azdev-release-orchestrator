@@ -1,20 +1,19 @@
 import "mocha"
-
-import * as chai from "chai"
-import * as TypeMoq from "typemoq"
+import assert from "assert"
 import { IDebugLogger } from "../../interfaces/loggers/idebuglogger"
 import { IDebugCreator } from "../../interfaces/loggers/idebugcreator"
 import { ReleaseHelper } from "../../helpers/releasehelper"
 import { IReleaseApiRetry } from "../../interfaces/extensions/ireleaseapiretry"
 import { ReleaseDefinition } from "azure-devops-node-api/interfaces/ReleaseInterfaces"
+import { It, Mock } from "typemoq"
 
 describe("ReleaseHelper", () => {
-	const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>()
-	const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>()
-	const releaseApiRetryMock = TypeMoq.Mock.ofType<IReleaseApiRetry>()
+	const debugLoggerMock = Mock.ofType<IDebugLogger>()
+	const debugCreatorMock = Mock.ofType<IDebugCreator>()
+	const releaseApiRetryMock = Mock.ofType<IReleaseApiRetry>()
 
-	debugCreatorMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
-	debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
+	debugCreatorMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugLoggerMock.target)
+	debugLoggerMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugLoggerMock.target)
 
 	const releaseHelper = new ReleaseHelper(releaseApiRetryMock.object, debugCreatorMock.object)
 	const projectName = "projectName"
@@ -26,7 +25,7 @@ describe("ReleaseHelper", () => {
 		const isExactNameMatch = true
 		const releaseDefinitionId = 123
 
-		const releaseDefinitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>()
+		const releaseDefinitionMock = Mock.ofType<ReleaseDefinition>()
 		releaseDefinitionMock.setup((x) => x.id).returns(() => releaseDefinitionId)
 
 		const releaseDefinitions: ReleaseDefinition[] = [releaseDefinitionMock.target]
@@ -60,9 +59,8 @@ describe("ReleaseHelper", () => {
 
 		//#region Assert
 
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		chai.expect(releaseDefinition).is.not.undefined
-		chai.expect(releaseDefinition.id).to.equal(releaseDefinitionId)
+		assert.notStrictEqual(releaseDefinition, undefined, "releaseDefinition is undefined")
+		assert.strictEqual(releaseDefinition.id, releaseDefinitionId, "releaseDefinition.id is not equal to releaseDefinitionId")
 
 		//#endregion
 	})
@@ -73,7 +71,7 @@ describe("ReleaseHelper", () => {
 		const numericDefinitionName = "101"
 		const releaseDefinitionId = 101
 
-		const releaseDefinitionMock = TypeMoq.Mock.ofType<ReleaseDefinition>()
+		const releaseDefinitionMock = Mock.ofType<ReleaseDefinition>()
 		releaseDefinitionMock.setup((x) => x.id).returns(() => releaseDefinitionId)
 
 		const releaseDefinitions: ReleaseDefinition[] = [releaseDefinitionMock.target]
@@ -93,7 +91,7 @@ describe("ReleaseHelper", () => {
 					undefined,
 					undefined,
 					undefined,
-					TypeMoq.It.is((x) => x![0] === numericDefinitionName),
+					It.is((x) => x![0] === numericDefinitionName),
 				),
 			)
 			.returns(() => Promise.resolve(releaseDefinitions))
@@ -110,9 +108,8 @@ describe("ReleaseHelper", () => {
 
 		//#region Assert
 
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		chai.expect(releaseDefinition).is.not.undefined
-		chai.expect(releaseDefinition.id).to.equal(releaseDefinitionId)
+		assert.notStrictEqual(releaseDefinition, undefined, "releaseDefinition is undefined")
+		assert.strictEqual(releaseDefinition.id, releaseDefinitionId, "releaseDefinition.id is not equal to releaseDefinitionId")
 
 		//#endregion
 	})

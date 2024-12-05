@@ -1,10 +1,5 @@
 import "mocha"
-
-import * as chai from "chai"
-import * as TypeMoq from "typemoq"
-
 import { Release } from "azure-devops-node-api/interfaces/ReleaseInterfaces"
-
 import { IParameters } from "../../interfaces/task/iparameters"
 import { IDetails } from "../../interfaces/task/idetails"
 import { IOrchestrator } from "../../interfaces/orchestrator/iorchestrator"
@@ -20,40 +15,42 @@ import { ReleaseType } from "../../interfaces/common/ireleasetype"
 import { IDebugLogger } from "../../interfaces/loggers/idebuglogger"
 import { DeploymentType } from "../../interfaces/common/ideploymenttype"
 import { IReleaseProgress } from "../../interfaces/common/ireleaseprogress"
+import assert from "assert"
+import { Mock, It, IMock } from "typemoq"
 
 describe("Orchestrator", () => {
-	const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>()
-	const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>()
-	debugCreatorMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
-	debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
+	const debugLoggerMock = Mock.ofType<IDebugLogger>()
+	const debugCreatorMock = Mock.ofType<IDebugCreator>()
+	debugCreatorMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugLoggerMock.target)
+	debugLoggerMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugLoggerMock.target)
 
-	const consoleLoggerMock = TypeMoq.Mock.ofType<IConsoleLogger>()
-	consoleLoggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null)
+	const consoleLoggerMock = Mock.ofType<IConsoleLogger>()
+	consoleLoggerMock.setup((x) => x.log(It.isAny())).returns(() => null)
 
-	const creatorMock = TypeMoq.Mock.ofType<ICreator>()
-	const deployerMock = TypeMoq.Mock.ofType<IDeployer>()
+	const creatorMock = Mock.ofType<ICreator>()
+	const deployerMock = Mock.ofType<IDeployer>()
 
-	const reporterMock = TypeMoq.Mock.ofType<IReporter>()
-	reporterMock.setup((x) => x.getRelease(TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(() => "")
-	reporterMock.setup((x) => x.getReleaseProgress(TypeMoq.It.isAny())).returns(() => "")
+	const reporterMock = Mock.ofType<IReporter>()
+	reporterMock.setup((x) => x.getRelease(It.isAny(), It.isAny())).returns(() => "")
+	reporterMock.setup((x) => x.getReleaseProgress(It.isAny())).returns(() => "")
 
-	const orchestratorFactoryMock = TypeMoq.Mock.ofType<IOrchestratorFactory>()
+	const orchestratorFactoryMock = Mock.ofType<IOrchestratorFactory>()
 	orchestratorFactoryMock.setup((x) => x.createCreator()).returns(() => Promise.resolve(creatorMock.target))
 	orchestratorFactoryMock.setup((x) => x.createDeployer()).returns(() => Promise.resolve(deployerMock.target))
 	orchestratorFactoryMock.setup((x) => x.createReporter()).returns(() => Promise.resolve(reporterMock.target))
 
-	let detailsMock: TypeMoq.IMock<IDetails>
-	let parametersMock: TypeMoq.IMock<IParameters>
-	let releaseJobMock: TypeMoq.IMock<IReleaseJob>
-	let releaseProgressMock: TypeMoq.IMock<IReleaseProgress>
+	let detailsMock: IMock<IDetails>
+	let parametersMock: IMock<IParameters>
+	let releaseJobMock: IMock<IReleaseJob>
+	let releaseProgressMock: IMock<IReleaseProgress>
 
 	const orchestrator: IOrchestrator = new Orchestrator(orchestratorFactoryMock.target, debugCreatorMock.target, consoleLoggerMock.target)
 
 	beforeEach(async () => {
-		detailsMock = TypeMoq.Mock.ofType<IDetails>()
-		parametersMock = TypeMoq.Mock.ofType<IParameters>()
-		releaseJobMock = TypeMoq.Mock.ofType<IReleaseJob>()
-		releaseProgressMock = TypeMoq.Mock.ofType<IReleaseProgress>()
+		detailsMock = Mock.ofType<IDetails>()
+		parametersMock = Mock.ofType<IParameters>()
+		releaseJobMock = Mock.ofType<IReleaseJob>()
+		releaseProgressMock = Mock.ofType<IReleaseProgress>()
 
 		creatorMock.reset()
 		deployerMock.reset()
@@ -65,7 +62,7 @@ describe("Orchestrator", () => {
 
 		parametersMock.target.releaseType = ReleaseType.New
 		releaseJobMock.target.type = DeploymentType.Automated
-		releaseJobMock.target.release = TypeMoq.Mock.ofType<Release>().target
+		releaseJobMock.target.release = Mock.ofType<Release>().target
 
 		creatorMock.setup((x) => x.createJob(parametersMock.target, detailsMock.target)).returns(() => Promise.resolve(releaseJobMock.target))
 
@@ -81,7 +78,7 @@ describe("Orchestrator", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
+		assert.notStrictEqual(result, null, "Result should not be null")
 
 		//#endregion
 	})
@@ -91,7 +88,7 @@ describe("Orchestrator", () => {
 
 		parametersMock.target.releaseType = ReleaseType.New
 		releaseJobMock.target.type = DeploymentType.Manual
-		releaseJobMock.target.release = TypeMoq.Mock.ofType<Release>().target
+		releaseJobMock.target.release = Mock.ofType<Release>().target
 
 		creatorMock.setup((x) => x.createJob(parametersMock.target, detailsMock.target)).returns(() => Promise.resolve(releaseJobMock.target))
 
@@ -107,7 +104,7 @@ describe("Orchestrator", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
+		assert.notStrictEqual(result, null, "Result should not be null")
 
 		//#endregion
 	})
@@ -117,7 +114,7 @@ describe("Orchestrator", () => {
 
 		parametersMock.target.releaseType = ReleaseType.Latest
 		releaseJobMock.target.type = DeploymentType.Manual
-		releaseJobMock.target.release = TypeMoq.Mock.ofType<Release>().target
+		releaseJobMock.target.release = Mock.ofType<Release>().target
 
 		creatorMock.setup((x) => x.createJob(parametersMock.target, detailsMock.target)).returns(() => Promise.resolve(releaseJobMock.target))
 
@@ -133,7 +130,7 @@ describe("Orchestrator", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
+		assert.notStrictEqual(result, null, "Result should not be null")
 
 		//#endregion
 	})
@@ -143,7 +140,7 @@ describe("Orchestrator", () => {
 
 		parametersMock.target.releaseType = ReleaseType.Specific
 		releaseJobMock.target.type = DeploymentType.Manual
-		releaseJobMock.target.release = TypeMoq.Mock.ofType<Release>().target
+		releaseJobMock.target.release = Mock.ofType<Release>().target
 
 		creatorMock.setup((x) => x.createJob(parametersMock.target, detailsMock.target)).returns(() => Promise.resolve(releaseJobMock.target))
 
@@ -159,7 +156,7 @@ describe("Orchestrator", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
+		assert.notStrictEqual(result, null, "Result should not be null")
 
 		//#endregion
 	})

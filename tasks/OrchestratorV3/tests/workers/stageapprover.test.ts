@@ -1,12 +1,6 @@
 import "mocha"
-
-import * as chai from "chai"
-import * as TypeMoq from "typemoq"
-
 import { faker } from "@faker-js/faker"
-
 import { Build, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces"
-
 import { ILogger } from "../../loggers/ilogger"
 import { IDebug } from "../../loggers/idebug"
 import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper"
@@ -18,16 +12,18 @@ import { StageApprover } from "../../workers/stageapprover/stageapprover"
 import { IBuildSelector } from "../../helpers/buildselector/ibuildselector"
 import { IBuildApproval } from "../../workers/progressmonitor/ibuildapproval"
 import { IBuildCheck } from "../../workers/progressmonitor/ibuildcheck"
+import assert from "assert"
+import { Mock, It, Times } from "typemoq"
 
 describe("StageApprover", async () => {
-	const loggerMock = TypeMoq.Mock.ofType<ILogger>()
-	const debugMock = TypeMoq.Mock.ofType<IDebug>()
+	const loggerMock = Mock.ofType<ILogger>()
+	const debugMock = Mock.ofType<IDebug>()
 
-	loggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null)
+	loggerMock.setup((x) => x.log(It.isAny())).returns(() => null)
 
-	loggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
+	loggerMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugMock.object)
 
-	debugMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
+	debugMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugMock.object)
 
 	const buildMock = {
 		buildNumber: faker.word.sample(),
@@ -39,9 +35,9 @@ describe("StageApprover", async () => {
 	let approvalOneMock: IBuildApproval
 	let checkOneMock: IBuildCheck
 
-	const commonHelperMock = TypeMoq.Mock.ofType<ICommonHelper>()
-	const buildSelectorMock = TypeMoq.Mock.ofType<IBuildSelector>()
-	const stageSelectorMock = TypeMoq.Mock.ofType<IStageSelector>()
+	const commonHelperMock = Mock.ofType<ICommonHelper>()
+	const buildSelectorMock = Mock.ofType<IBuildSelector>()
+	const stageSelectorMock = Mock.ofType<IStageSelector>()
 
 	const stageApprover: IStageApprover = new StageApprover(buildSelectorMock.object, stageSelectorMock.object, commonHelperMock.object, loggerMock.object)
 
@@ -90,7 +86,7 @@ describe("StageApprover", async () => {
 		stageSelectorMock
 			.setup((x) => x.approveStage(buildMock, approvalOneMock, undefined))
 			.returns(() => Promise.resolve(approvedResult))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		//#endregion
 
@@ -102,7 +98,7 @@ describe("StageApprover", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
+		assert.notStrictEqual(result, null, "Result should not be null")
 
 		stageSelectorMock.verifyAll()
 
@@ -117,18 +113,18 @@ describe("StageApprover", async () => {
 		stageSelectorMock
 			.setup((x) => x.approveStage(buildMock, approvalOneMock, undefined))
 			.returns(() => Promise.resolve(approvedResult))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		buildSelectorMock
 			.setup((x) => x.cancelBuild(buildMock))
 			.returns(() => Promise.resolve(buildMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		//#endregion
 
 		//#region ACT
 
-		await chai.expect(stageApprover.approve(stageOneMock, buildMock, settingsMock)).to.be.rejected
+		await assert.rejects(stageApprover.approve(stageOneMock, buildMock, settingsMock), "Approval should be rejected")
 
 		//#endregion
 
@@ -155,7 +151,7 @@ describe("StageApprover", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
+		assert.notStrictEqual(result, null, "Result should not be null")
 
 		//#endregion
 	})
@@ -166,13 +162,13 @@ describe("StageApprover", async () => {
 		buildSelectorMock
 			.setup((x) => x.cancelBuild(buildMock))
 			.returns(() => Promise.resolve(buildMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		//#endregion
 
 		//#region ACT
 
-		await chai.expect(stageApprover.check(stageOneMock, buildMock, settingsMock)).to.be.rejected
+		await assert.rejects(stageApprover.check(stageOneMock, buildMock, settingsMock), "Validation should be rejected")
 
 		//#endregion
 
@@ -192,7 +188,7 @@ describe("StageApprover", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.eq(true)
+		assert.strictEqual(result, true, "Approval should be pending")
 
 		//#endregion
 	})
@@ -206,7 +202,7 @@ describe("StageApprover", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.eq(true)
+		assert.strictEqual(result, true, "Check should be pending")
 
 		//#endregion
 	})

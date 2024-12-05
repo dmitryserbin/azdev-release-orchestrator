@@ -1,10 +1,5 @@
 import "mocha"
-
-import * as chai from "chai"
-import * as TypeMoq from "typemoq"
-
 import { faker } from "@faker-js/faker"
-
 import { ILogger } from "../../loggers/ilogger"
 import { IDebug } from "../../loggers/idebug"
 import { IRunCreator } from "../../workers/runcreator/iruncreator"
@@ -16,20 +11,22 @@ import { IRunProgress } from "../../orchestrator/irunprogress"
 import { IOrchestrator } from "../../orchestrator/iorchestrator"
 import { Orchestrator } from "../../orchestrator/orchestrator"
 import { Strategy } from "../../helpers/taskhelper/strategy"
+import assert from "assert"
+import { Mock, It, Times } from "typemoq"
 
 describe("Orchestrator", async () => {
-	const loggerMock = TypeMoq.Mock.ofType<ILogger>()
-	const debugMock = TypeMoq.Mock.ofType<IDebug>()
+	const loggerMock = Mock.ofType<ILogger>()
+	const debugMock = Mock.ofType<IDebug>()
 
-	loggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null)
+	loggerMock.setup((x) => x.log(It.isAny())).returns(() => null)
 
-	loggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
+	loggerMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugMock.object)
 
-	debugMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
+	debugMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugMock.object)
 
-	const runCreatorMock = TypeMoq.Mock.ofType<IRunCreator>()
-	const runDeployerMock = TypeMoq.Mock.ofType<IRunDeployer>()
-	const progressReporterMock = TypeMoq.Mock.ofType<IProgressReporter>()
+	const runCreatorMock = Mock.ofType<IRunCreator>()
+	const runDeployerMock = Mock.ofType<IRunDeployer>()
+	const progressReporterMock = Mock.ofType<IProgressReporter>()
 
 	const parametersMock = {
 		projectName: faker.word.sample(),
@@ -37,9 +34,9 @@ describe("Orchestrator", async () => {
 	} as IParameters
 
 	const runMock = {
-		project: TypeMoq.It.isAny(),
-		definition: TypeMoq.It.isAny(),
-		build: TypeMoq.It.isAny(),
+		project: It.isAny(),
+		definition: It.isAny(),
+		build: It.isAny(),
 	} as IRun
 
 	const runProgressMock = {
@@ -53,9 +50,9 @@ describe("Orchestrator", async () => {
 		runDeployerMock.reset()
 		progressReporterMock.reset()
 
-		progressReporterMock.setup((x) => x.logRun(TypeMoq.It.isAny())).returns(() => null)
+		progressReporterMock.setup((x) => x.logRun(It.isAny())).returns(() => null)
 
-		progressReporterMock.setup((x) => x.logRunProgress(TypeMoq.It.isAny())).returns(() => null)
+		progressReporterMock.setup((x) => x.logRunProgress(It.isAny())).returns(() => null)
 	})
 
 	it("Should orchestrate new run", async () => {
@@ -66,12 +63,12 @@ describe("Orchestrator", async () => {
 		runCreatorMock
 			.setup((x) => x.create(parametersMock))
 			.returns(() => Promise.resolve(runMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		runDeployerMock
 			.setup((x) => x.deployAutomated(runMock))
 			.returns(() => Promise.resolve(runProgressMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		//#endregion
 
@@ -83,7 +80,7 @@ describe("Orchestrator", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
+		assert.notStrictEqual(result, null, "Result should not be null")
 
 		runCreatorMock.verifyAll()
 		runDeployerMock.verifyAll()
@@ -99,12 +96,12 @@ describe("Orchestrator", async () => {
 		runCreatorMock
 			.setup((x) => x.create(parametersMock))
 			.returns(() => Promise.resolve(runMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		runDeployerMock
 			.setup((x) => x.deployManual(runMock))
 			.returns(() => Promise.resolve(runProgressMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		//#endregion
 
@@ -116,7 +113,7 @@ describe("Orchestrator", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
+		assert.notStrictEqual(result, null, "Result should not be null")
 
 		runCreatorMock.verifyAll()
 		runDeployerMock.verifyAll()
@@ -132,12 +129,12 @@ describe("Orchestrator", async () => {
 		runCreatorMock
 			.setup((x) => x.create(parametersMock))
 			.returns(() => Promise.resolve(runMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		runDeployerMock
 			.setup((x) => x.deployManual(runMock))
 			.returns(() => Promise.resolve(runProgressMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		//#endregion
 
@@ -149,7 +146,7 @@ describe("Orchestrator", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
+		assert.notStrictEqual(result, null, "Result should not be null")
 
 		runCreatorMock.verifyAll()
 		runDeployerMock.verifyAll()

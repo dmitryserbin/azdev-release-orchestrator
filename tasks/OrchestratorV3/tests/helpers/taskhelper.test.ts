@@ -1,27 +1,25 @@
 import "mocha"
 
-import * as chai from "chai"
-import * as TypeMoq from "typemoq"
 import { ImportMock } from "ts-mock-imports"
-
 import * as TaskLibrary from "azure-pipelines-task-lib/task"
-
 import { ILogger } from "../../loggers/ilogger"
 import { ITaskHelper } from "../../helpers/taskhelper/itaskhelper"
 import { TaskHelper } from "../../helpers/taskhelper/taskhelper"
 import { CommonHelper } from "../../helpers/commonhelper/commonhelper"
 import { IDebug } from "../../loggers/idebug"
 import { Strategy } from "../../helpers/taskhelper/strategy"
+import assert from "assert"
+import { Mock, It } from "typemoq"
 
 describe("TaskHelper", () => {
-	const loggerMock = TypeMoq.Mock.ofType<ILogger>()
-	const debugMock = TypeMoq.Mock.ofType<IDebug>()
+	const loggerMock = Mock.ofType<ILogger>()
+	const debugMock = Mock.ofType<IDebug>()
 
-	loggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null)
+	loggerMock.setup((x) => x.log(It.isAny())).returns(() => null)
 
-	loggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
+	loggerMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugMock.object)
 
-	debugMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
+	debugMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugMock.object)
 
 	const endpointNameMock: string = "My-Endpoint"
 	const endpointUrlMock: string = "https://dev.azure.com/My-Organization"
@@ -104,9 +102,9 @@ describe("TaskHelper", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.url).to.eq(endpointUrlMock)
-		chai.expect(result.token).to.eq(endpointTokenMock)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.url, endpointUrlMock, "Endpoint URL should match")
+		assert.strictEqual(result.token, endpointTokenMock, "Endpoint token should match")
 
 		//#endregion
 	})
@@ -148,10 +146,10 @@ describe("TaskHelper", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.strategy).to.eq(Strategy.New)
-		chai.expect(result.projectName).to.eq(projectNameMock)
-		chai.expect(result.definitionName).to.eq(definitionNameMock)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.strategy, Strategy.New, "Strategy should be new")
+		assert.strictEqual(result.projectName, projectNameMock, "Project name should match")
+		assert.strictEqual(result.definitionName, definitionNameMock, "Definition name should match")
 
 		//#endregion
 	})

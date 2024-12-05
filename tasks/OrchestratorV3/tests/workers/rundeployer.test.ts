@@ -1,13 +1,7 @@
 import "mocha"
-
-import * as chai from "chai"
-import * as TypeMoq from "typemoq"
-
 import { faker } from "@faker-js/faker"
-
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces"
 import { Build, BuildDefinition, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces"
-
 import { ILogger } from "../../loggers/ilogger"
 import { IDebug } from "../../loggers/idebug"
 import { IProgressReporter } from "../../workers/progressreporter/iprogressreporter"
@@ -22,16 +16,18 @@ import { RunStatus } from "../../orchestrator/runstatus"
 import { IBuildStage } from "../../workers/progressmonitor/ibuildstage"
 import { IBuildJob } from "../../workers/progressmonitor/ibuildjob"
 import { IStageDeployer } from "../../workers/stagedeployer/istagedeployer"
+import assert from "assert"
+import { Mock, It, Times } from "typemoq"
 
 describe("RunDeployer", async () => {
-	const loggerMock = TypeMoq.Mock.ofType<ILogger>()
-	const debugMock = TypeMoq.Mock.ofType<IDebug>()
+	const loggerMock = Mock.ofType<ILogger>()
+	const debugMock = Mock.ofType<IDebug>()
 
-	loggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null)
+	loggerMock.setup((x) => x.log(It.isAny())).returns(() => null)
 
-	loggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
+	loggerMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugMock.object)
 
-	debugMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
+	debugMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugMock.object)
 
 	const settingsMock = {
 		proceedSkippedStages: false,
@@ -63,10 +59,10 @@ describe("RunDeployer", async () => {
 	let runProgressMock: IRunProgress
 	let stageOneMock: IBuildStage
 
-	const commonHelperMock = TypeMoq.Mock.ofType<ICommonHelper>()
-	const stageDeployerMock = TypeMoq.Mock.ofType<IStageDeployer>()
-	const progressMonitorMock = TypeMoq.Mock.ofType<IProgressMonitor>()
-	const progressReporterMock = TypeMoq.Mock.ofType<IProgressReporter>()
+	const commonHelperMock = Mock.ofType<ICommonHelper>()
+	const stageDeployerMock = Mock.ofType<IStageDeployer>()
+	const progressMonitorMock = Mock.ofType<IProgressMonitor>()
+	const progressReporterMock = Mock.ofType<IProgressReporter>()
 
 	const runDeployer: IRunDeployer = new RunDeployer(
 		commonHelperMock.object,
@@ -105,19 +101,19 @@ describe("RunDeployer", async () => {
 		progressMonitorMock
 			.setup((x) => x.createRunProgress(runMock))
 			.returns(() => runProgressMock)
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		stageDeployerMock
 			.setup((x) => x.deployManual(stageOneMock, runMock.build, runMock.settings))
 			.returns(() => Promise.resolve(Object.assign({}, stageOneMock, { state: TimelineRecordState.Completed })))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		progressMonitorMock
 			.setup((x) => x.updateRunProgress(runProgressMock))
 			.returns(() => Object.assign({}, runProgressMock, { status: RunStatus.Succeeded }))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
-		progressReporterMock.setup((x) => x.logStagesProgress(runProgressMock.stages)).verifiable(TypeMoq.Times.once())
+		progressReporterMock.setup((x) => x.logStagesProgress(runProgressMock.stages)).verifiable(Times.once())
 
 		//#endregion
 
@@ -129,8 +125,8 @@ describe("RunDeployer", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.status).to.eq(RunStatus.Succeeded)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.status, RunStatus.Succeeded, "Run status should be succeeded")
 
 		commonHelperMock.verifyAll()
 		stageDeployerMock.verifyAll()
@@ -149,24 +145,24 @@ describe("RunDeployer", async () => {
 		progressMonitorMock
 			.setup((x) => x.createRunProgress(runMock))
 			.returns(() => runProgressMock)
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		progressMonitorMock
 			.setup((x) => x.getActiveStages(runProgressMock))
 			.returns(() => [stageOneMock])
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		stageDeployerMock
 			.setup((x) => x.deployAutomated(stageOneMock, runMock.build, runMock.settings))
 			.returns(() => Promise.resolve(completedStageOneMock))
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
 		progressMonitorMock
 			.setup((x) => x.updateRunProgress(runProgressMock))
 			.returns(() => succeededRunProgressMock)
-			.verifiable(TypeMoq.Times.once())
+			.verifiable(Times.once())
 
-		progressReporterMock.setup((x) => x.logStagesProgress(runProgressMock.stages)).verifiable(TypeMoq.Times.once())
+		progressReporterMock.setup((x) => x.logStagesProgress(runProgressMock.stages)).verifiable(Times.once())
 
 		//#endregion
 
@@ -178,8 +174,8 @@ describe("RunDeployer", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.status).to.eq(RunStatus.Succeeded)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.status, RunStatus.Succeeded, "Run status should be succeeded")
 
 		commonHelperMock.verifyAll()
 		stageDeployerMock.verifyAll()

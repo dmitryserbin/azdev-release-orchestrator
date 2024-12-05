@@ -1,13 +1,7 @@
 import "mocha"
-
-import * as chai from "chai"
-import * as TypeMoq from "typemoq"
-
 import { faker } from "@faker-js/faker"
-
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces"
 import { Build, BuildDefinition, TaskResult, TimelineRecordState } from "azure-devops-node-api/interfaces/BuildInterfaces"
-
 import { ILogger } from "../../loggers/ilogger"
 import { IDebug } from "../../loggers/idebug"
 import { IProgressMonitor } from "../../workers/progressmonitor/iprogressmonitor"
@@ -18,16 +12,18 @@ import { IRunStage } from "../../workers/runcreator/irunstage"
 import { RunStatus } from "../../orchestrator/runstatus"
 import { IRunProgress } from "../../orchestrator/irunprogress"
 import { IBuildStage } from "../../workers/progressmonitor/ibuildstage"
+import assert from "assert"
+import { Mock, It } from "typemoq"
 
 describe("ProgressMonitor", async () => {
-	const loggerMock = TypeMoq.Mock.ofType<ILogger>()
-	const debugMock = TypeMoq.Mock.ofType<IDebug>()
+	const loggerMock = Mock.ofType<ILogger>()
+	const debugMock = Mock.ofType<IDebug>()
 
-	loggerMock.setup((x) => x.log(TypeMoq.It.isAny())).returns(() => null)
+	loggerMock.setup((x) => x.log(It.isAny())).returns(() => null)
 
-	loggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
+	loggerMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugMock.object)
 
-	debugMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugMock.object)
+	debugMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugMock.object)
 
 	const projectMock = {
 		name: faker.word.sample(),
@@ -103,16 +99,16 @@ describe("ProgressMonitor", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.name).to.eq(buildMock.buildNumber)
-		chai.expect(result.id).to.eq(buildMock.id)
-		chai.expect(result.project).to.eq(projectMock.name)
-		chai.expect(result.status).to.eq(RunStatus.InProgress)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.name, buildMock.buildNumber, "Build number should match")
+		assert.strictEqual(result.id, buildMock.id, "Build ID should match")
+		assert.strictEqual(result.project, projectMock.name, "Project name should match")
+		assert.strictEqual(result.status, RunStatus.InProgress, "Run status should be in progress")
 
-		chai.expect(result.stages).to.lengthOf(1)
-		chai.expect(result.stages[0].name).to.eq(runStageOneMock.name)
-		chai.expect(result.stages[0].id).to.eq(runStageOneMock.id)
-		chai.expect(result.stages[0].state).to.eq(TimelineRecordState.Pending)
+		assert.strictEqual(result.stages.length, 1, "There should be one stage")
+		assert.strictEqual(result.stages[0].name, runStageOneMock.name, "Stage name should match")
+		assert.strictEqual(result.stages[0].id, runStageOneMock.id, "Stage ID should match")
+		assert.strictEqual(result.stages[0].state, TimelineRecordState.Pending, "Stage state should be pending")
 
 		//#endregion
 	})
@@ -135,8 +131,8 @@ describe("ProgressMonitor", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.status).to.eq(RunStatus.Succeeded)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.status, RunStatus.Succeeded, "Run status should be succeeded")
 
 		//#endregion
 	})
@@ -159,8 +155,8 @@ describe("ProgressMonitor", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.status).to.eq(RunStatus.PartiallySucceeded)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.status, RunStatus.PartiallySucceeded, "Run status should be partially succeeded")
 
 		//#endregion
 	})
@@ -183,8 +179,8 @@ describe("ProgressMonitor", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.status).to.eq(RunStatus.Failed)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.status, RunStatus.Failed, "Run status should be failed")
 
 		//#endregion
 	})
@@ -207,8 +203,8 @@ describe("ProgressMonitor", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.status).to.eq(RunStatus.InProgress)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.status, RunStatus.InProgress, "Run status should be in progress")
 
 		//#endregion
 	})
@@ -230,9 +226,9 @@ describe("ProgressMonitor", async () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result).lengthOf(1)
-		chai.expect(result[0].state).eq(TimelineRecordState.InProgress)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.length, 1, "There should be one active stage")
+		assert.strictEqual(result[0].state, TimelineRecordState.InProgress, "Stage state should be in progress")
 
 		//#endregion
 	})

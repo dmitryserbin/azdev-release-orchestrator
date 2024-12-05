@@ -1,11 +1,6 @@
 import "mocha"
-
-import * as chai from "chai"
-import * as TypeMoq from "typemoq"
-
 import { TeamProject } from "azure-devops-node-api/interfaces/CoreInterfaces"
 import { ApprovalStatus, DeploymentAttempt, EnvironmentStatus, Release, ReleaseEnvironment } from "azure-devops-node-api/interfaces/ReleaseInterfaces"
-
 import { IDebugCreator } from "../../interfaces/loggers/idebugcreator"
 import { IDebugLogger } from "../../interfaces/loggers/idebuglogger"
 import { IMonitor } from "../../interfaces/orchestrator/imonitor"
@@ -14,12 +9,14 @@ import { IReleaseJob } from "../../interfaces/common/ireleasejob"
 import { ReleaseStatus } from "../../interfaces/common/ireleasestatus"
 import { IReleaseProgress } from "../../interfaces/common/ireleaseprogress"
 import { IStageProgress } from "../../interfaces/common/istageprogress"
+import assert from "assert"
+import { Mock, It, IMock } from "typemoq"
 
 describe("Monitor", () => {
-	const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>()
-	const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>()
-	debugCreatorMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
-	debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
+	const debugLoggerMock = Mock.ofType<IDebugLogger>()
+	const debugCreatorMock = Mock.ofType<IDebugCreator>()
+	debugCreatorMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugLoggerMock.target)
+	debugLoggerMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugLoggerMock.target)
 
 	const projectIdMock: string = "1"
 	const projectNameMock: string = "My-Project"
@@ -31,38 +28,38 @@ describe("Monitor", () => {
 	const releaseStageNameMock: string = "DEV"
 	const releaseStageDeploymentIdMock: number = 1
 
-	let releaseProgressMock: TypeMoq.IMock<IReleaseProgress>
-	let stageProgressMock: TypeMoq.IMock<IStageProgress>
+	let releaseProgressMock: IMock<IReleaseProgress>
+	let stageProgressMock: IMock<IStageProgress>
 
-	let releaseJobMock: TypeMoq.IMock<IReleaseJob>
-	let projectMock: TypeMoq.IMock<TeamProject>
-	let releaseMock: TypeMoq.IMock<Release>
-	let releaseStageMock: TypeMoq.IMock<ReleaseEnvironment>
-	let stageDeploymentAttempt: TypeMoq.IMock<DeploymentAttempt>
+	let releaseJobMock: IMock<IReleaseJob>
+	let projectMock: IMock<TeamProject>
+	let releaseMock: IMock<Release>
+	let releaseStageMock: IMock<ReleaseEnvironment>
+	let stageDeploymentAttempt: IMock<DeploymentAttempt>
 
 	const progressMonitor: IMonitor = new Monitor(debugCreatorMock.target)
 
 	beforeEach(async () => {
-		releaseProgressMock = TypeMoq.Mock.ofType<IReleaseProgress>()
-		stageProgressMock = TypeMoq.Mock.ofType<IStageProgress>()
+		releaseProgressMock = Mock.ofType<IReleaseProgress>()
+		stageProgressMock = Mock.ofType<IStageProgress>()
 
-		projectMock = TypeMoq.Mock.ofType<TeamProject>()
+		projectMock = Mock.ofType<TeamProject>()
 		projectMock.setup((x) => x.id).returns(() => projectIdMock)
 		projectMock.setup((x) => x.name).returns(() => projectNameMock)
 		projectMock.setup((x) => x._links).returns(() => projectLinksMock)
 
-		stageDeploymentAttempt = TypeMoq.Mock.ofType<DeploymentAttempt>()
+		stageDeploymentAttempt = Mock.ofType<DeploymentAttempt>()
 		stageDeploymentAttempt.setup((x) => x.deploymentId).returns(() => releaseStageDeploymentIdMock)
 
-		releaseStageMock = TypeMoq.Mock.ofType<ReleaseEnvironment>()
+		releaseStageMock = Mock.ofType<ReleaseEnvironment>()
 		releaseStageMock.setup((x) => x.name).returns(() => releaseStageNameMock)
 		releaseStageMock.setup((x) => x.id).returns(() => releaseStageIdMock)
 
-		releaseMock = TypeMoq.Mock.ofType<Release>()
+		releaseMock = Mock.ofType<Release>()
 		releaseMock.setup((x) => x.name).returns(() => releaseNameMock)
 		releaseMock.setup((x) => x.id).returns(() => releaseIdMock)
 
-		releaseJobMock = TypeMoq.Mock.ofType<IReleaseJob>()
+		releaseJobMock = Mock.ofType<IReleaseJob>()
 		releaseJobMock.target.project = projectMock.target
 		releaseJobMock.target.release = releaseMock.target
 	})
@@ -83,18 +80,18 @@ describe("Monitor", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.id).to.eq(releaseIdMock)
-		chai.expect(result.name).to.eq(releaseNameMock)
-		chai.expect(result.project).to.eq(projectNameMock)
-		chai.expect(result.url).to.eq(`${projectUrlMock}/_release?releaseId=${releaseIdMock}`)
-		chai.expect(result.status).to.eq(ReleaseStatus.InProgress)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.id, releaseIdMock, "Release ID should match")
+		assert.strictEqual(result.name, releaseNameMock, "Release name should match")
+		assert.strictEqual(result.project, projectNameMock, "Project name should match")
+		assert.strictEqual(result.url, `${projectUrlMock}/_release?releaseId=${releaseIdMock}`, "Release URL should match")
+		assert.strictEqual(result.status, ReleaseStatus.InProgress, "Release status should be InProgress")
 
-		chai.expect(result.stages.length).to.eq(1)
-		chai.expect(result.stages[0].name).to.eq(releaseStageNameMock)
-		chai.expect(result.stages[0].id).to.eq(releaseStageIdMock)
-		chai.expect(result.stages[0].approval.status).to.eq(ApprovalStatus.Pending)
-		chai.expect(result.stages[0].status).to.eq(EnvironmentStatus.NotStarted)
+		assert.strictEqual(result.stages.length, 1, "There should be one stage")
+		assert.strictEqual(result.stages[0].name, releaseStageNameMock, "Stage name should match")
+		assert.strictEqual(result.stages[0].id, releaseStageIdMock, "Stage ID should match")
+		assert.strictEqual(result.stages[0].approval.status, ApprovalStatus.Pending, "Approval status should be Pending")
+		assert.strictEqual(result.stages[0].status, EnvironmentStatus.NotStarted, "Stage status should be NotStarted")
 
 		//#endregion
 	})
@@ -115,7 +112,7 @@ describe("Monitor", () => {
 
 		//#region ASSERT
 
-		chai.expect(releaseProgressMock.target.status).to.eq(ReleaseStatus.Succeeded)
+		assert.strictEqual(releaseProgressMock.target.status, ReleaseStatus.Succeeded, "Release status should be Succeeded")
 
 		//#endregion
 	})
@@ -136,7 +133,7 @@ describe("Monitor", () => {
 
 		//#region ASSERT
 
-		chai.expect(releaseProgressMock.target.status).to.eq(ReleaseStatus.Failed)
+		assert.strictEqual(releaseProgressMock.target.status, ReleaseStatus.Failed, "Release status should be Failed")
 
 		//#endregion
 	})
@@ -157,7 +154,7 @@ describe("Monitor", () => {
 
 		//#region ASSERT
 
-		chai.expect(releaseProgressMock.target.status).to.eq(ReleaseStatus.PartiallySucceeded)
+		assert.strictEqual(releaseProgressMock.target.status, ReleaseStatus.PartiallySucceeded, "Release status should be PartiallySucceeded")
 
 		//#endregion
 	})
@@ -183,11 +180,11 @@ describe("Monitor", () => {
 
 		//#region ASSERT
 
-		chai.expect(stageProgressMock.target.status).to.eq(statusMock)
-		chai.expect(stageProgressMock.target.id).to.eq(releaseStageMock.target.id)
-		chai.expect(stageProgressMock.target.release).to.eq(releaseMock.target.name)
-		chai.expect(stageProgressMock.target.deployment).to.eq(stageDeploymentAttempt.target)
-		chai.expect(stageProgressMock.target.duration).to.eq(timeToDeployMock.toLocaleString())
+		assert.strictEqual(stageProgressMock.target.status, statusMock, "Stage status should match")
+		assert.strictEqual(stageProgressMock.target.id, releaseStageMock.target.id, "Stage ID should match")
+		assert.strictEqual(stageProgressMock.target.release, releaseMock.target.name, "Release name should match")
+		assert.strictEqual(stageProgressMock.target.deployment, stageDeploymentAttempt.target, "Deployment should match")
+		assert.strictEqual(stageProgressMock.target.duration, timeToDeployMock.toLocaleString(), "Duration should match")
 
 		//#endregion
 	})

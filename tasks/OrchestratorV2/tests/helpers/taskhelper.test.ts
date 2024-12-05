@@ -1,22 +1,19 @@
 import "mocha"
-
-import * as chai from "chai"
-import * as TypeMoq from "typemoq"
-import { ImportMock } from "ts-mock-imports"
-
 import * as TaskLibrary from "azure-pipelines-task-lib/task"
-
+import { ImportMock } from "ts-mock-imports"
 import { IDebugCreator } from "../../interfaces/loggers/idebugcreator"
 import { IDebugLogger } from "../../interfaces/loggers/idebuglogger"
 import { TaskHelper } from "../../helpers/taskhelper"
 import { ITaskHelper } from "../../interfaces/helpers/itaskhelper"
 import { CommonHelper } from "../../helpers/commonhelper"
+import assert from "assert"
+import { It, Mock } from "typemoq"
 
 describe("TaskHelper", () => {
-	const debugLoggerMock = TypeMoq.Mock.ofType<IDebugLogger>()
-	const debugCreatorMock = TypeMoq.Mock.ofType<IDebugCreator>()
-	debugCreatorMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
-	debugLoggerMock.setup((x) => x.extend(TypeMoq.It.isAnyString())).returns(() => debugLoggerMock.target)
+	const debugLoggerMock = Mock.ofType<IDebugLogger>()
+	const debugCreatorMock = Mock.ofType<IDebugCreator>()
+	debugCreatorMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugLoggerMock.target)
+	debugLoggerMock.setup((x) => x.extend(It.isAnyString())).returns(() => debugLoggerMock.target)
 
 	const endpointNameMock: string = "My-Endpoint"
 	const endpointUrlMock: string = "https://dev.azure.com/My-Organization"
@@ -100,9 +97,9 @@ describe("TaskHelper", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.url).to.eq(endpointUrlMock)
-		chai.expect(result.token).to.eq(endpointTokenMock)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.url, endpointUrlMock, "Result URL should match the mocked endpoint URL")
+		assert.strictEqual(result.token, endpointTokenMock, "Result token should match the mocked endpoint token")
 
 		//#endregion
 	})
@@ -133,22 +130,22 @@ describe("TaskHelper", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.releaseType).to.eq("New")
-		chai.expect(result.projectName).to.eq(projectNameMock)
-		chai.expect(result.definitionName).to.eq(definitionNameMock)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.releaseType, "New", "Release type should be 'New'")
+		assert.strictEqual(result.projectName, projectNameMock, "Project name should match the mock")
+		assert.strictEqual(result.definitionName, definitionNameMock, "Definition name should match the mock")
 
-		chai.expect(result.settings.sleep).to.eq(Number(updateIntervalMock) * 1000)
-		chai.expect(result.settings.approvalRetry).to.eq(Number(approvalRetryMock))
+		assert.strictEqual(result.settings.sleep, Number(updateIntervalMock) * 1000, "Sleep setting should match the mock")
+		assert.strictEqual(result.settings.approvalRetry, Number(approvalRetryMock), "Approval retry setting should match the mock")
 
-		chai.expect(result.stages).to.eql(["DEV", "TEST", "PROD"])
-		chai.expect(result.filters.artifactVersion).to.eq(artifactVersionMock)
-		chai.expect(result.filters.artifactTags).to.eql(["My-Artifact-Tag-One", "My-Artifact-Tag-Two"])
-		chai.expect(result.filters.artifactBranch).to.eq(artifactBranchMock)
+		assert.deepStrictEqual(result.stages, ["DEV", "TEST", "PROD"], "Stages should match the mock")
+		assert.strictEqual(result.filters.artifactVersion, artifactVersionMock, "Artifact version should match the mock")
+		assert.deepStrictEqual(result.filters.artifactTags, ["My-Artifact-Tag-One", "My-Artifact-Tag-Two"], "Artifact tags should match the mock")
+		assert.strictEqual(result.filters.artifactBranch, artifactBranchMock, "Artifact branch should match the mock")
 
-		chai.expect(result.variables.length).to.eq(1)
-		chai.expect(result.variables[0].name).to.eq("My-Variable-One")
-		chai.expect(result.variables[0].value).to.eq("My-Value-One")
+		assert.strictEqual(result.variables.length, 1, "There should be one variable")
+		assert.strictEqual(result.variables[0].name, "My-Variable-One", "Variable name should match the mock")
+		assert.strictEqual(result.variables[0].value, "My-Value-One", "Variable value should match the mock")
 
 		//#endregion
 	})
@@ -180,20 +177,20 @@ describe("TaskHelper", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.releaseType).to.eq("Latest")
-		chai.expect(result.projectName).to.eq(projectNameMock)
-		chai.expect(result.definitionName).to.eq(definitionNameMock)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.releaseType, "Latest", "Release type should be 'Latest'")
+		assert.strictEqual(result.projectName, projectNameMock, "Project name should match the mock")
+		assert.strictEqual(result.definitionName, definitionNameMock, "Definition name should match the mock")
 
-		chai.expect(result.settings.sleep).to.eq(Number(updateIntervalMock) * 1000)
-		chai.expect(result.settings.approvalRetry).to.eq(Number(approvalRetryMock))
+		assert.strictEqual(result.settings.sleep, Number(updateIntervalMock) * 1000, "Sleep setting should match the mock")
+		assert.strictEqual(result.settings.approvalRetry, Number(approvalRetryMock), "Approval retry setting should match the mock")
 
-		chai.expect(result.stages).to.eql(["DEV", "TEST", "PROD"])
-		chai.expect(result.filters.releaseTags).to.eql(["My-Tag-One", "My-Tag-Two"])
-		chai.expect(result.filters.artifactVersion).to.eq(artifactVersionMock)
-		chai.expect(result.filters.artifactTags).to.eql(["My-Artifact-Tag-One", "My-Artifact-Tag-Two"])
-		chai.expect(result.filters.artifactBranch).to.eq(artifactBranchMock)
-		chai.expect(result.filters.stageStatuses).to.eql(["succeeded", "rejected"])
+		assert.deepStrictEqual(result.stages, ["DEV", "TEST", "PROD"], "Stages should match the mock")
+		assert.deepStrictEqual(result.filters.releaseTags, ["My-Tag-One", "My-Tag-Two"], "Release tags should match the mock")
+		assert.strictEqual(result.filters.artifactVersion, artifactVersionMock, "Artifact version should match the mock")
+		assert.deepStrictEqual(result.filters.artifactTags, ["My-Artifact-Tag-One", "My-Artifact-Tag-Two"], "Artifact tags should match the mock")
+		assert.strictEqual(result.filters.artifactBranch, artifactBranchMock, "Artifact branch should match the mock")
+		assert.deepStrictEqual(result.filters.stageStatuses, ["succeeded", "rejected"], "Stage statuses should match the mock")
 
 		//#endregion
 	})
@@ -221,16 +218,16 @@ describe("TaskHelper", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.releaseType).to.eq("Specific")
-		chai.expect(result.projectName).to.eq(projectNameMock)
-		chai.expect(result.definitionName).to.eq(definitionNameMock)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.releaseType, "Specific", "Release type should be 'Specific'")
+		assert.strictEqual(result.projectName, projectNameMock, "Project name should match the mock")
+		assert.strictEqual(result.definitionName, definitionNameMock, "Definition name should match the mock")
 
-		chai.expect(result.settings.sleep).to.eq(Number(updateIntervalMock) * 1000)
-		chai.expect(result.settings.approvalRetry).to.eq(Number(approvalRetryMock))
+		assert.strictEqual(result.settings.sleep, Number(updateIntervalMock) * 1000, "Sleep setting should match the mock")
+		assert.strictEqual(result.settings.approvalRetry, Number(approvalRetryMock), "Approval retry setting should match the mock")
 
-		chai.expect(result.releaseName).to.eq(releaseNameMock)
-		chai.expect(result.stages).to.eql(["DEV", "TEST", "PROD"])
+		assert.strictEqual(result.releaseName, releaseNameMock, "Release name should match the mock")
+		assert.deepStrictEqual(result.stages, ["DEV", "TEST", "PROD"], "Stages should match the mock")
 
 		//#endregion
 	})
@@ -255,12 +252,12 @@ describe("TaskHelper", () => {
 
 		//#region ASSERT
 
-		chai.expect(result).to.not.eq(null)
-		chai.expect(result.endpointName).to.eq(endpointNameMock)
-		chai.expect(result.projectName).to.eq(orchestratorProjectNameMock)
-		chai.expect(result.releaseName).to.eq(orchestratorReleaseNameMock)
-		chai.expect(result.requesterName).to.eq(orchestratorRequesterNameMock)
-		chai.expect(result.requesterId).to.eq(orchestratorRequesterIdMock)
+		assert.notStrictEqual(result, null, "Result should not be null")
+		assert.strictEqual(result.endpointName, endpointNameMock, "Endpoint name should match the mock")
+		assert.strictEqual(result.projectName, orchestratorProjectNameMock, "Project name should match the mock")
+		assert.strictEqual(result.releaseName, orchestratorReleaseNameMock, "Release name should match the mock")
+		assert.strictEqual(result.requesterName, orchestratorRequesterNameMock, "Requester name should match the mock")
+		assert.strictEqual(result.requesterId, orchestratorRequesterIdMock, "Requester ID should match the mock")
 
 		//#endregion
 	})
