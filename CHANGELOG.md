@@ -4,6 +4,7 @@
 
 - Update tasks to use Node 20.1 ([110](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/110))
 - Update dependencies ([110](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/110))
+- Bugfix creating a build without default parameter value ([113](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/113))
 
 ## 3.1.*
 
@@ -75,8 +76,6 @@
 - Add release variables support ([24](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/24))
 - Make approval retries configurable ([23](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/23))
 
----
-
 ## 1.2.*
 
 `2020-08-10`
@@ -124,8 +123,6 @@
 - Improve default endpoint support
 - Increase retry & timeout
 
----
-
 ## 1.1.*
 
 `2019-03-11`
@@ -141,7 +138,7 @@
 `2019-02-18`
 
 - Improve ignoreFailure logic
-- Minor improvements & bug fixes
+- Minor improvements & bugfixes
 
 `2019-02-15`
 
@@ -154,11 +151,9 @@
 `2019-01-24`
 
 - Added latest release strategy ([#1](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/1))
-- Major code refactor and minor bug fixes
+- Major code refactor and minor bugfixes
 - Addressed intermittent ECONNRESET issue
 - Added unit and integration tests
-
----
 
 ## 1.0.*
 
