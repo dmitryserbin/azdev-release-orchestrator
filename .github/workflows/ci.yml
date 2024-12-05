@@ -84,7 +84,7 @@ jobs:
           sed -i 's/"id": "release-orchestrator",/"id": "release-orchestrator-preview",/' extension/vss-extension.json
           sed -i 's/"galleryFlags": \[\],/"galleryFlags": \["Preview"\],/' extension/vss-extension.json
           sed -i 's/"public": true,/"public": false,/' extension/vss-extension.json
-        if: ${{ github.ref != 'refs/heads/master' }}
+        if: ${{ github.ref != 'refs/heads/main' }}
       - name: Package extension
         run: |
           tfx extension create --root extension
@@ -97,7 +97,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     environment:
-      name: ${{ github.ref == 'refs/heads/master' && 'Production' || 'Preview' }}
+      name: ${{ github.ref == 'refs/heads/main' && 'Production' || 'Preview' }}
     needs:
       - package
     steps:
@@ -117,7 +117,7 @@ jobs:
             echo "No extension found"
             exit 1
           fi
-          if [ "${{ github.ref == 'refs/heads/master' }}" = true ]; then
+          if [ "${{ github.ref == 'refs/heads/main' }}" = true ]; then
             tfx extension isvalid --vsix $extensionPath --publisher dmitryserbin --extension-id release-orchestrator --token ${{ secrets.MARKETPLACE_TOKEN }}
           else
             tfx extension isvalid --vsix $extensionPath --publisher dmitryserbin --extension-id release-orchestrator-preview --token ${{ secrets.MARKETPLACE_TOKEN }}
@@ -129,7 +129,7 @@ jobs:
             echo "No extension found"
             exit 1
           fi
-          if [ "${{ github.ref == 'refs/heads/master' }}" = true ]; then
+          if [ "${{ github.ref == 'refs/heads/main' }}" = true ]; then
             tfx extension publish --vsix $extensionPath --token ${{ secrets.MARKETPLACE_TOKEN }}
           else
             tfx extension publish --vsix $extensionPath --share-with ${{ secrets.PREVIEW_SHARE_WITH }} --token ${{ secrets.MARKETPLACE_TOKEN }}

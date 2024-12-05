@@ -136,7 +136,7 @@
 			"name": "artifactBranch",
 			"type": "string",
 			"label": "Artifact branch",
-			"helpMarkDown": "Target release primary artifact source branch filter. Example: `refs/heads/master` (build artifact, last 100 builds) or `master` (Git artifact)",
+			"helpMarkDown": "Target release primary artifact source branch filter. Example: `refs/heads/main` (build artifact, last 100 builds) or `main` (Git artifact)",
 			"required": false,
 			"visibleRule": "releaseStrategy != specific"
 		},

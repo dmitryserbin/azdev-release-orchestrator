@@ -94,7 +94,7 @@ New release deployment uses default stage [triggers](https://docs.microsoft.com/
     # definitionStage: DEV,TEST,PROD    # Optional
     # artifactVersion: My-Build-01      # Optional
     # artifactTag: My-Artifact-Tag      # Optional
-    # artifactBranch: refs/heads/master # Optional
+    # artifactBranch: refs/heads/main   # Optional
     # releaseVariables: |               # Optional
     #  My-Variable-One=My-Value-One
     #  My-Variable-Two=My-Value-Two
@@ -121,7 +121,7 @@ Latest release deployment targets all stages configured in the target pipeline. 
     # releaseTag: My-Release-Tag        # Optional
     # artifactVersion: My-Build-01      # Optional
     # artifactTag: My-Artifact-Tag      # Optional
-    # artifactBranch: refs/heads/master # Optional
+    # artifactBranch: refs/heads/main   # Optional
     # stageStatus: succeeded            # Optional
 ```
 
