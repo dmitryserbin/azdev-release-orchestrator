@@ -76,8 +76,6 @@
 - Add release variables support ([24](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/24))
 - Make approval retries configurable ([23](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/23))
 
----
-
 ## 1.2.*
 
 `2020-08-10`
@@ -125,8 +123,6 @@
 - Improve default endpoint support
 - Increase retry & timeout
 
----
-
 ## 1.1.*
 
 `2019-03-11`
@@ -158,8 +154,6 @@
 - Major code refactor and minor bugfixes
 - Addressed intermittent ECONNRESET issue
 - Added unit and integration tests
-
----
 
 ## 1.0.*
 
