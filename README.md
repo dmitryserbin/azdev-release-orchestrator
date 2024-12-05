@@ -12,7 +12,7 @@ This extension adds [Release Orchestrator](https://marketplace.visualstudio.com/
 
 Extension | Build | Code
 :---------|:------|:----
-[![Extension](https://vsmarketplacebadges.dev/version/dmitryserbin.release-orchestrator.svg)](https://marketplace.visualstudio.com/items?itemName=dmitryserbin.release-orchestrator) | [![Build](https://dev.azure.com/dmitryserbin/Orchestrator/_apis/build/status/Orchestrator-release)](https://dev.azure.com/dmitryserbin/Orchestrator/_build/latest?definitionId=6) | [![CodeFactor](https://www.codefactor.io/repository/github/dmitryserbin/azdev-release-orchestrator/badge)](https://www.codefactor.io/repository/github/dmitryserbin/azdev-release-orchestrator)
+[![Extension](https://vsmarketplacebadges.dev/version/dmitryserbin.release-orchestrator.svg)](https://marketplace.visualstudio.com/items?itemName=dmitryserbin.release-orchestrator) | [![CI](https://github.com/dmitryserbin/azdev-release-orchestrator/actions/workflows/ci.yml/badge.svg)](https://github.com/dmitryserbin/azdev-release-orchestrator/actions/workflows/ci.yml) | [![CodeFactor](https://www.codefactor.io/repository/github/dmitryserbin/azdev-release-orchestrator/badge)](https://www.codefactor.io/repository/github/dmitryserbin/azdev-release-orchestrator)
 
 ## Features
 
@@ -20,10 +20,8 @@ The **Release Orchestrator** tasks perform classic or YAML pipeline execution, p
 
 Task | Description
 :-------|:-----------
-[Release Orchestrator V3](docs/OrchestratorV3.md) * | Execute and monitor [YAML](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/pipelines-get-started) pipelines
+[Release Orchestrator V3](docs/OrchestratorV3.md) | Execute and monitor [YAML](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/pipelines-get-started) pipelines
 [Release Orchestrator V2](docs/OrchestratorV2.md) | Execute and monitor [classic](https://docs.microsoft.com/en-us/azure/devops/pipelines/release) release pipelines
-
-> \* NOTE: task in public preview and some features may suddenly change
 
 ## How to use
 
