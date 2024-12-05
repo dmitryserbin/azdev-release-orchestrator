@@ -4,6 +4,7 @@
 
 - Update tasks to use Node 20.1 ([110](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/110))
 - Update dependencies ([110](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/110))
+- Bugfix creating a build without default parameter value ([113](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/113))
 
 ## 3.1.*
 
@@ -141,7 +142,7 @@
 `2019-02-18`
 
 - Improve ignoreFailure logic
-- Minor improvements & bug fixes
+- Minor improvements & bugfixes
 
 `2019-02-15`
 
@@ -154,7 +155,7 @@
 `2019-01-24`
 
 - Added latest release strategy ([#1](https://github.com/dmitryserbin/azdev-release-orchestrator/issues/1))
-- Major code refactor and minor bug fixes
+- Major code refactor and minor bugfixes
 - Addressed intermittent ECONNRESET issue
 - Added unit and integration tests
 
