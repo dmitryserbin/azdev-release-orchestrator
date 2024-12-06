@@ -4,7 +4,7 @@ stages:
 - stage: OrchestratorV2
   dependsOn: []
   jobs:
-    - job: OrchestratorV2_$(vmImage)
+    - job: OrchestratorV2
       strategy:
         matrix:
           ubuntu_latest:
@@ -29,7 +29,7 @@ stages:
 - stage: OrchestratorV3
   dependsOn: []
   jobs:
-    - job: OrchestratorV3_$(vmImage)
+    - job: OrchestratorV3
       strategy:
         matrix:
           ubuntu_latest:
