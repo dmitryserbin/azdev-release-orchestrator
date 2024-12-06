@@ -1,27 +1,48 @@
 trigger: none
 
-strategy:
-  matrix:
-    vmImage:
-      - ubuntu-latest
-      - windows-latest
-      - ubuntu-20.04
-      - windows-2019
-
-pool:
-  vmImage: $(vmImage)
-
 stages:
 - stage: OrchestratorV2
   dependsOn: []
   jobs:
-    - template: templates/smoke-v2.yml
+    - job: OrchestratorV2_$(vmImage)
+      strategy:
+        matrix:
+          vmImage:
+            - ubuntu-latest
+            - windows-latest
+            - ubuntu-20.04
+            - windows-2019
+      pool:
+        vmImage: $(vmImage)
+      workspace:
+        clean: all
+      steps:
+        - task: releaseorchestrator@2
+          displayName: Create release (auto)
+          inputs:
+            projectName: HelloYo
+            definitionName: HelloYo-V2
+            releaseStrategy: create
 - stage: OrchestratorV3
   dependsOn: []
   jobs:
-    - template: templates/smoke-v3.yml
-- stage: Cleanup
-  dependsOn:
-    - OrchestratorV2
-  jobs:
-    - template: templates/cleanup-v2.yml
+    - job: OrchestratorV3_$(vmImage)
+      strategy:
+        matrix:
+          vmImage:
+            - ubuntu-latest
+            - windows-latest
+            - ubuntu-20.04
+            - windows-2019
+      pool:
+        vmImage: $(vmImage)
+      workspace:
+        clean: all
+      steps:
+        - task: releaseorchestrator@3
+          displayName: New release (auto)
+          inputs:
+            projectName: HelloYo
+            definitionName: HelloYo-release
+            strategy: new
+            stages: DEV,TEST,PROD
