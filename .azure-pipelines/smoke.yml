@@ -5,6 +5,7 @@ stages:
   dependsOn: []
   jobs:
     - job: OrchestratorV2
+      displayName: OrchestratorV2 ($(vmImage))
       strategy:
         maxParallel: 1
         matrix:
@@ -30,7 +31,7 @@ stages:
 - stage: OrchestratorV3
   dependsOn: []
   jobs:
-    - job: OrchestratorV3
+    - job: OrchestratorV3 ($(vmImage))
       strategy:
         maxParallel: 1
         matrix:
