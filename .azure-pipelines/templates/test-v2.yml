@@ -10,137 +10,137 @@ jobs:
         definitionName: HelloYo-V2
         releaseStrategy: specific
         releaseName: HelloYo-V2-20241203.1-1
-    # - task: releaseorchestrator@2
-    #   displayName: Specific release (manual)
-    #   inputs:
-    #     projectName: HelloYo
-    #     definitionName: HelloYo-V2
-    #     releaseStrategy: specific
-    #     releaseName: HelloYo-V2-20241203.1-1
-    #     releaseStage: DEV,TEST,PROD
-    # - task: releaseorchestrator@2
-    #   displayName: Specific release (partial)
-    #   inputs:
-    #     projectName: HelloYo
-    #     definitionName: HelloYo-V2
-    #     releaseStrategy: specific
-    #     releaseName: HelloYo-V2-20241203.1-3
-    #     releaseStage: DEV,TEST,PROD
-    # - task: releaseorchestrator@2
-    #   displayName: Specific release (failed)
-    #   inputs:
-    #     projectName: HelloYo
-    #     definitionName: HelloYo-V2
-    #     releaseStrategy: specific
-    #     releaseName: HelloYo-V2-20241203.1-4
-    #     releaseStage: DEV,TEST,PROD
-    #     ignoreFailure: true
-    # - task: releaseorchestrator@2
-    #   displayName: Create release (auto)
-    #   inputs:
-    #     projectName: HelloYo
-    #     definitionName: HelloYo-V2
-    #     releaseStrategy: create
-    # - task: releaseorchestrator@2
-    #   displayName: Create release (manual)
-    #   inputs:
-    #     projectName: HelloYo
-    #     definitionName: HelloYo-V2
-    #     releaseStrategy: create
-    #     definitionStage: PROD
-    # - task: releaseorchestrator@2
-    #   displayName: Create release (artifact version)
-    #   inputs:
-    #     projectName: HelloYo
-    #     definitionName: HelloYo-V2
-    #     releaseStrategy: create
-    #     definitionStage: DEV
-    #     artifactVersion: 20241203.1
-    # - task: releaseorchestrator@2
-    #   displayName: Create release (artifact tag)
-    #   inputs:
-    #     projectName: HelloYo
-    #     definitionName: HelloYo-V2
-    #     releaseStrategy: create
-    #     definitionStage: DEV
-    #     artifactTag: Build-Yo
-    # - task: releaseorchestrator@2
-    #   displayName: Create release (artifact branch)
-    #   inputs:
-    #     projectName: HelloYo
-    #     definitionName: HelloYo-V2
-    #     releaseStrategy: create
-    #     definitionStage: DEV
-    #     artifactBranch: refs/heads/test
-    # - task: releaseorchestrator@2
-    #   displayName: Create release (release variables)
-    #   inputs:
-    #     projectName: HelloYo
-    #     definitionName: HelloYo-V2
-    #     releaseStrategy: create
-    #     definitionStage: DEV
-    #     releaseVariables: |
-    #       Yo-Variable-One=Yo-Updated-Value-One
-    #       Yo-Variable-Two=Yo-Updated-Value-One
-    # - task: releaseorchestrator@2
-    #   displayName: Latest release (auto)
-    #   inputs:
-    #     projectName: HelloYo
-    #     definitionName: HelloYo-V2
-    #     releaseStrategy: latest
-    # - task: releaseorchestrator@2
-    #   displayName: Latest release (manual)
-    #   inputs:
-    #     projectName: HelloYo
-    #     definitionName: HelloYo-V2
-    #     releaseStrategy: latest
-    #     releaseStage: DEV,TEST,PROD
-    # - task: releaseorchestrator@2
-    #   displayName: Latest release (release tag)
-    #   inputs:
-    #     projectName: HelloYo
-    #     definitionName: HelloYo-V2
-    #     releaseStrategy: latest
-    #     releaseStage: PROD
-    #     releaseTag: Release-Yo
-    # - task: releaseorchestrator@2
-    #   displayName: Latest release (artifact version)
-    #   inputs:
-    #     projectName: HelloYo
-    #     definitionName: HelloYo-V2
-    #     releaseStrategy: latest
-    #     releaseStage: DEV
-    #     artifactVersion: 20241203.1
-    # - task: releaseorchestrator@2
-    #   displayName: Latest release (artifact tag)
-    #   inputs:
-    #     projectName: HelloYo
-    #     definitionName: HelloYo-V2
-    #     releaseStrategy: latest
-    #     releaseStage: PROD
-    #     artifactTag: Build-Yo
-    # - task: releaseorchestrator@2
-    #   displayName: Latest release (artifact branch)
-    #   inputs:
-    #     projectName: HelloYo
-    #     definitionName: HelloYo-V2
-    #     releaseStrategy: latest
-    #     releaseStage: PROD
-    #     artifactBranch: refs/heads/test
-    # - task: releaseorchestrator@2
-    #   displayName: Latest release (rejected stage)
-    #   inputs:
-    #     projectName: HelloYo
-    #     definitionName: HelloYo-V2
-    #     releaseStrategy: latest
-    #     releaseStage: TEST
-    #     stageStatus: rejected
-    #     ignoreFailure: true
-    # - task: releaseorchestrator@2
-    #   displayName: Latest release (succeeded stage)
-    #   inputs:
-    #     projectName: HelloYo
-    #     definitionName: HelloYo-V2
-    #     releaseStrategy: latest
-    #     releaseStage: TEST
-    #     stageStatus: succeeded
+    - task: releaseorchestrator@2
+      displayName: Specific release (manual)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-V2
+        releaseStrategy: specific
+        releaseName: HelloYo-V2-20241203.1-1
+        releaseStage: DEV,TEST,PROD
+    - task: releaseorchestrator@2
+      displayName: Specific release (partial)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-V2
+        releaseStrategy: specific
+        releaseName: HelloYo-V2-20241203.1-3
+        releaseStage: DEV,TEST,PROD
+    - task: releaseorchestrator@2
+      displayName: Specific release (failed)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-V2
+        releaseStrategy: specific
+        releaseName: HelloYo-V2-20241203.1-4
+        releaseStage: DEV,TEST,PROD
+        ignoreFailure: true
+    - task: releaseorchestrator@2
+      displayName: Create release (auto)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-V2
+        releaseStrategy: create
+    - task: releaseorchestrator@2
+      displayName: Create release (manual)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-V2
+        releaseStrategy: create
+        definitionStage: PROD
+    - task: releaseorchestrator@2
+      displayName: Create release (artifact version)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-V2
+        releaseStrategy: create
+        definitionStage: DEV
+        artifactVersion: 20241203.1
+    - task: releaseorchestrator@2
+      displayName: Create release (artifact tag)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-V2
+        releaseStrategy: create
+        definitionStage: DEV
+        artifactTag: Build-Yo
+    - task: releaseorchestrator@2
+      displayName: Create release (artifact branch)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-V2
+        releaseStrategy: create
+        definitionStage: DEV
+        artifactBranch: refs/heads/test
+    - task: releaseorchestrator@2
+      displayName: Create release (release variables)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-V2
+        releaseStrategy: create
+        definitionStage: DEV
+        releaseVariables: |
+          Yo-Variable-One=Yo-Updated-Value-One
+          Yo-Variable-Two=Yo-Updated-Value-One
+    - task: releaseorchestrator@2
+      displayName: Latest release (auto)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-V2
+        releaseStrategy: latest
+    - task: releaseorchestrator@2
+      displayName: Latest release (manual)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-V2
+        releaseStrategy: latest
+        releaseStage: DEV,TEST,PROD
+    - task: releaseorchestrator@2
+      displayName: Latest release (release tag)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-V2
+        releaseStrategy: latest
+        releaseStage: PROD
+        releaseTag: Release-Yo
+    - task: releaseorchestrator@2
+      displayName: Latest release (artifact version)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-V2
+        releaseStrategy: latest
+        releaseStage: DEV
+        artifactVersion: 20241203.1
+    - task: releaseorchestrator@2
+      displayName: Latest release (artifact tag)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-V2
+        releaseStrategy: latest
+        releaseStage: PROD
+        artifactTag: Build-Yo
+    - task: releaseorchestrator@2
+      displayName: Latest release (artifact branch)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-V2
+        releaseStrategy: latest
+        releaseStage: PROD
+        artifactBranch: refs/heads/test
+    - task: releaseorchestrator@2
+      displayName: Latest release (rejected stage)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-V2
+        releaseStrategy: latest
+        releaseStage: TEST
+        stageStatus: rejected
+        ignoreFailure: true
+    - task: releaseorchestrator@2
+      displayName: Latest release (succeeded stage)
+      inputs:
+        projectName: HelloYo
+        definitionName: HelloYo-V2
+        releaseStrategy: latest
+        releaseStage: TEST
+        stageStatus: succeeded
