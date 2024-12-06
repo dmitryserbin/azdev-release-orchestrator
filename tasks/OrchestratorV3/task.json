@@ -256,6 +256,12 @@
 		}
 	],
 	"execution": {
+		"Node10": {
+			"target": "task.js"
+		},
+		"Node16": {
+			"target": "task.js"
+		},
 		"Node20_1": {
 			"target": "task.js"
 		}
