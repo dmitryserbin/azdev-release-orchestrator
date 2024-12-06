@@ -6,6 +6,7 @@ stages:
   jobs:
     - job: OrchestratorV2
       strategy:
+        maxParallel: 1
         matrix:
           ubuntu_latest:
             vmImage: ubuntu-latest
@@ -31,6 +32,7 @@ stages:
   jobs:
     - job: OrchestratorV3
       strategy:
+        maxParallel: 1
         matrix:
           ubuntu_latest:
             vmImage: ubuntu-latest
