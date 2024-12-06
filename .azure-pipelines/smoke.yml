@@ -7,11 +7,14 @@ stages:
     - job: OrchestratorV2_$(vmImage)
       strategy:
         matrix:
-          vmImage:
-            - ubuntu-latest
-            - windows-latest
-            - ubuntu-20.04
-            - windows-2019
+          ubuntu_latest:
+            vmImage: ubuntu-latest
+          windows_latest:
+            vmImage: windows-latest
+          ubuntu_20_04:
+            vmImage: ubuntu-20.04
+          windows_2019:
+            vmImage: windows-2019
       pool:
         vmImage: $(vmImage)
       workspace:
@@ -29,11 +32,14 @@ stages:
     - job: OrchestratorV3_$(vmImage)
       strategy:
         matrix:
-          vmImage:
-            - ubuntu-latest
-            - windows-latest
-            - ubuntu-20.04
-            - windows-2019
+          ubuntu_latest:
+            vmImage: ubuntu-latest
+          windows_latest:
+            vmImage: windows-latest
+          ubuntu_20_04:
+            vmImage: ubuntu-20.04
+          windows_2019:
+            vmImage: windows-2019
       pool:
         vmImage: $(vmImage)
       workspace:
