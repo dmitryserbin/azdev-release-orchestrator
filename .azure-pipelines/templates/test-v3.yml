@@ -10,12 +10,12 @@ jobs:
         definitionName: HelloYo-release
         strategy: new
         stages: DEV,TEST,PROD
-    - task: releaseorchestrator@3
-      displayName: New release (parameters)
-      inputs:
-        projectName: HelloYo
-        definitionName: HelloYo-release
-        strategy: new
-        stages: DEV,TEST,PROD
-        parameters: |
-          message=Test!
+    # - task: releaseorchestrator@3
+    #   displayName: New release (parameters)
+    #   inputs:
+    #     projectName: HelloYo
+    #     definitionName: HelloYo-release
+    #     strategy: new
+    #     stages: DEV,TEST,PROD
+    #     parameters: |
+    #       message=Test!
