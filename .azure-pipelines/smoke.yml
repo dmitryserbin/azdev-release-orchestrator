@@ -27,6 +27,7 @@ stages:
             projectName: HelloYo
             definitionName: HelloYo-V2
             releaseStrategy: create
+            definitionStage: DEV
 - stage: OrchestratorV3
   dependsOn: []
   jobs:
@@ -53,4 +54,4 @@ stages:
             projectName: HelloYo
             definitionName: HelloYo-release
             strategy: new
-            stages: DEV,TEST,PROD
+            stages: DEV
