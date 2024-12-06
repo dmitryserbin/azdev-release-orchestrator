@@ -1,0 +1,57 @@
+trigger: none
+
+stages:
+- stage: OrchestratorV2
+  dependsOn: []
+  jobs:
+    - job: OrchestratorV2
+      strategy:
+        maxParallel: 1
+        matrix:
+          ubuntu_latest:
+            vmImage: ubuntu-latest
+          windows_latest:
+            vmImage: windows-latest
+          ubuntu_20_04:
+            vmImage: ubuntu-20.04
+          windows_2019:
+            vmImage: windows-2019
+      pool:
+        vmImage: $(vmImage)
+      workspace:
+        clean: all
+      steps:
+        - task: releaseorchestrator@2
+          displayName: Create release (auto)
+          inputs:
+            projectName: HelloYo
+            definitionName: HelloYo-V2
+            releaseStrategy: create
+            definitionStage: DEV
+- stage: OrchestratorV3
+  dependsOn: []
+  jobs:
+    - job: OrchestratorV3
+      strategy:
+        maxParallel: 1
+        matrix:
+          ubuntu_latest:
+            vmImage: ubuntu-latest
+          windows_latest:
+            vmImage: windows-latest
+          ubuntu_20_04:
+            vmImage: ubuntu-20.04
+          windows_2019:
+            vmImage: windows-2019
+      pool:
+        vmImage: $(vmImage)
+      workspace:
+        clean: all
+      steps:
+        - task: releaseorchestrator@3
+          displayName: New release (auto)
+          inputs:
+            projectName: HelloYo
+            definitionName: HelloYo-release
+            strategy: new
+            stages: DEV

@@ -2,6 +2,7 @@
 
 ## 3.2.*
 
+- Add lagacy Node executors support ([115](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/115))
 - Update tasks to use Node 20.1 ([110](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/110))
 - Update dependencies ([110](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/110))
 - Bugfix creating a build without default parameter value ([113](https://github.com/dmitryserbin/azdev-release-orchestrator/pull/113))

@@ -15,6 +15,5 @@ stages:
 - stage: Cleanup
   dependsOn:
     - OrchestratorV2
-    - OrchestratorV3
   jobs:
-    - template: templates/test-cleanup.yml
+    - template: templates/cleanup-v2.yml
